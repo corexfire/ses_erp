@@ -1,0 +1,1 @@
+ALTER TABLE "JournalEntry" ADD COLUMN "referenceNo" TEXT; ALTER TABLE "JournalEntry" ADD COLUMN "journalType" TEXT DEFAULT 'GENERAL'; ALTER TABLE "JournalEntryLine" ADD COLUMN "costCenterId" TEXT; ALTER TABLE "JournalEntryLine" ADD COLUMN "profitCenterId" TEXT;

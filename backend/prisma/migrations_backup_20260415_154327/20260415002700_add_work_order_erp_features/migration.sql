@@ -1,0 +1,34 @@
+-- ERP-level fields for WorkOrder
+ALTER TABLE "WorkOrder"
+  ADD COLUMN IF NOT EXISTS "priority"        INTEGER NOT NULL DEFAULT 50,
+  ADD COLUMN IF NOT EXISTS "workCenterId"    TEXT,
+  ADD COLUMN IF NOT EXISTS "workCenter"      TEXT,
+  ADD COLUMN IF NOT EXISTS "scheduleType"    TEXT NOT NULL DEFAULT 'PLANNED',
+  ADD COLUMN IF NOT EXISTS "mrpRunId"        TEXT,
+  ADD COLUMN IF NOT EXISTS "refDocType"      TEXT,
+  ADD COLUMN IF NOT EXISTS "refDocId"        TEXT,
+  ADD COLUMN IF NOT EXISTS "qtyRejected"     DECIMAL(18,4) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS "qtyScrap"        DECIMAL(18,4) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS "scrapPercent"    DECIMAL(8,4)  NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS "targetWarehouseId" TEXT,
+  ADD COLUMN IF NOT EXISTS "productionOrder" TEXT;
+
+-- ERP-level fields for WorkOrderComponent
+ALTER TABLE "WorkOrderComponent"
+  ADD COLUMN IF NOT EXISTS "qtyScrap"        DECIMAL(18,4) NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS "scrapPercent"    DECIMAL(8,4)  NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS "issueMethod"     TEXT NOT NULL DEFAULT 'BACKFLUSH',
+  ADD COLUMN IF NOT EXISTS "operationNo"     INTEGER,
+  ADD COLUMN IF NOT EXISTS "warehouseId"     TEXT,
+  ADD COLUMN IF NOT EXISTS "notes"           TEXT;
+
+-- ERP-level fields for WorkOrderOperation
+ALTER TABLE "WorkOrderOperation"
+  ADD COLUMN IF NOT EXISTS "machineHours"    DECIMAL(8,2),
+  ADD COLUMN IF NOT EXISTS "setupTime"       DECIMAL(8,2),
+  ADD COLUMN IF NOT EXISTS "cycleTime"       DECIMAL(8,2),
+  ADD COLUMN IF NOT EXISTS "laborScrap"      DECIMAL(8,4),
+  ADD COLUMN IF NOT EXISTS "startDate"       TIMESTAMP(3),
+  ADD COLUMN IF NOT EXISTS "endDate"         TIMESTAMP(3),
+  ADD COLUMN IF NOT EXISTS "actualLaborHours" DECIMAL(8,2),
+  ADD COLUMN IF NOT EXISTS "notes"           TEXT;

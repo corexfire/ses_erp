@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERP System — Interactive Flowchart</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap');
+
+:root {
+  --bg: #060d1a;
+  --surface: #0c1a2e;
+  --surface2: #0f2040;
+  --border: #1a3358;
+  --border2: #234070;
+  --text: #c8daf0;
+  --text2: #7aa4cc;
+  --text3: #4a7aaa;
+
+  --c1: #1eb8ff;   /* Dashboard */
+  --c2: #a78bfa;   /* Core/Master */
+  --c3: #34d399;   /* CRM */
+  --c4: #fb923c;   /* E-Commerce */
+  --c5: #f472b6;   /* POS */
+  --c6: #38bdf8;   /* Sales */
+  --c7: #fbbf24;   /* Procurement */
+  --c8: #4ade80;   /* Inventory */
+  --c9: #e879f9;   /* QMS */
+  --c10: #f87171;  /* Manufacturing */
+  --c11: #67e8f9;  /* Field Service */
+  --c12: #c084fc;  /* Rental */
+  --c13: #86efac;  /* Finance */
+  --c14: #fcd34d;  /* Tax */
+  --c15: #fb7185;  /* HRIS */
+  --c16: #a3e635;  /* Logistics */
+  --c17: #60a5fa;  /* Project */
+  --c18: #fdba74;  /* Construction */
+  --c19: #a78bfa;  /* Tasks */
+  --c20: #2dd4bf;  /* Support */
+  --c21: #94a3b8;  /* Settings */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(6,13,26,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-badge {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #1eb8ff, #6366f1);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: 800;
+  color: white;
+}
+
+.header h1 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.03em;
+}
+
+.header-sub {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 1px;
+}
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+  color: var(--text3);
+  font-family: 'Syne', sans-serif;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.tab.active {
+  background: var(--c1);
+  color: #000;
+}
+
+.tab:hover:not(.active) {
+  color: var(--text);
+  background: var(--border);
+}
+
+/* ── MAIN CONTENT ── */
+.main { padding: 20px 24px 60px; }
+
+/* ── VIEW PANELS ── */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── OVERVIEW MAP ── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.module-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.module-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--accent);
+  border-radius: 3px 0 0 3px;
+}
+
+.module-card:hover {
+  border-color: var(--accent);
+  background: var(--surface2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.module-number {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.module-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.module-sub-count {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── FLOW DIAGRAMS ── */
+.flow-container {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+
+.flow-canvas {
+  position: relative;
+  min-width: 1200px;
+}
+
+/* ── NODE STYLES ── */
+.node {
+  position: absolute;
+  border-radius: 8px;
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px 10px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+  line-height: 1.3;
+}
+
+.node:hover { transform: scale(1.05); z-index: 20; }
+
+.node-start {
+  border-radius: 50px;
+  background: #1a3a1a;
+  border-color: #4ade80;
+  color: #4ade80;
+}
+
+.node-end {
+  border-radius: 50px;
+  background: #3a1a1a;
+  border-color: #f87171;
+  color: #f87171;
+}
+
+.node-process {
+  border-radius: 8px;
+}
+
+.node-decision {
+  border-radius: 4px;
+  transform-origin: center;
+  background: #1a1a00;
+  border-color: #fbbf24;
+  color: #fbbf24;
+}
+
+.node-document {
+  border-radius: 8px 8px 0 0;
+}
+
+.node-database {
+  border-radius: 50% / 15%;
+}
+
+.node-sub {
+  font-size: 9px;
+  opacity: 0.75;
+  margin-top: 2px;
+  font-weight: 400;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* SVG arrows */
+.flow-svg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.arrow-line {
+  stroke-width: 1.5;
+  fill: none;
+  marker-end: url(#arrowhead);
+}
+
+.arrow-label {
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  fill: var(--text3);
+}
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.section-num {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.section-desc {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── MODULE FLOW PANEL ── */
+.module-flow {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.module-flow-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text2);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── INTEGRATION MAP ── */
+.integration-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .integration-grid { grid-template-columns: 1fr; }
+  .overview-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+
+.integration-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.integration-card h3 {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.int-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.int-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  margin-bottom: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+}
+
+.int-arrow {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+.int-from {
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+}
+
+.int-to {
+  color: var(--text2);
+  font-size: 10px;
+}
+
+.int-type {
+  margin-left: auto;
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+/* ── LEGEND ── */
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.legend-shape {
+  width: 24px; height: 16px;
+  border: 1.5px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  flex-shrink: 0;
+}
+
+/* ── FLOW STEP HORIZONTAL ── */
+.flow-steps {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  flex-wrap: nowrap;
+}
+
+.flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 110px;
+  max-width: 130px;
+  flex-shrink: 0;
+}
+
+.step-box {
+  width: 100%;
+  padding: 10px 8px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1.5px solid;
+  background: var(--surface2);
+  line-height: 1.4;
+  position: relative;
+}
+
+.step-box .step-icon {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.step-box .step-label {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 4px;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+.step-connector {
+  display: flex;
+  align-items: center;
+  height: 50px;
+  flex-shrink: 0;
+}
+
+.connector-line {
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(to right, var(--border2), var(--border));
+  position: relative;
+}
+
+.connector-line::after {
+  content: '▶';
+  position: absolute;
+  right: -8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: var(--text3);
+}
+
+.connector-label {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text3);
+  white-space: nowrap;
+}
+
+/* ── DECISION DIAMOND ── */
+.diamond-step {
+  position: relative;
+  width: 80px;
+  height: 50px;
+  margin: 0 8px;
+}
+
+.diamond-shape {
+  width: 50px;
+  height: 50px;
+  border: 1.5px solid #fbbf24;
+  background: #1a1500;
+  transform: rotate(45deg);
+  margin: 0 auto;
+}
+
+.diamond-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fbbf24;
+  text-align: center;
+  padding: 4px;
+  line-height: 1.2;
+}
+
+/* ── LIFECYCLE DIAGRAM ── */
+.lifecycle {
+  position: relative;
+  padding: 20px;
+}
+
+.lifecycle-ring {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  margin: 0 auto;
+}
+
+.lifecycle-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1B3A6B, #0D7377);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 2px solid var(--c13);
+  z-index: 10;
+}
+
+.lifecycle-center-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: white;
+  line-height: 1.2;
+}
+
+.lifecycle-center-sub {
+  font-size: 9px;
+  color: #86efac;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 4px;
+}
+
+.lifecycle-item {
+  position: absolute;
+  width: 100px;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.lifecycle-bubble {
+  width: 80px;
+  height: 60px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  border: 1.5px solid;
+  background: var(--surface2);
+  margin: 0 auto 4px;
+  padding: 6px;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.lifecycle-bubble:hover { transform: scale(1.1); }
+
+.lifecycle-label {
+  font-size: 9px;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.lc-arrow {
+  stroke-width: 1.5;
+  fill: none;
+  stroke: var(--border2);
+  marker-end: url(#arrowSmall);
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── TOOLTIP ── */
+.tooltip {
+  position: fixed;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 11px;
+  max-width: 260px;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.2s;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.tooltip.show { opacity: 1; }
+.tooltip-title { font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.tooltip-body { color: var(--text3); line-height: 1.5; }
+
+/* ── FLOW LABEL ── */
+.flow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  border: 1px solid;
+  margin: 2px;
+}
+
+/* ── CYCLE FLOW ── */
+.cycle-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-x: auto;
+}
+
+.cycle-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 4px 0;
+}
+
+.cycle-label {
+  width: 140px;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text3);
+  text-align: right;
+  padding-right: 12px;
+}
+
+.cycle-nodes {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex: 1;
+  overflow-x: visible;
+}
+
+.cnode {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  border: 1.5px solid;
+  background: var(--surface2);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 80px;
+  text-align: center;
+}
+
+.cnode:hover { transform: translateY(-2px); }
+
+.cnode-arrow {
+  width: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text3);
+  font-size: 14px;
+}
+
+.cnode-down {
+  width: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text3);
+  font-size: 14px;
+  writing-mode: vertical-rl;
+}
+
+/* ── MODULE GRID VIEW ── */
+.modgrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1100px) { .modgrid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 700px) { .modgrid { grid-template-columns: 1fr; } }
+
+.modblock {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.modblock-header {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modblock-num {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.modblock-title {
+  font-size: 13px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.modblock-body {
+  padding: 0 16px 16px;
+}
+
+.sub-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sub-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+}
+
+.sub-item-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sub-item-name {
+  flex: 1;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sub-item-rel {
+  font-size: 9px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text3);
+}
+
+.sub-arrow-row {
+  padding-left: 26px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text3);
+  font-size: 10px;
+}
+
+.sub-arrow-row::before { content: '└→'; font-size: 12px; }
+
+/* filter bar */
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text3);
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+
+.filter-btn.active, .filter-btn:hover {
+  background: var(--c1);
+  color: #000;
+  border-color: var(--c1);
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">
+    <div class="logo-badge">ERP</div>
+    <div>
+      <div class="header h1" style="font-size:15px;font-weight:700">Enterprise ERP System</div>
+      <div class="header-sub">21 Modul · Flowchart Interaktif</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('overview')">🗺 Overview</button>
+    <button class="tab" onclick="switchTab('cycles')">🔄 Siklus Utama</button>
+    <button class="tab" onclick="switchTab('modules')">📦 Per Modul</button>
+    <button class="tab" onclick="switchTab('integration')">🔗 Integrasi</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ══════════════════════════════════════════════════════════════════
+     VIEW 1: OVERVIEW
+══════════════════════════════════════════════════════════════════ -->
+<div id="view-overview" class="view active">
+
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-shape" style="border-color:#1eb8ff;border-radius:6px">□</div>
+      Proses / Menu
+    </div>
+    <div class="legend-item">
+      <div class="legend-shape" style="border-color:#fbbf24;transform:rotate(45deg);width:16px;height:16px">◇</div>
+      &nbsp;&nbsp;Keputusan
+    </div>
+    <div class="legend-item">
+      <div class="legend-shape" style="border-color:#4ade80;border-radius:50px">⬭</div>
+      Start / End
+    </div>
+    <div class="legend-item">
+      <div class="legend-shape" style="border-color:#e879f9">▤</div>
+      Dokumen / Output
+    </div>
+    <div class="legend-item" style="color:var(--text3);font-size:11px">
+      ↔ Klik kartu untuk detail
+    </div>
+  </div>
+
+  <div style="margin-bottom:16px;font-size:13px;color:var(--text2);font-weight:600">
+    21 Modul ERP — Klik untuk navigasi ke detail
+  </div>
+
+  <div class="overview-grid" id="overview-grid"></div>
+
+  <!-- MEGA FLOW DIAGRAM -->
+  <div class="module-flow">
+    <div class="module-flow-title">▶ Arsitektur Alur Data ERP (End-to-End)</div>
+    <div class="flow-container">
+      <div style="position:relative;height:620px;min-width:1400px;">
+        <svg id="mega-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;">
+          <defs>
+            <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#2a4a70"/>
+            </marker>
+            <marker id="arr2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#4a7aaa"/>
+            </marker>
+          </defs>
+        </svg>
+        <div id="mega-nodes"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     VIEW 2: SIKLUS UTAMA
+══════════════════════════════════════════════════════════════════ -->
+<div id="view-cycles" class="view">
+
+  <!-- PROCUREMENT CYCLE -->
+  <div class="module-flow">
+    <div class="section-header" style="margin-bottom:16px;padding:10px 14px;">
+      <div class="section-num" style="background:var(--c7)">7</div>
+      <div>
+        <div class="section-title" style="color:var(--c7)">Procurement Cycle</div>
+        <div class="section-desc">Siklus Pengadaan Barang & Jasa</div>
+      </div>
+    </div>
+    <div class="cycle-flow" id="proc-cycle"></div>
+  </div>
+
+  <!-- SALES CYCLE -->
+  <div class="module-flow">
+    <div class="section-header" style="margin-bottom:16px;padding:10px 14px;">
+      <div class="section-num" style="background:var(--c6)">6</div>
+      <div>
+        <div class="section-title" style="color:var(--c6)">Sales Cycle</div>
+        <div class="section-desc">Siklus Penjualan & Distribusi</div>
+      </div>
+    </div>
+    <div class="cycle-flow" id="sales-cycle"></div>
+  </div>
+
+  <!-- MANUFACTURING CYCLE -->
+  <div class="module-flow">
+    <div class="section-header" style="margin-bottom:16px;padding:10px 14px;">
+      <div class="section-num" style="background:var(--c10)">10</div>
+      <div>
+        <div class="section-title" style="color:var(--c10)">Manufacturing Cycle</div>
+        <div class="section-desc">Siklus Produksi & Manufaktur</div>
+      </div>
+    </div>
+    <div class="cycle-flow" id="mfg-cycle"></div>
+  </div>
+
+  <!-- PAYROLL CYCLE -->
+  <div class="module-flow">
+    <div class="section-header" style="margin-bottom:16px;padding:10px 14px;">
+      <div class="section-num" style="background:var(--c15)">15</div>
+      <div>
+        <div class="section-title" style="color:var(--c15)">Payroll & Tax Cycle</div>
+        <div class="section-desc">Siklus Penggajian & Perpajakan</div>
+      </div>
+    </div>
+    <div class="cycle-flow" id="payroll-cycle"></div>
+  </div>
+
+  <!-- FINANCIAL REPORTING CYCLE -->
+  <div class="module-flow">
+    <div class="section-header" style="margin-bottom:16px;padding:10px 14px;">
+      <div class="section-num" style="background:var(--c13)">13</div>
+      <div>
+        <div class="section-title" style="color:var(--c13)">Financial Reporting Cycle</div>
+        <div class="section-desc">Siklus Pelaporan Keuangan</div>
+      </div>
+    </div>
+    <div class="cycle-flow" id="fin-cycle"></div>
+  </div>
+
+  <!-- CRM to Cash -->
+  <div class="module-flow">
+    <div class="section-header" style="margin-bottom:16px;padding:10px 14px;">
+      <div class="section-num" style="background:var(--c3)">3</div>
+      <div>
+        <div class="section-title" style="color:var(--c3)">Lead-to-Cash Cycle</div>
+        <div class="section-desc">Dari Prospek hingga Penerimaan Kas</div>
+      </div>
+    </div>
+    <div class="cycle-flow" id="crm-cycle"></div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     VIEW 3: PER MODUL
+══════════════════════════════════════════════════════════════════ -->
+<div id="view-modules" class="view">
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-btn active" onclick="filterModules('all', this)">Semua</button>
+    <button class="filter-btn" onclick="filterModules('core', this)">Core</button>
+    <button class="filter-btn" onclick="filterModules('ops', this)">Operasional</button>
+    <button class="filter-btn" onclick="filterModules('finance', this)">Keuangan</button>
+    <button class="filter-btn" onclick="filterModules('hr', this)">SDM</button>
+    <button class="filter-btn" onclick="filterModules('tech', this)">Teknis</button>
+  </div>
+  <div class="modgrid" id="modules-grid"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     VIEW 4: INTEGRASI
+══════════════════════════════════════════════════════════════════ -->
+<div id="view-integration" class="view">
+  <div style="margin-bottom:20px;font-size:13px;color:var(--text2)">
+    Peta integrasi data antar modul ERP — menunjukkan sumber data, output, dan ketergantungan.
+  </div>
+  <div class="integration-grid" id="integration-grid"></div>
+</div>
+
+</div><!-- /main -->
+
+<div class="tooltip" id="tooltip">
+  <div class="tooltip-title" id="tt-title"></div>
+  <div class="tooltip-body" id="tt-body"></div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const MODULES = [
+  { id:1, name:"Dashboard & Analytics", color:"#1eb8ff", cat:"core", sub:[],
+    desc:"Tampilan KPI real-time dari seluruh modul. Drill-down ke transaksi sumber.",
+    keys:["KPI Aggregator","Role-based View","Budget Variance","Early Warning"] },
+  { id:2, name:"Core & Master Data", color:"#a78bfa", cat:"core",
+    sub:["Master Perusahaan","Keuangan Dasar","User & Security"],
+    desc:"Fondasi sistem. COA, NPWP, user roles, dan konfigurasi legal perusahaan.",
+    keys:["COA","Multi-Company","RBAC","NPWP/PKP"] },
+  { id:3, name:"CRM", color:"#34d399", cat:"ops",
+    sub:["CRM Dashboard","My Work","CRM Pipeline","Lead Management","Opportunity Management","Customer Management","Customer Portal","Sales Activity","Marketing Campaign","Customer Service"],
+    desc:"Kelola siklus pelanggan dari lead hingga layanan purna jual.",
+    keys:["Lead Scoring","Pipeline","Win Rate","CSAT"] },
+  { id:4, name:"E-Commerce & Omnichannel", color:"#fb923c", cat:"ops",
+    sub:["Marketplace Integration","Webstore Management","Omnichannel Order Aggregator","Real-time Stock Sync"],
+    desc:"Sinkronisasi penjualan di semua channel digital secara real-time.",
+    keys:["Tokopedia","Shopee","Stock Sync","Order Aggregator"] },
+  { id:5, name:"Retail & POS (Advanced)", color:"#f472b6", cat:"ops",
+    sub:["POS Terminal (Offline)","Shift Management","Split Payment","Loyalty & Rewards","Fiscal Printer"],
+    desc:"POS enterprise dengan mode offline, loyalty, dan split payment.",
+    keys:["Offline Mode","Loyalty Points","Z-Report","Cash Reconciliation"] },
+  { id:6, name:"Sales & Distribution", color:"#38bdf8", cat:"ops",
+    sub:["Sales Quotation","Sales Order","Delivery Order","Pricing Management","Subscription Billing","Sales Invoice","Sales Return","Sales Commission","Shipping Integration"],
+    desc:"Proses penjualan end-to-end dari quotation hingga invoice dan retur.",
+    keys:["3PL Integration","e-Faktur","Volume Discount","Commission"] },
+  { id:7, name:"Procurement (Purchasing)", color:"#fbbf24", cat:"ops",
+    sub:["Purchase Requisition","RFQ","Purchase Order","3-Way Match","Supplier Management","Vendor Portal","Purchase Invoice","Landed Cost","Purchase Return"],
+    desc:"Pengadaan barang & jasa dengan kontrol 3-way match dan portal supplier.",
+    keys:["3-Way Match","PPh 23","Landed Cost","Supplier Rating"] },
+  { id:8, name:"Inventory & WMS", color:"#4ade80", cat:"ops",
+    sub:["Item Master","Stock Management","GRN","Putaway","Picking","Packing","Transfer","Quality Inspection","Inventory Valuation","Batch & Serial","Multi-Location","Inventory Planning","Demand Forecast (AI)","Stock Opname"],
+    desc:"WMS lengkap dengan AI demand forecast, FIFO/FEFO, dan multi-lokasi.",
+    keys:["FIFO/WAC","AI Forecast","EOQ","FEFO"] },
+  { id:9, name:"Quality Management (QMS)", color:"#e879f9", cat:"ops",
+    sub:["NCR","CAPA Management","Supplier Quality Rating","SOP & ISO Control","Calibration"],
+    desc:"Jaminan mutu berbasis ISO 9001 dengan CAPA dan kalibrasi alat.",
+    keys:["NCR","5-Why","AQL","ISO 9001"] },
+  { id:10, name:"Manufacturing & Production", color:"#f87171", cat:"ops",
+    sub:["BOM","Production Planning (MPS/MRP)","Work Order","Production Execution","Shop Floor Control","Maintenance (TPM)","Production Costing"],
+    desc:"Perencanaan dan eksekusi produksi dengan kalkulasi HPP akurat.",
+    keys:["MRP","BOM","OEE","MTBF/MTTR"] },
+  { id:11, name:"Field Service Management", color:"#67e8f9", cat:"ops",
+    sub:["Technician Scheduling","GPS Work Order","Spare Parts Consumption","Digital Signature"],
+    desc:"Dispatch teknisi lapangan dengan GPS tracking dan ePOD.",
+    keys:["GPS Tracking","ePOD","SLA","Skill-based Dispatch"] },
+  { id:12, name:"Rental & Asset Leasing", color:"#c084fc", cat:"ops",
+    sub:["Rental Contracts","Periodic Billing","Scheduled Maintenance","Usage-based Depreciation"],
+    desc:"Kontrak sewa aset dengan billing otomatis dan depresiasi berbasis penggunaan.",
+    keys:["Prorated Billing","Usage Depreciation","Auto-Renewal"] },
+  { id:13, name:"Finance & Accounting", color:"#86efac", cat:"finance",
+    sub:["General Ledger","Cash & Bank","AR & AP","Fixed Assets","Budgeting","Period Closing","Financial Reporting","Settings"],
+    desc:"Inti keuangan PSAK-compliant dengan multi-currency dan konsolidasi.",
+    keys:["PSAK","Multi-Currency","Budget Control","Konsolidasi"] },
+  { id:14, name:"Indonesia Tax Management", color:"#fcd34d", cat:"finance",
+    sub:["PPN (VAT)","PPh Withholding","Compliance"],
+    desc:"Kepatuhan pajak Indonesia: PPN 12%, PPh 21 TER, PPh 23, e-Faktur DJP.",
+    keys:["PPN 12%","PPh 21 TER","e-Faktur","SPT Masa"] },
+  { id:15, name:"HRIS & Productivity", color:"#fb7185", cat:"hr",
+    sub:["Employee Database","Org Structure","Recruitment (ATS)","LMS","Attendance","Shift Management","Payroll","ESS","KPI & Performance","Expense Claims"],
+    desc:"Manajemen SDM end-to-end dengan payroll BPJS dan PPh 21 terintegrasi.",
+    keys:["BPJS","PPh 21 TER","ESS","OKR/KPI"] },
+  { id:16, name:"Logistics & Supply Chain", color:"#a3e635", cat:"ops",
+    sub:["Fleet Management","Route Optimization","Delivery Order & ePOD","Warehouse Ops","Packing & Kitting"],
+    desc:"Optimasi distribusi dengan route planning dan digital proof of delivery.",
+    keys:["TSP Routing","ePOD","Fleet Utilization"] },
+  { id:17, name:"Project Management", color:"#60a5fa", cat:"ops",
+    sub:["Dashboard Proyek","Project Setup (WBS)","Tender & Contract","Progress Billing","Cost Control"],
+    desc:"Manajemen proyek berbasis kontrak dengan EVM (Earned Value Management).",
+    keys:["WBS","EVM","Progress Billing","CPI/SPI"] },
+  { id:18, name:"Construction Management", color:"#fdba74", cat:"ops",
+    sub:["Site Management","Material Request","Subcontractor Mgmt","Daily Progress Report","Drawing Control","Safety & HSE"],
+    desc:"Ekstensi konstruksi: site management, subkon, HSE, dan shop drawing.",
+    keys:["Daily Progress","HSE Checklist","Subkon Billing","RFI"] },
+  { id:19, name:"Task Management", color:"#a78bfa", cat:"tech",
+    sub:["Kanban Board","My Tasks","Team Tasks","Task Categories","Deadline Tracker"],
+    desc:"Task board terintegrasi seluruh modul untuk kolaborasi cross-departemen.",
+    keys:["Kanban","Workload Balance","Escalation","Cross-Module"] },
+  { id:20, name:"Support & Maintenance", color:"#2dd4bf", cat:"tech",
+    sub:["Asset Management","Document Mgmt (DMS)","Compliance & Audit","Business Intelligence","Sustainability (ESG)"],
+    desc:"Infrastruktur ERP: DMS, BI, audit trail, dan pelaporan ESG.",
+    keys:["Audit Trail","BI/Analytics","ESG","DMS"] },
+  { id:21, name:"Settings & Tools", color:"#94a3b8", cat:"tech",
+    sub:["System Config","Modules & Feature Flags","Numbering Series","Notification Templates","Integration (API)","Data Management","Print Format Designer","Help & Support"],
+    desc:"Konfigurasi sistem, API gateway, numbering, dan print format designer.",
+    keys:["API/Webhook","Feature Flags","Print Designer","Data Import"] },
+];
+
+// CYCLES DATA
+const CYCLES = {
+  proc: {
+    label: "Procurement Cycle",
+    rows: [
+      { label: "TRIGGER", nodes: [
+        {text:"Dept. Needs\nMaterial", color:"#fbbf24", icon:"📋"},
+        {text:"Purchase\nRequisition", color:"#fbbf24", icon:"📝"},
+        {text:"Budget\nCheck", color:"#fbbf24", icon:"💰", decision:true},
+        {text:"RFQ ke\nSupplier", color:"#fb923c", icon:"📤"},
+        {text:"Evaluasi\nPenawaran", color:"#fb923c", icon:"⚖️"},
+      ]},
+      { label: "PROSES", nodes: [
+        {text:"Purchase\nOrder", color:"#4ade80", icon:"📄"},
+        {text:"Supplier\nAcknowledge", color:"#4ade80", icon:"✅"},
+        {text:"GRN\n(Penerimaan)", color:"#38bdf8", icon:"📦"},
+        {text:"QC\nInspection", color:"#e879f9", icon:"🔍"},
+        {text:"Putaway\nGudang", color:"#38bdf8", icon:"🏪"},
+      ]},
+      { label: "VERIFIKASI", nodes: [
+        {text:"3-Way\nMatch", color:"#fbbf24", icon:"🔐", decision:true},
+        {text:"Purchase\nInvoice", color:"#fbbf24", icon:"🧾"},
+        {text:"Hutang\nAP", color:"#86efac", icon:"📊"},
+        {text:"PPh 23\nPotong", color:"#fcd34d", icon:"📋"},
+        {text:"Bayar\nSupplier", color:"#86efac", icon:"💸"},
+      ]},
+      { label: "OUTPUT", nodes: [
+        {text:"GL Entry\nCredit Cash", color:"#a78bfa", icon:"📒"},
+        {text:"PPN\nMasukan", color:"#fcd34d", icon:"🧮"},
+        {text:"Supplier\nRating Update", color:"#e879f9", icon:"⭐"},
+        {text:"Dashboard\nUpdate", color:"#1eb8ff", icon:"📈"},
+      ]},
+    ]
+  },
+  sales: {
+    label: "Sales Cycle",
+    rows: [
+      { label: "AKUISISI", nodes: [
+        {text:"Lead\nMasuk", color:"#34d399", icon:"🌱"},
+        {text:"Lead\nQualification", color:"#34d399", icon:"🔍"},
+        {text:"Opportunity\nCreated", color:"#34d399", icon:"💡"},
+        {text:"Quotation\nDibuat", color:"#38bdf8", icon:"📋"},
+        {text:"Approval\nQuotation", color:"#38bdf8", icon:"✅", decision:true},
+      ]},
+      { label: "ORDER", nodes: [
+        {text:"Sales\nOrder", color:"#38bdf8", icon:"📄"},
+        {text:"Cek\nStok WMS", color:"#4ade80", icon:"📦", decision:true},
+        {text:"Reserved\nStock", color:"#4ade80", icon:"🔒"},
+        {text:"Picking\nList", color:"#4ade80", icon:"📝"},
+        {text:"Packing &\nLabeling", color:"#4ade80", icon:"📦"},
+      ]},
+      { label: "PENGIRIMAN", nodes: [
+        {text:"Delivery\nOrder (DO)", color:"#a3e635", icon:"🚚"},
+        {text:"Dispatch\nArmada", color:"#a3e635", icon:"🚛"},
+        {text:"In Transit\nTracking", color:"#a3e635", icon:"📍"},
+        {text:"ePOD\n(Tanda Terima)", color:"#a3e635", icon:"✍️"},
+        {text:"Konfirmasi\nTerima", color:"#a3e635", icon:"✅"},
+      ]},
+      { label: "PENAGIHAN", nodes: [
+        {text:"Sales\nInvoice", color:"#fbbf24", icon:"🧾"},
+        {text:"e-Faktur\nDJP Upload", color:"#fcd34d", icon:"🏛️"},
+        {text:"Piutang\nAR", color:"#86efac", icon:"📊"},
+        {text:"Pembayaran\nCustomer", color:"#86efac", icon:"💳"},
+        {text:"GL Entry\nDebit Cash", color:"#a78bfa", icon:"📒"},
+      ]},
+    ]
+  },
+  mfg: {
+    label: "Manufacturing Cycle",
+    rows: [
+      { label: "PERENCANAAN", nodes: [
+        {text:"Sales\nForecast", color:"#38bdf8", icon:"📈"},
+        {text:"MPS\n(Jadwal Produksi)", color:"#f87171", icon:"📅"},
+        {text:"MRP\n(Kebutuhan Material)", color:"#f87171", icon:"🔢"},
+        {text:"Cek\nStok WMS", color:"#4ade80", icon:"📦", decision:true},
+        {text:"PR / PO\nPembelian", color:"#fbbf24", icon:"📋"},
+      ]},
+      { label: "PRODUKSI", nodes: [
+        {text:"Work Order\n(WO)", color:"#f87171", icon:"⚙️"},
+        {text:"Material\nIssue WMS", color:"#4ade80", icon:"📤"},
+        {text:"Production\nExecution", color:"#f87171", icon:"🏭"},
+        {text:"In-Process\nQC", color:"#e879f9", icon:"🔍"},
+        {text:"Final\nInspection", color:"#e879f9", icon:"✅", decision:true},
+      ]},
+      { label: "OUTPUT", nodes: [
+        {text:"FG ke\nGudang WMS", color:"#4ade80", icon:"📦"},
+        {text:"Production\nCosting HPP", color:"#f87171", icon:"💰"},
+        {text:"GL Entry\nWIP → FG", color:"#86efac", icon:"📒"},
+        {text:"OEE &\nTPM Update", color:"#f87171", icon:"📊"},
+      ]},
+    ]
+  },
+  payroll: {
+    label: "Payroll Cycle",
+    rows: [
+      { label: "INPUT", nodes: [
+        {text:"Attendance\nLog", color:"#fb7185", icon:"🕐"},
+        {text:"Lembur\nApproval", color:"#fb7185", icon:"⏰"},
+        {text:"Potongan &\nTunjangan", color:"#fb7185", icon:"📋"},
+        {text:"Expense\nClaim", color:"#fb7185", icon:"🧾"},
+      ]},
+      { label: "KALKULASI", nodes: [
+        {text:"Gross\nPayroll", color:"#fb7185", icon:"💵"},
+        {text:"BPJS\nKesehatan & TK", color:"#fb7185", icon:"🏥"},
+        {text:"PPh 21\nTER Method", color:"#fcd34d", icon:"🧮"},
+        {text:"Net\nGaji", color:"#fb7185", icon:"✅"},
+      ]},
+      { label: "OUTPUT", nodes: [
+        {text:"Slip Gaji\nDigital", color:"#fb7185", icon:"📄"},
+        {text:"Transfer\nBank Batch", color:"#86efac", icon:"🏦"},
+        {text:"GL Entry\nBiaya Gaji", color:"#86efac", icon:"📒"},
+        {text:"SPT PPh 21\ne-Filing", color:"#fcd34d", icon:"🏛️"},
+      ]},
+    ]
+  },
+  fin: {
+    label: "Financial Reporting Cycle",
+    rows: [
+      { label: "TRANSAKSI", nodes: [
+        {text:"Semua\nJurnal Operasional", color:"#86efac", icon:"📝"},
+        {text:"Bank\nReconciliation", color:"#86efac", icon:"🏦"},
+        {text:"Fixed Asset\nDepresiasi", color:"#86efac", icon:"🏢"},
+        {text:"Accruals &\nPrepayments", color:"#86efac", icon:"📋"},
+      ]},
+      { label: "TUTUP BUKU", nodes: [
+        {text:"Period\nClosing Check", color:"#86efac", icon:"✅"},
+        {text:"Jurnal\nPenutup", color:"#86efac", icon:"📒"},
+        {text:"Trial\nBalance", color:"#86efac", icon:"⚖️"},
+        {text:"Validasi\nSaldo", color:"#86efac", icon:"🔍", decision:true},
+      ]},
+      { label: "LAPORAN", nodes: [
+        {text:"Neraca\n(Balance Sheet)", color:"#a78bfa", icon:"📊"},
+        {text:"Laba Rugi\n(P&L)", color:"#a78bfa", icon:"📈"},
+        {text:"Arus Kas\n(Cash Flow)", color:"#a78bfa", icon:"💧"},
+        {text:"Dashboard\nBI/Analytics", color:"#1eb8ff", icon:"📱"},
+      ]},
+    ]
+  },
+  crm: {
+    label: "Lead-to-Cash Cycle",
+    rows: [
+      { label: "AKUISISI", nodes: [
+        {text:"Lead\nSource", color:"#34d399", icon:"🌐"},
+        {text:"Lead\nScoring", color:"#34d399", icon:"⭐"},
+        {text:"Opportunity\nQualify?", color:"#34d399", icon:"🤔", decision:true},
+        {text:"Proposal\n& Demo", color:"#34d399", icon:"🎯"},
+        {text:"Negotiation\nStage", color:"#34d399", icon:"🤝"},
+      ]},
+      { label: "CLOSING", nodes: [
+        {text:"Quotation\nApproval", color:"#38bdf8", icon:"📋"},
+        {text:"Sales\nOrder", color:"#38bdf8", icon:"📄"},
+        {text:"Fulfillment\n& Delivery", color:"#4ade80", icon:"🚚"},
+        {text:"Invoice &\ne-Faktur", color:"#fbbf24", icon:"🧾"},
+        {text:"Payment\nReceived", color:"#86efac", icon:"💰"},
+      ]},
+      { label: "RETENSI", nodes: [
+        {text:"Customer\nSatisfaction", color:"#34d399", icon:"😊"},
+        {text:"Loyalty\nProgram", color:"#f472b6", icon:"⭐"},
+        {text:"After-Sales\nService", color:"#67e8f9", icon:"🔧"},
+        {text:"Renewal /\nUpsell", color:"#34d399", icon:"🔄"},
+      ]},
+    ]
+  },
+};
+
+// INTEGRATION DATA
+const INTEGRATIONS = [
+  { title: "Core → Semua Modul", color: "#a78bfa",
+    items:[
+      {from:"Master Perusahaan", to:"Finance / Tax", type:"NPWP/PKP"},
+      {from:"COA Keuangan Dasar", to:"GL Journal", type:"Akun Mapping"},
+      {from:"User & Security", to:"Semua Menu", type:"RBAC/Permission"},
+    ]
+  },
+  { title: "CRM → Sales", color: "#34d399",
+    items:[
+      {from:"Lead", to:"Opportunity", type:"Konversi"},
+      {from:"Opportunity", to:"Quotation", type:"Trigger"},
+      {from:"Customer 360", to:"AR Balance", type:"Finance Feed"},
+      {from:"Service Ticket", to:"FSM Work Order", type:"Eskalasi"},
+    ]
+  },
+  { title: "Procurement → Multi Modul", color: "#fbbf24",
+    items:[
+      {from:"PO Confirmed", to:"GRN (WMS)", type:"Trigger"},
+      {from:"Purchase Invoice", to:"AP (Finance)", type:"Hutang"},
+      {from:"Purchase Invoice", to:"PPh 23 (Tax)", type:"Pot. Pajak"},
+      {from:"GRN", to:"QMS Inspection", type:"Quality Gate"},
+    ]
+  },
+  { title: "WMS → Multi Modul", color: "#4ade80",
+    items:[
+      {from:"Stok Level", to:"E-Commerce Sync", type:"Real-time"},
+      {from:"GRN", to:"Inventory Valuation", type:"FIFO/WAC"},
+      {from:"WO Material Issue", to:"Manufacturing", type:"Konsumsi"},
+      {from:"Stock Adjustment", to:"GL (Finance)", type:"Jurnal Otomatis"},
+    ]
+  },
+  { title: "Finance → Tax", color: "#86efac",
+    items:[
+      {from:"Sales Invoice", to:"PPN Keluaran (14)", type:"e-Faktur DJP"},
+      {from:"Purchase Invoice", to:"PPN Masukan (14)", type:"Tax Credit"},
+      {from:"AR/AP", to:"PPh 23 (14)", type:"Withholding"},
+      {from:"Payroll", to:"PPh 21 TER (14)", type:"Pot. Gaji"},
+    ]
+  },
+  { title: "Manufacturing → Multi Modul", color: "#f87171",
+    items:[
+      {from:"MRP Output", to:"PR/PO (Procurement)", type:"Auto PR"},
+      {from:"WO", to:"Material Issue (WMS)", type:"Komponen"},
+      {from:"Production Cost", to:"GL (Finance)", type:"HPP Jurnal"},
+      {from:"Timesheet", to:"Payroll (HRIS)", type:"Labor Cost"},
+    ]
+  },
+  { title: "HRIS → Finance / Tax", color: "#fb7185",
+    items:[
+      {from:"Payroll Run", to:"GL Biaya Gaji", type:"Jurnal Otomatis"},
+      {from:"PPh 21 Calc", to:"Tax Management", type:"SPT/e-Filing"},
+      {from:"BPJS Calc", to:"AP (Finance)", type:"Iuran Hutang"},
+      {from:"Expense Claim", to:"Reimbursement", type:"Bayar/Payroll"},
+    ]
+  },
+  { title: "Sales → Multi Modul", color: "#38bdf8",
+    items:[
+      {from:"SO Confirmed", to:"Picking (WMS)", type:"Fulfillment"},
+      {from:"Sales Invoice", to:"AR (Finance)", type:"Piutang"},
+      {from:"Commission", to:"Payroll (HRIS)", type:"Gaji Komisi"},
+      {from:"DO Complete", to:"Logistics ePOD", type:"Bukti Kirim"},
+    ]
+  },
+];
+
+// MODULE CATEGORIES
+const CAT_LABELS = {
+  core:"Core System", ops:"Operasional", finance:"Keuangan & Pajak",
+  hr:"SDM", tech:"Teknis/Platform"
+};
+
+// ── RENDER OVERVIEW ───────────────────────────────────────────────────────
+function renderOverview() {
+  const grid = document.getElementById('overview-grid');
+  grid.innerHTML = MODULES.map(m => `
+    <div class="module-card" style="--accent:${m.color}" onclick="switchTab('modules');filterModules('all');scrollToModule(${m.id})">
+      <div class="module-number" style="color:${m.color}">MOD-${String(m.id).padStart(2,'0')}</div>
+      <div class="module-name">${m.name}</div>
+      <div class="module-sub-count">${m.sub.length > 0 ? m.sub.length + ' sub-menu' : 'No sub-menu'}</div>
+    </div>
+  `).join('');
+
+  renderMegaFlow();
+}
+
+function renderMegaFlow() {
+  const container = document.getElementById('mega-nodes');
+  const svg = document.getElementById('mega-svg');
+
+  // Layout: rows of modules by category
+  const layout = [
+    // Row 0: Core backbone
+    [{id:2,x:50,y:30},{id:1,x:600,y:30},{id:21,x:1150,y:30}],
+    // Row 1: Business acquisition
+    [{id:3,x:50,y:160},{id:4,x:260,y:160},{id:5,x:470,y:160},{id:6,x:680,y:160},{id:7,x:890,y:160},{id:15,x:1100,y:160}],
+    // Row 2: Operations
+    [{id:8,x:50,y:290},{id:9,x:260,y:290},{id:10,x:470,y:290},{id:11,x:680,y:290},{id:12,x:890,y:290},{id:16,x:1100,y:290}],
+    // Row 3: Finance + Special
+    [{id:13,x:50,y:420},{id:14,x:260,y:420},{id:17,x:470,y:420},{id:18,x:680,y:420},{id:19,x:890,y:420},{id:20,x:1100,y:420}],
+  ];
+
+  // Render nodes
+  let html = '';
+  const positions = {};
+  layout.forEach(row => {
+    row.forEach(item => {
+      const m = MODULES.find(x=>x.id===item.id);
+      positions[m.id] = {x:item.x+95, y:item.y+30};
+      html += `
+        <div class="node node-process" style="
+          left:${item.x}px;top:${item.y}px;width:190px;min-height:60px;
+          background:${m.color}18;border-color:${m.color}55;color:${m.color};
+        " title="${m.desc}">
+          <span style="font-size:9px;font-family:'JetBrains Mono',monospace;opacity:0.6">M${m.id}</span>
+          <span style="font-size:11px;font-weight:700;line-height:1.3;margin-top:2px">${m.name}</span>
+        </div>
+      `;
+    });
+  });
+  container.innerHTML = html;
+  container.style.height = '530px';
+
+  // Draw connections
+  const connections = [
+    // Core → everything
+    [2,1,'data'], [2,13,'COA'], [2,21,'config'],
+    // CRM → Sales
+    [3,6,'→ Quotation'],
+    // Sales → WMS
+    [6,8,'→ Picking'],
+    // Sales → Finance
+    [6,13,'→ AR'],
+    // Procurement → WMS
+    [7,8,'→ GRN'],
+    // Procurement → Finance
+    [7,13,'→ AP'],
+    // WMS → Manufacturing
+    [8,10,'→ Material'],
+    // Manufacturing → Finance
+    [10,13,'→ HPP'],
+    // HRIS → Finance
+    [15,13,'→ Payroll'],
+    // Finance → Tax
+    [13,14,'→ Pajak'],
+    // Finance → Dashboard
+    [13,1,'→ KPI'],
+    // Logistics → WMS
+    [16,8,'→ DO'],
+    // Project → Finance
+    [17,13,'→ Biaya'],
+    // Construction → Project
+    [18,17,'→ Sub'],
+    // Support → Dashboard
+    [20,1,'→ BI'],
+    // QMS → WMS
+    [9,8,'→ Hold'],
+    // QMS → Procurement
+    [9,7,'→ Rating'],
+    // E-Commerce → Sales
+    [4,6,'→ Order'],
+    // E-Commerce → WMS
+    [4,8,'→ Stok'],
+    // POS → Finance
+    [5,13,'→ Kasir'],
+  ];
+
+  let svgContent = `
+    <defs>
+      <marker id="arr" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+        <polygon points="0 0, 7 2.5, 0 5" fill="#2a4a70"/>
+      </marker>
+    </defs>
+  `;
+
+  connections.forEach(([from,to,label]) => {
+    const a = positions[from], b = positions[to];
+    if(!a||!b) return;
+    const mx = (a.x+b.x)/2, my = (a.y+b.y)/2;
+    svgContent += `
+      <path d="M${a.x},${a.y} Q${mx},${(a.y+b.y)/2} ${b.x},${b.y}"
+        stroke="#1a3358" stroke-width="1.5" fill="none" marker-end="url(#arr)"/>
+      <text x="${mx}" y="${my-4}" fill="#2a4a70" font-size="8" font-family="'JetBrains Mono'" text-anchor="middle">${label}</text>
+    `;
+  });
+
+  svg.innerHTML = svgContent;
+}
+
+// ── RENDER CYCLES ─────────────────────────────────────────────────────────
+function renderCycleRow(containerId, rows) {
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  container.innerHTML = rows.map(row => `
+    <div class="cycle-row">
+      <div class="cycle-label">${row.label}</div>
+      <div class="cycle-nodes">
+        ${row.nodes.map((n,i) => `
+          ${n.decision ?
+            `<div style="position:relative;flex-shrink:0;margin:0 4px;">
+              <div style="width:70px;height:50px;border:1.5px solid #fbbf24;background:#1a150020;transform:rotate(45deg);border-radius:4px;"></div>
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fbbf24;text-align:center;padding:2px;line-height:1.2;">${n.text}</div>
+            </div>` :
+            `<div class="cnode" style="border-color:${n.color}44;color:${n.color};background:${n.color}10;">
+              <div style="font-size:16px;margin-bottom:3px">${n.icon}</div>
+              <div>${n.text.split('\n').join('<br>')}</div>
+            </div>`
+          }
+          ${i < row.nodes.length-1 ? '<div class="cnode-arrow">→</div>' : ''}
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAllCycles() {
+  renderCycleRow('proc-cycle', CYCLES.proc.rows);
+  renderCycleRow('sales-cycle', CYCLES.sales.rows);
+  renderCycleRow('mfg-cycle', CYCLES.mfg.rows);
+  renderCycleRow('payroll-cycle', CYCLES.payroll.rows);
+  renderCycleRow('fin-cycle', CYCLES.fin.rows);
+  renderCycleRow('crm-cycle', CYCLES.crm.rows);
+}
+
+// ── RENDER MODULES ────────────────────────────────────────────────────────
+let currentFilter = 'all';
+
+function renderModules(filter='all') {
+  const grid = document.getElementById('modules-grid');
+  const filtered = filter === 'all' ? MODULES : MODULES.filter(m=>m.cat===filter);
+  grid.innerHTML = filtered.map(m => `
+    <div class="modblock" id="mod-${m.id}" style="border-color:${m.color}33">
+      <div class="modblock-header" style="background:${m.color}15;border-bottom:1px solid ${m.color}33">
+        <div style="width:28px;height:28px;border-radius:6px;background:${m.color};display:grid;place-items:center;font-size:11px;font-weight:800;color:#000;flex-shrink:0">${m.id}</div>
+        <div style="flex:1">
+          <div class="modblock-title" style="color:${m.color}">${m.name}</div>
+          <div style="font-size:9px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-top:1px">${CAT_LABELS[m.cat]} · ${m.sub.length || 'No'} sub-menu</div>
+        </div>
+      </div>
+      <div class="modblock-body" style="padding-top:12px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.5">${m.desc}</div>
+        ${m.sub.length > 0 ? `
+        <div style="font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Sub-Menu Flow</div>
+        <div class="sub-flow">
+          ${m.sub.map((s,i) => `
+            <div class="sub-item">
+              <div class="sub-item-num" style="background:${m.color}22;color:${m.color}">${i+1}</div>
+              <div class="sub-item-name">${s}</div>
+              ${i < m.sub.length-1 ? `<div style="color:var(--text3);font-size:10px">→</div>` : ''}
+            </div>
+          `).join('')}
+        </div>
+        ` : '<div style="font-size:11px;color:var(--text3);font-style:italic">Halaman tunggal tanpa sub-menu</div>'}
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:10px">
+          ${m.keys.map(k=>`<span class="flow-badge" style="color:${m.color};border-color:${m.color}44;background:${m.color}10">${k}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterModules(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderModules(cat);
+}
+
+function scrollToModule(id) {
+  setTimeout(()=>{
+    const el = document.getElementById(`mod-${id}`);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  }, 100);
+}
+
+// ── RENDER INTEGRATION ────────────────────────────────────────────────────
+function renderIntegration() {
+  const grid = document.getElementById('integration-grid');
+  grid.innerHTML = INTEGRATIONS.map(int => `
+    <div class="integration-card" style="border-color:${int.color}33">
+      <h3>
+        <div class="int-dot" style="background:${int.color}"></div>
+        <span style="color:${int.color}">${int.title}</span>
+      </h3>
+      ${int.items.map(item => `
+        <div class="int-row">
+          <div class="int-from" style="color:${int.color}">${item.from}</div>
+          <div class="int-arrow">→</div>
+          <div class="int-to">${item.to}</div>
+          <div class="int-type" style="color:${int.color};border-color:${int.color}44;background:${int.color}10">${item.type}</div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+// ── TAB SWITCHING ──────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`view-${name}`).classList.add('active');
+  event && event.target && event.target.classList.add('active');
+  // fix active tab
+  const tabs = {overview:0,cycles:1,modules:2,integration:3};
+  document.querySelectorAll('.tab')[tabs[name]]?.classList.add('active');
+}
+
+// ── TOOLTIP ───────────────────────────────────────────────────────────────
+const tt = document.getElementById('tooltip');
+document.addEventListener('mousemove', e=>{
+  if(tt.classList.contains('show')) {
+    tt.style.left = (e.clientX+16)+'px';
+    tt.style.top = (e.clientY-10)+'px';
+  }
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+renderOverview();
+renderAllCycles();
+renderModules('all');
+renderIntegration();
+</script>
+</body>
+</html>
