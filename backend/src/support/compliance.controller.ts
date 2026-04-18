@@ -88,7 +88,7 @@ export class SupportComplianceController {
   ) {
     return this.prisma.supportCompliance.findMany({
       where: { 
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(type ? { type } : {}),
         ...(status ? { status } : {}),
         ...(riskLevel ? { riskLevel } : {}),
@@ -105,7 +105,7 @@ export class SupportComplianceController {
   @RequirePermissions('quality.read')
   async getStats(@Req() req: FastifyRequest & { user: AuthUser }) {
     const records = await this.prisma.supportCompliance.findMany({
-      where: { tenantId: req.user.tenantId }
+      where: { tenantId: req.user.tenantId! }
     });
 
     const now = new Date();
@@ -127,7 +127,7 @@ export class SupportComplianceController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.supportCompliance.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { 
         owner: true,
         department: true,
@@ -143,7 +143,7 @@ export class SupportComplianceController {
   ) {
     return this.prisma.supportCompliance.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...body,
         effectiveDate: body.effectiveDate ? new Date(body.effectiveDate) : undefined,
         expiryDate: body.expiryDate ? new Date(body.expiryDate) : undefined,
@@ -167,7 +167,7 @@ export class SupportComplianceController {
     if (body.nextAuditDate) data.nextAuditDate = new Date(body.nextAuditDate);
 
     return this.prisma.supportCompliance.update({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       data
     });
   }
@@ -179,7 +179,7 @@ export class SupportComplianceController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.supportCompliance.delete({
-      where: { id, tenantId: req.user.tenantId }
+      where: { id, tenantId: req.user.tenantId! }
     });
   }
 }

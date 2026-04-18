@@ -32,7 +32,7 @@ export class FiscalYearsController {
   @RequirePermissions('core.fiscal_year.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const fiscalYears = await this.prisma.fiscalYear.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ startDate: 'desc' }],
       include: { periods: true },
     });
@@ -47,7 +47,7 @@ export class FiscalYearsController {
   ) {
     const fiscalYear = await this.prisma.fiscalYear.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         startDate: body.startDate,
@@ -72,7 +72,7 @@ export class FiscalYearsController {
       const pStart = new Date(cursor);
       const pEnd = endOfMonth(cursor);
       periods.push({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         fiscalYearId: fiscalYear.id,
         periodNo,
         startDate: pStart,
@@ -95,7 +95,7 @@ export class FiscalYearsController {
     }
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'FiscalYear',
@@ -118,12 +118,12 @@ export class FiscalYearsController {
     });
 
     await this.prisma.accountingPeriod.updateMany({
-      where: { tenantId: req.user.tenantId, fiscalYearId: id },
+      where: { tenantId: req.user.tenantId!, fiscalYearId: id },
       data: { isOpen: false },
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'close',
       entity: 'FiscalYear',

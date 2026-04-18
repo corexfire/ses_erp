@@ -87,7 +87,7 @@ export class AssetSupportController {
   ) {
     return this.prisma.fixedAsset.findMany({
       where: { 
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(category ? { category } : {}),
         ...(status ? { status } : {}),
       },
@@ -103,7 +103,7 @@ export class AssetSupportController {
   @RequirePermissions('fixed-asset.read')
   async getStats(@Req() req: FastifyRequest & { user: AuthUser }) {
     const assets = await this.prisma.fixedAsset.findMany({
-      where: { tenantId: req.user.tenantId }
+      where: { tenantId: req.user.tenantId! }
     });
 
     const now = new Date();
@@ -123,7 +123,7 @@ export class AssetSupportController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.fixedAsset.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { 
         location: true,
         custodian: true,
@@ -141,7 +141,7 @@ export class AssetSupportController {
   ) {
     return this.prisma.fixedAsset.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         assetNo: body.assetNo,
         name: body.name,
         category: body.category,
@@ -176,7 +176,7 @@ export class AssetSupportController {
     if (body.nextMaintenanceDate) data.nextMaintenanceDate = new Date(body.nextMaintenanceDate);
 
     return this.prisma.fixedAsset.update({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       data
     });
   }
@@ -188,7 +188,7 @@ export class AssetSupportController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.fixedAsset.delete({
-      where: { id, tenantId: req.user.tenantId }
+      where: { id, tenantId: req.user.tenantId! }
     });
   }
 }

@@ -46,7 +46,7 @@
                 <i class="pi pi-search text-slate-400" />
                 <InputText v-model="q" placeholder="Cari No. DO atau Shipment..." class="p-inputtext-sm rounded-xl border-slate-200 w-64" />
              </div>
-             <Dropdown v-model="statusFilter" :options="statusOptions" optionLabel="label" optionValue="value" placeholder="Filter Status" class="p-dropdown-sm rounded-xl text-[10px] font-bold uppercase w-48" />
+             <Select v-model="statusFilter" :options="statusOptions" optionLabel="label" optionValue="value" placeholder="Filter Status" class="p-select-sm rounded-xl text-[10px] font-bold uppercase w-48" />
           </div>
        </div>
 
@@ -239,7 +239,7 @@
        <div class="space-y-5 pt-4">
           <div class="space-y-1">
              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Gudang Pengambil (Warehouse)</label>
-             <Dropdown v-model="generateForm.warehouseId" :options="warehouses" optionLabel="name" optionValue="id" placeholder="Pilih Gudang" class="w-full rounded-xl" />
+             <Select v-model="generateForm.warehouseId" :options="warehouses" optionLabel="name" optionValue="id" placeholder="Pilih Gudang" class="w-full rounded-xl" />
           </div>
           <div class="space-y-1">
              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Jadwal Pengiriman</label>
@@ -251,7 +251,7 @@
           </div>
           <div class="space-y-1">
              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Prioritas Default</label>
-             <Dropdown v-model="generateForm.priority" :options="priorityOptions" optionLabel="label" optionValue="value" class="w-full rounded-xl" />
+             <Select v-model="generateForm.priority" :options="priorityOptions" optionLabel="label" optionValue="value" class="w-full rounded-xl" />
           </div>
        </div>
        <template #footer>

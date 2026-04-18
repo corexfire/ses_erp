@@ -49,7 +49,7 @@ export class StockCountsController {
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('q') q?: string, @Query('status') status?: string) {
     const stockCounts = await this.prisma.stockCount.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(status ? { status: status as any } : {}),
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }] } : {}),
       },
@@ -64,7 +64,7 @@ export class StockCountsController {
   @RequirePermissions('inventory.stock_opname.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const stockCount = await this.prisma.stockCount.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { warehouse: true, items: { orderBy: [{ lineNo: 'asc' }], include: { item: true, binLocation: true } } },
     });
     if (!stockCount) throw new NotFoundException('Stock count not found');
@@ -74,19 +74,19 @@ export class StockCountsController {
   @Post()
   @RequirePermissions('inventory.stock_opname.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateStockCountDto) {
-    const wh = await this.prisma.warehouse.findFirst({ where: { id: body.warehouseId, tenantId: req.user.tenantId }, select: { id: true } });
+    const wh = await this.prisma.warehouse.findFirst({ where: { id: body.warehouseId, tenantId: req.user.tenantId! }, select: { id: true } });
     if (!wh) throw new NotFoundException('Warehouse not found');
 
     if (body.items.some((it) => it.itemId)) {
       const itemIds = Array.from(new Set(body.items.map((it) => it.itemId).filter(Boolean) as string[]));
-      const count = await this.prisma.item.count({ where: { tenantId: req.user.tenantId, id: { in: itemIds } } });
+      const count = await this.prisma.item.count({ where: { tenantId: req.user.tenantId!, id: { in: itemIds } } });
       if (count !== itemIds.length) throw new NotFoundException('Item not found');
     }
 
     const stockCount = await this.prisma.$transaction(async (tx) => {
       const sc = await tx.stockCount.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           countDate: new Date(body.countDate),
           warehouseId: body.warehouseId,
@@ -96,7 +96,7 @@ export class StockCountsController {
       if (body.items.length > 0) {
         await tx.stockCountItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             stockCountId: sc.id,
             lineNo: idx + 1,
             itemId: it.itemId,
@@ -113,7 +113,7 @@ export class StockCountsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'StockCount',
@@ -126,13 +126,13 @@ export class StockCountsController {
   @Patch(':id')
   @RequirePermissions('inventory.stock_opname.update')
   async update(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: UpdateStockCountDto) {
-    const existing = await this.prisma.stockCount.findFirst({ where: { id, tenantId: req.user.tenantId }, select: { id: true, status: true, warehouseId: true } });
+    const existing = await this.prisma.stockCount.findFirst({ where: { id, tenantId: req.user.tenantId! }, select: { id: true, status: true, warehouseId: true } });
     if (!existing) throw new NotFoundException('Stock count not found');
     if (existing.status === 'POSTED') throw new ForbiddenException('Stock count already posted');
 
     if (body.items?.some((it) => it.itemId)) {
       const itemIds = Array.from(new Set(body.items.map((it) => it.itemId).filter(Boolean) as string[]));
-      const count = await this.prisma.item.count({ where: { tenantId: req.user.tenantId, id: { in: itemIds } } });
+      const count = await this.prisma.item.count({ where: { tenantId: req.user.tenantId!, id: { in: itemIds } } });
       if (count !== itemIds.length) throw new NotFoundException('Item not found');
     }
 
@@ -142,11 +142,11 @@ export class StockCountsController {
         data: { countDate: body.countDate ? new Date(body.countDate) : undefined, notes: body.notes ?? undefined },
       });
       if (body.items) {
-        await tx.stockCountItem.deleteMany({ where: { tenantId: req.user.tenantId, stockCountId: id } });
+        await tx.stockCountItem.deleteMany({ where: { tenantId: req.user.tenantId!, stockCountId: id } });
         if (body.items.length > 0) {
           await tx.stockCountItem.createMany({
             data: body.items.map((it, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               stockCountId: id,
               lineNo: idx + 1,
               itemId: it.itemId,
@@ -164,7 +164,7 @@ export class StockCountsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'StockCount',
@@ -178,7 +178,7 @@ export class StockCountsController {
   @RequirePermissions('inventory.stock_opname.post')
   async post(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const stockCount = await this.prisma.stockCount.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { items: { orderBy: [{ lineNo: 'asc' }] } },
     });
     if (!stockCount) throw new NotFoundException('Stock count not found');
@@ -193,9 +193,9 @@ export class StockCountsController {
 
         if (it.itemId && it.batchCode) {
           const batch = await tx.itemBatch.upsert({
-            where: { tenantId_itemId_code: { tenantId: req.user.tenantId, itemId: it.itemId, code: it.batchCode } },
+            where: { tenantId_itemId_code: { tenantId: req.user.tenantId!, itemId: it.itemId, code: it.batchCode } },
             update: {},
-            create: { tenantId: req.user.tenantId, itemId: it.itemId, code: it.batchCode },
+            create: { tenantId: req.user.tenantId!, itemId: it.itemId, code: it.batchCode },
             select: { id: true },
           });
           batchId = batch.id;
@@ -203,16 +203,16 @@ export class StockCountsController {
 
         if (it.itemId && it.serialNo) {
           const serial = await tx.itemSerial.upsert({
-            where: { tenantId_serialNo: { tenantId: req.user.tenantId, serialNo: it.serialNo } },
+            where: { tenantId_serialNo: { tenantId: req.user.tenantId!, serialNo: it.serialNo } },
             update: { itemId: it.itemId },
-            create: { tenantId: req.user.tenantId, itemId: it.itemId, serialNo: it.serialNo },
+            create: { tenantId: req.user.tenantId!, itemId: it.itemId, serialNo: it.serialNo },
             select: { id: true },
           });
           serialId = serial.id;
         }
 
         const current = await this.currentQty({
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           warehouseId: stockCount.warehouseId,
           binLocationId: it.binLocationId,
           itemId: it.itemId,
@@ -225,7 +225,7 @@ export class StockCountsController {
 
         await tx.stockLedger.create({
           data: {
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             moveType: 'STOCK_COUNT_ADJUST',
             refType: 'STOCK_COUNT',
             refId: stockCount.id,
@@ -247,7 +247,7 @@ export class StockCountsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'post',
       entity: 'StockCount',

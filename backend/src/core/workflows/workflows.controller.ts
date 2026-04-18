@@ -30,7 +30,7 @@ export class WorkflowsController {
   @RequirePermissions('core.workflow.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const workflows = await this.prisma.workflowDefinition.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ createdAt: 'desc' }],
       include: {
         steps: { include: { role: true }, orderBy: [{ stepNo: 'asc' }] },
@@ -47,7 +47,7 @@ export class WorkflowsController {
   ) {
     const workflow = await this.prisma.workflowDefinition.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         name: body.name,
         moduleKey: body.moduleKey,
         docType: body.docType,
@@ -55,7 +55,7 @@ export class WorkflowsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'WorkflowDefinition',
@@ -73,20 +73,20 @@ export class WorkflowsController {
     @Body() body: AddWorkflowStepDto,
   ) {
     const workflow = await this.prisma.workflowDefinition.findFirst({
-      where: { id: workflowId, tenantId: req.user.tenantId },
+      where: { id: workflowId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!workflow) return { ok: false };
 
     const maxStep = await this.prisma.workflowStep.aggregate({
-      where: { tenantId: req.user.tenantId, definitionId: workflowId },
+      where: { tenantId: req.user.tenantId!, definitionId: workflowId },
       _max: { stepNo: true },
     });
 
     const stepNo = (maxStep._max.stepNo ?? 0) + 1;
     const step = await this.prisma.workflowStep.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         definitionId: workflowId,
         stepNo,
         roleId: body.roleId,
@@ -96,7 +96,7 @@ export class WorkflowsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'add_step',
       entity: 'WorkflowStep',
@@ -119,7 +119,7 @@ export class WorkflowsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'WorkflowDefinition',

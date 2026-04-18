@@ -52,7 +52,7 @@ export class PodController {
     @Body() body: SubmitPodDto,
   ) {
     const deliveryOrder = await this.prisma.deliveryOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true, status: true },
     });
     if (!deliveryOrder) throw new NotFoundException('Delivery order not found');
@@ -71,7 +71,7 @@ export class PodController {
 
     const pod = await this.prisma.proofOfDelivery.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         deliveryOrderId: id,
         receivedBy: body.receivedBy,
         receivedAt: new Date(body.receivedAt),
@@ -90,7 +90,7 @@ export class PodController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'SUBMIT_POD',
       entity: 'ProofOfDelivery',
@@ -167,7 +167,7 @@ export class PodController {
     @Body() body: { reason: string; description?: string },
   ) {
     const deliveryOrder = await this.prisma.deliveryOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true, status: true, tripPlanId: true },
     });
     if (!deliveryOrder) throw new NotFoundException('Delivery order not found');
@@ -178,7 +178,7 @@ export class PodController {
 
     await this.prisma.deliveryException.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         deliveryOrderId: id,
         tripPlanId: deliveryOrder.tripPlanId,
         reason: body.reason as any,
@@ -194,7 +194,7 @@ export class PodController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'MARK_FAILED',
       entity: 'DeliveryOrder',
@@ -212,7 +212,7 @@ export class PodController {
     @Param('id') id: string,
   ) {
     const original = await this.prisma.deliveryOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { items: true },
     });
     if (!original) throw new NotFoundException('Delivery order not found');
@@ -221,12 +221,12 @@ export class PodController {
       throw new Error('Can only create redelivery for failed delivery orders');
     }
 
-    const count = await this.prisma.deliveryOrder.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.deliveryOrder.count({ where: { tenantId: req.user.tenantId! } });
     const code = `DO-RD-${String(count + 1).padStart(6, '0')}`;
 
     const redelivery = await this.prisma.deliveryOrder.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code,
         shipmentId: original.shipmentId,
         salesOrderId: original.salesOrderId,
@@ -242,7 +242,7 @@ export class PodController {
         status: 'DRAFT',
         items: {
           create: original.items.map((item, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             lineNo: idx + 1,
             itemId: item.itemId,
             description: item.description,
@@ -256,7 +256,7 @@ export class PodController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE_REDELIVERY',
       entity: 'DeliveryOrder',

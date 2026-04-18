@@ -215,7 +215,7 @@
              </div>
              <div class="field">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Tipe</label>
-                <Dropdown v-model="form.taskType" :options="['TASK', 'MILESTONE', 'BUG']" class="rounded-xl bg-slate-50 border-slate-200" />
+                <Select v-model="form.taskType" :options="['TASK', 'MILESTONE', 'BUG']" class="rounded-xl bg-slate-50 border-slate-200" />
              </div>
            </div>
         </div>
@@ -223,7 +223,7 @@
         <div class="space-y-6">
            <div class="field">
              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Project <span class="text-rose-500">*</span></label>
-             <Dropdown v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" placeholder="Pilih Project" class="rounded-2xl bg-slate-50 border-slate-200" />
+             <Select v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" placeholder="Pilih Project" class="rounded-2xl bg-slate-50 border-slate-200" />
            </div>
            <div class="field">
              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Assignee</label>

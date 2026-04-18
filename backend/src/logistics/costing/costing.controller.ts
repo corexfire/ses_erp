@@ -56,7 +56,7 @@ export class CostingController {
     @Query('status') status?: string,
     @Query('costType') costType?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (tripPlanId) where.tripPlanId = tripPlanId;
     if (isTripCostStatus(status)) where.status = status;
     if (costType) where.costType = costType;
@@ -77,7 +77,7 @@ export class CostingController {
     @Param('id') id: string,
   ) {
     const cost = await this.prisma.tripCost.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { tripPlan: true, supplier: true },
     });
     if (!cost) throw new NotFoundException('Trip cost not found');
@@ -91,14 +91,14 @@ export class CostingController {
     @Body() body: CreateTripCostDto,
   ) {
     const trip = await this.prisma.tripPlan.findFirst({
-      where: { id: body.tripPlanId, tenantId: req.user.tenantId },
+      where: { id: body.tripPlanId, tenantId: req.user.tenantId! },
       select: { id: true, code: true },
     });
     if (!trip) throw new NotFoundException('Trip plan not found');
 
     const cost = await this.prisma.tripCost.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         tripPlanId: body.tripPlanId,
         costType: body.costType,
         description: body.description,
@@ -112,7 +112,7 @@ export class CostingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'TripCost',
@@ -131,7 +131,7 @@ export class CostingController {
     @Body() body: UpdateTripCostDto,
   ) {
     const existing = await this.prisma.tripCost.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!existing) throw new NotFoundException('Trip cost not found');
@@ -152,7 +152,7 @@ export class CostingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'UPDATE',
       entity: 'TripCost',
@@ -170,7 +170,7 @@ export class CostingController {
     @Param('id') id: string,
   ) {
     const cost = await this.prisma.tripCost.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!cost) throw new NotFoundException('Trip cost not found');
@@ -186,7 +186,7 @@ export class CostingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'SUBMIT',
       entity: 'TripCost',
@@ -203,7 +203,7 @@ export class CostingController {
     @Param('id') id: string,
   ) {
     const cost = await this.prisma.tripCost.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!cost) throw new NotFoundException('Trip cost not found');
@@ -219,7 +219,7 @@ export class CostingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'APPROVE',
       entity: 'TripCost',
@@ -236,7 +236,7 @@ export class CostingController {
     @Param('id') id: string,
   ) {
     const cost = await this.prisma.tripCost.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { tripPlan: true },
     });
     if (!cost) throw new NotFoundException('Trip cost not found');
@@ -252,7 +252,7 @@ export class CostingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'POST',
       entity: 'TripCost',

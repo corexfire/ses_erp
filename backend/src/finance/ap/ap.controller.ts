@@ -15,7 +15,7 @@ export class ApController {
   @RequirePermissions('finance.ap.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
     const invoices = await this.prisma.supplierInvoice.findMany({
-      where: { tenantId: req.user.tenantId, ...(status ? { status } : {}) },
+      where: { tenantId: req.user.tenantId!, ...(status ? { status } : {}) },
       include: { payments: true, lines: true },
       orderBy: [{ invoiceDate: 'desc' }],
       take: 200,
@@ -27,7 +27,7 @@ export class ApController {
   @RequirePermissions('finance.ap.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const invoice = await this.prisma.supplierInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { payments: true, lines: { orderBy: [{ lineNo: 'asc' }] } },
     });
     return { invoice };
@@ -40,7 +40,7 @@ export class ApController {
 
     const invoice = await this.prisma.supplierInvoice.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceNo: body.invoiceNo,
         supplierCode: body.supplierCode,
         invoiceDate: new Date(body.invoiceDate),
@@ -52,7 +52,7 @@ export class ApController {
         status: 'OPEN',
         lines: {
           create: body.lines.map((line, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             lineNo: idx + 1,
             description: line.description,
             qty: line.qty,
@@ -70,12 +70,12 @@ export class ApController {
   @Post(':id/payment')
   @RequirePermissions('finance.ap.payment')
   async addPayment(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { paymentDate: string; amount: number; reference?: string; notes?: string }) {
-    const invoice = await this.prisma.supplierInvoice.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const invoice = await this.prisma.supplierInvoice.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!invoice) throw new Error('Invoice not found');
 
     await this.prisma.supplierInvoicePayment.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceId: id,
         paymentDate: new Date(body.paymentDate),
         amount: body.amount,
@@ -97,7 +97,7 @@ export class ApController {
   @Get('reconciliation')
   @RequirePermissions('finance.ap.read')
   async vendorReconciliation(@Req() req: FastifyRequest & { user: AuthUser }, @Query('supplierCode') supplierCode?: string) {
-    const where: any = { tenantId: req.user.tenantId, status: { in: ['OPEN', 'OVERDUE'] } };
+    const where: any = { tenantId: req.user.tenantId!, status: { in: ['OPEN', 'OVERDUE'] } };
     if (supplierCode) where.supplierCode = supplierCode;
 
     const invoices = await this.prisma.supplierInvoice.findMany({

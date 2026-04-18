@@ -10,7 +10,10 @@ export default defineNuxtConfig({
     }
   },
   modules: ['@pinia/nuxt', '@nuxtjs/tailwindcss'],
-  css: ['primeicons/primeicons.css'],
+  css: [
+    'primeicons/primeicons.css',
+    '~/assets/css/typography.css'
+  ],
   runtimeConfig: {
     public: {
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4123',

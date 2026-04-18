@@ -36,7 +36,7 @@ export class LandedCostsController {
   ) {
     const landedCosts = await this.prisma.landedCostVoucher.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }] } : {}),
       },
       orderBy: [{ createdAt: 'desc' }],
@@ -53,7 +53,7 @@ export class LandedCostsController {
     @Param('id') id: string,
   ) {
     const landedCost = await this.prisma.landedCostVoucher.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         supplier: true,
         order: true,
@@ -74,21 +74,21 @@ export class LandedCostsController {
   ) {
     if (body.supplierId) {
       const supplier = await this.prisma.supplier.findFirst({
-        where: { id: body.supplierId, tenantId: req.user.tenantId },
+        where: { id: body.supplierId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!supplier) throw new NotFoundException('Supplier not found');
     }
     if (body.orderId) {
       const po = await this.prisma.purchaseOrder.findFirst({
-        where: { id: body.orderId, tenantId: req.user.tenantId },
+        where: { id: body.orderId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!po) throw new NotFoundException('Purchase order not found');
     }
     if (body.invoiceId) {
       const inv = await this.prisma.purchaseInvoice.findFirst({
-        where: { id: body.invoiceId, tenantId: req.user.tenantId },
+        where: { id: body.invoiceId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!inv) throw new NotFoundException('Purchase invoice not found');
@@ -97,7 +97,7 @@ export class LandedCostsController {
     const landedCost = await this.prisma.$transaction(async (tx) => {
       const lc = await tx.landedCostVoucher.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           supplierId: body.supplierId,
           orderId: body.orderId,
@@ -111,7 +111,7 @@ export class LandedCostsController {
       if (body.allocations && body.allocations.length > 0) {
         await tx.landedCostAllocation.createMany({
           data: body.allocations.map((a, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             landedCostId: lc.id,
             lineNo: idx + 1,
             costComponent: a.costComponent,
@@ -124,7 +124,7 @@ export class LandedCostsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'LandedCostVoucher',
@@ -142,28 +142,28 @@ export class LandedCostsController {
     @Body() body: UpdateLandedCostDto,
   ) {
     const exists = await this.prisma.landedCostVoucher.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Landed cost voucher not found');
 
     if (body.supplierId) {
       const supplier = await this.prisma.supplier.findFirst({
-        where: { id: body.supplierId, tenantId: req.user.tenantId },
+        where: { id: body.supplierId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!supplier) throw new NotFoundException('Supplier not found');
     }
     if (body.orderId) {
       const po = await this.prisma.purchaseOrder.findFirst({
-        where: { id: body.orderId, tenantId: req.user.tenantId },
+        where: { id: body.orderId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!po) throw new NotFoundException('Purchase order not found');
     }
     if (body.invoiceId) {
       const inv = await this.prisma.purchaseInvoice.findFirst({
-        where: { id: body.invoiceId, tenantId: req.user.tenantId },
+        where: { id: body.invoiceId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!inv) throw new NotFoundException('Purchase invoice not found');
@@ -184,12 +184,12 @@ export class LandedCostsController {
 
       if (body.allocations) {
         await tx.landedCostAllocation.deleteMany({
-          where: { tenantId: req.user.tenantId, landedCostId: id },
+          where: { tenantId: req.user.tenantId!, landedCostId: id },
         });
         if (body.allocations.length > 0) {
           await tx.landedCostAllocation.createMany({
             data: body.allocations.map((a, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               landedCostId: id,
               lineNo: idx + 1,
               costComponent: a.costComponent,
@@ -203,7 +203,7 @@ export class LandedCostsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'LandedCostVoucher',

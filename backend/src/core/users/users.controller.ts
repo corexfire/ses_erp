@@ -33,7 +33,7 @@ export class UsersController {
   @RequirePermissions('core.user.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const users = await this.prisma.user.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ createdAt: 'desc' }],
       select: {
         id: true,
@@ -56,7 +56,7 @@ export class UsersController {
     const passwordHash = await bcrypt.hash(body.password, 12);
     const user = await this.prisma.user.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         email: body.email,
         name: body.name,
         passwordHash,
@@ -72,7 +72,7 @@ export class UsersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'User',
@@ -101,7 +101,7 @@ export class UsersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'User',
@@ -131,7 +131,7 @@ export class UsersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'User',
@@ -155,7 +155,7 @@ export class UsersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'assign_role',
       entity: 'UserRole',
@@ -177,7 +177,7 @@ export class UsersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'remove_role',
       entity: 'UserRole',

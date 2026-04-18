@@ -35,7 +35,7 @@ export class SiteController {
     @Query('search') search?: string,
     @Query('status') status?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (status) where.status = status;
     if (search) where.project = { name: { contains: search, mode: 'insensitive' } };
 
@@ -56,7 +56,7 @@ export class SiteController {
   ) {
     const report = await this.prisma.dailyReport.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         projectId: body.projectId,
         reportDate: new Date(body.reportDate),
         morningWeather: body.morningWeather,
@@ -73,7 +73,7 @@ export class SiteController {
         submittedBy: req.user.id,
         resources: {
           create: (body as any).resources?.map((r: any) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             resourceType: r.resourceType,
             quantity: r.quantity,
             unit: r.unit,
@@ -117,7 +117,7 @@ export class SiteController {
           resources: (body as any).resources
             ? {
                 create: (body as any).resources.map((r: any) => ({
-                  tenantId: req.user.tenantId,
+                  tenantId: req.user.tenantId!,
                   resourceType: r.resourceType,
                   quantity: r.quantity,
                   unit: r.unit,
@@ -138,7 +138,7 @@ export class SiteController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Query('projectId') projectId?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (projectId) where.projectId = projectId;
 
     const reports = await this.prisma.dailyReport.findMany({
@@ -162,7 +162,7 @@ export class SiteController {
   ) {
     const report = await this.prisma.dailyReport.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         projectId: body.projectId,
         reportDate: new Date(body.reportDate),
         morningWeather: body.morningWeather,
@@ -180,7 +180,7 @@ export class SiteController {
         submittedBy: req.user.id,
         resources: {
           create: (body as any).resources?.map((r: any) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             resourceType: r.resourceType,
             quantity: r.quantity,
             unit: r.unit,
@@ -200,7 +200,7 @@ export class SiteController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const report = await this.prisma.dailyReport.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { resources: true, wbsTask: true },
     });
     return report;
@@ -237,7 +237,7 @@ export class SiteController {
           resources: (body as any).resources
             ? {
                 create: (body as any).resources.map((r: any) => ({
-                  tenantId: req.user.tenantId,
+                  tenantId: req.user.tenantId!,
                   resourceType: r.resourceType,
                   quantity: r.quantity,
                   unit: r.unit,
@@ -261,7 +261,7 @@ export class SiteController {
   ) {
     const resource = await this.prisma.resourceUsage.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         dailyReportId: id,
         resourceType: body.resourceType,
         quantity: body.quantity,
@@ -302,7 +302,7 @@ export class SiteController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const reports = await this.prisma.dailyReport.findMany({
-      where: { projectId: id, tenantId: req.user.tenantId },
+      where: { projectId: id, tenantId: req.user.tenantId! },
       select: { reportDate: true, workSummary: true },
       orderBy: { reportDate: 'desc' },
       take: 30,

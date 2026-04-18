@@ -26,7 +26,7 @@ export class ShopFloorController {
   async listActiveWorkOrders(@Req() req: FastifyRequest & { user: AuthUser }) {
     const workOrders = await this.prisma.workOrder.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         status: { in: ['RELEASED', 'IN_PROGRESS'] },
       },
       orderBy: [{ plannedStartDate: 'asc' }],
@@ -44,7 +44,7 @@ export class ShopFloorController {
   @RequirePermissions('manufacturing.shop_floor.read')
   async getWorkOrderDetails(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const wo = await this.prisma.workOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         finishedGood: true,
         operations: { orderBy: { lineNo: 'asc' } },
@@ -64,7 +64,7 @@ export class ShopFloorController {
     @Body() body: { workOrderId: string; operationId: string; operatorName?: string },
   ) {
     const op = await this.prisma.workOrderOperation.findFirst({
-      where: { id: body.operationId, workOrderId: body.workOrderId, tenantId: req.user.tenantId },
+      where: { id: body.operationId, workOrderId: body.workOrderId, tenantId: req.user.tenantId! },
     });
     if (!op) throw new NotFoundException('Operation not found');
 
@@ -72,7 +72,7 @@ export class ShopFloorController {
       // Create Timer
       const timer = await tx.shopFloorTimer.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           workOrderId: body.workOrderId,
           operationId: body.operationId,
           operatorName: body.operatorName || req.user.email,
@@ -94,7 +94,7 @@ export class ShopFloorController {
       // Log action
       await tx.shopFloorLog.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           workOrderId: body.workOrderId,
           operationId: body.operationId,
           operatorName: body.operatorName || req.user.email,
@@ -125,7 +125,7 @@ export class ShopFloorController {
     },
   ) {
     const timer = await this.prisma.shopFloorTimer.findFirst({
-      where: { id: body.timerId, tenantId: req.user.tenantId },
+      where: { id: body.timerId, tenantId: req.user.tenantId! },
     });
     if (!timer) throw new NotFoundException('Active timer not found');
 
@@ -184,7 +184,7 @@ export class ShopFloorController {
       // Log action
       await tx.shopFloorLog.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           workOrderId: body.workOrderId,
           operationId: body.operationId,
           operatorName: timer.operatorName,
@@ -220,7 +220,7 @@ export class ShopFloorController {
 
     await this.prisma.shopFloorLog.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         workOrderId: body.workOrderId,
         operationId: body.operationId,
         operatorName: req.user.email,

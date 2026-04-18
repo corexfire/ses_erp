@@ -30,7 +30,7 @@ export class PlanningController {
   ) {
     const suggestions = await this.prisma.mrpSuggestion.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(status ? { status } : {}),
         ...(runId ? { mrpRunId: runId } : {}),
       },
@@ -45,7 +45,7 @@ export class PlanningController {
   @RequirePermissions('manufacturing.planning.read')
   async listRuns(@Req() req: FastifyRequest & { user: AuthUser }) {
     const runs = await this.prisma.mrpRun.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ runDate: 'desc' }],
       include: { suggestions: { take: 5 } },
       take: 50,
@@ -70,7 +70,7 @@ export class PlanningController {
     },
   ) {
     const items = await this.prisma.item.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true },
+      where: { tenantId: req.user.tenantId!, isActive: true },
       include: {
         billOfMaterials: {
           where: { isActive: true },
@@ -86,7 +86,7 @@ export class PlanningController {
     const run = await this.prisma.$transaction(async (tx) => {
       const mrpRun = await tx.mrpRun.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           runDate: new Date(),
           demandSource: body.demandSource ?? 'MANUAL',
           notes: body.notes,
@@ -110,7 +110,7 @@ export class PlanningController {
         for (const bomItem of mainBom.items) {
           const componentRequired = Number(bomItem.qty);
           const componentStock = await tx.stockLedger.aggregate({
-            where: { tenantId: req.user.tenantId, itemId: bomItem.componentItemId },
+            where: { tenantId: req.user.tenantId!, itemId: bomItem.componentItemId },
             _sum: { qtyIn: true, qtyOut: true },
           });
           const componentOnHand =
@@ -121,7 +121,7 @@ export class PlanningController {
             const qtySuggested = componentRequired - componentOnHand;
             await tx.mrpSuggestion.create({
               data: {
-                tenantId: req.user.tenantId,
+                tenantId: req.user.tenantId!,
                 mrpRunId: mrpRun.id,
                 itemId: bomItem.componentItemId,
                 suggestionType: 'PURCHASE',
@@ -151,7 +151,7 @@ export class PlanningController {
   @RequirePermissions('manufacturing.planning.read')
   async getRun(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const run = await this.prisma.mrpRun.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { suggestions: { include: { item: true } } },
     });
     if (!run) throw new NotFoundException('MRP run not found');

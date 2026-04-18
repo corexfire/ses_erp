@@ -18,7 +18,7 @@ export class PaymentRequestController {
   @Get()
   @RequirePermissions('finance.paymentRequest.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (status) where.status = status;
 
     const requests = await this.prisma.paymentRequest.findMany({
@@ -32,7 +32,7 @@ export class PaymentRequestController {
   @RequirePermissions('finance.paymentRequest.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const request = await this.prisma.paymentRequest.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { request };
   }
@@ -42,7 +42,7 @@ export class PaymentRequestController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { requestNo: string; requestDate: string; requesterId: string; description: string; amount: number }) {
     const request = await this.prisma.paymentRequest.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         requestNo: body.requestNo,
         requestDate: new Date(body.requestDate),
         requesterId: body.requesterId,
@@ -52,21 +52,21 @@ export class PaymentRequestController {
         approvalStatus: 'PENDING',
       },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'CREATE', entity: 'PaymentRequest', entityId: request.id, metadata: { request } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'CREATE', entity: 'PaymentRequest', entityId: request.id, metadata: { request } });
     return { request };
   }
 
   @Post(':id/approve')
   @RequirePermissions('finance.paymentRequest.approve')
   async approve(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const request = await this.prisma.paymentRequest.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const request = await this.prisma.paymentRequest.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!request) throw new Error('Payment request not found');
 
     const updated = await this.prisma.paymentRequest.update({
       where: { id },
       data: { approvalStatus: 'APPROVED', status: 'APPROVED' },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'APPROVE', entity: 'PaymentRequest', entityId: id, metadata: { request: updated } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'APPROVE', entity: 'PaymentRequest', entityId: id, metadata: { request: updated } });
     return { request: updated };
   }
 
@@ -77,15 +77,15 @@ export class PaymentRequestController {
       where: { id },
       data: { approvalStatus: 'REJECTED', status: 'REJECTED' },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'REJECT', entity: 'PaymentRequest', entityId: id, metadata: { request: updated, reason: body.reason } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'REJECT', entity: 'PaymentRequest', entityId: id, metadata: { request: updated, reason: body.reason } });
     return { request: updated };
   }
 
   @Post(':id/delete')
   @RequirePermissions('finance.paymentRequest.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    await this.prisma.paymentRequest.deleteMany({ where: { id, tenantId: req.user.tenantId } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'DELETE', entity: 'PaymentRequest', entityId: id, metadata: { id } });
+    await this.prisma.paymentRequest.deleteMany({ where: { id, tenantId: req.user.tenantId! } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'DELETE', entity: 'PaymentRequest', entityId: id, metadata: { id } });
     return { success: true };
   }
 }

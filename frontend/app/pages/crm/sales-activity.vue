@@ -1,21 +1,20 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-amber-500 relative overflow-hidden">
-      <div class="absolute right-[-20px] top-[-10px] opacity-[0.03] pointer-events-none">
-        <i class="pi pi-calendar-clock text-[150px] text-amber-900"></i>
-      </div>
-      <div class="flex flex-col md:flex-row justify-between md:items-start gap-4 relative z-10">
-        <div>
-          <div class="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-            <i class="pi pi-calendar text-amber-500"></i> Sales Activity Log
+    <!-- Header (Premium Activity Style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-amber-100"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Engagement Hub</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-amber-600">Interaction Log</span>
           </div>
-          <div class="mt-1 text-sm text-slate-600 font-medium">
-            Jadwalkan dan catat setiap interaksi dengan Klien (Meeting, Call, Email, Tugas).
-          </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">Sales <span class="text-amber-600 italic text-3xl">Activity</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-2xl">Jadwalkan dan catat setiap interaksi dengan Klien (Meeting, Call, Email, Tugas) untuk memastikan momentum penjualan tetap terjaga.</p>
         </div>
-        <div class="flex gap-2 shrink-0">
-          <Button label="Buat Jadwal / Log" size="small" icon="pi pi-plus" class="bg-amber-500 text-white border-none font-bold shadow-sm hover:bg-amber-600" :disabled="loading || !canCreate" @click="openCreate" />
+        <div class="flex items-center gap-3">
+          <Button label="Buat Jadwal / Log" size="small" icon="pi pi-plus" class="p-button-rounded bg-slate-900 border-none text-white font-black text-[10px] px-6 h-12 shadow-xl shadow-slate-200 hover:scale-105 active:scale-95 transition-all" :disabled="loading || !canCreate" @click="openCreate" />
         </div>
       </div>
     </div>
@@ -28,240 +27,277 @@
       <i class="pi pi-exclamation-triangle text-lg"></i> {{ error }}
     </div>
 
-    <!-- KPI Stats -->
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 items-start animate-fade-in-up">
-      <div class="bg-slate-800 border-b-4 border-b-slate-900 rounded-xl p-4 shadow-sm text-white flex justify-between items-center">
-        <div>
-          <div class="text-[10px] font-black text-amber-300 uppercase tracking-widest">Total Sched.</div>
-          <div class="text-3xl font-black mt-0.5">{{ activities.length }}</div>
-        </div>
-      </div>
-      
-      <div class="bg-purple-50 border border-purple-200 border-b-4 border-b-purple-500 rounded-xl p-4 shadow-sm flex items-center gap-3">
-        <div class="bg-purple-100 p-2 rounded-lg"><i class="pi pi-users text-purple-600 text-xl"></i></div>
-        <div>
-           <div class="text-[10px] font-black text-purple-600 uppercase tracking-widest">Meeting</div>
-           <div class="text-2xl font-black text-purple-800 mt-0.5">{{ countType('MEETING') }}</div>
+    <!-- High-Contrast KPI Banners (Premium style) -->
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-6 animate-fade-in-up">
+      <!-- Primary volume banner -->
+      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+        <div class="text-[10px] font-black uppercase text-amber-400 tracking-[0.2em] mb-4 opacity-80">Total Sched.</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-white tracking-tighter">{{ activities.length }}</h3>
+          <div class="p-3 bg-slate-700 rounded-xl text-slate-100 shadow-lg group-hover:rotate-12 transition-transform">
+            <i class="pi pi-calendar-clock text-lg"></i>
+          </div>
         </div>
       </div>
 
-      <div class="bg-sky-50 border border-sky-200 border-b-4 border-b-sky-500 rounded-xl p-4 shadow-sm flex items-center gap-3">
-        <div class="bg-sky-100 p-2 rounded-lg"><i class="pi pi-phone text-sky-600 text-xl"></i></div>
-        <div>
-           <div class="text-[10px] font-black text-sky-600 uppercase tracking-widest">Phone Call</div>
-           <div class="text-2xl font-black text-sky-800 mt-0.5">{{ countType('CALL') }}</div>
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-purple-500 tracking-[0.2em] mb-4">Meeting</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-purple-600 tracking-tighter">{{ countType('MEETING') }}</h3>
+          <div class="p-3 bg-purple-50 text-purple-500 rounded-xl border border-purple-100"><i class="pi pi-users text-lg"></i></div>
         </div>
       </div>
 
-      <div class="bg-indigo-50 border border-indigo-200 border-b-4 border-b-indigo-500 rounded-xl p-4 shadow-sm flex items-center gap-3">
-        <div class="bg-indigo-100 p-2 rounded-lg"><i class="pi pi-envelope text-indigo-600 text-xl"></i></div>
-        <div>
-           <div class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Email Sent</div>
-           <div class="text-2xl font-black text-indigo-800 mt-0.5">{{ countType('EMAIL') }}</div>
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-sky-500 tracking-[0.2em] mb-4">Phone Call</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-sky-600 tracking-tighter">{{ countType('CALL') }}</h3>
+          <div class="p-3 bg-sky-50 text-sky-500 rounded-xl border border-sky-100"><i class="pi pi-phone text-lg"></i></div>
         </div>
       </div>
 
-       <div class="bg-slate-50 border border-slate-200 border-b-4 border-b-slate-500 rounded-xl p-4 shadow-sm flex items-center gap-3">
-        <div class="bg-slate-200 p-2 rounded-lg"><i class="pi pi-check-square text-slate-600 text-xl"></i></div>
-        <div>
-           <div class="text-[10px] font-black text-slate-600 uppercase tracking-widest">To-Do Task</div>
-           <div class="text-2xl font-black text-slate-800 mt-0.5">{{ countType('TASK') }}</div>
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-indigo-500 tracking-[0.2em] mb-4">Email Sent</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-indigo-600 tracking-tighter">{{ countType('EMAIL') }}</h3>
+          <div class="p-3 bg-indigo-50 text-indigo-500 rounded-xl border border-indigo-100"><i class="pi pi-envelope text-lg"></i></div>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-4">To-Do Task</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-slate-800 tracking-tighter">{{ countType('TASK') }}</h3>
+          <div class="p-3 bg-slate-50 text-slate-500 rounded-xl border border-slate-100"><i class="pi pi-check-square text-lg"></i></div>
         </div>
       </div>
     </div>
 
-    <!-- Controls -->
-    <div class="bg-white border rounded-xl p-4 shadow-sm flex flex-wrap gap-3 items-center animate-fade-in-up">
-      <span class="p-input-icon-left w-72">
-         <i class="pi pi-search" />
-         <InputText v-model="q" placeholder="Cari subjek, notes, atau klien..." class="w-full text-sm h-10 bg-slate-50 border-slate-200" @keyup.enter="load" />
-      </span>
-      <Button severity="secondary" size="small" :loading="loading" icon="pi pi-refresh" @click="load" class="h-10 w-10 shrink-0 border-slate-200 bg-slate-50 hover:bg-slate-100" />
-      
-       <div class="ml-auto flex gap-1 bg-slate-100 rounded-lg p-1">
+    <!-- Modernized Control Bar (Premium Segmented Style) -->
+    <div class="bg-amber-50/50 p-1.5 rounded-3xl border border-amber-100 flex flex-wrap items-center gap-4 animate-fade-in-up">
+       <!-- Search High-Fidelity -->
+       <div class="relative flex-1 min-w-[300px] ml-1">
+          <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <InputText v-model="q" placeholder="Cari subjek, notes, atau klien..." class="w-full pl-10 h-12 rounded-2xl border-none bg-white shadow-inner focus:ring-2 focus:ring-amber-100 transition-all text-sm font-bold" @keyup.enter="load" />
+       </div>
+
+       <!-- Segmented Filter -->
+       <div class="flex gap-1 bg-white/60 p-1 rounded-2xl border border-amber-50">
         <button v-for="s in ['ACTIVE','DONE','ALL']" :key="s"
           @click="statusFilter = s"
-          :class="statusFilter === s ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-500 hover:bg-slate-50'"
-          class="px-4 py-1.5 rounded-md text-[11px] font-black uppercase tracking-widest transition">
+          :class="statusFilter === s ? 'bg-slate-900 text-white shadow-xl scale-105' : 'text-slate-400 hover:text-slate-600 hover:bg-white'"
+          class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300">
           {{ s }}
         </button>
       </div>
+
+      <Button severity="secondary" rounded outlined icon="pi pi-refresh" @click="load" :loading="loading" class="h-12 w-12 border-amber-100 text-amber-600 bg-white hover:bg-amber-50 mr-1" />
     </div>
 
-    <!-- TABLE -->
-    <div class="rounded-xl border bg-white shadow-sm overflow-hidden animate-fade-in-up">
+    <!-- TABLE (Premium Activity Stream) -->
+    <div class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up">
       <table class="w-full text-sm">
-        <thead class="bg-slate-50 text-left text-[10px] text-slate-500 uppercase tracking-widest font-black">
+        <thead class="bg-slate-50/80 text-left">
           <tr>
-            <th class="px-5 py-3 border-b border-b-slate-200 w-24 text-center">Tipe</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200">Subjek Aktivitas & Jadwal (Due)</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200 w-56">Klien Terkait (Related)</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200 w-44">PIC / Agen</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200 text-center w-36">Status Log</th>
+            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-28 text-center">Type</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Activity Details & Schedule</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-64">Related Entity</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-52">PIC / Assigner</th>
+            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center w-40">Status Log</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody class="divide-y divide-slate-50">
           <tr v-if="loading">
-            <td colspan="5" class="py-16 text-center text-slate-400"><i class="pi pi-spinner pi-spin mr-2 text-amber-500 shadow-sm"></i> Memuat agenda...</td>
+            <td colspan="5" class="py-24 text-center">
+              <i class="pi pi-spinner pi-spin text-4xl text-amber-500 opacity-20"></i>
+              <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-amber-600">Syncing interaction logs...</div>
+            </td>
           </tr>
           
-          <tr v-for="a in filteredList" v-else :key="a.id" class="transition hover:bg-slate-50 group" :class="{ 'opacity-60 bg-slate-50': a.status === 'DONE' || a.status === 'CANCELED' }">
-            <td class="px-5 py-4 align-top text-center border-l-4" :style="{ borderLeftColor: typeStyle(a.type).border }">
-               <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl mx-auto mb-1.5"
+          <tr v-for="a in filteredList" v-else :key="a.id" class="transition-all hover:bg-slate-50/50 group border-l-4" :style="{ borderLeftColor: typeStyle(a.type).border }" :class="{ 'opacity-60 grayscale-[0.5]': a.status === 'DONE' || a.status === 'CANCELED' }">
+            <td class="px-8 py-6 align-middle text-center">
+               <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-2 shadow-lg border-2 border-white group-hover:rotate-6 transition-transform transition-all"
                  :style="{ backgroundColor: typeStyle(a.type).bg, color: typeStyle(a.type).color }">
                  <i class="pi" :class="typeStyle(a.type).icon"></i>
                </div>
-               <div class="text-[9px] font-black uppercase tracking-widest" :style="{ color: typeStyle(a.type).color }">{{ a.type }}</div>
+               <div class="text-[9px] font-black uppercase tracking-[0.2em]" :style="{ color: typeStyle(a.type).color }">{{ a.type }}</div>
             </td>
             
-            <td class="px-4 py-4 align-top border-l relative">
-              <div class="font-bold text-slate-800 text-sm leading-tight max-w-sm mb-2" :class="{'line-through text-slate-500': a.status === 'CANCELED'}">
+            <td class="px-6 py-6 align-middle border-l border-slate-50/50 relative">
+              <div class="font-black text-slate-900 text-[14px] tracking-tight leading-tight uppercase group-hover:text-amber-600 transition-colors mb-2" :class="{'line-through text-slate-400': a.status === 'CANCELED'}">
                 {{ a.subject }}
               </div>
-              <div class="text-[10px] font-bold mt-1 max-w-xs truncate text-slate-500" v-if="a.notes"><i class="pi pi-bars text-[8px]"></i> {{ a.notes }}</div>
+              <div class="text-[11px] font-medium text-slate-500 italic max-w-sm truncate opacity-80" v-if="a.notes">{{ a.notes }}</div>
               
-              <div class="mt-2 text-[11px] font-black uppercase flex items-center gap-1"
-                 :class="(isPast(a.dueAt) && a.status === 'OPEN') ? 'text-red-500 animate-pulse' : 'text-slate-400'">
-                 <i class="pi pi-clock text-[10px]"></i> 
-                 {{ a.dueAt ? formatTime(a.dueAt) : 'No Schedule' }}
-                 <span v-if="(isPast(a.dueAt) && a.status === 'OPEN')" class="ml-1 bg-red-100 text-red-700 px-1.5 py-0.5 rounded text-[8px]">OVERDUE</span>
+              <div class="mt-3 flex items-center gap-2">
+                <div class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm border border-white"
+                   :class="(isPast(a.dueAt) && a.status === 'OPEN') ? 'bg-rose-50 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-500'">
+                   <i class="pi pi-clock text-[10px]"></i> 
+                   {{ a.dueAt ? formatTime(a.dueAt) : 'No Schedule' }}
+                </div>
+                <span v-if="(isPast(a.dueAt) && a.status === 'OPEN')" class="text-[8px] font-black uppercase tracking-widest text-rose-500 italic">!! Overdue</span>
               </div>
               
-              <div class="absolute right-2 bottom-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button icon="pi pi-pencil" v-tooltip="'Edit Log'" size="small" outlined class="h-8 w-8 text-[11px] px-0 bg-white" severity="secondary" @click="openEdit(a)" />
+              <div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-4 group-hover:translate-x-0">
+                <Button icon="pi pi-pencil" v-tooltip="'Edit Log'" size="small" rounded text class="h-10 w-10 text-slate-400 hover:text-amber-600 hover:bg-amber-50" @click="openEdit(a)" />
               </div>
             </td>
 
-             <td class="px-4 py-4 align-top border-l">
-                 <div v-if="a.opportunity" class="flex flex-col gap-0.5 cursor-pointer hover:bg-slate-100 p-1 rounded" @click="navigateTo(`/crm/opportunities/${a.opportunity.id}`)">
-                    <div class="text-[9px] font-black uppercase text-emerald-600 tracking-widest">Opportunity / Deal</div>
-                    <div class="text-xs font-bold text-slate-700 truncate">{{ a.opportunity.code }}</div>
+             <td class="px-6 py-6 align-middle border-l border-slate-50/50">
+                 <div v-if="a.opportunity" class="p-3 bg-emerald-50 rounded-2xl border border-emerald-100 shadow-sm cursor-pointer hover:scale-[1.02] transition-transform" @click="navigateTo(`/crm/opportunities/${a.opportunity.id}`)">
+                    <div class="text-[8px] font-black uppercase text-emerald-600 tracking-[0.15em] mb-1">Opportunity</div>
+                    <div class="text-[11px] font-black text-slate-800 tracking-tight leading-none uppercase">{{ a.opportunity.code }}</div>
                  </div>
-                 <div v-else-if="a.customer" class="flex flex-col gap-0.5 cursor-pointer hover:bg-slate-100 p-1 rounded" @click="navigateTo(`/crm/customers/${a.customer.id}`)">
-                    <div class="text-[9px] font-black uppercase text-blue-600 tracking-widest">Pelanggan Registrasi</div>
-                    <div class="text-xs font-bold text-slate-700 truncate">{{ a.customer.code }}</div>
+                 <div v-else-if="a.customer" class="p-3 bg-indigo-50 rounded-2xl border border-indigo-100 shadow-sm cursor-pointer hover:scale-[1.02] transition-transform" @click="navigateTo(`/crm/customers/${a.customer.id}`)">
+                    <div class="text-[8px] font-black uppercase text-indigo-600 tracking-[0.15em] mb-1">Customer</div>
+                    <div class="text-[11px] font-black text-slate-800 tracking-tight leading-none uppercase truncate max-w-[150px]">{{ a.customer.name }}</div>
                  </div>
-                 <div v-else-if="a.lead" class="flex flex-col gap-0.5 cursor-pointer hover:bg-slate-100 p-1 rounded">
-                    <div class="text-[9px] font-black uppercase text-amber-600 tracking-widest">Masa Prospek (Lead)</div>
-                    <div class="text-xs font-bold text-slate-700 truncate">{{ a.lead.code }}</div>
+                 <div v-else-if="a.lead" class="p-3 bg-amber-50 rounded-2xl border border-amber-100 shadow-sm cursor-pointer hover:scale-[1.02] transition-transform">
+                    <div class="text-[8px] font-black uppercase text-amber-600 tracking-[0.15em] mb-1">Lead / Prospect</div>
+                    <div class="text-[11px] font-black text-slate-800 tracking-tight leading-none uppercase">{{ a.lead.code }}</div>
                  </div>
-                 <div v-else class="text-[10px] text-slate-400 italic font-medium mt-1">Aktivitas Internal</div>
+                 <div v-else class="text-[10px] font-black text-slate-300 uppercase tracking-widest italic flex items-center justify-center border-2 border-dashed border-slate-100 rounded-2xl py-4">
+                    <i class="pi pi-info-circle text-xs opacity-50 mr-2"></i> INTERNAL
+                 </div>
             </td>
 
-            <td class="px-4 py-4 align-top border-l">
-              <select v-model="assigneeSelection[a.id]"
-                class="w-full h-8 rounded border border-slate-200 px-2 text-[11px] font-bold text-slate-700 focus:border-amber-500 outline-none"
-                :disabled="!canAssign || !canReadUsers || a.status !== 'OPEN'"
-                @change="assign(a)"
-                :class="assigneeSelection[a.id] ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-slate-50'">
-                <option value="">- Tentukan Agen -</option>
-                <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name ?? u.email }}</option>
-              </select>
+            <td class="px-6 py-6 align-middle border-l border-slate-50/50">
+              <div class="relative group/sel">
+                <select v-model="assigneeSelection[a.id]"
+                  class="w-full h-10 rounded-xl bg-slate-50 border border-slate-100 px-3 text-[11px] font-bold text-slate-700 focus:bg-white focus:ring-2 focus:ring-amber-100 outline-none transition-all appearance-none shadow-sm"
+                  :disabled="!canAssign || !canReadUsers || a.status !== 'OPEN'"
+                  @change="assign(a)"
+                  :class="assigneeSelection[a.id] ? 'bg-amber-50/50 text-amber-900 border-amber-100/50' : ''">
+                  <option value="">- Assign Agent -</option>
+                  <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name ?? u.email }}</option>
+                </select>
+                <i class="pi pi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-300 pointer-events-none group-hover/sel:text-amber-500 transition-colors"></i>
+              </div>
             </td>
 
-            <td class="px-4 py-4 align-top border-l text-center">
-              <div v-if="a.status === 'DONE'" class="bg-emerald-50 border border-emerald-200 text-emerald-600 px-3 py-1.5 rounded text-[10px] font-black uppercase tracking-widest shadow-inner inline-flex items-center">
-                 <i class="pi pi-check text-[9px] mr-1.5"></i> SELESAI
+            <td class="px-8 py-6 align-middle border-l border-slate-50/50 text-center">
+              <div v-if="a.status === 'DONE'" class="bg-emerald-50 border border-emerald-100 text-emerald-600 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm inline-flex items-center">
+                 <i class="pi pi-check-circle text-xs mr-2"></i> SELESAI
               </div>
-              <div v-else-if="a.status === 'CANCELED'" class="bg-slate-100 border border-slate-300 text-slate-500 px-3 py-1.5 rounded text-[10px] font-black uppercase tracking-widest shadow-inner inline-flex items-center">
-                 <i class="pi pi-times text-[9px] mr-1.5"></i> BATAL
+              <div v-else-if="a.status === 'CANCELED'" class="bg-slate-100 border border-slate-200 text-slate-500 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm inline-flex items-center">
+                 <i class="pi pi-times-circle text-xs mr-2"></i> BATAL
               </div>
-              <div v-else>
+              <div v-else class="relative group/sel">
                  <select v-model="statusSelection[a.id]"
-                  class="w-full h-8 rounded border-2 border-slate-300 appearance-none text-center text-[10px] font-black uppercase tracking-widest outline-none bg-white text-slate-700 hover:border-amber-500 cursor-pointer"
+                  class="w-full h-10 rounded-xl bg-white border border-slate-200 px-3 text-center text-[10px] font-black uppercase tracking-widest outline-none hover:border-amber-500 transition-all cursor-pointer shadow-sm appearance-none"
                   :disabled="!canUpdate"
                   @change="updateStatus(a)">
                   <option value="OPEN">TUNDA / OPEN</option>
                   <option value="DONE">TANDAI SELESAI</option>
                   <option value="CANCELED">BATALKAN</option>
                 </select>
+                <i class="pi pi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[9px] text-slate-300 pointer-events-none group-hover/sel:text-amber-500 transition-colors"></i>
               </div>
             </td>
           </tr>
 
           <tr v-if="!loading && filteredList.length === 0">
-            <td colspan="5" class="py-16 text-center text-slate-400 italic text-sm">
-               <i class="pi pi-calendar-times text-3xl mb-3 block text-slate-300"></i>
-               Selamat! Tidak ada Antrean Jadwal yang terbuka saat ini.
+            <td colspan="5" class="py-32 text-center">
+               <i class="pi pi-calendar-times text-6xl mb-6 block text-slate-200 opacity-50"></i>
+               <div class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Selamat! Tidak ada Antrean Jadwal terbuka.</div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Form Drawer -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm" @click.self="closeDialog">
-      <div class="w-full max-w-md h-full bg-white shadow-2xl flex flex-col overflow-y-auto animate-slide-in-right">
-        <div class="p-5 border-b bg-slate-50 flex justify-between rounded-t-xl" style="borderTop: 4px solid #f59e0b;">
-          <div class="text-lg font-black text-slate-800 flex items-center gap-2">
-            <i class="pi pi-pencil text-amber-600" v-if="editingId"></i>
-             <i class="pi pi-plus text-amber-600" v-else></i>
-            {{ editingId ? 'Update Detail Log' : 'Pencatatan Aktivitas Baru' }}
+    <!-- Form Dialog (Universal Centered Style) -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-2xl max-h-[90vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white">
+        <!-- Dialog Header -->
+        <div class="p-10 border-b bg-white relative overflow-hidden shrink-0 flex justify-between items-center">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
+          <div class="relative flex items-center gap-5">
+             <div class="w-16 h-16 rounded-[1.5rem] bg-slate-900 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
+                <i class="pi text-3xl" :class="editingId ? 'pi-pencil' : 'pi-plus'"></i>
+             </div>
+             <div>
+                <h3 class="text-3xl font-black text-slate-900 tracking-tight uppercase leading-none">{{ editingId ? 'Update Detail' : 'Log' }} <span class="text-amber-600 italic">Interaction</span></h3>
+                <p class="text-[10px] font-bold text-amber-600 uppercase tracking-widest mt-2 px-1 border-l-2 border-amber-500">Sales Engagement Center Hub</p>
+             </div>
           </div>
-          <button class="text-slate-400 hover:text-slate-600 bg-slate-200 w-8 h-8 rounded-full font-bold" @click="closeDialog">✕</button>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="closeDialog" class="relative z-10 hover:bg-slate-50 h-12 w-12" />
         </div>
         
-        <div class="p-6 space-y-5 flex-1">
-          <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Jenis Log <span class="text-red-500">*</span></label>
-            <div class="grid grid-cols-4 gap-2">
+        <!-- Dialog Body -->
+        <div class="p-12 space-y-10 flex-1 overflow-y-auto bg-slate-50/30 custom-scrollbar">
+          <!-- Activity Type Selection -->
+          <div class="space-y-4">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">Jenis Interaksi (Activity Type) <span class="text-rose-500">*</span></label>
+            <div class="grid grid-cols-4 gap-4">
               <button v-for="t in ['CALL','EMAIL','MEETING','TASK']" :key="t"
                 @click="form.type = t as any"
-                :class="form.type === t ? 'bg-amber-100 text-amber-800 border-amber-300 shadow-inner' : 'bg-white border-slate-200 text-slate-500'"
-                class="border rounded-lg py-2 flex flex-col items-center justify-center gap-1 transition">
-                 <i class="pi" :class="typeStyle(t as any).icon"></i>
-                 <span class="text-[9px] font-black uppercase">{{ t }}</span>
+                :class="form.type === t ? 'bg-slate-900 text-white shadow-xl scale-105 border-slate-900' : 'bg-white border-slate-100 text-slate-400 hover:border-amber-200'"
+                class="border-2 rounded-2xl py-5 flex flex-col items-center justify-center gap-3 transition-all duration-300">
+                 <i class="pi text-2xl" :class="typeStyle(t as any).icon"></i>
+                 <span class="text-[9px] font-black uppercase tracking-widest">{{ t }}</span>
               </button>
             </div>
           </div>
           
-          <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Pokok Pembahasan (Subjek) <span class="text-red-500">*</span></label>
-            <input type="text" v-model="form.subject" class="w-full border rounded-lg px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-amber-500 shadow-inner" placeholder="Meeting penawaran produk..." :disabled="editingId ? !canUpdate : !canCreate" />
+          <!-- General Info -->
+          <div class="space-y-6">
+            <div class="space-y-2">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">Pokok Pembahasan / Subjek Agenda <span class="text-rose-500">*</span></label>
+              <input type="text" v-model="form.subject" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-amber-100 outline-none transition-all placeholder:text-slate-200" placeholder="Meeting penawaran produk..." :disabled="editingId ? !canUpdate : !canCreate" />
+            </div>
+
+            <div class="space-y-2">
+               <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">Waktu / Target Jadwal Eksekusi</label>
+               <input type="date" v-model="form.dueDate" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-amber-100 outline-none transition-all" :disabled="editingId ? !canUpdate : !canCreate" />
+            </div>
           </div>
 
-          <div class="space-y-1.5">
-             <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Waktu / Due Date</label>
-             <input type="date" v-model="form.dueDate" class="w-full border rounded-lg px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-amber-500 bg-slate-50" :disabled="editingId ? !canUpdate : !canCreate" />
-          </div>
+          <!-- Entity Relations -->
+          <div class="space-y-8 pt-8 border-t border-slate-100">
+             <div class="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] text-center bg-white py-1.5 px-6 rounded-full border border-slate-100 shadow-sm mx-auto w-fit">Entity Linkage Mapping</div>
+             
+             <div class="grid grid-cols-1 gap-6">
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2 block ml-1"><i class="pi pi-building text-[10px]"></i> Bind to Customer Master</label>
+                  <select v-model="form.customerId" class="w-full h-14 rounded-2xl border-none bg-indigo-50/30 px-6 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-100 outline-none transition-all appearance-none shadow-sm cursor-pointer" :disabled="editingId ? !canUpdate : !canCreate">
+                    <option value="">-- No Selection --</option>
+                    <option v-for="c in customers" :key="c.id" :value="c.id">{{ c.code }} - {{ c.name }}</option>
+                  </select>
+                </div>
 
-          <div class="space-y-3 pt-3 border-t border-dashed">
-             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Ikat Dengan Entitas Berikut (Opsional)</div>
-             <div class="space-y-1.5">
-               <label class="text-[11px] font-bold text-blue-500 flex items-center gap-1"><i class="pi pi-building"></i> Customer</label>
-               <select v-model="form.customerId" class="w-full border py-2 px-2 text-xs font-bold rounded-lg bg-blue-50/50" :disabled="editingId ? !canUpdate : !canCreate">
-                 <option value="">-- Kosongkan --</option>
-                 <option v-for="c in customers" :key="c.id" :value="c.id">{{ c.code }} - {{ c.name }}</option>
-               </select>
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-emerald-500 uppercase tracking-widest flex items-center gap-2 block ml-1"><i class="pi pi-money-bill text-[10px]"></i> Bind to Sale Opportunity</label>
+                  <select v-model="form.opportunityId" class="w-full h-14 rounded-2xl border-none bg-emerald-50/30 px-6 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-100 outline-none transition-all appearance-none shadow-sm cursor-pointer" :disabled="editingId ? !canUpdate : !canCreate">
+                    <option value="">-- No Selection --</option>
+                    <option v-for="o in opportunities" :key="o.id" :value="o.id">{{ o.code }} - {{ o.name }}</option>
+                  </select>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-rose-500 uppercase tracking-widest flex items-center gap-2 block ml-1"><i class="pi pi-users text-[10px]"></i> Bind to Potential Lead</label>
+                  <select v-model="form.leadId" class="w-full h-14 rounded-2xl border-none bg-rose-50/30 px-6 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-rose-100 outline-none transition-all appearance-none shadow-sm cursor-pointer" :disabled="editingId ? !canUpdate : !canCreate">
+                    <option value="">-- No Selection --</option>
+                    <option v-for="l in leads" :key="l.id" :value="l.id">{{ l.code }} - {{ l.name }}</option>
+                  </select>
+                </div>
              </div>
-             <div class="space-y-1.5">
-               <label class="text-[11px] font-bold text-emerald-600 flex items-center gap-1"><i class="pi pi-money-bill"></i> Opportunity</label>
-               <select v-model="form.opportunityId" class="w-full border py-2 px-2 text-xs font-bold rounded-lg bg-emerald-50/50" :disabled="editingId ? !canUpdate : !canCreate">
-                 <option value="">-- Kosongkan --</option>
-                 <option v-for="o in opportunities" :key="o.id" :value="o.id">{{ o.code }} - {{ o.name }}</option>
-               </select>
-             </div>
-             <div class="space-y-1.5">
-               <label class="text-[11px] font-bold text-rose-500 flex items-center gap-1"><i class="pi pi-users"></i> Sales Lead</label>
-               <select v-model="form.leadId" class="w-full border py-2 px-2 text-xs font-bold rounded-lg bg-rose-50/50" :disabled="editingId ? !canUpdate : !canCreate">
-                 <option value="">-- Kosongkan --</option>
-                 <option v-for="l in leads" :key="l.id" :value="l.id">{{ l.code }} - {{ l.name }}</option>
-               </select>
-             </div>
           </div>
 
-          <div class="space-y-1.5 pt-3 border-t border-dashed">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Catatan (Notes)</label>
-            <textarea v-model="form.notes" rows="3" class="w-full border rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-amber-500 shadow-inner resize-none"></textarea>
+          <!-- Notes -->
+          <div class="space-y-2 pt-8 border-t border-slate-100">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">Detail Perkembangan (Transaction Notes)</label>
+            <textarea v-model="form.notes" rows="4" class="w-full rounded-2xl border-none bg-white shadow-inner p-6 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-amber-100 outline-none transition-all resize-none placeholder:italic" placeholder="Tulis catatan interaksi di sini..."></textarea>
           </div>
 
-          <div v-if="dialogError" class="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600 border border-red-200 font-bold border-l-4 border-l-red-500">{{ dialogError }}</div>
+          <div v-if="dialogError" class="rounded-2xl bg-rose-50 px-6 py-4 text-xs text-rose-600 border border-rose-100 font-bold shadow-sm animate-fade-in-up">{{ dialogError }}</div>
         </div>
 
-        <div class="p-4 border-t bg-slate-50 flex justify-end gap-3 rounded-b-xl">
-          <Button label="Batal" severity="secondary" :disabled="saving" @click="closeDialog" class="bg-white border text-slate-700 font-bold px-5" />
-          <Button :label="editingId ? 'Simpan Update' : 'Buat Log'" :loading="saving" :disabled="!form.subject"
-            @click="save" class="bg-amber-500 hover:bg-amber-600 border-none text-white font-bold px-6" icon="pi pi-check" />
+        <!-- Dialog Footer Actions -->
+        <div class="p-10 bg-white border-t flex items-center justify-between shadow-[0_-10px_20px_rgba(0,0,0,0.02)] shrink-0">
+          <Button label="Batal & Bersihkan" severity="secondary" text @click="closeDialog" class="px-8 font-black text-[10px] uppercase tracking-widest h-14" :disabled="saving" />
+          <Button :label="editingId ? 'Dispatch Update' : 'Commit Interaction'" :loading="saving" :disabled="!form.subject"
+            @click="save" class="p-button-rounded h-14 px-12 bg-slate-900 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-slate-200 hover:scale-105 active:scale-95 transition-all" icon="pi pi-check-circle" />
         </div>
       </div>
     </div>
@@ -443,8 +479,43 @@ onMounted(load);
 </script>
 
 <style scoped>
-.animate-fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.animate-slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.animate-scale-in { 
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.95) translateY(10px); } 
+  to { opacity: 1; transform: scale(1) translateY(0); } 
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+
+:deep(.p-inputtext) {
+   border-color: #f1f5f9 !important;
+   box-shadow: none !important;
+   background-color: #f8fafc !important;
+   border-radius: 16px !important;
+}
+
+:deep(.p-button-rounded) {
+  border-radius: 9999px !important;
+}
 </style>

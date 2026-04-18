@@ -62,7 +62,7 @@ export class ProjectSiteController {
   ) {
     return this.prisma.projectSite.findMany({
       where: { 
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(projectId ? { projectId } : {})
       },
       include: { 
@@ -80,7 +80,7 @@ export class ProjectSiteController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.projectSite.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { 
         project: true,
         dailyReports: {
@@ -99,7 +99,7 @@ export class ProjectSiteController {
   ) {
     return this.prisma.projectSite.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         projectId: body.projectId,
         siteCode: body.siteCode,
         name: body.name,
@@ -122,7 +122,7 @@ export class ProjectSiteController {
     @Body() body: Partial<CreateProjectSiteDto>,
   ) {
     return this.prisma.projectSite.update({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       data: body
     });
   }
@@ -134,7 +134,7 @@ export class ProjectSiteController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.projectSite.delete({
-      where: { id, tenantId: req.user.tenantId }
+      where: { id, tenantId: req.user.tenantId! }
     });
   }
 }

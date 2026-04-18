@@ -28,7 +28,7 @@ export class VendorPortalController {
   async getVendors(@Req() req: FastifyRequest, @Query('search') search?: string) {
     const user = req.user as AuthUser;
     
-    const where: any = { tenantId: user.tenantId, isActive: true };
+    const where: any = { tenantId: user.tenantId!, isActive: true };
     if (search) {
       where.OR = [
         { code: { contains: search, mode: 'insensitive' } },
@@ -46,11 +46,11 @@ export class VendorPortalController {
     });
 
     const activePortalsCount = await this.prisma.vendorPortalUser.count({
-        where: { tenantId: user.tenantId, portalStatus: 'ACTIVE' }
+        where: { tenantId: user.tenantId!, portalStatus: 'ACTIVE' }
     });
     
     const logsCount = await this.prisma.vendorPortalActivity.count({
-        where: { tenantId: user.tenantId }
+        where: { tenantId: user.tenantId! }
     });
 
     const summary = {
@@ -68,7 +68,7 @@ export class VendorPortalController {
     const limit = Number(limitArg) || 50;
 
     const activities = await this.prisma.vendorPortalActivity.findMany({
-        where: { tenantId: user.tenantId },
+        where: { tenantId: user.tenantId! },
         include: {
             user: { 
                 select: { email: true, portalStatus: true, supplier: { select: { name: true, code: true } } }
@@ -87,10 +87,10 @@ export class VendorPortalController {
      if (!body.supplierCode || !body.email) throw new ForbiddenException('Supplier Code and Email required');
 
      const portalUser = await this.prisma.vendorPortalUser.upsert({
-         where: { tenantId_email: { tenantId: user.tenantId, email: body.email } },
+         where: { tenantId_email: { tenantId: user.tenantId!, email: body.email } },
          update: { portalStatus: 'PENDING_INVITE', inviteSentAt: new Date() },
          create: {
-             tenantId: user.tenantId,
+             tenantId: user.tenantId!,
              supplierCode: body.supplierCode,
              email: body.email,
              portalStatus: 'PENDING_INVITE',
@@ -100,7 +100,7 @@ export class VendorPortalController {
 
      await this.prisma.vendorPortalActivity.create({
          data: {
-             tenantId: user.tenantId,
+             tenantId: user.tenantId!,
              portalUserId: portalUser.id,
              activityType: 'ADMIN_INVITE',
              description: `Procurement Admin dispatched vendor portal setup link to ${body.email}.`
@@ -115,13 +115,13 @@ export class VendorPortalController {
      const user = req.user as AuthUser;
 
      const portalUser = await this.prisma.vendorPortalUser.update({
-         where: { id: body.portalUserId, tenantId: user.tenantId },
+         where: { id: body.portalUserId, tenantId: user.tenantId! },
          data: { portalStatus: 'SUSPENDED' }
      });
 
      await this.prisma.vendorPortalActivity.create({
          data: {
-             tenantId: user.tenantId,
+             tenantId: user.tenantId!,
              portalUserId: portalUser.id,
              activityType: 'ADMIN_REVOKE',
              description: `Procurement Admin suspended Vendor Portal permissions for this account.`

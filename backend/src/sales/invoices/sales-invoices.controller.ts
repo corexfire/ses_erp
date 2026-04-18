@@ -53,7 +53,7 @@ export class SalesInvoicesController {
   ) {
     const invoices = await this.prisma.salesInvoice.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }] } : {}),
       },
       orderBy: [{ createdAt: 'desc' }],
@@ -70,7 +70,7 @@ export class SalesInvoicesController {
     @Param('id') id: string,
   ) {
     const invoice = await this.prisma.salesInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         customer: true,
         order: true,
@@ -154,14 +154,14 @@ export class SalesInvoicesController {
     @Body() body: CreateSalesInvoiceDto,
   ) {
     const customer = await this.prisma.customer.findFirst({
-      where: { id: body.customerId, tenantId: req.user.tenantId },
+      where: { id: body.customerId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!customer) throw new NotFoundException('Customer not found');
 
     if (body.orderId) {
       const order = await this.prisma.salesOrder.findFirst({
-        where: { id: body.orderId, tenantId: req.user.tenantId },
+        where: { id: body.orderId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!order) throw new NotFoundException('Sales order not found');
@@ -170,7 +170,7 @@ export class SalesInvoicesController {
     const invoice = await this.prisma.$transaction(async (tx) => {
       const inv = await tx.salesInvoice.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           customerId: body.customerId,
           orderId: body.orderId,
@@ -181,7 +181,7 @@ export class SalesInvoicesController {
       if (body.items.length > 0) {
         await tx.salesInvoiceItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             invoiceId: inv.id,
             lineNo: idx + 1,
             description: it.description,
@@ -197,7 +197,7 @@ export class SalesInvoicesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'SalesInvoice',
@@ -215,7 +215,7 @@ export class SalesInvoicesController {
     @Body() body: UpdateSalesInvoiceDto,
   ) {
     const exists = await this.prisma.salesInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Invoice not found');
@@ -232,12 +232,12 @@ export class SalesInvoicesController {
       });
       if (body.items) {
         await tx.salesInvoiceItem.deleteMany({
-          where: { tenantId: req.user.tenantId, invoiceId: id },
+          where: { tenantId: req.user.tenantId!, invoiceId: id },
         });
         if (body.items.length > 0) {
           await tx.salesInvoiceItem.createMany({
             data: body.items.map((it, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               invoiceId: id,
               lineNo: idx + 1,
               description: it.description,
@@ -254,7 +254,7 @@ export class SalesInvoicesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'SalesInvoice',
@@ -271,7 +271,7 @@ export class SalesInvoicesController {
     @Param('id') id: string,
   ) {
     const invoice = await this.prisma.salesInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { 
         items: { include: { taxCode: true } },
         customer: true,
@@ -327,21 +327,19 @@ export class SalesInvoicesController {
       const jeNo = `JE-SI-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${rnd}`;
 
       // Create Journal Entry
-      const journal = await tx.journalEntry.create({
-        data: {
-          tenantId: req.user.tenantId,
-          entryNo: jeNo,
-          entryDate: new Date(),
-          description: `Sales Invoice Posting for ${invoice.code} - ${invoice.customer?.name || 'Customer'}`,
-          referenceNo: invoice.code,
-          journalType: 'SALES',
-          referenceType: 'SalesInvoice',
-          referenceId: invoice.id,
-          status: 'POSTED',
-          totalDebit: dTot,
-          totalCredit: dTot,
-        }
-      });
+       const journal = await tx.journalEntry.create({
+         data: {
+           tenantId: req.user.tenantId!,
+           entryNo: jeNo,
+           entryDate: new Date(),
+           description: `Sales Invoice Posting for ${invoice.code} - ${invoice.customer?.name || 'Customer'}`,
+           referenceNo: invoice.code,
+           journalType: 'SALES',
+           status: 'POSTED',
+           totalDebit: dTot,
+           totalCredit: dTot,
+         }
+       });
 
       // Build journal lines dynamically
       const journalLines: any[] = [];
@@ -349,41 +347,38 @@ export class SalesInvoicesController {
 
       // Line 1: AR (Piutang Usaha) - Debit
       journalLines.push({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         journalEntryId: journal.id,
         lineNo: lineNo++,
         accountCode: '1-1210-00',
         description: `Piutang Usaha - ${invoice.customer?.name || 'Customer'}`,
         debit: dTot,
         credit: 0,
-        referenceType: 'SalesInvoice',
         referenceId: invoice.id,
       });
 
       // Line 2: Sales Revenue - Credit
       journalLines.push({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         journalEntryId: journal.id,
         lineNo: lineNo++,
         accountCode: '4-1100-00',
         description: `Penjualan - ${invoice.code}`,
         debit: 0,
         credit: subTotal,
-        referenceType: 'SalesInvoice',
         referenceId: invoice.id,
       });
 
       // Line 3: PPN Keluaran (VAT Payable) - Credit (only if there's tax)
       if (totalTax > 0) {
         journalLines.push({
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           journalEntryId: journal.id,
           lineNo: lineNo++,
           accountCode: '2-1300-00',
           description: `PPN Keluaran 11% - ${invoice.code}`,
           debit: 0,
           credit: totalTax,
-          referenceType: 'SalesInvoice',
           referenceId: invoice.id,
         });
       }
@@ -394,7 +389,7 @@ export class SalesInvoicesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'submit',
       entity: 'SalesInvoice',

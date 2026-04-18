@@ -206,7 +206,7 @@ export class NotificationController {
     @Query('take') take?: string,
   ) {
     return this.notificationService.listUserNotifications(
-      req.user.tenantId,
+      req.user.tenantId!,
       req.user.id,
       includeRead !== 'false',
       Number(take ?? 20),
@@ -216,25 +216,25 @@ export class NotificationController {
   @Get('unread-count')
   @RequirePermissions('notification.read')
   async unreadCount(@Req() req: FastifyRequest & { user: AuthUser }) {
-    return this.notificationService.getUnreadCount(req.user.tenantId, req.user.id);
+    return this.notificationService.getUnreadCount(req.user.tenantId!, req.user.id);
   }
 
   @Patch(':id/read')
   @RequirePermissions('notification.read')
   async markRead(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    return this.notificationService.markRead(req.user.tenantId, req.user.id, id);
+    return this.notificationService.markRead(req.user.tenantId!, req.user.id, id);
   }
 
   @Post('read-all')
   @RequirePermissions('notification.read')
   async markAllRead(@Req() req: FastifyRequest & { user: AuthUser }) {
-    return this.notificationService.markAllRead(req.user.tenantId, req.user.id);
+    return this.notificationService.markAllRead(req.user.tenantId!, req.user.id);
   }
 
   @Get('preferences')
   @RequirePermissions('notification.preference.manage')
   async preferences(@Req() req: FastifyRequest & { user: AuthUser }) {
-    return this.notificationService.listPreferences(req.user.tenantId, req.user.id);
+    return this.notificationService.listPreferences(req.user.tenantId!, req.user.id);
   }
 
   @Put('preferences')
@@ -243,7 +243,7 @@ export class NotificationController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Body() body: UpsertPreferencesDto,
   ) {
-    return this.notificationService.upsertPreferences(req.user.tenantId, req.user.id, body.items);
+    return this.notificationService.upsertPreferences(req.user.tenantId!, req.user.id, body.items);
   }
 
   @Sse('stream')
@@ -260,13 +260,13 @@ export class NotificationController {
   @Get('admin/templates')
   @RequirePermissions('notification.manage')
   async listTemplates(@Req() req: FastifyRequest & { user: AuthUser }) {
-    return this.notificationService.listTemplates(req.user.tenantId);
+    return this.notificationService.listTemplates(req.user.tenantId!);
   }
 
   @Post('admin/templates')
   @RequirePermissions('notification.manage')
   async createTemplate(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: UpsertTemplateDto) {
-    return this.notificationService.upsertTemplate(req.user.tenantId, req.user.id, body);
+    return this.notificationService.upsertTemplate(req.user.tenantId!, req.user.id, body);
   }
 
   @Patch('admin/templates/:id')
@@ -276,13 +276,13 @@ export class NotificationController {
     @Param('id') id: string,
     @Body() body: UpsertTemplateDto,
   ) {
-    return this.notificationService.upsertTemplate(req.user.tenantId, req.user.id, { ...body, id });
+    return this.notificationService.upsertTemplate(req.user.tenantId!, req.user.id, { ...body, id });
   }
 
   @Delete('admin/templates/:id')
   @RequirePermissions('notification.manage')
   async deleteTemplate(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    return this.notificationService.deleteTemplate(req.user.tenantId, req.user.id, id);
+    return this.notificationService.deleteTemplate(req.user.tenantId!, req.user.id, id);
   }
 
   @Post('admin/templates/preview')
@@ -294,7 +294,7 @@ export class NotificationController {
   @Get('admin/channel-configs')
   @RequirePermissions('notification.manage')
   async listChannelConfigs(@Req() req: FastifyRequest & { user: AuthUser }) {
-    return this.notificationService.listChannelConfigs(req.user.tenantId);
+    return this.notificationService.listChannelConfigs(req.user.tenantId!);
   }
 
   @Put('admin/channel-configs/:channel')
@@ -304,7 +304,7 @@ export class NotificationController {
     @Param('channel') channel: NotificationChannel,
     @Body() body: UpsertChannelConfigDto,
   ) {
-    return this.notificationService.upsertChannelConfig(req.user.tenantId, req.user.id, {
+    return this.notificationService.upsertChannelConfig(req.user.tenantId!, req.user.id, {
       ...body,
       channel,
     });
@@ -317,25 +317,25 @@ export class NotificationController {
     @Query('channel') channel?: NotificationChannel,
     @Query('status') status?: NotificationLogStatus,
   ) {
-    return this.notificationService.listLogs(req.user.tenantId, { channel, status });
+    return this.notificationService.listLogs(req.user.tenantId!, { channel, status });
   }
 
   @Post('admin/logs/:id/resend')
   @RequirePermissions('notification.manage')
   async resend(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    return this.notificationService.resendLog(req.user.tenantId, req.user.id, id);
+    return this.notificationService.resendLog(req.user.tenantId!, req.user.id, id);
   }
 
   @Get('admin/schedules')
   @RequirePermissions('notification.manage')
   async schedules(@Req() req: FastifyRequest & { user: AuthUser }) {
-    return this.notificationService.listSchedules(req.user.tenantId);
+    return this.notificationService.listSchedules(req.user.tenantId!);
   }
 
   @Post('admin/schedules')
   @RequirePermissions('notification.manage')
   async createSchedule(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateScheduleDto) {
-    return this.notificationService.createSchedule(req.user.tenantId, req.user.id, {
+    return this.notificationService.createSchedule(req.user.tenantId!, req.user.id, {
       ...body,
       scheduledFor: new Date(body.scheduledFor),
     });
@@ -345,7 +345,7 @@ export class NotificationController {
   @RequirePermissions('notification.manage')
   async trigger(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: TriggerEventDto) {
     return this.notificationService.triggerEvent({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       eventKey: body.eventKey,
       recipients: body.recipients,

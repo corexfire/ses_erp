@@ -45,7 +45,7 @@ export class LeadsController {
   ) {
     const leads = await this.prisma.lead.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(status && isLeadStatus(status) ? { status } : {}),
         ...(assignedToUserId ? { assignedToUserId } : {}),
         ...(q
@@ -72,7 +72,7 @@ export class LeadsController {
     @Param('id') id: string,
   ) {
     const lead = await this.prisma.lead.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         assignedTo: true,
         opportunities: {
@@ -97,7 +97,7 @@ export class LeadsController {
   ) {
     const lead = await this.prisma.lead.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         email: body.email,
@@ -108,7 +108,7 @@ export class LeadsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Lead',
@@ -126,7 +126,7 @@ export class LeadsController {
     @Body() body: UpdateLeadDto,
   ) {
     const exists = await this.prisma.lead.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Lead not found');
@@ -144,7 +144,7 @@ export class LeadsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'Lead',
@@ -162,13 +162,13 @@ export class LeadsController {
     @Body() body: ConvertLeadDto,
   ) {
     const lead = await this.prisma.lead.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!lead) throw new NotFoundException('Lead not found');
 
     const customer = await this.prisma.customer.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.customerCode ?? lead.code,
         name: lead.name,
         email: lead.email,
@@ -183,7 +183,7 @@ export class LeadsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'convert',
       entity: 'Lead',
@@ -202,7 +202,7 @@ export class LeadsController {
     @Body() body: AssignUserDto,
   ) {
     const exists = await this.prisma.lead.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Lead not found');
@@ -210,7 +210,7 @@ export class LeadsController {
     const userId = body.userId?.trim() || null;
     if (userId) {
       const assignee = await this.prisma.user.findFirst({
-        where: { id: userId, tenantId: req.user.tenantId, isActive: true },
+        where: { id: userId, tenantId: req.user.tenantId!, isActive: true },
         select: { id: true },
       });
       if (!assignee) throw new NotFoundException('User not found');
@@ -223,7 +223,7 @@ export class LeadsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'assign',
       entity: 'Lead',

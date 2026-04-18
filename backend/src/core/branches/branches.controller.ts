@@ -35,7 +35,7 @@ export class BranchesController {
   ) {
     const branches = await this.prisma.branch.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -58,7 +58,7 @@ export class BranchesController {
   ) {
     const branch = await this.prisma.branch.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         email: body.email,
@@ -73,7 +73,7 @@ export class BranchesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Branch',
@@ -90,7 +90,7 @@ export class BranchesController {
     @Param('id') id: string,
   ) {
     const branch = await this.prisma.branch.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { branch };
   }
@@ -120,7 +120,7 @@ export class BranchesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'Branch',
@@ -142,7 +142,7 @@ export class BranchesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'Branch',

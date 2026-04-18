@@ -15,7 +15,7 @@ export class BankController {
   @RequirePermissions('finance.bank.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const accounts = await this.prisma.bankAccount.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { transactions: { orderBy: [{ transDate: 'desc' }], take: 50 } },
     });
     return { accounts };
@@ -25,7 +25,7 @@ export class BankController {
   @RequirePermissions('finance.bank.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const account = await this.prisma.bankAccount.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { transactions: { orderBy: [{ transDate: 'desc' }] } },
     });
     return { account };
@@ -36,7 +36,7 @@ export class BankController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { accountNo: string; name: string; bankName?: string; accountType?: string }) {
     const account = await this.prisma.bankAccount.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         accountNo: body.accountNo,
         name: body.name,
         bankName: body.bankName,
@@ -51,12 +51,12 @@ export class BankController {
   @Post(':id/transactions')
   @RequirePermissions('finance.bank.transaction')
   async addTransaction(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { transDate: string; transType: string; description: string; amount: number; reference?: string }) {
-    const account = await this.prisma.bankAccount.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const account = await this.prisma.bankAccount.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!account) throw new Error('Bank account not found');
 
     const trans = await this.prisma.bankTransaction.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         bankAccountId: id,
         transDate: new Date(body.transDate),
         transType: body.transType,

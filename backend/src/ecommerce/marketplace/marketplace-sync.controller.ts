@@ -19,7 +19,7 @@ export class MarketplaceSyncController {
     @Query('status') status?: string,
     @Query('limit') limit?: number,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (channelId) where.channelId = channelId;
     if (status) where.status = status;
 
@@ -37,7 +37,7 @@ export class MarketplaceSyncController {
   async getQueue(@Req() req: FastifyRequest & { user: AuthUser }) {
     const pending = await this.prisma.marketplaceListing.findMany({
       where: { 
-        tenantId: req.user.tenantId, 
+        tenantId: req.user.tenantId!, 
         syncStatus: { in: ['PENDING', 'FAILED'] },
         isActive: true,
       },
@@ -54,7 +54,7 @@ export class MarketplaceSyncController {
     @Param('listingId') listingId: string,
   ) {
     const listing = await this.prisma.marketplaceListing.findFirst({
-      where: { id: listingId, tenantId: req.user.tenantId },
+      where: { id: listingId, tenantId: req.user.tenantId! },
       include: { channel: true },
     });
     if (!listing) return { success: false, message: 'Listing tidak ditemukan' };
@@ -73,7 +73,7 @@ export class MarketplaceSyncController {
 
     await this.prisma.marketplaceSyncLog.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         listingId,
         channelId: listing.channelId,
         syncType: 'INVENTORY',
@@ -92,7 +92,7 @@ export class MarketplaceSyncController {
     @Param('listingId') listingId: string,
   ) {
     const listing = await this.prisma.marketplaceListing.findFirst({
-      where: { id: listingId, tenantId: req.user.tenantId },
+      where: { id: listingId, tenantId: req.user.tenantId! },
       include: { channel: true },
     });
     if (!listing) return { success: false, message: 'Listing tidak ditemukan' };
@@ -110,7 +110,7 @@ export class MarketplaceSyncController {
 
     await this.prisma.marketplaceSyncLog.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         listingId,
         channelId: listing.channelId,
         syncType: 'PRICE',
@@ -129,7 +129,7 @@ export class MarketplaceSyncController {
     @Param('listingId') listingId: string,
   ) {
     const listing = await this.prisma.marketplaceListing.findFirst({
-      where: { id: listingId, tenantId: req.user.tenantId },
+      where: { id: listingId, tenantId: req.user.tenantId! },
       include: { channel: true },
     });
     if (!listing) return { success: false, message: 'Listing tidak ditemukan' };
@@ -147,7 +147,7 @@ export class MarketplaceSyncController {
 
     await this.prisma.marketplaceSyncLog.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         listingId,
         channelId: listing.channelId,
         syncType: 'FULL',

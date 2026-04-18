@@ -16,7 +16,7 @@
       <div class="flex items-center gap-3 relative">
         <div class="flex flex-col items-end mr-4">
            <span class="text-[10px] font-black text-slate-400 uppercase">Tahun Pajak</span>
-           <Dropdown v-model="filterYear" :options="['2025', '2026']" class="p-inputtext-sm border-none bg-transparent font-black w-24 text-right" />
+           <Select v-model="filterYear" :options="['2025', '2026']" class="p-inputtext-sm border-none bg-transparent font-black w-24 text-right" />
         </div>
         <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="load" :loading="loading" />
       </div>

@@ -14,28 +14,28 @@ export class CalibrationController {
   @Get()
   @RequirePermissions('qms.calibration.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query() query: any) {
-    const list = await this.calibrationService.findAll(req.user.tenantId, query);
+    const list = await this.calibrationService.findAll(req.user.tenantId!, query);
     return { list };
   }
 
   @Get('equipment')
   @RequirePermissions('qms.calibration.read')
   async searchEquipment(@Req() req: FastifyRequest & { user: AuthUser }, @Query('q') q?: string) {
-    const equipment = await this.calibrationService.searchEquipment(req.user.tenantId, q);
+    const equipment = await this.calibrationService.searchEquipment(req.user.tenantId!, q);
     return { equipment };
   }
 
   @Get(':id')
   @RequirePermissions('qms.calibration.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const log = await this.calibrationService.findOne(req.user.tenantId, id);
+    const log = await this.calibrationService.findOne(req.user.tenantId!, id);
     return { log };
   }
 
   @Post()
   @RequirePermissions('qms.calibration.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: any) {
-    const log = await this.calibrationService.create(req.user.tenantId, body);
+    const log = await this.calibrationService.create(req.user.tenantId!, body);
     return { log };
   }
 
@@ -46,7 +46,7 @@ export class CalibrationController {
     @Param('id') id: string,
     @Body() body: any,
   ) {
-    const log = await this.calibrationService.update(req.user.tenantId, id, body);
+    const log = await this.calibrationService.update(req.user.tenantId!, id, body);
     return { log };
   }
 }

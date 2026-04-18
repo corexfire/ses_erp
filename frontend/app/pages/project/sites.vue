@@ -262,7 +262,7 @@ onMounted(fetchData);
                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-10 bg-white border border-slate-100 rounded-xl shadow-sm">
                       <div class="flex flex-col gap-3">
                          <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Associated Project <span class="text-rose-500">*</span></label>
-                         <Dropdown v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" filter placeholder="Search Project..." class="w-full rounded-2xl border-slate-100" />
+                         <Select v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" filter placeholder="Search Project..." class="w-full rounded-2xl border-slate-100" />
                       </div>
                       <div class="flex flex-col gap-3">
                          <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Unique Site Code <span class="text-rose-500">*</span></label>
@@ -391,11 +391,11 @@ onMounted(fetchData);
   padding: 0 !important;
 }
 
-:deep(.p-inputtext), :deep(.p-dropdown), :deep(.p-textarea) {
+:deep(.p-inputtext), :deep(.p-select), :deep(.p-textarea) {
   @apply bg-slate-50 border-slate-100 focus:bg-white focus:border-indigo-400 focus:ring-0 transition-all !important;
 }
 
-:deep(.p-dropdown-panel) {
+:deep(.p-select-panel) {
   @apply rounded-2xl shadow-2xl border-slate-100 p-2;
 }
 

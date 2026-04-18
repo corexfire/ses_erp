@@ -166,7 +166,7 @@
                    <i class="pi pi-user-plus text-indigo-400"></i>
                 </div>
                 <div class="space-y-2">
-                   <Dropdown v-model="actionForm.delegateTo" :options="users" optionLabel="name" optionValue="id" placeholder="Select Colleague" class="w-full rounded-2xl text-[11px] font-bold border-indigo-200" />
+                   <Select v-model="actionForm.delegateTo" :options="users" optionLabel="name" optionValue="id" placeholder="Select Colleague" class="w-full rounded-2xl text-[11px] font-bold border-indigo-200" />
                    <Button label="Transfer Authority" severity="help" size="small" text class="w-full font-black text-[10px] uppercase mt-2 outline-none border-none hover:bg-indigo-100" @click="handleAction('delegate')" :disabled="!actionForm.delegateTo" />
                 </div>
              </div>
@@ -351,7 +351,7 @@ onMounted(load);
   padding: 0 2.5rem 2rem !important;
 }
 
-:deep(.p-textarea), :deep(.p-dropdown), :deep(.p-inputtext) {
+:deep(.p-textarea), :deep(.p-select), :deep(.p-inputtext) {
     @apply border-slate-200 focus:border-emerald-400 focus:ring-emerald-100 placeholder:text-slate-300;
 }
 

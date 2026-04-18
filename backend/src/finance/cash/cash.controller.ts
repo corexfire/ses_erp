@@ -15,7 +15,7 @@ export class CashController {
   @RequirePermissions('finance.cash.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const accounts = await this.prisma.cashAccount.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { transactions: { orderBy: [{ transDate: 'desc' }], take: 50 } },
     });
     return { accounts };
@@ -25,7 +25,7 @@ export class CashController {
   @RequirePermissions('finance.cash.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const account = await this.prisma.cashAccount.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { transactions: { orderBy: [{ transDate: 'desc' }] } },
     });
     return { account };
@@ -36,7 +36,7 @@ export class CashController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { accountNo: string; name: string; accountType?: string }) {
     const account = await this.prisma.cashAccount.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         accountNo: body.accountNo,
         name: body.name,
         accountType: body.accountType || 'CASH',
@@ -50,12 +50,12 @@ export class CashController {
   @Post(':id/transactions')
   @RequirePermissions('finance.cash.transaction')
   async addTransaction(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { transDate: string; transType: string; description: string; amount: number; reference?: string }) {
-    const account = await this.prisma.cashAccount.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const account = await this.prisma.cashAccount.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!account) throw new Error('Cash account not found');
 
     const trans = await this.prisma.cashTransaction.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         cashAccountId: id,
         transDate: new Date(body.transDate),
         transType: body.transType,

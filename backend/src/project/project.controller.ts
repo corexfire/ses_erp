@@ -78,7 +78,7 @@ export class ProjectController {
     @Query('search') search?: string,
     @Query('status') status?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (search) {
       where.OR = [
         { code: { contains: search, mode: 'insensitive' } },
@@ -103,7 +103,7 @@ export class ProjectController {
     @Param('id') id: string,
   ) {
     const project = await this.prisma.project.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         customer: true,
         wbsTasks: { 
@@ -125,7 +125,7 @@ export class ProjectController {
   ) {
     const project = await this.prisma.project.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         customerId: body.customerId,
@@ -138,7 +138,7 @@ export class ProjectController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'Project',
@@ -157,7 +157,7 @@ export class ProjectController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const existing = await this.prisma.project.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!existing) throw new NotFoundException('Project not found');
 
@@ -175,7 +175,7 @@ export class ProjectController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'UPDATE',
       entity: 'Project',
@@ -193,7 +193,7 @@ export class ProjectController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const project = await this.prisma.project.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!project) throw new NotFoundException('Project not found');
 
@@ -203,7 +203,7 @@ export class ProjectController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CLOSE',
       entity: 'Project',
@@ -222,7 +222,7 @@ export class ProjectController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const project = await this.prisma.project.update({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       data: {
         retentionRate: body.retentionRate ?? undefined,
         downPaymentTotal: body.downPaymentTotal ?? undefined,
@@ -232,7 +232,7 @@ export class ProjectController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'UPDATE_BILLING_SETUP',
       entity: 'Project',
@@ -249,7 +249,7 @@ export class ProjectController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const tasks = await this.prisma.wbsTask.findMany({
-      where: { projectId: id, tenantId: req.user.tenantId },
+      where: { projectId: id, tenantId: req.user.tenantId! },
       orderBy: [{ level: 'asc' }, { taskCode: 'asc' }],
       take: 500,
     });
@@ -264,7 +264,7 @@ export class ProjectController {
     @Query('assigneeId') assigneeId?: string,
     @Query('teamId') teamId?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (projectId) where.projectId = projectId;
     if (assigneeId) where.assigneeId = assigneeId;
     if (teamId) where.teamId = teamId;
@@ -286,7 +286,7 @@ export class ProjectController {
   ) {
     const task = await this.prisma.wbsTask.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         projectId: body.projectId,
         taskCode: body.taskCode,
         taskName: body.taskName,
@@ -342,7 +342,7 @@ export class ProjectController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const existingTask = await this.prisma.wbsTask.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { project: true },
     });
     if (!existingTask) throw new NotFoundException('WBS Task not found');
@@ -356,47 +356,43 @@ export class ProjectController {
       });
 
       if (status === 'COMPLETED' && plannedCost > 0) {
-        const jeCount = await tx.journalEntry.count({ where: { tenantId: req.user.tenantId } });
+        const jeCount = await tx.journalEntry.count({ where: { tenantId: req.user.tenantId! } });
         const jeNo = `JE-PRJ-${String(jeCount + 1).padStart(6, '0')}`;
 
-        const journal = await tx.journalEntry.create({
-          data: {
-            tenantId: req.user.tenantId,
-            entryNo: jeNo,
-            entryDate: new Date(),
-            description: `Project Task Complete - ${existingTask.taskCode}: ${existingTask.taskName}`,
-            referenceNo: existingTask.project?.code,
-            journalType: 'PROJECT',
-            referenceType: 'WbsTask',
-            referenceId: task.id,
-            totalDebit: plannedCost,
-            totalCredit: plannedCost,
-            status: 'POSTED',
-          }
-        });
+         const journal = await tx.journalEntry.create({
+           data: {
+             tenantId: req.user.tenantId!,
+             entryNo: jeNo,
+             entryDate: new Date(),
+             description: `Project Task Complete - ${existingTask.taskCode}: ${existingTask.taskName}`,
+             referenceNo: existingTask.project?.code,
+             journalType: 'PROJECT',
+             totalDebit: plannedCost,
+             totalCredit: plannedCost,
+             status: 'POSTED',
+           }
+         });
 
         await tx.journalEntryLine.createMany({
           data: [
             {
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               journalEntryId: journal.id,
               lineNo: 1,
               accountCode: '5-2000-00',
               description: 'Project Expense',
               debit: plannedCost,
               credit: 0,
-              referenceType: 'WbsTask',
               referenceId: task.id,
             },
             {
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               journalEntryId: journal.id,
               lineNo: 2,
               accountCode: '1-1320-00',
               description: 'Project Costing - WIP',
               debit: 0,
               credit: plannedCost,
-              referenceType: 'WbsTask',
               referenceId: task.id,
             }
           ]
@@ -416,7 +412,7 @@ export class ProjectController {
   ) {
     const tasks = await this.prisma.wbsTask.findMany({
       where: { 
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         endDate: { not: null }
       },
       include: {

@@ -29,7 +29,7 @@ export class CostCentersController {
   @RequirePermissions('core.cost_center.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const costCenters = await this.prisma.costCenter.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ isActive: 'desc' }, { code: 'asc' }],
     });
     return { costCenters };
@@ -42,11 +42,11 @@ export class CostCentersController {
     @Body() body: CreateCostCenterDto,
   ) {
     const costCenter = await this.prisma.costCenter.create({
-      data: { tenantId: req.user.tenantId, code: body.code, name: body.name },
+      data: { tenantId: req.user.tenantId!, code: body.code, name: body.name },
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'CostCenter',
@@ -68,7 +68,7 @@ export class CostCentersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'CostCenter',

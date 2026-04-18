@@ -41,7 +41,7 @@ export class ItemsController {
   ) {
     const itemGroups = await this.prisma.itemGroup.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -64,11 +64,11 @@ export class ItemsController {
     @Body() body: CreateItemGroupDto,
   ) {
     const itemGroup = await this.prisma.itemGroup.create({
-      data: { tenantId: req.user.tenantId, code: body.code, name: body.name },
+      data: { tenantId: req.user.tenantId!, code: body.code, name: body.name },
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'ItemGroup',
@@ -86,7 +86,7 @@ export class ItemsController {
     @Body() body: UpdateItemGroupDto,
   ) {
     const exists = await this.prisma.itemGroup.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Item group not found');
@@ -97,7 +97,7 @@ export class ItemsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'ItemGroup',
@@ -114,7 +114,7 @@ export class ItemsController {
     @Param('id') id: string,
   ) {
     const exists = await this.prisma.itemGroup.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Item group not found');
@@ -125,7 +125,7 @@ export class ItemsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'ItemGroup',
@@ -144,7 +144,7 @@ export class ItemsController {
   ) {
     const items = await this.prisma.item.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(typeof isActive === 'string' ? { isActive: isActive === 'true' } : {}),
         ...(q
           ? {
@@ -166,7 +166,7 @@ export class ItemsController {
   @RequirePermissions('inventory.item.read')
   async getItem(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const item = await this.prisma.item.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { itemGroup: true, uoms: true, barcodes: true },
     });
     if (!item) throw new NotFoundException('Item not found');
@@ -178,7 +178,7 @@ export class ItemsController {
   async createItem(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateItemDto) {
     if (body.itemGroupId) {
       const group = await this.prisma.itemGroup.findFirst({
-        where: { id: body.itemGroupId, tenantId: req.user.tenantId },
+        where: { id: body.itemGroupId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!group) throw new NotFoundException('Item group not found');
@@ -186,7 +186,7 @@ export class ItemsController {
 
     const item = await this.prisma.item.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         description: body.description,
@@ -200,7 +200,7 @@ export class ItemsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Item',
@@ -218,14 +218,14 @@ export class ItemsController {
     @Body() body: UpdateItemDto,
   ) {
     const exists = await this.prisma.item.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Item not found');
 
     if (body.itemGroupId) {
       const group = await this.prisma.itemGroup.findFirst({
-        where: { id: body.itemGroupId, tenantId: req.user.tenantId },
+        where: { id: body.itemGroupId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!group) throw new NotFoundException('Item group not found');
@@ -246,7 +246,7 @@ export class ItemsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'Item',
@@ -260,7 +260,7 @@ export class ItemsController {
   @RequirePermissions('inventory.item.deactivate')
   async deactivateItem(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const exists = await this.prisma.item.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Item not found');
@@ -268,7 +268,7 @@ export class ItemsController {
     const item = await this.prisma.item.update({ where: { id }, data: { isActive: false } });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'Item',
@@ -287,13 +287,13 @@ export class ItemsController {
     @Param('itemId') itemId: string,
   ) {
     const item = await this.prisma.item.findFirst({
-      where: { id: itemId, tenantId: req.user.tenantId },
+      where: { id: itemId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!item) throw new NotFoundException('Item not found');
 
     const uoms = await this.prisma.itemUom.findMany({
-      where: { itemId, tenantId: req.user.tenantId },
+      where: { itemId, tenantId: req.user.tenantId! },
       orderBy: [{ isBase: 'desc' }, { uomCode: 'asc' }],
     });
     return { uoms };
@@ -307,21 +307,21 @@ export class ItemsController {
     @Body() body: CreateItemUomDto,
   ) {
     const item = await this.prisma.item.findFirst({
-      where: { id: itemId, tenantId: req.user.tenantId },
+      where: { id: itemId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!item) throw new NotFoundException('Item not found');
 
     if (body.isBase) {
       await this.prisma.itemUom.updateMany({
-        where: { itemId, tenantId: req.user.tenantId },
+        where: { itemId, tenantId: req.user.tenantId! },
         data: { isBase: false },
       });
     }
 
     const uom = await this.prisma.itemUom.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         itemId,
         uomCode: body.uomCode,
         isBase: body.isBase ?? false,
@@ -331,7 +331,7 @@ export class ItemsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'ItemUom',
@@ -350,13 +350,13 @@ export class ItemsController {
     @Body() body: UpdateItemUomDto,
   ) {
     const uom = await this.prisma.itemUom.findFirst({
-      where: { id: uomId, itemId, tenantId: req.user.tenantId },
+      where: { id: uomId, itemId, tenantId: req.user.tenantId! },
     });
     if (!uom) throw new NotFoundException('ItemUom not found');
 
     if (body.isBase === true && !uom.isBase) {
       await this.prisma.itemUom.updateMany({
-        where: { itemId, tenantId: req.user.tenantId },
+        where: { itemId, tenantId: req.user.tenantId! },
         data: { isBase: false },
       });
     }
@@ -371,7 +371,7 @@ export class ItemsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'ItemUom',
@@ -389,14 +389,14 @@ export class ItemsController {
     @Param('uomId') uomId: string,
   ) {
     const uom = await this.prisma.itemUom.findFirst({
-      where: { id: uomId, itemId, tenantId: req.user.tenantId },
+      where: { id: uomId, itemId, tenantId: req.user.tenantId! },
     });
     if (!uom) throw new NotFoundException('ItemUom not found');
 
     await this.prisma.itemUom.delete({ where: { id: uomId } });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'delete',
       entity: 'ItemUom',
@@ -415,13 +415,13 @@ export class ItemsController {
     @Param('itemId') itemId: string,
   ) {
     const item = await this.prisma.item.findFirst({
-      where: { id: itemId, tenantId: req.user.tenantId },
+      where: { id: itemId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!item) throw new NotFoundException('Item not found');
 
     const barcodes = await this.prisma.itemBarcode.findMany({
-      where: { itemId, tenantId: req.user.tenantId },
+      where: { itemId, tenantId: req.user.tenantId! },
       orderBy: { createdAt: 'desc' },
     });
     return { barcodes };
@@ -435,26 +435,26 @@ export class ItemsController {
     @Body() body: CreateItemBarcodeDto,
   ) {
     const item = await this.prisma.item.findFirst({
-      where: { id: itemId, tenantId: req.user.tenantId },
+      where: { id: itemId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!item) throw new NotFoundException('Item not found');
 
     const existing = await this.prisma.itemBarcode.findFirst({
-      where: { tenantId: req.user.tenantId, barcode: body.barcode },
+      where: { tenantId: req.user.tenantId!, barcode: body.barcode },
     });
     if (existing) throw new NotFoundException('Barcode already exists for this tenant');
 
     const barcode = await this.prisma.itemBarcode.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         itemId,
         barcode: body.barcode,
       },
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'ItemBarcode',
@@ -472,14 +472,14 @@ export class ItemsController {
     @Param('barcodeId') barcodeId: string,
   ) {
     const barcode = await this.prisma.itemBarcode.findFirst({
-      where: { id: barcodeId, itemId, tenantId: req.user.tenantId },
+      where: { id: barcodeId, itemId, tenantId: req.user.tenantId! },
     });
     if (!barcode) throw new NotFoundException('ItemBarcode not found');
 
     await this.prisma.itemBarcode.delete({ where: { id: barcodeId } });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'delete',
       entity: 'ItemBarcode',

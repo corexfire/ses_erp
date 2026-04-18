@@ -33,7 +33,7 @@ export class SubscriptionsController {
     const user = req.user as AuthUser;
     
     // We parse search manually instead of validating using heavy DTOs to save boilerplate.
-    const where: any = { tenantId: user.tenantId };
+    const where: any = { tenantId: user.tenantId! };
     
     if (search) {
       where.OR = [
@@ -56,9 +56,9 @@ export class SubscriptionsController {
     
     // Summary logic for dashboards
     const summary = {
-       active: await this.prisma.salesSubscription.count({ where: { tenantId: user.tenantId, status: 'ACTIVE' } }),
-       pastDue: await this.prisma.salesSubscription.count({ where: { tenantId: user.tenantId, status: 'PAST_DUE' } }),
-       cancelled: await this.prisma.salesSubscription.count({ where: { tenantId: user.tenantId, status: 'CANCELLED' } })
+       active: await this.prisma.salesSubscription.count({ where: { tenantId: user.tenantId!, status: 'ACTIVE' } }),
+       pastDue: await this.prisma.salesSubscription.count({ where: { tenantId: user.tenantId!, status: 'PAST_DUE' } }),
+       cancelled: await this.prisma.salesSubscription.count({ where: { tenantId: user.tenantId!, status: 'CANCELLED' } })
     };
 
     return { data: subscriptions, summary };
@@ -71,7 +71,7 @@ export class SubscriptionsController {
     
     const sub = await this.prisma.salesSubscription.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         customerId: body.customerId,
         planName: body.planName,
         billingCycle: body.billingCycle,
@@ -84,15 +84,7 @@ export class SubscriptionsController {
       },
     });
 
-    await this.audit.log(
-      user.tenantId,
-      user.id,
-      'CREATE',
-      'SalesSubscription',
-      sub.id,
-      null,
-      sub,
-    );
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'CREATE', entity: 'SalesSubscription', entityId: sub.id,  });
 
     return { message: 'Subscription created successfully', data: sub };
   }
@@ -109,7 +101,7 @@ export class SubscriptionsController {
       where: { id },
     });
 
-    if (!existing || existing.tenantId !== user.tenantId) {
+    if (!existing || existing.tenantId !== user.tenantId!) {
       throw new NotFoundException('Subscription not found');
     }
 
@@ -129,15 +121,7 @@ export class SubscriptionsController {
       data,
     });
 
-    await this.audit.log(
-      user.tenantId,
-      user.id,
-      'UPDATE',
-      'SalesSubscription',
-      id,
-      existing,
-      updated,
-    );
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'UPDATE', entity: 'SalesSubscription', entityId: id, metadata: existing });
 
     return { message: 'Subscription updated successfully', data: updated };
   }

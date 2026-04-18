@@ -15,7 +15,7 @@ export class CrmUsersController {
   @RequirePermissions('crm.user.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const users = await this.prisma.user.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true },
+      where: { tenantId: req.user.tenantId!, isActive: true },
       orderBy: [{ createdAt: 'desc' }],
       select: { id: true, email: true, name: true },
       take: 500,

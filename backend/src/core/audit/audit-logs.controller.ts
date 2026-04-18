@@ -19,7 +19,7 @@ export class AuditLogsController {
   ) {
     const n = Math.min(Math.max(Number(take ?? 200), 1), 500);
     const auditLogs = await this.prisma.auditLog.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ createdAt: 'desc' }],
       take: n,
     });

@@ -1,0 +1,116 @@
+/* 
+  Global Typography Standards 
+  ERP Premium Design Language
+*/
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --base-font-size: 14px;
+}
+
+html {
+  font-size: var(--base-font-size);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  @apply text-slate-900 bg-slate-50;
+  font-size: 1rem; /* 14px */
+  line-height: 1.5;
+}
+
+/* PrimeVue Component Overrides */
+
+/* --- DataTable Standards --- */
+.p-datatable-thead > tr > th {
+  background: #f8fafc !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.15em !important;
+  color: #64748b !important;
+  border-bottom: 2px solid #f1f5f9 !important;
+  padding: 1.25rem 1rem !important;
+  transition: all 0.2s ease;
+}
+
+.p-datatable-tbody > tr > td {
+  font-size: 13px;
+  padding: 1rem 1rem !important;
+  border-bottom: 1px solid #f8fafc !important;
+  color: #334155;
+}
+
+.p-datatable-tbody > tr:hover {
+  background: rgba(241, 245, 249, 0.4) !important;
+}
+
+/* --- Form Elements --- */
+.p-inputtext, .p-select, .p-datepicker-input, .p-textarea, .p-inputnumber-input {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  border-color: #f1f5f9 !important;
+  background-color: #f8fafc !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.p-inputtext:hover, .p-select:hover {
+  border-color: #3b82f6 !important;
+}
+
+.p-inputtext:focus, .p-select:focus {
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08) !important;
+  border-color: #3b82f6 !important;
+}
+
+/* --- Labels & Captions --- */
+label, .field-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+/* --- Tooltips --- */
+.p-tooltip-text {
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  border-radius: 8px !important;
+  padding: 0.5rem 0.75rem !important;
+}
+
+/* --- Global Scrollbars --- */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+/* Standard Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

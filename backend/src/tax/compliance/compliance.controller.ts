@@ -15,7 +15,7 @@ export class EqualizationController {
   @RequirePermissions('tax.equalization.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const equalizations = await this.prisma.taxEqualization.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: { period: 'desc' },
     });
     return { equalizations };
@@ -25,7 +25,7 @@ export class EqualizationController {
   @RequirePermissions('tax.equalization.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const equalization = await this.prisma.taxEqualization.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { equalization };
   }
@@ -37,7 +37,7 @@ export class EqualizationController {
 
     const equalization = await this.prisma.taxEqualization.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         period: body.period,
         bookIncome: body.bookIncome,
         fiscalIncome: body.fiscalIncome,
@@ -52,7 +52,7 @@ export class EqualizationController {
   @Post(':id/approve')
   @RequirePermissions('tax.equalization.approve')
   async approve(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const equalization = await this.prisma.taxEqualization.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const equalization = await this.prisma.taxEqualization.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!equalization) throw new Error('Equalization not found');
 
     const updated = await this.prisma.taxEqualization.update({
@@ -71,7 +71,7 @@ export class FiscalReconciliationController {
   @Get()
   @RequirePermissions('tax.fiscalReconciliation.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (period) where.period = period;
 
     const equalizations = await this.prisma.taxEqualization.findMany({
@@ -85,7 +85,7 @@ export class FiscalReconciliationController {
   @RequirePermissions('tax.fiscalReconciliation.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const equalization = await this.prisma.taxEqualization.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { equalization };
   }
@@ -93,12 +93,12 @@ export class FiscalReconciliationController {
   @Post(':id/generate-report')
   @RequirePermissions('tax.fiscalReconciliation.generate')
   async generateReport(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const equalization = await this.prisma.taxEqualization.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const equalization = await this.prisma.taxEqualization.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!equalization) throw new Error('Equalization not found');
 
     const journalLines = await this.prisma.journalEntryLine.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         journalEntry: { status: 'POSTED' },
       },
       include: { journalEntry: true },

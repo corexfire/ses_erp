@@ -38,7 +38,7 @@ export class AuthService {
 
     return {
       id: user.id,
-      tenantId: user.tenantId,
+      tenantId: user.tenantId!,
       email: user.email,
       isSuperAdmin: user.isSuperAdmin,
       name: user.name ?? null,
@@ -53,7 +53,7 @@ export class AuthService {
   }) {
     const payload: JwtPayload = {
       sub: user.id,
-      tenantId: user.tenantId,
+      tenantId: user.tenantId!,
       email: user.email,
       isSuperAdmin: user.isSuperAdmin,
     };

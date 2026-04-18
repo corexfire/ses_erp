@@ -30,7 +30,7 @@ export class RolesController {
   @RequirePermissions('core.role.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const roles = await this.prisma.role.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ name: 'asc' }],
       include: {
         permissions: {
@@ -48,11 +48,11 @@ export class RolesController {
     @Body() body: CreateRoleDto,
   ) {
     const role = await this.prisma.role.create({
-      data: { tenantId: req.user.tenantId, name: body.name },
+      data: { tenantId: req.user.tenantId!, name: body.name },
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Role',
@@ -69,7 +69,7 @@ export class RolesController {
     @Param('id') roleId: string,
   ) {
     const role = await this.prisma.role.findFirst({
-      where: { id: roleId, tenantId: req.user.tenantId },
+      where: { id: roleId, tenantId: req.user.tenantId! },
       select: {
         id: true,
         permissions: {
@@ -88,7 +88,7 @@ export class RolesController {
     @Body() body: UpdateRolePermissionsDto,
   ) {
     const role = await this.prisma.role.findFirst({
-      where: { id: roleId, tenantId: req.user.tenantId },
+      where: { id: roleId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!role) return { ok: false };
@@ -105,7 +105,7 @@ export class RolesController {
     }
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'set_permissions',
       entity: 'Role',

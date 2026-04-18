@@ -391,7 +391,7 @@ watch(() => filters.status, loadNcrs);
 </script>
 
 <style scoped>
-:deep(.p-dropdown), :deep(.p-inputnumber) {
+:deep(.p-select), :deep(.p-inputnumber) {
   border-radius: 1rem !important;
 }
 

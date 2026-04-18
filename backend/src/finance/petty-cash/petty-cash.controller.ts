@@ -19,7 +19,7 @@ export class PettyCashController {
   @RequirePermissions('finance.pettyCash.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
     const user = req.user;
-    const where: any = user.isSuperAdmin ? {} : { tenantId: user.tenantId };
+    const where: any = user.isSuperAdmin ? {} : { tenantId: user.tenantId! };
     if (status) where.status = status;
 
     const replenishment = await this.prisma.pettyCashReplenishment.findMany({
@@ -34,7 +34,7 @@ export class PettyCashController {
   @RequirePermissions('finance.pettyCash.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const user = req.user;
-    const where = user.isSuperAdmin ? { id } : { id, tenantId: user.tenantId };
+    const where = user.isSuperAdmin ? { id } : { id, tenantId: user.tenantId! };
     const replenishment = await this.prisma.pettyCashReplenishment.findFirst({
       where,
       include: { cashAccount: true },
@@ -47,7 +47,7 @@ export class PettyCashController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { cashAccountId: string; requestNo: string; requestDate: string; amount: number; notes?: string; referenceNo?: string }) {
     const replenishment = await this.prisma.pettyCashReplenishment.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         cashAccountId: body.cashAccountId,
         requestNo: body.requestNo,
         requestDate: new Date(body.requestDate),
@@ -58,7 +58,7 @@ export class PettyCashController {
       },
       include: { cashAccount: true },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'CREATE', entity: 'PettyCashReplenishment', entityId: replenishment.id, metadata: { replenishment } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'CREATE', entity: 'PettyCashReplenishment', entityId: replenishment.id, metadata: { replenishment } });
     return { replenishment };
   }
 
@@ -66,7 +66,7 @@ export class PettyCashController {
   @RequirePermissions('finance.pettyCash.approve')
   async approve(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const user = req.user;
-    const replenishment = await this.prisma.pettyCashReplenishment.findFirst({ where: { id, tenantId: user.tenantId } });
+    const replenishment = await this.prisma.pettyCashReplenishment.findFirst({ where: { id, tenantId: user.tenantId! } });
     if (!replenishment) throw new Error('Replenishment not found');
 
     // Get CashAccount with COA mapping
@@ -79,7 +79,7 @@ export class PettyCashController {
     // Create cash transaction to record the replenishment
     await this.prisma.cashTransaction.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         cashAccountId: replenishment.cashAccountId,
         transDate: new Date(),
         transType: 'DEBIT',
@@ -97,18 +97,18 @@ export class PettyCashController {
     });
 
     // === AUTO-CREATE JOURNAL ENTRY (DEBIT=Kas, CREDIT=Income/Expense) ===
-    const journalCount = await this.prisma.journalEntry.count({ where: { tenantId: user.tenantId } });
+    const journalCount = await this.prisma.journalEntry.count({ where: { tenantId: user.tenantId! } });
     const entryNo = `JE-PC-${String(journalCount + 1).padStart(6, '0')}`;
     
     // Find default credit account (income/revenue)
     const creditCoa = await this.prisma.coaAccount.findFirst({
-      where: { tenantId: user.tenantId, code: { startsWith: '4-' } }
+      where: { tenantId: user.tenantId!, code: { startsWith: '4-' } }
     });
     const creditCode = creditCoa?.code || '4-1100-00';
 
     const journalEntry = await this.prisma.journalEntry.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         entryNo,
         entryDate: new Date(),
         description: `PC Replenishment - ${replenishment.requestNo} (${replenishment.notes || 'Kas Kecil'})`,
@@ -120,23 +120,21 @@ export class PettyCashController {
         lines: {
           create: [
             {
-              tenantId: user.tenantId,
+              tenantId: user.tenantId!,
               lineNo: 1,
               accountCode: coaCode, // DEBIT Kas (CashAccount COA)
               description: `${cashAccount?.name || 'Kas'} - ${replenishment.requestNo}`,
               debit: replenishment.amount,
               credit: 0,
-              referenceType: 'PettyCashReplenishment',
               referenceId: replenishment.id
             },
             {
-              tenantId: user.tenantId,
+              tenantId: user.tenantId!,
               lineNo: 2,
               accountCode: creditCode, // CREDIT Income
               description: replenishment.notes || 'Pendapatan Jasa',
               debit: 0,
               credit: replenishment.amount,
-              referenceType: 'PettyCashReplenishment',
               referenceId: replenishment.id
             }
           ]
@@ -148,7 +146,7 @@ export class PettyCashController {
       where: { id },
       data: { status: 'APPROVED' },
     });
-    await this.audit.log({ tenantId: user.tenantId, actorUserId: user.id, action: 'APPROVE', entity: 'PettyCashReplenishment', entityId: id, metadata: { replenishment: updated, journalEntryId: journalEntry.id } });
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'APPROVE', entity: 'PettyCashReplenishment', entityId: id, metadata: { replenishment: updated, journalEntryId: journalEntry.id } });
     return { replenishment: updated, journalEntry };
   }
 
@@ -159,15 +157,15 @@ export class PettyCashController {
       where: { id },
       data: { status: 'REJECTED' },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'REJECT', entity: 'PettyCashReplenishment', entityId: id, metadata: { replenishment: updated } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'REJECT', entity: 'PettyCashReplenishment', entityId: id, metadata: { replenishment: updated } });
     return { replenishment: updated };
   }
 
   @Post(':id/delete')
   @RequirePermissions('finance.pettyCash.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    await this.prisma.pettyCashReplenishment.deleteMany({ where: { id, tenantId: req.user.tenantId } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'DELETE', entity: 'PettyCashReplenishment', entityId: id, metadata: { id } });
+    await this.prisma.pettyCashReplenishment.deleteMany({ where: { id, tenantId: req.user.tenantId! } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'DELETE', entity: 'PettyCashReplenishment', entityId: id, metadata: { id } });
     return { success: true };
   }
 }

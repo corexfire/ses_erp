@@ -15,7 +15,7 @@ export class MarketplaceChannelController {
   @RequirePermissions('ecommerce.channel.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const channels = await this.prisma.marketplaceChannel.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: { name: 'asc' },
     });
     return { channels };
@@ -38,7 +38,7 @@ export class MarketplaceChannelController {
   ) {
     const channel = await this.prisma.marketplaceChannel.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         name: body.name,
         code: body.code,
         type: body.type,

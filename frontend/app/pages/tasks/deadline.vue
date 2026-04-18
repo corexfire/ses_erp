@@ -54,7 +54,7 @@ const fetchData = async () => {
     const [deadlinesRes, projectsRes, usersRes, teamsRes, categoriesRes] = await Promise.all([
       api.get('/project/tasks/deadlines'),
       api.get('/project/projects'),
-      api.get('/hris/employee'),
+      api.get('/hris/employees'),
       api.get('/hris/team'),
       api.get('/tasks/categories')
     ]);
@@ -424,7 +424,7 @@ const stats = computed(() => [
              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-8 bg-slate-50/50 border border-slate-100 rounded-xl">
                <div class="flex flex-col gap-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Parent Project <span class="text-rose-500">*</span></label>
-                  <Dropdown v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" placeholder="Pilih Proyek..." class="w-full rounded-2xl border-slate-200" />
+                  <Select v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" placeholder="Pilih Proyek..." class="w-full rounded-2xl border-slate-200" />
                </div>
                <div class="flex flex-col gap-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">ID Tugas <span class="text-rose-500">*</span></label>
@@ -455,7 +455,7 @@ const stats = computed(() => [
                 </div>
                 <div class="flex flex-col gap-2">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Prioritas Kerja</label>
-                   <Dropdown v-model="form.priority" :options="['URGENT', 'HIGH', 'MEDIUM', 'LOW']" placeholder="Pilih..." class="w-full rounded-2xl" />
+                   <Select v-model="form.priority" :options="['URGENT', 'HIGH', 'MEDIUM', 'LOW']" placeholder="Pilih..." class="w-full rounded-2xl" />
                 </div>
              </div>
           </div>
@@ -470,15 +470,15 @@ const stats = computed(() => [
              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-8 bg-slate-50 border border-slate-100 rounded-xl">
                <div class="flex flex-col gap-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Assignee Persona</label>
-                  <Dropdown v-model="form.assigneeId" :options="users" optionLabel="name" optionValue="id" filter placeholder="Cari User..." class="w-full rounded-2xl" />
+                  <Select v-model="form.assigneeId" :options="users" optionLabel="name" optionValue="id" filter placeholder="Cari User..." class="w-full rounded-2xl" />
                </div>
                <div class="flex flex-col gap-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Team Unit</label>
-                  <Dropdown v-model="form.teamId" :options="teams" optionLabel="name" optionValue="id" placeholder="Pilih Tim..." class="w-full rounded-2xl" />
+                  <Select v-model="form.teamId" :options="teams" optionLabel="name" optionValue="id" placeholder="Pilih Tim..." class="w-full rounded-2xl" />
                </div>
                <div class="flex flex-col gap-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Kategori Task</label>
-                  <Dropdown v-model="form.categoryId" :options="categories" optionLabel="name" optionValue="id" placeholder="Pilih Kategori..." class="w-full rounded-2xl" />
+                  <Select v-model="form.categoryId" :options="categories" optionLabel="name" optionValue="id" placeholder="Pilih Kategori..." class="w-full rounded-2xl" />
                </div>
              </div>
           </div>

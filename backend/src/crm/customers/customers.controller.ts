@@ -37,7 +37,7 @@ export class CustomersController {
   ) {
     const customers = await this.prisma.customer.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -61,7 +61,7 @@ export class CustomersController {
     @Param('id') id: string,
   ) {
     const customer = await this.prisma.customer.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         opportunities: {
           include: { lead: true, owner: true },
@@ -106,7 +106,7 @@ export class CustomersController {
   ) {
     const customer = await this.prisma.customer.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         email: body.email,
@@ -121,7 +121,7 @@ export class CustomersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Customer',
@@ -139,7 +139,7 @@ export class CustomersController {
     @Body() body: UpdateCustomerDto,
   ) {
     const exists = await this.prisma.customer.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Customer not found');
@@ -159,7 +159,7 @@ export class CustomersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'Customer',
@@ -176,7 +176,7 @@ export class CustomersController {
     @Param('id') id: string,
   ) {
     const exists = await this.prisma.customer.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Customer not found');
@@ -187,7 +187,7 @@ export class CustomersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'Customer',

@@ -23,7 +23,7 @@ export class AiForecastController {
   async getForecasts(@Req() req: FastifyRequest, @Query('search') search?: string) {
     const user = req.user as AuthUser;
     
-    const where: any = { tenantId: user.tenantId };
+    const where: any = { tenantId: user.tenantId! };
     if (search) {
       where.item = {
           OR: [
@@ -68,7 +68,7 @@ export class AiForecastController {
      const user = req.user as AuthUser;
 
      const item = await this.prisma.item.update({
-         where: { id: body.itemId, tenantId: user.tenantId },
+         where: { id: body.itemId, tenantId: user.tenantId! },
          data: { reorderQty: Number(body.recommendedQty) }
      });
 

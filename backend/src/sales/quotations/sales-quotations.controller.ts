@@ -36,7 +36,7 @@ export class SalesQuotationsController {
   ) {
     const quotations = await this.prisma.salesQuotation.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [{ code: { contains: q, mode: 'insensitive' } }],
@@ -57,7 +57,7 @@ export class SalesQuotationsController {
     @Param('id') id: string,
   ) {
     const quotation = await this.prisma.salesQuotation.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         customer: true,
         items: { orderBy: [{ lineNo: 'asc' }] },
@@ -75,7 +75,7 @@ export class SalesQuotationsController {
     @Body() body: CreateSalesQuotationDto,
   ) {
     const customer = await this.prisma.customer.findFirst({
-      where: { id: body.customerId, tenantId: req.user.tenantId },
+      where: { id: body.customerId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!customer) throw new NotFoundException('Customer not found');
@@ -83,7 +83,7 @@ export class SalesQuotationsController {
     const quotation = await this.prisma.$transaction(async (tx) => {
       const q = await tx.salesQuotation.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           customerId: body.customerId,
           issueDate: new Date(body.issueDate),
@@ -95,7 +95,7 @@ export class SalesQuotationsController {
       if (body.items.length > 0) {
         await tx.salesQuotationItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             quotationId: q.id,
             lineNo: idx + 1,
             description: it.description,
@@ -111,7 +111,7 @@ export class SalesQuotationsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'SalesQuotation',
@@ -129,7 +129,7 @@ export class SalesQuotationsController {
     @Body() body: UpdateSalesQuotationDto,
   ) {
     const exists = await this.prisma.salesQuotation.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Quotation not found');
@@ -146,12 +146,12 @@ export class SalesQuotationsController {
 
       if (body.items) {
         await tx.salesQuotationItem.deleteMany({
-          where: { tenantId: req.user.tenantId, quotationId: id },
+          where: { tenantId: req.user.tenantId!, quotationId: id },
         });
         if (body.items.length > 0) {
           await tx.salesQuotationItem.createMany({
             data: body.items.map((it, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               quotationId: id,
               lineNo: idx + 1,
               description: it.description,
@@ -169,7 +169,7 @@ export class SalesQuotationsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'SalesQuotation',
@@ -186,7 +186,7 @@ export class SalesQuotationsController {
     @Param('id') id: string,
   ) {
     const quotation = await this.prisma.salesQuotation.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!quotation) throw new NotFoundException('Quotation not found');
@@ -197,7 +197,7 @@ export class SalesQuotationsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'submit',
       entity: 'SalesQuotation',

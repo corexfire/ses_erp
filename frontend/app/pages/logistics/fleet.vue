@@ -45,7 +45,7 @@
                 <i class="pi pi-search text-slate-400" />
                 <InputText v-model="q" placeholder="Cari Plat atau Kode..." class="p-inputtext-sm rounded-xl border-slate-200 w-64" />
              </div>
-             <Dropdown v-model="statusFilter" :options="['ALL', 'ACTIVE', 'MAINTENANCE', 'INACTIVE']" class="p-dropdown-sm rounded-xl text-[10px] font-bold uppercase w-40" />
+             <Select v-model="statusFilter" :options="['ALL', 'ACTIVE', 'MAINTENANCE', 'INACTIVE']" class="p-select-sm rounded-xl text-[10px] font-bold uppercase w-40" />
           </div>
        </div>
 
@@ -141,7 +141,7 @@
                 </div>
                 <div class="space-y-1">
                    <label class="text-[10px] font-black text-slate-400 uppercase">Tipe Kendaraan</label>
-                   <Dropdown v-model="form.vehicleType" :options="['VAN', 'BLIND VAN', 'PICKUP', 'CDE', 'CDD', 'TRONTON', 'WINGBOX']" class="w-full rounded-xl" />
+                   <Select v-model="form.vehicleType" :options="['VAN', 'BLIND VAN', 'PICKUP', 'CDE', 'CDD', 'TRONTON', 'WINGBOX']" class="w-full rounded-xl" />
                 </div>
              </div>
              <div class="grid grid-cols-2 gap-4">
@@ -161,7 +161,7 @@
                 </div>
                 <div class="space-y-1">
                    <label class="text-[10px] font-black text-slate-400 uppercase">Status Operasional</label>
-                   <Dropdown v-model="form.status" :options="['ACTIVE', 'MAINTENANCE', 'INACTIVE']" class="w-full rounded-xl" />
+                   <Select v-model="form.status" :options="['ACTIVE', 'MAINTENANCE', 'INACTIVE']" class="w-full rounded-xl" />
                 </div>
              </div>
           </div>
@@ -184,11 +184,11 @@
              </div>
              <div class="space-y-1 mt-2">
                 <label class="text-[10px] font-black text-indigo-400 uppercase">Metode Kepemilikan</label>
-                <Dropdown v-model="form.ownershipType" :options="['OWNED', 'LEASED', 'THIRD_PARTY']" class="w-full rounded-xl" />
+                <Select v-model="form.ownershipType" :options="['OWNED', 'LEASED', 'THIRD_PARTY']" class="w-full rounded-xl" />
              </div>
              <div class="space-y-1" v-if="form.ownershipType !== 'OWNED'">
                 <label class="text-[10px] font-black text-indigo-400 uppercase">Transporter / Vendor</label>
-                <Dropdown v-model="form.transporterId" :options="transporters" optionLabel="name" optionValue="id" class="w-full rounded-xl" placeholder="Pilih Vendor" />
+                <Select v-model="form.transporterId" :options="transporters" optionLabel="name" optionValue="id" class="w-full rounded-xl" placeholder="Pilih Vendor" />
              </div>
           </div>
 

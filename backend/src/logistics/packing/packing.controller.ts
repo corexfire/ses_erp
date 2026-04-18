@@ -44,7 +44,7 @@ export class PackingController {
     @Query('search') search?: string,
     @Query('status') status?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     
     if (search) {
       where.OR = [
@@ -76,7 +76,7 @@ export class PackingController {
     @Param('id') id: string,
   ) {
     const packing = await this.prisma.packingList.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         deliveryOrder: {
           include: {
@@ -98,17 +98,17 @@ export class PackingController {
     @Body() body: CreatePackingListDto,
   ) {
     const warehouse = await this.prisma.warehouse.findFirst({
-      where: { id: body.warehouseId, tenantId: req.user.tenantId },
+      where: { id: body.warehouseId, tenantId: req.user.tenantId! },
       select: { id: true, name: true },
     });
     if (!warehouse) throw new NotFoundException('Warehouse not found');
 
-    const count = await this.prisma.packingList.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.packingList.count({ where: { tenantId: req.user.tenantId! } });
     const code = `PKL-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(count + 1).padStart(4, '0')}`;
 
     const packing = await this.prisma.packingList.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code,
         deliveryOrderId: body.deliveryOrderId,
         warehouseId: body.warehouseId,
@@ -125,7 +125,7 @@ export class PackingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'PackingList',
@@ -143,7 +143,7 @@ export class PackingController {
     @Param('id') id: string,
   ) {
     const packing = await this.prisma.packingList.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true, status: true },
     });
     if (!packing) throw new NotFoundException('Packing list not found');
@@ -161,7 +161,7 @@ export class PackingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CONFIRM',
       entity: 'PackingList',

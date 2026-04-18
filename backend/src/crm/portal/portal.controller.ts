@@ -31,7 +31,7 @@ export class CrmPortalController {
     const user = req.user as AuthUser;
     
     // We fetch Customers as masters to see who has Portal access and who doesn't.
-    const where: any = { tenantId: user.tenantId, isActive: true };
+    const where: any = { tenantId: user.tenantId!, isActive: true };
     if (search) {
       where.OR = [
         { code: { contains: search, mode: 'insensitive' } },
@@ -49,11 +49,11 @@ export class CrmPortalController {
     });
 
     const activePortalsCount = await this.prisma.customerPortalUser.count({
-        where: { tenantId: user.tenantId, portalStatus: 'ACTIVE' }
+        where: { tenantId: user.tenantId!, portalStatus: 'ACTIVE' }
     });
     
     const logsCount = await this.prisma.customerPortalActivity.count({
-        where: { tenantId: user.tenantId }
+        where: { tenantId: user.tenantId! }
     });
 
     const summary = {
@@ -71,7 +71,7 @@ export class CrmPortalController {
     const limit = Number(limitArg) || 50;
 
     const activities = await this.prisma.customerPortalActivity.findMany({
-        where: { tenantId: user.tenantId },
+        where: { tenantId: user.tenantId! },
         include: {
             user: { 
                 select: { email: true, portalStatus: true, customer: { select: { name: true, code: true } } }
@@ -91,10 +91,10 @@ export class CrmPortalController {
 
      // Upsert logic inside Postgres
      const portalUser = await this.prisma.customerPortalUser.upsert({
-         where: { tenantId_email: { tenantId: user.tenantId, email: body.email } },
+         where: { tenantId_email: { tenantId: user.tenantId!, email: body.email } },
          update: { portalStatus: 'PENDING_INVITE', inviteSentAt: new Date() },
          create: {
-             tenantId: user.tenantId,
+             tenantId: user.tenantId!,
              customerCode: body.customerCode,
              email: body.email,
              portalStatus: 'PENDING_INVITE',
@@ -104,7 +104,7 @@ export class CrmPortalController {
 
      await this.prisma.customerPortalActivity.create({
          data: {
-             tenantId: user.tenantId,
+             tenantId: user.tenantId!,
              portalUserId: portalUser.id,
              activityType: 'ADMIN_INVITE',
              description: `System Admin dispatched setup password link to ${body.email}.`
@@ -119,13 +119,13 @@ export class CrmPortalController {
      const user = req.user as AuthUser;
 
      const portalUser = await this.prisma.customerPortalUser.update({
-         where: { id: body.portalUserId, tenantId: user.tenantId },
+         where: { id: body.portalUserId, tenantId: user.tenantId! },
          data: { portalStatus: 'SUSPENDED' }
      });
 
      await this.prisma.customerPortalActivity.create({
          data: {
-             tenantId: user.tenantId,
+             tenantId: user.tenantId!,
              portalUserId: portalUser.id,
              activityType: 'ADMIN_REVOKE',
              description: `System Admin revoked external B2B portal permissions for this account.`

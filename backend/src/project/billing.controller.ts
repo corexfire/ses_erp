@@ -41,7 +41,7 @@ export class BillingController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Query('projectId') projectId?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (projectId) where.projectId = projectId;
 
     const claims = await this.prisma.progressClaim.findMany({
@@ -54,25 +54,23 @@ export class BillingController {
 
   @Post('progress-claims')
   @RequirePermissions('project.billing.manage')
-  async create(
-    @Req() req: FastifyRequest & { user: AuthUser },
-    @Body() body: CreateProgressClaimDto,
-  ) {
-    const claim = await this.prisma.progressClaim.create({
-      data: {
-        tenantId: req.user.tenantId,
-        projectId: body.projectId,
-        contractTermijnId: body.contractTermijnId,
-        periodFrom: new Date(body.periodFrom),
-        periodTo: new Date(body.periodTo),
-        percentage: body.percentage,
-        amount: body.amount,
-        notes: body.notes,
-        status: 'DRAFT',
-      },
-    });
-    return claim;
-  }
+   async create(
+     @Req() req: FastifyRequest & { user: AuthUser },
+     @Body() body: CreateProgressClaimDto,
+   ) {
+     const claim = await this.prisma.progressClaim.create({
+       data: {
+         tenantId: req.user.tenantId!,
+         projectId: body.projectId,
+         claimNo: `CL-${Date.now()}`,
+         claimDate: new Date(),
+         progressPercent: body.percentage,
+         description: body.notes || undefined,
+         status: 'DRAFT',
+       },
+     });
+     return claim;
+   }
 
   @Get('progress-claims/:id')
   @RequirePermissions('project.billing.read')
@@ -81,7 +79,7 @@ export class BillingController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const claim = await this.prisma.progressClaim.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return claim;
   }
@@ -93,7 +91,7 @@ export class BillingController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const claim = await this.prisma.progressClaim.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!claim || claim.status !== 'DRAFT') {
       throw new Error('Can only submit draft claims');
@@ -113,7 +111,7 @@ export class BillingController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const claim = await this.prisma.progressClaim.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!claim || claim.status !== 'SUBMITTED') {
       throw new Error('Can only approve submitted claims');
@@ -133,21 +131,22 @@ export class BillingController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const claim = await this.prisma.progressClaim.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!claim || claim.status !== 'APPROVED') {
       throw new Error('Can only generate invoice from approved claims');
     }
 
-    const invoice = await this.prisma.progressInvoice.create({
-      data: {
-        tenantId: req.user.tenantId,
-        progressClaimId: id,
-        projectId: claim.projectId,
-        amount: claim.amount,
-        status: 'DRAFT',
-      },
-    });
+     const invoice = await this.prisma.progressInvoice.create({
+       data: {
+         tenantId: req.user.tenantId!,
+         progressClaimId: id,
+         projectId: claim.projectId,
+         grossAmount: 0, // TODO: calculate from claim
+         netAmount: 0,
+         status: 'DRAFT',
+       },
+     });
 
     await this.prisma.progressClaim.update({
       where: { id },
@@ -163,7 +162,7 @@ export class BillingController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const invoices = await this.prisma.progressInvoice.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { project: true },
       orderBy: { createdAt: 'desc' },
       take: 200,
@@ -177,16 +176,17 @@ export class BillingController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Body() body: CreateProgressInvoiceDto,
   ) {
-    const invoice = await this.prisma.progressInvoice.create({
-      data: {
-        tenantId: req.user.tenantId,
-        projectId: body.projectId,
-        progressClaimId: body.progressClaimId,
-        amount: body.amount,
-        invoiceNo: body.invoiceNo,
-        status: body.status ?? 'DRAFT',
-      },
-    });
+     const invoice = await this.prisma.progressInvoice.create({
+       data: {
+         tenantId: req.user.tenantId!,
+         projectId: body.projectId,
+         progressClaimId: body.progressClaimId,
+         grossAmount: body.amount,
+         netAmount: body.amount,
+         invoiceNo: body.invoiceNo,
+         status: body.status ?? 'DRAFT',
+       },
+     });
 
     return invoice;
   }
@@ -198,14 +198,15 @@ export class BillingController {
     @Body() body: UpdateProgressInvoiceDto,
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
-    const invoice = await this.prisma.progressInvoice.update({
-      where: { id },
-      data: {
-        invoiceNo: body.invoiceNo,
-        amount: body.amount,
-        status: body.status ?? 'SUBMITTED',
-      },
-    });
+     const invoice = await this.prisma.progressInvoice.update({
+       where: { id },
+       data: {
+         invoiceNo: body.invoiceNo,
+         grossAmount: body.amount,
+         netAmount: body.amount,
+         status: body.status ?? 'SUBMITTED',
+       },
+     });
     return invoice;
   }
 
@@ -216,7 +217,7 @@ export class BillingController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const invoice = await this.prisma.progressInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!invoice) throw new Error('Invoice not found');
 

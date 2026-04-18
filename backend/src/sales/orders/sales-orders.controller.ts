@@ -37,7 +37,7 @@ export class SalesOrdersController {
   ) {
     const orders = await this.prisma.salesOrder.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [{ code: { contains: q, mode: 'insensitive' } }],
@@ -58,7 +58,7 @@ export class SalesOrdersController {
     @Param('id') id: string,
   ) {
     const order = await this.prisma.salesOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         customer: true,
         quotation: true,
@@ -80,14 +80,14 @@ export class SalesOrdersController {
     @Body() body: CreateSalesOrderDto,
   ) {
     const customer = await this.prisma.customer.findFirst({
-      where: { id: body.customerId, tenantId: req.user.tenantId },
+      where: { id: body.customerId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!customer) throw new NotFoundException('Customer not found');
 
     if (body.quotationId) {
       const quotation = await this.prisma.salesQuotation.findFirst({
-        where: { id: body.quotationId, tenantId: req.user.tenantId },
+        where: { id: body.quotationId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!quotation) throw new NotFoundException('Quotation not found');
@@ -96,7 +96,7 @@ export class SalesOrdersController {
     const order = await this.prisma.$transaction(async (tx) => {
       const o = await tx.salesOrder.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           customerId: body.customerId,
           quotationId: body.quotationId,
@@ -107,7 +107,7 @@ export class SalesOrdersController {
       if (body.items.length > 0) {
         await tx.salesOrderItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             orderId: o.id,
             lineNo: idx + 1,
             description: it.description,
@@ -123,7 +123,7 @@ export class SalesOrdersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'SalesOrder',
@@ -141,7 +141,7 @@ export class SalesOrdersController {
     @Body() body: UpdateSalesOrderDto,
   ) {
     const exists = await this.prisma.salesOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Sales order not found');
@@ -157,12 +157,12 @@ export class SalesOrdersController {
 
       if (body.items) {
         await tx.salesOrderItem.deleteMany({
-          where: { tenantId: req.user.tenantId, orderId: id },
+          where: { tenantId: req.user.tenantId!, orderId: id },
         });
         if (body.items.length > 0) {
           await tx.salesOrderItem.createMany({
             data: body.items.map((it, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               orderId: id,
               lineNo: idx + 1,
               description: it.description,
@@ -179,7 +179,7 @@ export class SalesOrdersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'SalesOrder',
@@ -196,14 +196,14 @@ export class SalesOrdersController {
     @Param('id') id: string,
   ) {
     const order = await this.prisma.salesOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!order) throw new NotFoundException('Sales order not found');
 
     const workflow = await this.prisma.workflowDefinition.findFirst({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         moduleKey: 'sales',
         docType: 'SALES_ORDER',
         isActive: true,
@@ -212,7 +212,7 @@ export class SalesOrdersController {
     });
     const hasSteps = workflow
       ? (await this.prisma.workflowStep.count({
-          where: { tenantId: req.user.tenantId, definitionId: workflow.id },
+          where: { tenantId: req.user.tenantId!, definitionId: workflow.id },
         })) > 0
       : false;
 
@@ -226,7 +226,7 @@ export class SalesOrdersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'submit',
       entity: 'SalesOrder',
@@ -247,7 +247,7 @@ export class SalesOrdersController {
     @Param('id') id: string,
   ) {
     const order = await this.prisma.salesOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: {
         id: true,
         status: true,
@@ -263,7 +263,7 @@ export class SalesOrdersController {
     if (order.workflowDefinitionId && order.currentStepNo) {
       const step = await this.prisma.workflowStep.findFirst({
         where: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           definitionId: order.workflowDefinitionId,
           stepNo: order.currentStepNo,
         },
@@ -281,7 +281,7 @@ export class SalesOrdersController {
 
       const maxStep = await this.prisma.workflowStep.aggregate({
         where: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           definitionId: order.workflowDefinitionId,
         },
         _max: { stepNo: true },
@@ -299,7 +299,7 @@ export class SalesOrdersController {
       });
 
       await this.audit.log({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         actorUserId: req.user.id,
         action: 'approve',
         entity: 'SalesOrder',
@@ -323,7 +323,7 @@ export class SalesOrdersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'approve',
       entity: 'SalesOrder',
@@ -340,7 +340,7 @@ export class SalesOrdersController {
     @Param('id') id: string,
   ) {
     const order = await this.prisma.salesOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!order) throw new NotFoundException('Sales order not found');
@@ -353,7 +353,7 @@ export class SalesOrdersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'reject',
       entity: 'SalesOrder',

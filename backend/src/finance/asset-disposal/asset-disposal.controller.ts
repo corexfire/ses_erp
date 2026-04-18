@@ -18,7 +18,7 @@ export class AssetDisposalController {
   @Get()
   @RequirePermissions('finance.assetDisposal.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (status) where.status = status;
 
     const disposals = await this.prisma.assetDisposal.findMany({
@@ -33,7 +33,7 @@ export class AssetDisposalController {
   @RequirePermissions('finance.assetDisposal.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const disposal = await this.prisma.assetDisposal.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { asset: true },
     });
     return { disposal };
@@ -42,7 +42,7 @@ export class AssetDisposalController {
   @Post()
   @RequirePermissions('finance.assetDisposal.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { assetId: string; disposalNo: string; disposalDate: string; saleValue: number; notes?: string }) {
-    const asset = await this.prisma.fixedAsset.findFirst({ where: { id: body.assetId, tenantId: req.user.tenantId } });
+    const asset = await this.prisma.fixedAsset.findFirst({ where: { id: body.assetId, tenantId: req.user.tenantId! } });
     if (!asset) throw new Error('Asset not found');
 
     const accumulatedDepreciation = await this.prisma.fixedAssetDepreciation.aggregate({
@@ -54,7 +54,7 @@ export class AssetDisposalController {
 
     const disposal = await this.prisma.assetDisposal.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         assetId: body.assetId,
         disposalNo: body.disposalNo,
         disposalDate: new Date(body.disposalDate),
@@ -65,14 +65,14 @@ export class AssetDisposalController {
       },
       include: { asset: true },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'CREATE', entity: 'AssetDisposal', entityId: disposal.id, metadata: { disposal } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'CREATE', entity: 'AssetDisposal', entityId: disposal.id, metadata: { disposal } });
     return { disposal };
   }
 
   @Post(':id/approve')
   @RequirePermissions('finance.assetDisposal.approve')
   async approve(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const disposal = await this.prisma.assetDisposal.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const disposal = await this.prisma.assetDisposal.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!disposal) throw new Error('Asset disposal not found');
 
     await this.prisma.fixedAsset.update({
@@ -85,15 +85,15 @@ export class AssetDisposalController {
       data: { status: 'APPROVED' },
       include: { asset: true },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'APPROVE', entity: 'AssetDisposal', entityId: id, metadata: { disposal: updated } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'APPROVE', entity: 'AssetDisposal', entityId: id, metadata: { disposal: updated } });
     return { disposal: updated };
   }
 
   @Post(':id/delete')
   @RequirePermissions('finance.assetDisposal.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    await this.prisma.assetDisposal.deleteMany({ where: { id, tenantId: req.user.tenantId } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'DELETE', entity: 'AssetDisposal', entityId: id, metadata: { id } });
+    await this.prisma.assetDisposal.deleteMany({ where: { id, tenantId: req.user.tenantId! } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'DELETE', entity: 'AssetDisposal', entityId: id, metadata: { id } });
     return { success: true };
   }
 }

@@ -45,7 +45,7 @@
                 <i class="pi pi-search text-slate-400" />
                 <InputText v-model="q" placeholder="Cari Kode atau Trayek..." class="p-inputtext-sm rounded-xl border-slate-200 w-64" />
              </div>
-             <Dropdown v-model="isActiveFilter" :options="[{label: 'Semua Status', value: ''}, {label: 'Aktif', value: 'true'}, {label: 'Nonaktif', value: 'false'}]" optionLabel="label" optionValue="value" class="p-dropdown-sm rounded-xl text-[10px] font-bold uppercase w-40" />
+             <Select v-model="isActiveFilter" :options="[{label: 'Semua Status', value: ''}, {label: 'Aktif', value: 'true'}, {label: 'Nonaktif', value: 'false'}]" optionLabel="label" optionValue="value" class="p-select-sm rounded-xl text-[10px] font-bold uppercase w-40" />
           </div>
        </div>
 
@@ -138,7 +138,7 @@
                 </div>
                 <div class="space-y-1">
                    <label class="text-[10px] font-black text-slate-400 uppercase">Gudang Asal</label>
-                   <Dropdown v-model="form.warehouseId" :options="warehouses" optionLabel="name" optionValue="id" class="w-full rounded-xl" placeholder="Pilih Gudang" />
+                   <Select v-model="form.warehouseId" :options="warehouses" optionLabel="name" optionValue="id" class="w-full rounded-xl" placeholder="Pilih Gudang" />
                 </div>
              </div>
           </div>

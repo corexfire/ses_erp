@@ -29,7 +29,7 @@ export class CoaController {
   @RequirePermissions('core.coa.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const accounts = await this.prisma.coaAccount.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ code: 'asc' }],
     });
     return { accounts };
@@ -43,7 +43,7 @@ export class CoaController {
   ) {
     const account = await this.prisma.coaAccount.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         type: body.type,
@@ -53,7 +53,7 @@ export class CoaController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'CoaAccount',
@@ -75,7 +75,7 @@ export class CoaController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'CoaAccount',

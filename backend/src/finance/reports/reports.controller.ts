@@ -23,18 +23,18 @@ export class ReportsController {
     const end = endDate ? new Date(endDate + 'T23:59:59.999') : new Date();
 
     const accounts = await this.prisma.coaAccount.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true, isPosting: true },
+      where: { tenantId: req.user.tenantId!, isActive: true, isPosting: true },
       orderBy: { code: 'asc' },
     });
 
     const entries = await this.prisma.journalEntry.findMany({
-      where: { tenantId: req.user.tenantId, status: 'POSTED', entryDate: { gte: start, lte: end } },
+      where: { tenantId: req.user.tenantId!, status: 'POSTED', entryDate: { gte: start, lte: end } },
       select: { id: true, entryNo: true, description: true, referenceNo: true, entryDate: true },
     });
     const entryMap = new Map(entries.map(e => [e.id, e]));
     const entryIds = [...entryMap.keys()];
 
-    const lineWhere: any = { tenantId: req.user.tenantId, journalEntryId: { in: entryIds } };
+    const lineWhere: any = { tenantId: req.user.tenantId!, journalEntryId: { in: entryIds } };
     if (accountCode) lineWhere.accountCode = accountCode;
 
     const journalLines = await this.prisma.journalEntryLine.findMany({
@@ -42,7 +42,9 @@ export class ReportsController {
       orderBy: { accountCode: 'asc' },
     });
 
-    const ccIds = [...new Set(journalLines.filter(l => l.costCenterId).map(l => l.costCenterId))];
+     const ccIds = [...new Set(journalLines
+       .filter(l => l.costCenterId != null)
+       .map(l => l.costCenterId!))];
     const costCenters = await this.prisma.costCenter.findMany({
       where: { id: { in: ccIds } },
       select: { id: true, code: true, name: true },
@@ -70,12 +72,12 @@ export class ReportsController {
 
       if (gl[code].transactions.length === 0) {
         const priorEntryIds = await this.prisma.journalEntry.findMany({
-          where: { tenantId: req.user.tenantId, status: 'POSTED', entryDate: { lt: start } },
+          where: { tenantId: req.user.tenantId!, status: 'POSTED', entryDate: { lt: start } },
           select: { id: true },
         });
         const priorIds = priorEntryIds.map(e => e.id);
         const priorLines = await this.prisma.journalEntryLine.findMany({
-          where: { tenantId: req.user.tenantId, accountCode: code, journalEntryId: { in: priorIds } },
+          where: { tenantId: req.user.tenantId!, accountCode: code, journalEntryId: { in: priorIds } },
         });
         const priorDebit = priorLines.reduce((s, l) => s + Number(l.debit || 0), 0);
         const priorCredit = priorLines.reduce((s, l) => s + Number(l.credit || 0), 0);
@@ -115,20 +117,20 @@ export class ReportsController {
     const endDate = asOfDate ? new Date(asOfDate + 'T23:59:59.999') : new Date();
 
     const accounts = await this.prisma.coaAccount.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true, isPosting: true },
+      where: { tenantId: req.user.tenantId!, isActive: true, isPosting: true },
       orderBy: { code: 'asc' },
     });
 
     const ledgers = await this.prisma.stockLedger.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         postingDate: { lte: endDate },
       },
     });
 
     const journalLines = await this.prisma.journalEntryLine.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         journalEntry: { status: 'POSTED', entryDate: { lte: endDate } },
       },
     });
@@ -173,13 +175,13 @@ export class ReportsController {
     const end = endDate ? new Date(endDate + 'T23:59:59.999') : new Date();
 
     const accounts = await this.prisma.coaAccount.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true, isPosting: true },
+      where: { tenantId: req.user.tenantId!, isActive: true, isPosting: true },
       orderBy: { code: 'asc' },
     });
 
     const journalLines = await this.prisma.journalEntryLine.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         journalEntry: { status: 'POSTED', entryDate: { gte: start, lte: end } },
       },
     });
@@ -215,13 +217,13 @@ export class ReportsController {
       : new Date();
 
     const accounts = await this.prisma.coaAccount.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true, isPosting: true },
+      where: { tenantId: req.user.tenantId!, isActive: true, isPosting: true },
       orderBy: { code: 'asc' },
     });
 
     const journalLines = await this.prisma.journalEntryLine.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         journalEntry: { status: 'POSTED', entryDate: { lte: endDate } },
       },
     });
@@ -256,11 +258,11 @@ export class ReportsController {
 
     if (!type || type === 'AR') {
       const invoices = await this.prisma.customerInvoice.findMany({
-        where: { tenantId: req.user.tenantId, status: { in: ['OPEN', 'OVERDUE'] } },
+        where: { tenantId: req.user.tenantId!, status: { in: ['OPEN', 'OVERDUE'] } },
       });
 
       const customers = await this.prisma.customer.findMany({
-        where: { tenantId: req.user.tenantId },
+        where: { tenantId: req.user.tenantId! },
       });
       const customerMap = new Map(customers.map(c => [c.code, c]));
 
@@ -285,11 +287,11 @@ export class ReportsController {
 
     if (!type || type === 'AP') {
       const invoices = await this.prisma.supplierInvoice.findMany({
-        where: { tenantId: req.user.tenantId, status: { in: ['OPEN', 'OVERDUE'] } },
+        where: { tenantId: req.user.tenantId!, status: { in: ['OPEN', 'OVERDUE'] } },
       });
 
       const suppliers = await this.prisma.supplier.findMany({
-        where: { tenantId: req.user.tenantId },
+        where: { tenantId: req.user.tenantId! },
       });
       const supplierMap = new Map(suppliers.map(s => [s.code, s]));
 

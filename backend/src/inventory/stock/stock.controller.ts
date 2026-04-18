@@ -28,7 +28,7 @@ export class StockController {
   ) {
     const lines = await this.prisma.stockLedger.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(itemId ? { itemId } : {}),
         ...(warehouseId ? { warehouseId } : {}),
         ...(binLocationId ? { binLocationId } : {}),
@@ -52,7 +52,7 @@ export class StockController {
     const grouped = await this.prisma.stockLedger.groupBy({
       by: ['itemId', 'warehouseId', 'binLocationId'],
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(warehouseId ? { warehouseId } : {}),
         ...(itemId ? { itemId } : {}),
       },
@@ -68,19 +68,19 @@ export class StockController {
     const [items, warehouses, bins] = await Promise.all([
       itemIds.length > 0
         ? this.prisma.item.findMany({
-            where: { tenantId: req.user.tenantId, id: { in: Array.from(new Set(itemIds)) } },
+            where: { tenantId: req.user.tenantId!, id: { in: Array.from(new Set(itemIds)) } },
             select: { id: true, code: true, name: true },
           })
         : Promise.resolve([]),
       warehouseIds.length > 0
         ? this.prisma.warehouse.findMany({
-            where: { tenantId: req.user.tenantId, id: { in: Array.from(new Set(warehouseIds)) } },
+            where: { tenantId: req.user.tenantId!, id: { in: Array.from(new Set(warehouseIds)) } },
             select: { id: true, code: true, name: true },
           })
         : Promise.resolve([]),
       binIds.length > 0
         ? this.prisma.binLocation.findMany({
-            where: { tenantId: req.user.tenantId, id: { in: Array.from(new Set(binIds)) } },
+            where: { tenantId: req.user.tenantId!, id: { in: Array.from(new Set(binIds)) } },
             select: { id: true, code: true, name: true, warehouseId: true },
           })
         : Promise.resolve([]),

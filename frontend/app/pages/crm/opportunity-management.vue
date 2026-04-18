@@ -1,21 +1,20 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-emerald-500 relative overflow-hidden">
-      <div class="absolute right-[-15px] top-[-10px] opacity-[0.03] pointer-events-none">
-        <i class="pi pi-chart-line text-[150px] text-emerald-900"></i>
-      </div>
-      <div class="flex flex-col md:flex-row justify-between md:items-start gap-4 relative z-10">
-        <div>
-          <div class="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-            <i class="pi pi-money-bill text-emerald-600"></i> Opportunity Management
+    <!-- Header (Premium Opportunity style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-emerald-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">CRM Management</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-emerald-600">Opportunity Hub</span>
           </div>
-          <div class="mt-1 text-sm text-slate-600 font-medium">
-            Kelola data master Deals (Peluang Penjualan), pantau nilai transaksi (Pipeline Value), dan atur kepemilikan agen.
-          </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">Opportunity <span class="text-emerald-600 italic">Management</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-xl">Kelola data master Deals (Peluang Penjualan), pantau nilai transaksi (Pipeline Value), dan atur kepemilikan agen.</p>
         </div>
-        <div class="flex gap-2 shrink-0">
-          <Button label="Buat Deal Baru" size="small" icon="pi pi-plus" class="bg-emerald-600 text-white border-none font-bold shadow-sm hover:bg-emerald-700" :disabled="loading || !canCreate" @click="openCreate" />
+        <div class="flex items-center gap-3">
+          <Button label="Buat Deal Baru" icon="pi pi-plus" class="p-button-rounded h-12 px-8 bg-emerald-600 border-none text-white font-black text-[10px] uppercase shadow-lg shadow-emerald-100 hover:scale-105 active:scale-95 transition-all" :disabled="loading || !canCreate" @click="openCreate" />
         </div>
       </div>
     </div>
@@ -28,195 +27,261 @@
       <i class="pi pi-exclamation-triangle text-lg"></i> {{ error }}
     </div>
 
-    <!-- KPI Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 items-start animate-fade-in-up">
-      <div class="bg-slate-800 border-b-4 border-b-slate-900 rounded-xl p-4 shadow-sm text-white">
-        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Pipeline Deals</div>
-        <div class="text-3xl font-black mt-0.5">{{ opportunities.filter(o => o.stage !== 'CLOSED_LOST' && o.stage !== 'CLOSED_WON').length }}</div>
-        <div class="text-xs text-emerald-400 font-bold mt-1">{{ fmtRp(totalPipelineValue) }}</div>
+    <!-- KPI Stats Banners (Premium Style) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+       <!-- Pipeline Value Banner - High Contrast -->
+      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+        <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4 opacity-80">Total Pipeline Value</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-2xl font-black text-white tracking-tighter font-mono">{{ fmtRp(totalPipelineValue) }}</h3>
+          <div class="p-3 bg-slate-700 rounded-xl text-slate-100 shadow-lg">
+            <i class="pi pi-chart-line text-lg"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proposal Banners -->
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-amber-500 tracking-[0.2em] mb-4">Proposal Phase</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-4xl font-black text-amber-600 tracking-tighter">{{ countStage('PROPOSAL') }}</h3>
+          <div class="p-3 bg-amber-50 text-amber-500 rounded-xl border border-amber-100"><i class="pi pi-file-edit text-lg"></i></div>
+        </div>
       </div>
       
-      <div class="bg-amber-50 border border-amber-200 border-b-4 border-b-amber-500 rounded-xl p-4 shadow-sm">
-        <div class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Proposal</div>
-        <div class="text-3xl font-black text-amber-700 mt-0.5">{{ countStage('PROPOSAL') }}</div>
+      <!-- Negotiation Banners -->
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-blue-500 tracking-[0.2em] mb-4">Negotiation</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-4xl font-black text-blue-600 tracking-tighter">{{ countStage('NEGOTIATION') }}</h3>
+          <div class="p-3 bg-blue-50 text-blue-500 rounded-xl border border-blue-100"><i class="pi pi-comments text-lg"></i></div>
+        </div>
       </div>
       
-      <div class="bg-blue-50 border border-blue-200 border-b-4 border-b-blue-500 rounded-xl p-4 shadow-sm">
-        <div class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Negotiation</div>
-        <div class="text-3xl font-black text-blue-700 mt-0.5">{{ countStage('NEGOTIATION') }}</div>
-      </div>
-      
-      <div class="bg-emerald-50 border border-emerald-200 border-b-4 border-b-emerald-500 rounded-xl p-4 shadow-sm">
-        <div class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Closed Won / Goal</div>
-        <div class="text-3xl font-black text-emerald-700 mt-0.5">{{ countStage('CLOSED_WON') }}</div>
+      <!-- Goal / Closed Won Banners -->
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-emerald-500 tracking-[0.2em] mb-4">Deals Won / Goal</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-4xl font-black text-emerald-600 tracking-tighter">{{ countStage('CLOSED_WON') }}</h3>
+          <div class="p-3 bg-emerald-50 text-emerald-500 rounded-xl border border-emerald-100"><i class="pi pi-trophy text-lg"></i></div>
+        </div>
       </div>
     </div>
 
-    <!-- Controls -->
-    <div class="bg-white border rounded-xl p-4 shadow-sm flex flex-wrap gap-3 items-center animate-fade-in-up">
-      <span class="p-input-icon-left w-72">
-         <i class="pi pi-search" />
-         <InputText v-model="q" placeholder="Cari nama deal, kode, atau info klien..." class="w-full text-sm h-10" @keyup.enter="load" />
-      </span>
-      <Button severity="secondary" size="small" :loading="loading" icon="pi pi-refresh" @click="load" class="h-10 w-10 shrink-0" />
-      
-      <div class="ml-auto text-xs font-bold text-slate-400 bg-slate-50 px-3 py-2 rounded-lg border">
-         Tip: Buka menu <a href="/crm/pipeline" class="text-emerald-600 hover:underline">Pipeline</a> untuk tampilan visual Drag & Drop.
+    <!-- Controls (Standardized Premium Style) -->
+    <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm flex flex-wrap gap-4 items-center animate-fade-in-up">
+      <div class="relative flex-1 max-w-sm">
+        <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <InputText v-model="q" placeholder="Cari nama deal, kode, atau info klien..." class="w-full pl-10 h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white transition-all text-sm font-bold shadow-inner" @keyup.enter="load" />
+      </div>
+      <div class="flex items-center gap-2">
+        <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="load" :loading="loading" class="h-12 w-12 border-slate-200 text-slate-500 hover:text-emerald-600 transition-all" />
+      </div>
+      <div class="ml-auto flex items-center gap-2 text-[10px] font-black uppercase text-slate-400 tracking-widest bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">
+         <i class="pi pi-info-circle text-emerald-500"></i>
+         Tip: Gunakan menu <NuxtLink to="/crm/pipeline" class="text-emerald-600 hover:underline">Pipeline</NuxtLink> untuk Visual Drag & Drop.
       </div>
     </div>
 
-    <!-- TABLE -->
-    <div class="rounded-xl border bg-white shadow-sm overflow-hidden animate-fade-in-up">
+    <!-- === TABLE VIEW (Premium Inventory Style) === -->
+    <div class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up">
       <table class="w-full text-sm">
-        <thead class="bg-slate-50 text-left text-[11px] text-slate-500 uppercase tracking-widest font-black">
+        <thead class="bg-slate-50/80 text-left">
           <tr>
-            <th class="px-5 py-3 border-b border-b-slate-200 w-32">Data Deals</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200">Klien & Target Tanggal</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200 text-right w-40">Nilai (Expected)</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200 w-44">PIC / Owner</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200 text-center w-40">Sales Stage</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200 text-center w-20">Aksi</th>
+            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-48">Identifikasi Deal</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Relasi Klien</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-56 text-right">Value (Forecast)</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-52">Sales Owner</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-44 text-center">Pipeline Stage</th>
+            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-32 text-right">Aksi</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody class="divide-y divide-slate-50">
           <tr v-if="loading">
-            <td colspan="6" class="py-16 text-center text-slate-400"><i class="pi pi-spinner pi-spin mr-2 text-emerald-600 shadow-sm"></i> Memuat master peluang...</td>
+            <td colspan="6" class="py-24 text-center">
+              <i class="pi pi-spinner pi-spin text-4xl text-emerald-600 opacity-20"></i>
+              <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest">Sinkronisasi Database Peluang...</div>
+            </td>
           </tr>
           
-          <tr v-for="o in filteredOpps" v-else :key="o.id" class="transition hover:bg-emerald-50/20 group">
-            <td class="px-5 py-3 border-l-4 align-top" :style="{ borderLeftColor: stageColor(o.stage) }">
-               <span class="font-mono text-[11px] font-black text-emerald-700 bg-emerald-50 border border-emerald-100 px-1.5 py-0.5 rounded cursor-pointer hover:bg-emerald-100" @click="navigateTo(`/crm/opportunities/${o.id}`)">
-                {{ o.code }}
-              </span>
-              <div class="mt-2 font-bold text-slate-800 text-sm leading-tight line-clamp-2" :title="o.name">{{ o.name }}</div>
+          <tr v-for="o in filteredOpps" v-else :key="o.id" class="transition-all hover:bg-slate-50/50 group">
+            <td class="px-8 py-6 align-middle">
+              <div class="flex flex-col">
+                <span class="font-mono text-[11px] font-black text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg border border-emerald-100 cursor-pointer hover:bg-emerald-100 inline-block w-fit transition-colors" @click="navigateTo(`/crm/opportunities/${o.id}`)">
+                  {{ o.code }}
+                </span>
+                <div class="mt-2 font-black text-slate-900 text-[14px] tracking-tight leading-tight line-clamp-2" :title="o.name">{{ o.name?.toLowerCase() }}</div>
+              </div>
             </td>
             
-            <td class="px-4 py-3 align-top border-l">
-              <div class="flex flex-col gap-1.5">
-                 <div v-if="o.customer" class="flex items-center gap-1 text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded w-max border border-blue-100">
-                    <i class="pi pi-building text-[9px]"></i> {{ o.customer.name || o.customer.code }} (Customer)
+            <td class="px-6 py-6 align-middle">
+              <div class="flex flex-col gap-2">
+                 <div v-if="o.customer" class="flex items-center gap-1.5 text-[10px] font-black text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md w-max border border-blue-100 uppercase tracking-wider">
+                    <i class="pi pi-building text-[9px]"></i> {{ o.customer.name || o.customer.code }} (CLIENT)
                  </div>
-                 <div v-else-if="o.lead" class="flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded w-max border border-amber-100">
-                    <i class="pi pi-user text-[9px]"></i> {{ o.lead.name || o.lead.code }} (Lead)
+                 <div v-else-if="o.lead" class="flex items-center gap-1.5 text-[10px] font-black text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md w-max border border-amber-100 uppercase tracking-wider">
+                    <i class="pi pi-user text-[9px]"></i> {{ o.lead.name || o.lead.code }} (LEAD)
                  </div>
-                 <div v-else class="text-[10px] text-slate-400 italic font-medium">Bebas / No Client</div>
+                 <div v-else class="text-[9px] text-slate-400 font-black uppercase tracking-widest">Unlinked Account</div>
                  
-                 <div class="text-[10px] font-black uppercase flex items-center gap-1 mt-1" :class="isPast(o.closeDate) && o.stage !== 'CLOSED_WON' && o.stage !== 'CLOSED_LOST' ? 'text-red-500' : 'text-slate-500'">
-                   <i class="pi pi-calendar text-[9px]"></i> CLOSE: {{ o.closeDate ? formatDate(o.closeDate) : 'Unknown' }}
+                 <div class="text-[9px] font-black uppercase flex items-center gap-1.5" :class="isPast(o.closeDate) && o.stage !== 'CLOSED_WON' && o.stage !== 'CLOSED_LOST' ? 'text-rose-500' : 'text-slate-400'">
+                   <i class="pi pi-calendar text-[10px]"></i> Est. Close: {{ o.closeDate ? formatDate(o.closeDate) : 'TBA' }}
                  </div>
               </div>
             </td>
 
-             <td class="px-4 py-3 align-top border-l text-right">
-              <div class="font-black font-mono text-emerald-700">{{ fmtRp(o.expectedValue ?? 0) }}</div>
+            <td class="px-6 py-6 align-middle text-right">
+              <div class="flex flex-col items-end">
+                <div class="font-black font-mono text-[16px] text-slate-900 tracking-tighter">{{ fmtRp(o.expectedValue ?? 0) }}</div>
+                <div class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Expected Revenue</div>
+              </div>
             </td>
 
-            <td class="px-4 py-3 align-top border-l">
-              <select v-model="ownerSelection[o.id]"
-                class="w-full h-8 rounded border border-slate-200 px-2 text-[11px] font-bold text-slate-700 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none"
-                :disabled="!canAssign || !canReadUsers"
-                @change="assignOwner(o)"
-                :class="ownerSelection[o.id] ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-slate-50'">
-                <option value="">-- No Owner --</option>
-                <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name ?? u.email }}</option>
-              </select>
+            <td class="px-6 py-6 align-middle">
+              <div class="relative h-10 group/select">
+                 <select v-model="ownerSelection[o.id]"
+                  class="w-full h-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-[11px] font-black uppercase tracking-tighter text-slate-600 appearance-none focus:border-emerald-500 focus:bg-white outline-none transition-all pr-8"
+                  :disabled="!canAssign || !canReadUsers"
+                  @change="assignOwner(o)">
+                  <option value="">OPEN / NO OWNER</option>
+                  <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name ?? u.email }}</option>
+                </select>
+                <i class="pi pi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 pointer-events-none transition-transform group-hover/select:translate-y-[-40%]"></i>
+              </div>
             </td>
 
-            <td class="px-4 py-3 align-top border-l text-center">
-              <select v-model="stageSelection[o.id]"
-                class="w-full h-8 rounded appearance-none px-2 text-center text-[10px] font-black uppercase tracking-widest outline-none transition"
-                :disabled="!canUpdate"
-                :style="stageStyle(stageSelection[o.id])"
-                @change="updateStage(o)">
-                <option value="QUALIFICATION" class="bg-white text-slate-800">QUALIFICATION</option>
-                <option value="PROPOSAL" class="bg-white text-slate-800">PROPOSAL</option>
-                <option value="NEGOTIATION" class="bg-white text-slate-800">NEGOTIATION</option>
-                <option value="CLOSED_WON" class="bg-white text-slate-800 font-black">CLOSED_WON</option>
-                <option value="CLOSED_LOST" class="bg-white text-slate-800">CLOSED_LOST</option>
-              </select>
+            <td class="px-6 py-6 align-middle text-center">
+              <div class="inline-block min-w-[140px]">
+                <select v-model="stageSelection[o.id]"
+                  class="w-full h-8 rounded-full border appearance-none px-3 text-center text-[10px] font-black uppercase tracking-[0.1em] focus:ring-2 outline-none transition-all cursor-pointer shadow-sm"
+                  :disabled="!canUpdate"
+                  :style="stageStyle(stageSelection[o.id])"
+                  @change="updateStage(o)">
+                  <option value="QUALIFICATION" class="bg-white text-slate-800">QUALIFICATION</option>
+                  <option value="PROPOSAL" class="bg-white text-slate-800">PROPOSAL</option>
+                  <option value="NEGOTIATION" class="bg-white text-slate-800">NEGOTIATION</option>
+                  <option value="CLOSED_WON" class="bg-white text-slate-800 font-black">CLOSED WON / WIN</option>
+                  <option value="CLOSED_LOST" class="bg-white text-slate-800">CLOSED LOST</option>
+                </select>
+              </div>
             </td>
             
-            <td class="px-4 py-3 align-top border-l text-center">
-              <div class="flex justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button icon="pi pi-pencil" v-tooltip="'Edit Details'" size="small" outlined class="h-8 w-8 text-[11px] px-0" severity="secondary" @click="openEdit(o)" />
+            <td class="px-8 py-6 align-middle text-right">
+              <div class="flex justify-end gap-2 opacity-0 lg:group-hover:opacity-100 transition-all duration-300 translate-x-4 lg:group-hover:translate-x-0">
+                <Button icon="pi pi-pencil" v-tooltip.left="'Edit Details'" severity="secondary" text rounded class="h-10 w-10 text-slate-400 hover:text-emerald-600 bg-slate-50 hover:bg-emerald-50" @click="openEdit(o)" />
+                <Button icon="pi pi-external-link" v-tooltip.left="'Open Hub'" severity="secondary" text rounded class="h-10 w-10 text-slate-400 hover:text-blue-600 bg-slate-50 hover:bg-blue-50" @click="navigateTo(`/crm/opportunities/${o.id}`)" />
               </div>
             </td>
           </tr>
 
           <tr v-if="!loading && filteredOpps.length === 0">
-            <td colspan="6" class="py-12 text-center text-slate-400 italic text-sm">Tidak ada deals yang sesuai pencarian.</td>
+            <td colspan="6" class="py-32 text-center text-slate-400">
+              <i class="pi pi-inbox text-5xl opacity-10 mb-4 block"></i>
+              <div class="text-[10px] font-black uppercase tracking-[0.2em]">Peluang Kosong / Tidak Ditemukan</div>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Form Drawer -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm" @click.self="closeDialog">
-      <div class="w-full max-w-md h-full bg-white shadow-2xl flex flex-col overflow-y-auto animate-slide-in-right">
-        <div class="p-5 border-b bg-slate-50 flex justify-between rounded-t-xl" style="borderTop: 4px solid #10b981;">
-          <div class="text-lg font-black text-slate-800 flex items-center gap-2">
-            <i class="pi pi-pencil text-emerald-600" v-if="editingId"></i>
-             <i class="pi pi-plus text-emerald-600" v-else></i>
-            {{ editingId ? 'Update Detail Opportunity' : 'Buat Opportunity Baru' }}
+    <!-- Form Dialog (Universal Centered Style) -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-2xl max-h-[90vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white">
+        <!-- Dialog Header -->
+        <div class="p-10 border-b bg-white flex justify-between items-center relative overflow-hidden shrink-0">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
+          <div class="relative flex items-center gap-5">
+             <div class="w-16 h-16 rounded-[1.5rem] bg-slate-900 flex items-center justify-center text-white shadow-xl rotate-3">
+                <i class="pi pi-briefcase text-3xl" v-if="!editingId"></i>
+                <i class="pi pi-pencil text-3xl" v-else></i>
+             </div>
+             <div>
+                <h4 class="text-3xl font-black text-slate-900 tracking-tight leading-none uppercase">{{ editingId ? 'Update Detail' : 'Registrasi' }} <span class="text-emerald-600 italic">Deal</span></h4>
+                <p class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mt-2 px-1 border-l-2 border-emerald-500">Pipelines & Revenue Revenue Hub</p>
+             </div>
           </div>
-          <button class="text-slate-400 hover:text-slate-600 bg-slate-200 w-8 h-8 rounded-full font-bold" @click="closeDialog">✕</button>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="closeDialog" class="relative z-10 hover:bg-slate-50 h-12 w-12" />
         </div>
         
-        <div class="p-6 space-y-5 flex-1">
-          <div class="space-y-1.5" v-if="editingId">
-            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Kode (Readonly)</label>
-            <input type="text" v-model="form.code" class="w-full border rounded-lg px-3 py-2 text-sm font-bold bg-slate-50 text-slate-500 outline-none" disabled />
-          </div>
-          <div class="space-y-1.5" v-else>
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Kode <span class="text-red-500">*</span></label>
-            <input type="text" v-model="form.code" class="w-full border rounded-lg px-3 py-2 text-sm font-black font-mono text-emerald-700 outline-none focus:border-emerald-500 shadow-inner" placeholder="Otomatis digenerate..." />
-          </div>
-          
-          <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Nama Opportunity / Kontrak <span class="text-red-500">*</span></label>
-            <input type="text" v-model="form.name" class="w-full border rounded-lg px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-emerald-500 shadow-inner" placeholder="Penyediaan Bahan Baku F&B..." />
-          </div>
-
-          <div class="grid grid-cols-2 gap-4 border-t border-b border-dashed py-4 my-2">
-             <div class="space-y-1.5">
-               <label class="text-[11px] font-bold text-blue-500 uppercase tracking-widest flex items-center gap-1"><i class="pi pi-building"></i> Pilih Customer</label>
-               <select v-model="form.customerId" class="w-full border rounded-lg px-2 py-2 text-xs font-bold text-slate-700 outline-none focus:border-blue-500 bg-blue-50 border-blue-100" :disabled="editingId ? !canUpdate : !canCreate">
-                 <option value="">- Kosong -</option>
-                 <option v-for="c in customers" :key="c.id" :value="c.id">{{ c.name || c.code }}</option>
-               </select>
-             </div>
-             
-             <div class="space-y-1.5">
-               <label class="text-[11px] font-bold text-amber-500 uppercase tracking-widest flex items-center gap-1"><i class="pi pi-user"></i> Atau Pilih Lead</label>
-               <select v-model="form.leadId" class="w-full border rounded-lg px-2 py-2 text-xs font-bold text-slate-700 outline-none focus:border-amber-500 bg-amber-50 border-amber-100" :disabled="editingId ? !canUpdate : !canCreate">
-                 <option value="">- Kosong -</option>
-                 <option v-for="l in leads" :key="l.id" :value="l.id">{{ l.name || l.code }}</option>
-               </select>
-             </div>
+        <!-- Dialog Body -->
+        <div class="p-12 space-y-10 flex-1 overflow-y-auto bg-slate-50/30 custom-scrollbar">
+          <!-- ID Section -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-[10px] font-black shadow-lg">01</div>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-800">Deal Identification (System Ref)</h4>
+            </div>
+            <div class="pl-11">
+              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Reference Code</label>
+              <input type="text" v-model="form.code" 
+                class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-black font-mono text-emerald-600 outline-none focus:ring-2 focus:ring-emerald-100 disabled:opacity-60 transition-all uppercase" 
+                :disabled="!!editingId" placeholder="Auto-generated..." />
+            </div>
           </div>
 
-          <div class="space-y-1.5">
-             <label class="text-[11px] font-bold text-emerald-600 uppercase tracking-widest">Expected Value (Estimasi Rp) <span class="text-red-500">*</span></label>
-             <input type="number" v-model="form.expectedValue" class="w-full border rounded-lg px-3 py-2 text-sm font-black text-emerald-700 outline-none focus:border-emerald-500 shadow-inner bg-emerald-50" placeholder="Misal: 15000000" />
+          <!-- Basic Info -->
+          <div class="space-y-6">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[10px] font-black shadow-lg">02</div>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-emerald-900">Contractual & Opportunity Profile</h4>
+            </div>
+            <div class="pl-11 space-y-8">
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Deal Name / Contract Title <span class="text-rose-500">*</span></label>
+                <input type="text" v-model="form.name" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-100 placeholder:italic" placeholder="e.g. Supply Agreement 2024 / Service Maintenance" />
+              </div>
+              
+              <div class="grid grid-cols-2 gap-6 border-t border-b border-dashed border-slate-200 py-8">
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-blue-500 uppercase tracking-widest block flex items-center gap-2"><i class="pi pi-building text-[10px]"></i> Bind to Customer</label>
+                  <select v-model="form.customerId" class="w-full h-14 rounded-2xl border-none bg-blue-50/50 shadow-inner px-4 text-xs font-black text-blue-900 outline-none focus:ring-2 focus:ring-blue-100 appearance-none cursor-pointer">
+                     <option value="">- Unlinked Account -</option>
+                     <option v-for="c in customers" :key="c.id" :value="c.id">{{ c.name || c.code }}</option>
+                  </select>
+                </div>
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-amber-500 uppercase tracking-widest block flex items-center gap-2"><i class="pi pi-user text-[10px]"></i> Bind to Sales Lead</label>
+                  <select v-model="form.leadId" class="w-full h-14 rounded-2xl border-none bg-amber-50/50 shadow-inner px-4 text-xs font-black text-amber-900 outline-none focus:ring-2 focus:ring-amber-100 appearance-none cursor-pointer">
+                     <option value="">- Unlinked Prospect -</option>
+                     <option v-for="l in leads" :key="l.id" :value="l.id">{{ l.name || l.code }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-emerald-600 uppercase tracking-widest block">Expected Deal Value (Rp)</label>
+                  <input type="number" v-model="form.expectedValue" class="w-full h-14 rounded-2xl border-none bg-emerald-50/30 shadow-inner px-6 text-sm font-black text-emerald-700 focus:ring-2 focus:ring-emerald-100 placeholder:text-emerald-200" placeholder="0.00" />
+                </div>
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Est. Target Closing Date</label>
+                  <input type="date" v-model="form.closeDate" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-emerald-100 transition-all outline-none" />
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Target Tanggal Closing (Expected Close Date)</label>
-            <input type="date" v-model="form.closeDate" class="w-full border rounded-lg px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-emerald-500 shadow-inner" />
+          <!-- Notes -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-[10px] font-black shadow-sm">03</div>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Sales Internal Justification</h4>
+            </div>
+            <div class="pl-11">
+              <textarea v-model="form.notes" rows="3" class="w-full rounded-2xl border-none bg-white shadow-inner p-6 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-emerald-100 resize-none placeholder:italic" placeholder="Internal notes, next actions, or decision makers..."></textarea>
+            </div>
           </div>
 
-          <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Catatan Tambahan</label>
-            <textarea v-model="form.notes" rows="4" class="w-full border rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-emerald-500 shadow-inner resize-none"></textarea>
+          <div v-if="dialogError" class="ml-11 rounded-2xl bg-rose-50 px-5 py-4 text-[11px] text-rose-600 border border-rose-100 font-black uppercase tracking-widest shadow-sm">
+            <i class="pi pi-exclamation-circle mr-2"></i> {{ dialogError }}
           </div>
-
-          <div v-if="dialogError" class="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600 border border-red-200 font-bold border-l-4 border-l-red-500">{{ dialogError }}</div>
         </div>
-
-        <div class="p-4 border-t bg-slate-50 flex justify-end gap-3 rounded-b-xl">
-          <Button label="Batal" severity="secondary" :disabled="saving" @click="closeDialog" class="bg-white border text-slate-700 font-bold px-5" />
-          <Button :label="editingId ? 'Simpan Perubahan' : 'Buat Deals'" :loading="saving" :disabled="!form.name || !form.expectedValue"
-            @click="save" class="bg-emerald-600 border-none text-white font-bold px-6" icon="pi pi-check" />
+        
+        <!-- Dialog Footer -->
+        <div class="p-10 border-t bg-white flex justify-end items-center gap-4 shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
+          <Button label="Batal & Tutup" severity="secondary" text @click="closeDialog" class="px-8 h-14 font-black text-[10px] uppercase tracking-widest" :disabled="saving" />
+          <Button :label="editingId ? 'Sinkronisasi Deal' : 'Terbitkan Deal Baru'" :loading="saving" :disabled="!form.name || !form.expectedValue"
+            @click="save" class="p-button-rounded h-14 px-12 bg-emerald-600 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-emerald-100 hover:scale-105 active:scale-95 transition-all" icon="pi pi-check-circle" />
         </div>
       </div>
     </div>
@@ -404,8 +469,43 @@ onMounted(load);
 </script>
 
 <style scoped>
-.animate-fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.animate-slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.animate-scale-in { 
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.95) translateY(10px); } 
+  to { opacity: 1; transform: scale(1) translateY(0); } 
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+
+:deep(.p-inputtext) {
+   border-color: #f1f5f9 !important;
+   box-shadow: none !important;
+   background-color: #f8fafc !important;
+   border-radius: 16px !important;
+}
+
+:deep(.p-button-rounded) {
+  border-radius: 9999px !important;
+}
 </style>

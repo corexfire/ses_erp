@@ -7,19 +7,19 @@ import { UpdateSparePartDto } from './dto/update-spare-part.dto';
 export class SparePartsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(tenantId: string | null, query?: string, isSuperAdmin?: boolean) {
-    return this.prisma.item.findMany({
-      where: {
-        ...(isSuperAdmin ? {} : { tenantId }),
-        isSparePart: true,
-        ...(query ? {
-          OR: [
-            { name: { contains: query, mode: 'insensitive' } },
-            { code: { contains: query, mode: 'insensitive' } },
-            { oemPartNumber: { contains: query, mode: 'insensitive' } },
-          ],
-        } : {}),
-      },
+   async findAll(tenantId: string | null, query?: string, isSuperAdmin?: boolean) {
+     return this.prisma.item.findMany({
+       where: {
+         ...(isSuperAdmin ? {} : { tenantId: tenantId! }),
+         isSparePart: true,
+         ...(query ? {
+           OR: [
+             { name: { contains: query, mode: 'insensitive' } },
+             { code: { contains: query, mode: 'insensitive' } },
+             { oemPartNumber: { contains: query, mode: 'insensitive' } },
+           ],
+         } : {}),
+       },
       include: {
         itemGroup: true,
         stockBalances: {
@@ -33,13 +33,13 @@ export class SparePartsService {
     });
   }
 
-  async findOne(tenantId: string | null, id: string, isSuperAdmin?: boolean) {
-    const part = await this.prisma.item.findFirst({
-      where: { 
-        id, 
-        ...(isSuperAdmin ? {} : { tenantId }),
-        isSparePart: true 
-      },
+   async findOne(tenantId: string | null, id: string, isSuperAdmin?: boolean) {
+     const part = await this.prisma.item.findFirst({
+       where: {
+         id,
+         ...(isSuperAdmin ? {} : { tenantId: tenantId! }),
+         isSparePart: true
+       },
       include: {
         itemGroup: true,
         uoms: true,
@@ -59,13 +59,13 @@ export class SparePartsService {
     const { compatibleEquipmentIds, ...itemData } = dto;
 
     return this.prisma.$transaction(async (tx) => {
-      const part = await tx.item.create({
-        data: {
-          ...itemData,
-          tenantId,
-          isSparePart: true,
-        },
-      });
+       const part = await tx.item.create({
+         data: {
+           ...(itemData as any),
+           tenantId,
+           isSparePart: true,
+         },
+       });
 
       if (compatibleEquipmentIds && compatibleEquipmentIds.length > 0) {
         await tx.fsmSparePartCompatibility.createMany({
@@ -131,12 +131,12 @@ export class SparePartsService {
     return this.prisma.item.delete({ where: { id } });
   }
 
-  async getStats(tenantId: string | null, isSuperAdmin?: boolean) {
-    const items = await this.prisma.item.findMany({
-      where: { 
-        ...(isSuperAdmin ? {} : { tenantId }),
-        isSparePart: true 
-      },
+   async getStats(tenantId: string | null, isSuperAdmin?: boolean) {
+     const items = await this.prisma.item.findMany({
+       where: {
+         ...(isSuperAdmin ? {} : { tenantId: tenantId! }),
+         isSparePart: true
+       },
       include: { stockBalances: true }
     });
     
@@ -144,8 +144,8 @@ export class SparePartsService {
     let lowStockCount = 0;
     let totalValue = 0;
 
-    items.forEach(item => {
-      const stock = item.stockBalances.reduce((sum, b) => sum + Number(b.qtyOnHand), 0);
+     items.forEach(item => {
+       const stock = item.stockBalances.reduce((sum: number, b: any) => sum + Number(b.qtyOnHand), 0);
       if (stock < Number(item.reorderPoint || 0)) {
         lowStockCount++;
       }

@@ -46,7 +46,7 @@ export class ActivitiesController {
   ) {
     const activities = await this.prisma.salesActivity.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(leadId ? { leadId } : {}),
         ...(customerId ? { customerId } : {}),
         ...(opportunityId ? { opportunityId } : {}),
@@ -77,7 +77,7 @@ export class ActivitiesController {
   ) {
     if (body.leadId) {
       const lead = await this.prisma.lead.findFirst({
-        where: { id: body.leadId, tenantId: req.user.tenantId },
+        where: { id: body.leadId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!lead) throw new NotFoundException('Lead not found');
@@ -85,7 +85,7 @@ export class ActivitiesController {
 
     if (body.customerId) {
       const customer = await this.prisma.customer.findFirst({
-        where: { id: body.customerId, tenantId: req.user.tenantId },
+        where: { id: body.customerId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!customer) throw new NotFoundException('Customer not found');
@@ -93,7 +93,7 @@ export class ActivitiesController {
 
     if (body.opportunityId) {
       const opportunity = await this.prisma.opportunity.findFirst({
-        where: { id: body.opportunityId, tenantId: req.user.tenantId },
+        where: { id: body.opportunityId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!opportunity) throw new NotFoundException('Opportunity not found');
@@ -101,7 +101,7 @@ export class ActivitiesController {
 
     const activity = await this.prisma.salesActivity.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         type: body.type,
         subject: body.subject,
         dueAt: body.dueAt,
@@ -121,7 +121,7 @@ export class ActivitiesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'SalesActivity',
@@ -139,14 +139,14 @@ export class ActivitiesController {
     @Body() body: UpdateActivityDto,
   ) {
     const exists = await this.prisma.salesActivity.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Activity not found');
 
     if (body.leadId) {
       const lead = await this.prisma.lead.findFirst({
-        where: { id: body.leadId, tenantId: req.user.tenantId },
+        where: { id: body.leadId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!lead) throw new NotFoundException('Lead not found');
@@ -154,7 +154,7 @@ export class ActivitiesController {
 
     if (body.customerId) {
       const customer = await this.prisma.customer.findFirst({
-        where: { id: body.customerId, tenantId: req.user.tenantId },
+        where: { id: body.customerId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!customer) throw new NotFoundException('Customer not found');
@@ -162,7 +162,7 @@ export class ActivitiesController {
 
     if (body.opportunityId) {
       const opportunity = await this.prisma.opportunity.findFirst({
-        where: { id: body.opportunityId, tenantId: req.user.tenantId },
+        where: { id: body.opportunityId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!opportunity) throw new NotFoundException('Opportunity not found');
@@ -189,7 +189,7 @@ export class ActivitiesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'SalesActivity',
@@ -207,7 +207,7 @@ export class ActivitiesController {
     @Body() body: AssignUserDto,
   ) {
     const exists = await this.prisma.salesActivity.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Activity not found');
@@ -215,7 +215,7 @@ export class ActivitiesController {
     const userId = body.userId?.trim() || null;
     if (userId) {
       const assignee = await this.prisma.user.findFirst({
-        where: { id: userId, tenantId: req.user.tenantId, isActive: true },
+        where: { id: userId, tenantId: req.user.tenantId!, isActive: true },
         select: { id: true },
       });
       if (!assignee) throw new NotFoundException('User not found');
@@ -233,7 +233,7 @@ export class ActivitiesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'assign',
       entity: 'SalesActivity',

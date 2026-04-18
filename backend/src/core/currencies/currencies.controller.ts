@@ -30,7 +30,7 @@ export class CurrenciesController {
   @RequirePermissions('core.currency.read')
   async listCurrencies(@Req() req: FastifyRequest & { user: AuthUser }) {
     const currencies = await this.prisma.currency.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ isBase: 'desc' }, { code: 'asc' }],
     });
     return { currencies };
@@ -44,7 +44,7 @@ export class CurrenciesController {
   ) {
     const currency = await this.prisma.currency.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         symbol: body.symbol,
@@ -54,13 +54,13 @@ export class CurrenciesController {
 
     if (currency.isBase) {
       await this.prisma.currency.updateMany({
-        where: { tenantId: req.user.tenantId, NOT: { id: currency.id } },
+        where: { tenantId: req.user.tenantId!, NOT: { id: currency.id } },
         data: { isBase: false },
       });
     }
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Currency',
@@ -82,7 +82,7 @@ export class CurrenciesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'Currency',
@@ -96,7 +96,7 @@ export class CurrenciesController {
   @RequirePermissions('core.exchange_rate.read')
   async listRates(@Req() req: FastifyRequest & { user: AuthUser }) {
     const exchangeRates = await this.prisma.exchangeRate.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ rateDate: 'desc' }],
       include: { baseCurrency: true, quoteCurrency: true },
       take: 200,
@@ -112,7 +112,7 @@ export class CurrenciesController {
   ) {
     const exchangeRate = await this.prisma.exchangeRate.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         baseCurrencyId: body.baseCurrencyId,
         quoteCurrencyId: body.quoteCurrencyId,
         rate: body.rate,
@@ -121,7 +121,7 @@ export class CurrenciesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'ExchangeRate',

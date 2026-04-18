@@ -23,7 +23,7 @@ export class PickingController {
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('q') q?: string, @Query('status') status?: string) {
     const pickings = await this.prisma.picking.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(isInventoryDocStatus(status) ? { status } : {}),
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }] } : {}),
       },
@@ -38,7 +38,7 @@ export class PickingController {
   @RequirePermissions('inventory.picking.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const picking = await this.prisma.picking.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         warehouse: true,
         salesOrder: true,
@@ -52,15 +52,15 @@ export class PickingController {
   @Post()
   @RequirePermissions('inventory.picking.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreatePickingDto) {
-    const warehouse = await this.prisma.warehouse.findFirst({ where: { id: body.warehouseId, tenantId: req.user.tenantId } });
+    const warehouse = await this.prisma.warehouse.findFirst({ where: { id: body.warehouseId, tenantId: req.user.tenantId! } });
     if (!warehouse) throw new NotFoundException('Warehouse not found');
 
-    const count = await this.prisma.picking.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.picking.count({ where: { tenantId: req.user.tenantId! } });
     const code = `PK-${String(count + 1).padStart(6, '0')}`;
 
     const picking = await this.prisma.picking.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code,
         pickingDate: new Date(body.pickingDate),
         warehouseId: body.warehouseId,
@@ -69,7 +69,7 @@ export class PickingController {
         status: 'DRAFT',
         items: {
           create: body.items.map((item, index) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             lineNo: index + 1,
             itemId: item.itemId,
             description: item.description,
@@ -83,14 +83,14 @@ export class PickingController {
       include: { warehouse: true, salesOrder: true, items: { include: { item: true } } },
     });
 
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'CREATE', entity: 'Picking', entityId: picking.id, metadata: { code } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'CREATE', entity: 'Picking', entityId: picking.id, metadata: { code } });
     return { picking };
   }
 
   @Patch(':id')
   @RequirePermissions('inventory.picking.update')
   async update(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: UpdatePickingDto) {
-    const existing = await this.prisma.picking.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const existing = await this.prisma.picking.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!existing) throw new NotFoundException('Picking not found');
     if (existing.status !== 'DRAFT') throw new ForbiddenException('Can only update draft documents');
 
@@ -105,7 +105,7 @@ export class PickingController {
         ...(body.items && {
           items: {
             create: body.items.map((item, index) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               lineNo: index + 1,
               itemId: item.itemId,
               description: item.description,
@@ -120,31 +120,31 @@ export class PickingController {
       include: { warehouse: true, items: { include: { item: true } } },
     });
 
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'UPDATE', entity: 'Picking', entityId: picking.id, metadata: { code: picking.code } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'UPDATE', entity: 'Picking', entityId: picking.id, metadata: { code: picking.code } });
     return { picking };
   }
 
   @Delete(':id')
   @RequirePermissions('inventory.picking.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const existing = await this.prisma.picking.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const existing = await this.prisma.picking.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!existing) throw new NotFoundException('Picking not found');
     if (existing.status !== 'DRAFT') throw new ForbiddenException('Can only delete draft documents');
 
     await this.prisma.picking.delete({ where: { id } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'DELETE', entity: 'Picking', entityId: id, metadata: { code: existing.code } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'DELETE', entity: 'Picking', entityId: id, metadata: { code: existing.code } });
     return { success: true };
   }
 
   @Post(':id/submit')
   @RequirePermissions('inventory.picking.submit')
   async submit(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const picking = await this.prisma.picking.findFirst({ where: { id, tenantId: req.user.tenantId }, include: { items: true, warehouse: true } });
+    const picking = await this.prisma.picking.findFirst({ where: { id, tenantId: req.user.tenantId! }, include: { items: true, warehouse: true } });
     if (!picking) throw new NotFoundException('Picking not found');
     if (picking.status !== 'DRAFT') throw new ForbiddenException('Can only submit draft documents');
 
     const updated = await this.prisma.picking.update({ where: { id }, data: { status: 'SUBMITTED' }, include: { warehouse: true, items: { include: { item: true } } } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'SUBMIT', entity: 'Picking', entityId: picking.id, metadata: { code: picking.code } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'SUBMIT', entity: 'Picking', entityId: picking.id, metadata: { code: picking.code } });
     return { picking: updated };
   }
 }

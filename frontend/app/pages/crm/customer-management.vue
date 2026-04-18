@@ -1,21 +1,20 @@
 <template>
   <div class="space-y-6">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-indigo-500 relative overflow-hidden">
-      <div class="absolute right-[-15px] top-[-10px] opacity-[0.03] pointer-events-none">
-        <i class="pi pi-building text-[150px] text-indigo-900"></i>
-      </div>
-      <div class="flex flex-col md:flex-row justify-between md:items-start gap-4 relative z-10">
-        <div>
-          <div class="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-            <i class="pi pi-book text-indigo-600"></i> Customer Management
+    <!-- Header (Premium Customer style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-indigo-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">CRM Management</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-indigo-600">Customer Records</span>
           </div>
-          <div class="mt-1 text-sm text-slate-600 font-medium">
-            Master Data Pelanggan Resmi. Kelola informasi penagihan, alamat pengiriman, dan status keaktifan klien bisnis Anda.
-          </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">Customer <span class="text-indigo-600 italic">Management</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-xl">Master Data Pelanggan Resmi. Kelola informasi penagihan, alamat pengiriman, dan status keaktifan klien bisnis Anda secara terpusat.</p>
         </div>
-        <div class="flex gap-2 shrink-0">
-          <Button label="Registrasi Klien Baru" size="small" icon="pi pi-plus" class="bg-indigo-600 text-white border-none font-bold shadow-sm hover:bg-indigo-700" :disabled="loading || !canCreate" @click="openCreate" />
+        <div class="flex items-center gap-3">
+          <Button label="Registrasi Klien Baru" icon="pi pi-plus" class="p-button-rounded h-12 px-8 bg-indigo-600 border-none text-white font-black text-[10px] uppercase shadow-lg shadow-indigo-100 hover:scale-105 active:scale-95 transition-all" :disabled="loading || !canCreate" @click="openCreate" />
         </div>
       </div>
     </div>
@@ -28,203 +27,242 @@
       <i class="pi pi-exclamation-triangle text-lg"></i> {{ error }}
     </div>
 
-    <!-- KPI Stats -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 items-start animate-fade-in-up">
-      <div class="bg-slate-800 border-b-4 border-b-slate-900 rounded-xl p-4 shadow-sm text-white flex justify-between items-center">
-        <div>
-          <div class="text-[10px] font-black text-slate-400 text-indigo-300 uppercase tracking-widest">Total Klien Mendaftar</div>
-          <div class="text-3xl font-black mt-0.5">{{ customers.length }}</div>
+    <!-- KPI Stats Banners (Premium Style) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+       <!-- Total Customers Banner - High Contrast -->
+      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+        <div class="text-[10px] font-black uppercase text-indigo-300 tracking-[0.2em] mb-4 opacity-80">Total Registered Klien</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-white tracking-tighter">{{ customers.length }}</h3>
+          <div class="p-3 bg-slate-700 rounded-xl text-slate-100 shadow-lg">
+            <i class="pi pi-book text-lg"></i>
+          </div>
         </div>
-        <div class="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center"><i class="pi pi-book text-xl text-slate-300"></i></div>
+      </div>
+
+      <!-- Active Banners -->
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-emerald-500 tracking-[0.2em] mb-4">Active Accounts</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-emerald-600 tracking-tighter">{{ countStatus(true) }}</h3>
+          <div class="p-3 bg-emerald-50 text-emerald-500 rounded-xl border border-emerald-100"><i class="pi pi-check-circle text-lg"></i></div>
+        </div>
       </div>
       
-      <div class="bg-emerald-50 border border-emerald-200 border-b-4 border-b-emerald-500 rounded-xl p-4 shadow-sm flex justify-between items-center">
-        <div>
-           <div class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Active Client</div>
-           <div class="text-3xl font-black text-emerald-700 mt-0.5">{{ countStatus(true) }}</div>
+      <!-- Inactive Banners -->
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-rose-500 tracking-[0.2em] mb-4">Suspended / Inactive</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-rose-600 tracking-tighter">{{ countStatus(false) }}</h3>
+          <div class="p-3 bg-rose-50 text-rose-500 rounded-xl border border-rose-100"><i class="pi pi-minus-circle text-lg"></i></div>
         </div>
-        <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center"><i class="pi pi-check-circle text-emerald-600"></i></div>
-      </div>
-      
-      <div class="bg-rose-50 border border-rose-200 border-b-4 border-b-rose-500 rounded-xl p-4 shadow-sm flex justify-between items-center">
-        <div>
-           <div class="text-[10px] font-black text-rose-600 uppercase tracking-widest">Inactive / Suspended</div>
-           <div class="text-3xl font-black text-rose-700 mt-0.5">{{ countStatus(false) }}</div>
-        </div>
-        <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center"><i class="pi pi-minus-circle text-rose-600"></i></div>
       </div>
     </div>
 
-    <!-- Controls -->
-    <div class="bg-white border rounded-xl p-4 shadow-sm flex flex-wrap gap-3 items-center animate-fade-in-up">
-      <div class="flex gap-1 bg-slate-100 rounded-lg p-1">
+    <!-- Controls (Standardized Premium Style) -->
+    <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm flex flex-wrap gap-4 items-center animate-fade-in-up">
+      <div class="flex gap-1.5 bg-slate-100 rounded-2xl p-1.5">
         <button v-for="s in ['Semua', 'Aktif', 'Inaktif']" :key="s"
           @click="statusFilter = s"
-          :class="statusFilter === s ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-500 hover:bg-slate-50'"
-          class="px-4 py-1.5 rounded-md text-[11px] font-black uppercase tracking-widest transition">
+          :class="statusFilter === s ? 'bg-indigo-600 text-white shadow-xl scale-105' : 'text-slate-500 hover:bg-slate-200'"
+          class="px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all">
           {{ s }}
         </button>
       </div>
-      <div class="w-px h-6 bg-slate-200 mx-1"></div>
-      <span class="p-input-icon-left w-72">
-         <i class="pi pi-search" />
-         <InputText v-model="q" placeholder="Cari PT, nama klien, atau lokasi..." class="w-full text-sm h-10 bg-slate-50 border-slate-200" @keyup.enter="load" />
-      </span>
-      <Button severity="secondary" size="small" :loading="loading" icon="pi pi-refresh" @click="load" class="h-10 w-10 shrink-0 border-slate-200 bg-slate-50 hover:bg-slate-100" />
+
+      <div class="relative flex-1 max-w-sm">
+        <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <InputText v-model="q" placeholder="Cari PT, nama klien, atau lokasi..." class="w-full pl-10 h-12 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white transition-all text-sm font-bold shadow-inner" @keyup.enter="load" />
+      </div>
+      <div class="flex items-center gap-2">
+        <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="load" :loading="loading" class="h-12 w-12 border-slate-200 text-slate-500 hover:text-indigo-600 transition-all" />
+      </div>
     </div>
 
-    <!-- TABLE -->
-    <div class="rounded-xl border bg-white shadow-sm overflow-hidden animate-fade-in-up">
+    <!-- === TABLE VIEW (Premium Inventory Style) === -->
+    <div class="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up">
       <table class="w-full text-sm">
-        <thead class="bg-slate-50 text-left text-[10px] text-slate-500 uppercase tracking-widest font-black">
+        <thead class="bg-slate-50/80 text-left">
           <tr>
-            <th class="px-5 py-3 border-b border-b-slate-200 w-32 hidden md:table-cell">Reg. ID</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200">Profil Pelanggan & Instansi</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200">Kontak Person</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200 hidden md:table-cell w-44">Domisili / Wilayah</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200 text-center w-28">Status</th>
-            <th class="px-4 py-3 border-l border-b border-b-slate-200 text-center w-24">Aksi</th>
+            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-32 hidden md:table-cell text-center">Reference</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Profil Pelanggan & Instansi</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Kontak Bisnis</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] hidden md:table-cell w-44">Wilayah</th>
+            <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center w-32">Status Keanggotaan</th>
+            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] w-24 text-right">Aksi</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody class="divide-y divide-slate-50">
           <tr v-if="loading">
-            <td colspan="6" class="py-16 text-center text-slate-400"><i class="pi pi-spinner pi-spin mr-2 text-indigo-600 shadow-sm"></i> Sinkronisasi Buku Klien...</td>
+             <td colspan="6" class="py-24 text-center">
+              <i class="pi pi-spinner pi-spin text-4xl text-indigo-600 opacity-20"></i>
+              <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest">Sinkronisasi Buku Klien...</div>
+            </td>
           </tr>
           
-          <tr v-for="c in filteredList" v-else :key="c.id" class="transition hover:bg-slate-50 group">
-            <td class="px-5 py-4 align-top hidden md:table-cell border-l-4" :style="{ borderLeftColor: c.isActive ? '#10b981' : '#f43f5e' }">
-               <div class="font-mono text-[10px] font-black text-indigo-700 mt-1 cursor-pointer hover:underline" @click="navigateTo(`/crm/customers/${c.id}`)">
+          <tr v-for="c in filteredList" v-else :key="c.id" class="transition-all hover:bg-slate-50/50 group">
+            <td class="px-8 py-6 align-middle hidden md:table-cell">
+               <div class="font-mono text-[10px] font-black text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100 cursor-pointer hover:bg-indigo-100 inline-block text-center w-full transition-colors" @click="navigateTo(`/crm/customers/${c.id}`)">
                 {{ c.code }}
                </div>
-               <div class="text-[9px] font-bold text-slate-400 mt-1" v-if="c.createdAt">{{ formatDate(c.createdAt) }}</div>
+               <div class="text-[9px] font-black text-slate-300 mt-2 text-center uppercase tracking-widest whitespace-nowrap" v-if="c.createdAt">{{ formatDate(c.createdAt) }}</div>
             </td>
             
-            <td class="px-4 py-4 align-top md:border-l">
-              <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded flex items-center justify-center font-black text-[12px] text-white shrink-0 shadow-sm"
+            <td class="px-6 py-6 align-middle">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-black text-[14px] text-white shrink-0 shadow-lg relative overflow-hidden group-hover:rotate-3 transition-transform"
                   :style="{ backgroundColor: avatarColor(c.name) }">
                   {{ initials(c.name) }}
+                  <div class="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
                 <div class="min-w-0">
-                  <div class="font-bold text-slate-800 text-sm leading-tight max-w-[200px]" :title="c.name">
-                    <span class="md:hidden font-mono text-[9px] block text-indigo-500 mb-0.5">{{ c.code }}</span>
-                    {{ c.name }}
+                  <div class="font-black text-slate-900 text-[14px] tracking-tight leading-tight uppercase" :title="c.name">
+                    {{ c.name?.toLowerCase() }}
                   </div>
-                  <div class="text-[10px] font-medium text-slate-500 mt-1 truncate max-w-[200px] leading-relaxed">
-                     <i class="pi pi-map-marker text-[9px]"></i> {{ c.address1 || 'Alamat tidak diatur' }}
+                  <div class="text-[10px] font-black text-slate-400 mt-1 uppercase tracking-widest flex items-center gap-1.5 leading-relaxed">
+                     <i class="pi pi-map-marker text-[10px] text-indigo-400"></i> {{ c.address1 || 'No Registered Address' }}
                   </div>
                 </div>
               </div>
             </td>
 
-             <td class="px-4 py-4 align-top border-l">
-              <div class="text-[12px] font-bold text-slate-700 truncate"><i class="pi pi-envelope text-slate-400 mr-2"></i> {{ c.email ?? '-' }}</div>
-              <div class="text-[12px] font-bold text-slate-700 truncate mt-1"><i class="pi pi-phone text-slate-400 mr-2"></i> {{ c.phone ?? '-' }}</div>
+             <td class="px-6 py-6 align-middle border-l border-slate-50/50">
+              <div class="flex flex-col gap-1.5">
+                <div class="text-[11px] font-bold text-slate-700 flex items-center gap-2"><i class="pi pi-envelope text-slate-300 text-[10px]"></i> {{ c.email ?? 'no-email@set.id' }}</div>
+                <div class="text-[11px] font-bold text-slate-700 flex items-center gap-2"><i class="pi pi-phone text-slate-300 text-[10px]"></i> {{ c.phone ?? 'No Phone' }}</div>
+              </div>
             </td>
 
-            <td class="px-4 py-4 align-top border-l hidden md:table-cell text-[11px] font-bold text-slate-600 uppercase tracking-wide">
-              {{ c.city || '-' }}
+            <td class="px-6 py-6 align-middle border-l border-slate-50/50 hidden md:table-cell">
+              <div class="text-[10px] font-black text-slate-500 uppercase tracking-[0.1em] px-2.5 py-1 bg-slate-100 rounded-md inline-block">
+                {{ c.city || 'GLOBAL' }}
+              </div>
             </td>
 
-            <td class="px-4 py-4 align-top border-l text-center">
-              <div :class="c.isActive ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-rose-50 text-rose-600 border-rose-200'" class="inline-flex items-center justify-center px-2 py-0.5 rounded-md border text-[9px] font-black uppercase tracking-widest min-w-[70px]">
-                 <span v-if="c.isActive"><i class="pi pi-circle-fill text-[6px] mr-1 animate-pulse"></i> Aktif</span>
-                 <span v-else><i class="pi pi-minus-circle text-[8px] mr-1"></i> Suspend</span>
+            <td class="px-6 py-6 align-middle border-l border-slate-50/50 text-center">
+              <div :class="c.isActive ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100'" 
+                class="inline-flex items-center justify-center px-3 py-1.5 rounded-xl border text-[9px] font-black uppercase tracking-[0.15em] min-w-[100px] shadow-sm">
+                 <span v-if="c.isActive" class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> VERIFIED</span>
+                 <span v-else class="flex items-center gap-1.5">SUSPENDED</span>
               </div>
               <div v-if="canDeactivate" class="mt-2">
-                 <button @click="deactivate(c)" class="text-[9px] font-bold text-slate-400 hover:text-slate-800 underline opacity-0 group-hover:opacity-100 transition-opacity">
-                   Ubah Status
+                 <button @click="deactivate(c)" class="text-[9px] font-black text-slate-300 hover:text-indigo-600 uppercase tracking-widest transition-colors opacity-0 group-hover:opacity-100 underline decoration-dotted">
+                   Toggle Status
                  </button>
               </div>
             </td>
             
-            <td class="px-4 py-4 align-top border-l text-center">
-              <div class="flex justify-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button icon="pi pi-pencil" v-tooltip="'Update Profil'" size="small" outlined class="h-8 w-8 text-[11px] px-0 bg-slate-50" severity="secondary" @click="openEdit(c)" />
-                <Button icon="pi pi-external-link" v-tooltip="'Buka Kartu'" size="small" outlined class="h-8 w-8 text-[11px] px-0 bg-slate-50" severity="secondary" @click="navigateTo(`/crm/customers/${c.id}`)" />
+            <td class="px-8 py-6 align-middle border-l border-slate-50/50 text-right">
+              <div class="flex justify-end gap-2 opacity-0 lg:group-hover:opacity-100 transition-all duration-300 translate-x-4 lg:group-hover:translate-x-0">
+                <Button icon="pi pi-pencil" v-tooltip.left="'Update Profile'" severity="secondary" text rounded class="h-10 w-10 text-slate-400 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50" @click="openEdit(c)" />
+                <Button icon="pi pi-external-link" v-tooltip.left="'Client Portal'" severity="secondary" text rounded class="h-10 w-10 text-slate-400 hover:text-indigo-600 bg-slate-50 hover:bg-indigo-50" @click="navigateTo(`/crm/customers/${c.id}`)" />
               </div>
             </td>
           </tr>
 
           <tr v-if="!loading && filteredList.length === 0">
-            <td colspan="6" class="py-16 text-center text-slate-400 italic text-sm">
-               <i class="pi pi-inbox text-3xl mb-3 block text-slate-300"></i>
-               Tidak ada pelanggan ditemukan sesuai filter.
+            <td colspan="6" class="py-32 text-center text-slate-400">
+               <i class="pi pi-inbox text-5xl opacity-10 mb-4 block"></i>
+               <div class="text-[10px] font-black uppercase tracking-[0.2em]">Data Pelanggan Kosong / Mis-filter</div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Form Drawer -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm" @click.self="closeDialog">
-      <div class="w-full max-w-md h-full bg-white shadow-2xl flex flex-col overflow-y-auto animate-slide-in-right">
-        <div class="p-5 border-b bg-slate-50 flex justify-between rounded-t-xl" style="borderTop: 4px solid #4f46e5;">
-          <div class="text-lg font-black text-slate-800 flex items-center gap-2">
-            <i class="pi pi-pencil text-indigo-600" v-if="editingId"></i>
-             <i class="pi pi-user-plus text-indigo-600" v-else></i>
-            {{ editingId ? 'Update Info Pelanggan' : 'Pendaftaran Pelanggan Baru' }}
+    <!-- Form Dialog (Universal Centered Style) -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-2xl max-h-[90vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white">
+        <!-- Dialog Header -->
+        <div class="p-10 border-b bg-white flex justify-between items-center relative overflow-hidden shrink-0">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
+          <div class="relative flex items-center gap-5">
+             <div class="w-16 h-16 rounded-[1.5rem] bg-indigo-900 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
+                <i class="pi pi-user-plus text-3xl" v-if="!editingId"></i>
+                <i class="pi pi-pencil text-3xl" v-else></i>
+             </div>
+             <div>
+                <h4 class="text-3xl font-black text-slate-900 tracking-tight leading-none uppercase">{{ editingId ? 'Update Detail' : 'Registrasi' }} <span class="text-indigo-600 italic">Pelanggan</span></h4>
+                <p class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em] mt-2 px-1 border-l-2 border-indigo-500">Corporate Master Database Integration</p>
+             </div>
           </div>
-          <button class="text-slate-400 hover:text-slate-600 bg-slate-200 w-8 h-8 rounded-full font-bold" @click="closeDialog">✕</button>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="closeDialog" class="relative z-10 hover:bg-slate-50 h-12 w-12" />
         </div>
         
-        <div class="p-6 space-y-5 flex-1">
-          <div class="space-y-1.5" v-if="editingId">
-            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">ID Member Registrasi (Readonly)</label>
-            <input type="text" v-model="form.code" class="w-full border rounded-lg px-3 py-2 text-sm font-bold bg-slate-50 text-slate-500 outline-none" disabled />
-          </div>
-          <div class="space-y-1.5" v-else>
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">ID Member <span class="text-red-500">*</span></label>
-            <input type="text" v-model="form.code" class="w-full border rounded-lg px-3 py-2 text-sm font-black font-mono text-indigo-700 outline-none focus:border-indigo-500 shadow-inner" placeholder="Otomatis digenerate jika kosong" />
-          </div>
-          
-          <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Nama Lengkap / Instansi PT <span class="text-red-500">*</span></label>
-            <input type="text" v-model="form.name" class="w-full border rounded-lg px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-indigo-500 shadow-inner" placeholder="PT Surya Abadi Makmur" :disabled="editingId ? !canUpdate : !canCreate" />
+        <!-- Dialog Body -->
+        <div class="p-12 space-y-10 flex-1 overflow-y-auto bg-slate-50/30 custom-scrollbar">
+          <!-- Identification Section -->
+          <div class="space-y-5">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-[10px] font-black shadow-lg">01</div>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-800">Legal Identification & Reference</h4>
+            </div>
+            <div class="pl-11 space-y-8">
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Reference / Member ID Code</label>
+                <input type="text" v-model="form.code" 
+                  class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-black font-mono text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-100 disabled:opacity-60 transition-all uppercase" 
+                  :disabled="!!editingId" placeholder="AUTO-GENERATE" />
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Customer Legal Name / Corporate PT <span class="text-rose-500">*</span></label>
+                <input type="text" v-model="form.name" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-indigo-100 placeholder:italic" placeholder="e.g. PT SURYA ABADI MAKMAUR" />
+              </div>
+            </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
-             <div class="space-y-1.5">
-               <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Alamat Email Tagihan</label>
-               <input type="email" v-model="form.email" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 outline-none focus:border-indigo-500" placeholder="finance@klien.com" :disabled="editingId ? !canUpdate : !canCreate" />
-             </div>
-             <div class="space-y-1.5">
-               <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Telepon Kantor/PIC</label>
-               <input type="text" v-model="form.phone" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 outline-none focus:border-indigo-500" placeholder="021-xxxx" :disabled="editingId ? !canUpdate : !canCreate" />
-             </div>
+          <!-- Contact Section -->
+          <div class="space-y-5">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[10px] font-black shadow-lg">02</div>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-indigo-900">Communication & Point of Contact</h4>
+            </div>
+            <div class="pl-11 grid grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Primary Billing Email</label>
+                <input type="email" v-model="form.email" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300" placeholder="finance@klien.com" />
+              </div>
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Office Phone (HQ)</label>
+                <input type="text" v-model="form.phone" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300" placeholder="021-XXXX" />
+              </div>
+            </div>
           </div>
 
-          <div class="space-y-1.5 pt-2 border-t border-dashed">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1"><i class="pi pi-home"></i> Alamat Jalan L1</label>
-            <textarea v-model="form.address1" rows="2" class="w-full border rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 resize-none bg-slate-50" placeholder="Jl. Raya Utama Kav 45..." :disabled="editingId ? !canUpdate : !canCreate"></textarea>
-          </div>
-          
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div class="space-y-1.5 md:col-span-2">
-                 <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Kota / Kab</label>
-                 <input type="text" v-model="form.city" class="w-full border rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 bg-slate-50" placeholder="Jakarta Selatan" :disabled="editingId ? !canUpdate : !canCreate" />
+          <!-- Address Section -->
+          <div class="space-y-5">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 text-[10px] font-black shadow-sm">03</div>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Logistics & HQ Address Profile</h4>
+            </div>
+            <div class="pl-11 space-y-8">
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Primary Business Address</label>
+                <textarea v-model="form.address1" rows="3" class="w-full rounded-2xl border-none bg-white shadow-inner p-6 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-indigo-100 resize-none placeholder:italic" placeholder="Full street address, building info..."></textarea>
               </div>
-              <div class="space-y-1.5 md:col-span-2">
-                 <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Provinsi</label>
-                 <input type="text" v-model="form.province" class="w-full border rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 bg-slate-50" placeholder="DKI Jakarta" :disabled="editingId ? !canUpdate : !canCreate" />
+              <div class="grid grid-cols-2 gap-6">
+                <div class="space-y-2">
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">City / Kabupaten Location</label>
+                   <input type="text" v-model="form.city" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300" />
+                </div>
+                <div class="space-y-2">
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Province Region</label>
+                   <input type="text" v-model="form.province" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300" />
+                </div>
               </div>
-              <div class="space-y-1.5 md:col-span-2">
-                 <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Kode Pos</label>
-                 <input type="text" v-model="form.postalCode" class="w-full border rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 bg-slate-50" placeholder="12xxx" :disabled="editingId ? !canUpdate : !canCreate" />
-              </div>
-              <div class="space-y-1.5 md:col-span-2">
-                 <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Negara</label>
-                 <input type="text" v-model="form.countryCode" class="w-full border rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none focus:border-indigo-500 bg-slate-50 uppercase" placeholder="ID" :disabled="editingId ? !canUpdate : !canCreate" maxlength="2" />
-              </div>
+            </div>
           </div>
 
-          <div v-if="dialogError" class="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600 border border-red-200 font-bold border-l-4 border-l-red-500">{{ dialogError }}</div>
+          <div v-if="dialogError" class="ml-11 rounded-2xl bg-rose-50 px-5 py-4 text-[11px] text-rose-600 border border-rose-100 font-black uppercase tracking-widest shadow-sm">
+            <i class="pi pi-exclamation-circle mr-2"></i> {{ dialogError }}
+          </div>
         </div>
-
-        <div class="p-4 border-t bg-slate-50 flex justify-end gap-3 rounded-b-xl">
-          <Button label="Batal" severity="secondary" :disabled="saving" @click="closeDialog" class="bg-white border text-slate-700 font-bold px-5" />
-          <Button :label="editingId ? 'Simpan Profil' : 'Daftarkan'" :loading="saving" :disabled="!form.name"
-            @click="save" class="bg-indigo-600 border-none text-white font-bold px-6" icon="pi pi-check" />
+        
+        <!-- Dialog Footer -->
+        <div class="p-10 border-t bg-white flex justify-end items-center gap-4 shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
+          <Button label="Batal & Tutup" severity="secondary" text @click="closeDialog" class="px-8 h-14 font-black text-[10px] uppercase tracking-widest" :disabled="saving" />
+          <Button :label="editingId ? 'Sinkronisasi Profil' : 'Daftarkan Pelanggan'" :loading="saving" :disabled="!form.name"
+            @click="save" class="p-button-rounded h-14 px-12 bg-indigo-600 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-indigo-100 hover:scale-105 active:scale-95 transition-all" icon="pi pi-check-circle" />
         </div>
       </div>
     </div>
@@ -360,8 +398,46 @@ onMounted(load);
 </script>
 
 <style scoped>
-.animate-fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.animate-slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.animate-scale-in { 
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.95) translateY(10px); } 
+  to { opacity: 1; transform: scale(1) translateY(0); } 
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+  background: #cbd5e1; 
+}
+
+:deep(.p-inputtext) {
+   border-color: #f1f5f9 !important;
+   box-shadow: none !important;
+   background-color: #f8fafc !important;
+   border-radius: 16px !important;
+}
+
+:deep(.p-button-rounded) {
+  border-radius: 9999px !important;
+}
 </style>

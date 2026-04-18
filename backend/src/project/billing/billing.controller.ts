@@ -31,7 +31,7 @@ export class BillingController {
   @RequirePermissions('project.billing.read')
   async listClaims(@Req() req: FastifyRequest & { user: AuthUser }, @Param('projectId') projectId: string) {
     const claims = await this.prisma.progressClaim.findMany({
-      where: { projectId, tenantId: req.user.tenantId },
+      where: { projectId, tenantId: req.user.tenantId! },
       orderBy: { claimDate: 'desc' },
     });
     return { claims };
@@ -41,13 +41,13 @@ export class BillingController {
   @RequirePermissions('project.billing.create')
   async createClaim(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateProgressClaimDto) {
     const project = await this.prisma.project.findFirst({
-      where: { id: body.projectId, tenantId: req.user.tenantId }
+      where: { id: body.projectId, tenantId: req.user.tenantId! }
     });
     if (!project) throw new NotFoundException('Project not found');
 
     const claim = await this.prisma.progressClaim.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         projectId: body.projectId,
         claimNo: body.claimNo,
         progressPercent: body.progressPercent,
@@ -57,7 +57,7 @@ export class BillingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'ProgressClaim',
@@ -71,7 +71,7 @@ export class BillingController {
   @RequirePermissions('project.billing.create')
   async createInvoice(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateProgressInvoiceDto) {
     const claim = await this.prisma.progressClaim.findFirst({
-      where: { id: body.progressClaimId, tenantId: req.user.tenantId },
+      where: { id: body.progressClaimId, tenantId: req.user.tenantId! },
       include: { project: true }
     });
     if (!claim) throw new NotFoundException('Progress Claim not found');
@@ -82,7 +82,7 @@ export class BillingController {
     // Calculate Delta Progress
     // In a real ERP, we'd find the previous highest verified claim %
     const previousClaims = await this.prisma.progressClaim.findMany({
-      where: { projectId: claim.projectId, tenantId: req.user.tenantId, status: 'VERIFIED', createdAt: { lt: claim.createdAt } },
+      where: { projectId: claim.projectId, tenantId: req.user.tenantId!, status: 'VERIFIED', createdAt: { lt: claim.createdAt } },
       orderBy: { progressPercent: 'desc' },
       take: 1
     });
@@ -105,7 +105,7 @@ export class BillingController {
       // 1. Create Progress Invoice
       const invoice = await tx.progressInvoice.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           projectId: claim.projectId,
           progressClaimId: claim.id,
           progressPercent: claim.progressPercent,
@@ -136,7 +136,7 @@ export class BillingController {
   @RequirePermissions('project.billing.read')
   async getProjectLedger(@Req() req: FastifyRequest & { user: AuthUser }, @Param('projectId') projectId: string) {
     const project = await this.prisma.project.findFirst({
-      where: { id: projectId, tenantId: req.user.tenantId },
+      where: { id: projectId, tenantId: req.user.tenantId! },
       include: {
         progressInvoices: true,
         progressClaims: true
@@ -175,14 +175,14 @@ export class BillingController {
   @RequirePermissions('project.billing.create')
   async releaseRetention(@Req() req: FastifyRequest & { user: AuthUser }, @Param('projectId') projectId: string) {
     const invoices = await this.prisma.progressInvoice.findMany({
-      where: { projectId, tenantId: req.user.tenantId, isRetentionReleased: false }
+      where: { projectId, tenantId: req.user.tenantId!, isRetentionReleased: false }
     });
 
     if (invoices.length === 0) throw new Error('No unreleased retention found for this project');
 
     return await this.prisma.$transaction(async (tx) => {
       await tx.progressInvoice.updateMany({
-        where: { projectId, tenantId: req.user.tenantId, isRetentionReleased: false },
+        where: { projectId, tenantId: req.user.tenantId!, isRetentionReleased: false },
         data: {
           isRetentionReleased: true,
           retentionReleasedAt: new Date()
@@ -190,7 +190,7 @@ export class BillingController {
       });
 
       await this.audit.log({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         actorUserId: req.user.id,
         action: 'RELEASE_RETENTION',
         entity: 'Project',

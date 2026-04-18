@@ -36,7 +36,7 @@ export class CampaignsController {
   ) {
     const campaigns = await this.prisma.marketingCampaign.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -60,7 +60,7 @@ export class CampaignsController {
   ) {
     const campaign = await this.prisma.marketingCampaign.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         channel: body.channel,
@@ -73,7 +73,7 @@ export class CampaignsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'MarketingCampaign',
@@ -91,7 +91,7 @@ export class CampaignsController {
     @Body() body: UpdateCampaignDto,
   ) {
     const exists = await this.prisma.marketingCampaign.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Campaign not found');
@@ -110,7 +110,7 @@ export class CampaignsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'MarketingCampaign',

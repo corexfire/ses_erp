@@ -35,7 +35,7 @@ export class ExceptionController {
     @Param('doId') doId: string,
   ) {
     const deliveryOrder = await this.prisma.deliveryOrder.findFirst({
-      where: { id: doId, tenantId: req.user.tenantId },
+      where: { id: doId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!deliveryOrder) throw new NotFoundException('Delivery order not found');
@@ -54,7 +54,7 @@ export class ExceptionController {
     @Param('tripId') tripId: string,
   ) {
     const trip = await this.prisma.tripPlan.findFirst({
-      where: { id: tripId, tenantId: req.user.tenantId },
+      where: { id: tripId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!trip) throw new NotFoundException('Trip not found');
@@ -73,7 +73,7 @@ export class ExceptionController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const exceptions = await this.prisma.deliveryException.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: {
         deliveryOrder: { include: { customer: true } },
         tripPlan: true,
@@ -91,7 +91,7 @@ export class ExceptionController {
     @Param('id') id: string,
   ) {
     const exception = await this.prisma.deliveryException.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         deliveryOrder: { include: { customer: true } },
         tripPlan: true,
@@ -109,7 +109,7 @@ export class ExceptionController {
     @Body() body: { notes?: string },
   ) {
     const deliveryOrder = await this.prisma.deliveryOrder.findFirst({
-      where: { id: doId, tenantId: req.user.tenantId },
+      where: { id: doId, tenantId: req.user.tenantId! },
       include: { items: true },
     });
     if (!deliveryOrder) throw new NotFoundException('Delivery order not found');
@@ -125,7 +125,7 @@ export class ExceptionController {
 
     await this.prisma.deliveryException.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         deliveryOrderId: doId,
         tripPlanId: deliveryOrder.tripPlanId,
         reason: 'RETURN_TO_ORIGIN',
@@ -136,7 +136,7 @@ export class ExceptionController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'RTO',
       entity: 'DeliveryOrder',

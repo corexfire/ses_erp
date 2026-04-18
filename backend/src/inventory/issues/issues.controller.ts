@@ -32,7 +32,7 @@ export class IssuesController {
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('q') q?: string, @Query('status') status?: string) {
     const issues = await this.prisma.goodsIssueNote.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(isInventoryDocStatus(status) ? { status } : {}),
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }] } : {}),
       },
@@ -47,7 +47,7 @@ export class IssuesController {
   @RequirePermissions('inventory.issue.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const issue = await this.prisma.goodsIssueNote.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         warehouse: true,
         items: { orderBy: [{ lineNo: 'asc' }], include: { item: true, binLocation: true } },
@@ -61,28 +61,27 @@ export class IssuesController {
   @RequirePermissions('inventory.issue.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateGoodsIssueDto) {
     const warehouse = await this.prisma.warehouse.findFirst({
-      where: { id: body.warehouseId, tenantId: req.user.tenantId },
+      where: { id: body.warehouseId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!warehouse) throw new NotFoundException('Warehouse not found');
 
     // Generate code
-    const count = await this.prisma.goodsIssueNote.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.goodsIssueNote.count({ where: { tenantId: req.user.tenantId! } });
     const code = `GI-${String(count + 1).padStart(6, '0')}`;
 
     const issue = await this.prisma.goodsIssueNote.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code,
         issueDate: new Date(body.issueDate),
         warehouseId: body.warehouseId,
-        referenceType: body.referenceType,
         referenceId: body.referenceId,
         notes: body.notes,
         status: 'DRAFT',
         items: {
           create: body.items.map((item, index) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             lineNo: index + 1,
             itemId: item.itemId,
             description: item.description,
@@ -98,7 +97,7 @@ export class IssuesController {
       include: { warehouse: true, items: { include: { item: true } } },
     });
 
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'CREATE', entity: 'GoodsIssueNote', entityId: issue.id, metadata: { code } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'CREATE', entity: 'GoodsIssueNote', entityId: issue.id, metadata: { code } });
     return { issue };
   }
 
@@ -106,7 +105,7 @@ export class IssuesController {
   @RequirePermissions('inventory.issue.update')
   async update(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: UpdateGoodsIssueDto) {
     const existing = await this.prisma.goodsIssueNote.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!existing) throw new NotFoundException('Goods Issue not found');
     if (existing.status !== 'DRAFT') throw new ForbiddenException('Can only update draft documents');
@@ -119,13 +118,12 @@ export class IssuesController {
       data: {
         ...(body.issueDate && { issueDate: new Date(body.issueDate) }),
         ...(body.warehouseId && { warehouseId: body.warehouseId }),
-        ...(body.referenceType !== undefined && { referenceType: body.referenceType }),
         ...(body.referenceId !== undefined && { referenceId: body.referenceId }),
         ...(body.notes !== undefined && { notes: body.notes }),
         ...(body.items && {
           items: {
             create: body.items.map((item, index) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               lineNo: index + 1,
               itemId: item.itemId,
               description: item.description,
@@ -142,7 +140,7 @@ export class IssuesController {
       include: { warehouse: true, items: { include: { item: true } } },
     });
 
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'UPDATE', entity: 'GoodsIssueNote', entityId: issue.id, metadata: { code: issue.code } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'UPDATE', entity: 'GoodsIssueNote', entityId: issue.id, metadata: { code: issue.code } });
     return { issue };
   }
 
@@ -150,13 +148,13 @@ export class IssuesController {
   @RequirePermissions('inventory.issue.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const existing = await this.prisma.goodsIssueNote.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!existing) throw new NotFoundException('Goods Issue not found');
     if (existing.status !== 'DRAFT') throw new ForbiddenException('Can only delete draft documents');
 
     await this.prisma.goodsIssueNote.delete({ where: { id } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'DELETE', entity: 'GoodsIssueNote', entityId: id, metadata: { code: existing.code } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'DELETE', entity: 'GoodsIssueNote', entityId: id, metadata: { code: existing.code } });
     return { success: true };
   }
 
@@ -164,7 +162,7 @@ export class IssuesController {
   @RequirePermissions('inventory.issue.submit')
   async submit(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const issue = await this.prisma.goodsIssueNote.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { items: true, warehouse: true },
     });
     if (!issue) throw new NotFoundException('Goods Issue not found');
@@ -177,7 +175,7 @@ export class IssuesController {
       // Create stock ledger entry
       await this.prisma.stockLedger.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           moveType: 'GOODS_ISSUE',
           refType: 'GoodsIssueNote',
           refId: issue.id,
@@ -199,7 +197,7 @@ export class IssuesController {
       include: { warehouse: true, items: { include: { item: true } } },
     });
 
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'SUBMIT', entity: 'GoodsIssueNote', entityId: issue.id, metadata: { code: issue.code } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'SUBMIT', entity: 'GoodsIssueNote', entityId: issue.id, metadata: { code: issue.code } });
     return { issue: updated };
   }
 
@@ -207,7 +205,7 @@ export class IssuesController {
   @RequirePermissions('inventory.issue.void')
   async void(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const issue = await this.prisma.goodsIssueNote.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { items: true, warehouse: true },
     });
     if (!issue) throw new NotFoundException('Goods Issue not found');
@@ -218,7 +216,7 @@ export class IssuesController {
     for (const item of issue.items) {
       await this.prisma.stockLedger.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           moveType: 'MANUAL_ADJUST',
           refType: 'GoodsIssueNote',
           refId: issue.id,
@@ -240,7 +238,7 @@ export class IssuesController {
       include: { warehouse: true, items: { include: { item: true } } },
     });
 
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'VOID', entity: 'GoodsIssueNote', entityId: issue.id, metadata: { code: issue.code } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'VOID', entity: 'GoodsIssueNote', entityId: issue.id, metadata: { code: issue.code } });
     return { issue: updated };
   }
 }

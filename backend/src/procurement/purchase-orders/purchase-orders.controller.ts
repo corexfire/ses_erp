@@ -66,7 +66,7 @@ export class PurchaseOrdersController {
   ) {
     const purchaseOrders = await this.prisma.purchaseOrder.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(isProcurementDocStatus(status) ? { status } : {}),
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }] } : {}),
       },
@@ -84,7 +84,7 @@ export class PurchaseOrdersController {
     @Param('id') id: string,
   ) {
     const purchaseOrder = await this.prisma.purchaseOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         supplier: true,
         rfq: true,
@@ -106,28 +106,28 @@ export class PurchaseOrdersController {
     @Body() body: CreatePurchaseOrderDto,
   ) {
     const supplier = await this.prisma.supplier.findFirst({
-      where: { id: body.supplierId, tenantId: req.user.tenantId },
+      where: { id: body.supplierId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!supplier) throw new NotFoundException('Supplier not found');
 
     if (body.rfqId) {
       const rfq = await this.prisma.rfq.findFirst({
-        where: { id: body.rfqId, tenantId: req.user.tenantId },
+        where: { id: body.rfqId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!rfq) throw new NotFoundException('RFQ not found');
     }
 
     await this.validateTaxCodes({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       taxCodeIds: body.items.map((x) => x.taxCodeId ?? '').filter(Boolean),
     });
 
     const purchaseOrder = await this.prisma.$transaction(async (tx) => {
       const po = await tx.purchaseOrder.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           supplierId: body.supplierId,
           rfqId: body.rfqId,
@@ -139,7 +139,7 @@ export class PurchaseOrdersController {
       if (body.items.length > 0) {
         await tx.purchaseOrderItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             orderId: po.id,
             lineNo: idx + 1,
             description: it.description,
@@ -156,7 +156,7 @@ export class PurchaseOrdersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'PurchaseOrder',
@@ -174,14 +174,14 @@ export class PurchaseOrdersController {
     @Body() body: UpdatePurchaseOrderDto,
   ) {
     const exists = await this.prisma.purchaseOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Purchase order not found');
 
     if (body.items) {
       await this.validateTaxCodes({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         taxCodeIds: body.items.map((x) => x.taxCodeId ?? '').filter(Boolean),
       });
     }
@@ -197,12 +197,12 @@ export class PurchaseOrdersController {
 
       if (body.items) {
         await tx.purchaseOrderItem.deleteMany({
-          where: { tenantId: req.user.tenantId, orderId: id },
+          where: { tenantId: req.user.tenantId!, orderId: id },
         });
         if (body.items.length > 0) {
           await tx.purchaseOrderItem.createMany({
             data: body.items.map((it, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               orderId: id,
               lineNo: idx + 1,
               description: it.description,
@@ -220,7 +220,7 @@ export class PurchaseOrdersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'PurchaseOrder',
@@ -237,14 +237,14 @@ export class PurchaseOrdersController {
     @Param('id') id: string,
   ) {
     const po = await this.prisma.purchaseOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!po) throw new NotFoundException('Purchase order not found');
 
     const workflow = await this.prisma.workflowDefinition.findFirst({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         moduleKey: 'procurement',
         docType: 'PURCHASE_ORDER',
         isActive: true,
@@ -253,7 +253,7 @@ export class PurchaseOrdersController {
     });
     const hasSteps = workflow
       ? (await this.prisma.workflowStep.count({
-          where: { tenantId: req.user.tenantId, definitionId: workflow.id },
+          where: { tenantId: req.user.tenantId!, definitionId: workflow.id },
         })) > 0
       : false;
 
@@ -267,7 +267,7 @@ export class PurchaseOrdersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'submit',
       entity: 'PurchaseOrder',
@@ -288,7 +288,7 @@ export class PurchaseOrdersController {
     @Param('id') id: string,
   ) {
     const po = await this.prisma.purchaseOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: {
         id: true,
         status: true,
@@ -303,7 +303,7 @@ export class PurchaseOrdersController {
     if (po.workflowDefinitionId && po.currentStepNo) {
       const step = await this.prisma.workflowStep.findFirst({
         where: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           definitionId: po.workflowDefinitionId,
           stepNo: po.currentStepNo,
         },
@@ -321,7 +321,7 @@ export class PurchaseOrdersController {
 
       const maxStep = await this.prisma.workflowStep.aggregate({
         where: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           definitionId: po.workflowDefinitionId,
         },
         _max: { stepNo: true },
@@ -339,7 +339,7 @@ export class PurchaseOrdersController {
       });
 
       await this.audit.log({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         actorUserId: req.user.id,
         action: 'approve',
         entity: 'PurchaseOrder',
@@ -363,7 +363,7 @@ export class PurchaseOrdersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'approve',
       entity: 'PurchaseOrder',
@@ -380,7 +380,7 @@ export class PurchaseOrdersController {
     @Param('id') id: string,
   ) {
     const po = await this.prisma.purchaseOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!po) throw new NotFoundException('Purchase order not found');
@@ -393,7 +393,7 @@ export class PurchaseOrdersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'reject',
       entity: 'PurchaseOrder',

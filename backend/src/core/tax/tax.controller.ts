@@ -29,7 +29,7 @@ export class TaxController {
   @RequirePermissions('core.tax.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const taxCodes = await this.prisma.taxCode.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ isActive: 'desc' }, { code: 'asc' }],
     });
     return { taxCodes };
@@ -43,7 +43,7 @@ export class TaxController {
   ) {
     const taxCode = await this.prisma.taxCode.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         rate: body.rate,
@@ -52,7 +52,7 @@ export class TaxController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'TaxCode',
@@ -74,7 +74,7 @@ export class TaxController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'TaxCode',

@@ -73,7 +73,7 @@ export class RouteController {
   ) {
     const routes = await this.prisma.routeTemplate.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -97,7 +97,7 @@ export class RouteController {
     @Param('id') id: string,
   ) {
     const route = await this.prisma.routeTemplate.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { warehouse: true, tripPlans: { take: 20, orderBy: { routeDate: 'desc' } } },
     });
     if (!route) throw new NotFoundException('Route template not found');
@@ -110,12 +110,12 @@ export class RouteController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Body() body: CreateRouteTemplateDto,
   ) {
-    const count = await this.prisma.routeTemplate.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.routeTemplate.count({ where: { tenantId: req.user.tenantId! } });
     const code = `RTE-${String(count + 1).padStart(6, '0')}`;
 
     const route = await this.prisma.routeTemplate.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code || code,
         name: body.name,
         warehouseId: body.warehouseId,
@@ -125,7 +125,7 @@ export class RouteController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'RouteTemplate',
@@ -154,7 +154,7 @@ export class TripController {
     @Query('vehicleId') vehicleId?: string,
     @Query('driverId') driverId?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (isTripStatus(status)) where.status = status;
     if (routeDate) where.routeDate = { gte: new Date(routeDate + 'T00:00:00Z'), lt: new Date(routeDate + 'T23:59:59Z') };
     if (vehicleId) where.vehicleId = vehicleId;
@@ -176,7 +176,7 @@ export class TripController {
     @Param('id') id: string,
   ) {
     const trip = await this.prisma.tripPlan.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         vehicle: true,
         driver: true,
@@ -198,7 +198,7 @@ export class TripController {
   ) {
     if (body.vehicleId) {
       const vehicle = await this.prisma.fleetVehicle.findFirst({
-        where: { id: body.vehicleId, tenantId: req.user.tenantId, status: 'ACTIVE' },
+        where: { id: body.vehicleId, tenantId: req.user.tenantId!, status: 'ACTIVE' },
         select: { id: true },
       });
       if (!vehicle) throw new NotFoundException('Vehicle not found or inactive');
@@ -206,18 +206,18 @@ export class TripController {
 
     if (body.driverId) {
       const driver = await this.prisma.logisticsDriver.findFirst({
-        where: { id: body.driverId, tenantId: req.user.tenantId, status: 'ACTIVE' },
+        where: { id: body.driverId, tenantId: req.user.tenantId!, status: 'ACTIVE' },
         select: { id: true },
       });
       if (!driver) throw new NotFoundException('Driver not found or inactive');
     }
 
-    const count = await this.prisma.tripPlan.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.tripPlan.count({ where: { tenantId: req.user.tenantId! } });
     const code = `TRP-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(count + 1).padStart(4, '0')}`;
 
     const trip = await this.prisma.tripPlan.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code,
         routeDate: new Date(body.routeDate),
         vehicleId: body.vehicleId,
@@ -230,7 +230,7 @@ export class TripController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'TripPlan',
@@ -249,7 +249,7 @@ export class TripController {
     @Body() body: AssignDeliveriesDto,
   ) {
     const trip = await this.prisma.tripPlan.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true, status: true },
     });
     if (!trip) throw new NotFoundException('Trip not found');
@@ -262,7 +262,7 @@ export class TripController {
     const deliveryOrders = await this.prisma.deliveryOrder.findMany({
       where: {
         id: { in: body.deliveryOrderIds },
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         status: { in: ['PLANNED', 'RELEASED'] },
       },
       select: { id: true },
@@ -285,7 +285,7 @@ export class TripController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'ASSIGN_DELIVERIES',
       entity: 'TripPlan',
@@ -304,7 +304,7 @@ export class TripController {
     @Body() body: DispatchTripDto,
   ) {
     const trip = await this.prisma.tripPlan.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true, status: true },
     });
     if (!trip) throw new NotFoundException('Trip not found');
@@ -336,7 +336,7 @@ export class TripController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'DISPATCH',
       entity: 'TripPlan',
@@ -355,14 +355,14 @@ export class TripController {
     @Body() body: AddCheckpointDto,
   ) {
     const trip = await this.prisma.tripPlan.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!trip) throw new NotFoundException('Trip not found');
 
     const checkpoint = await this.prisma.tripCheckpoint.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         tripPlanId: id,
         checkpointType: body.checkpointType,
         locationName: body.locationName,
@@ -403,7 +403,7 @@ export class TripController {
     }
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'ADD_CHECKPOINT',
       entity: 'TripCheckpoint',
@@ -421,7 +421,7 @@ export class TripController {
     @Param('id') id: string,
   ) {
     const trip = await this.prisma.tripPlan.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true, status: true },
     });
     if (!trip) throw new NotFoundException('Trip not found');
@@ -437,7 +437,7 @@ export class TripController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'COMPLETE',
       entity: 'TripPlan',

@@ -44,7 +44,7 @@ export class ConstructionController {
     @Query('status') status?: string,
     @Query('q') q?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (projectId) where.projectId = projectId;
     if (status && status !== 'ALL') where.status = status;
     if (q) {
@@ -74,7 +74,7 @@ export class ConstructionController {
   @Get('stats')
   @RequirePermissions('project.site.read')
   async getStats(@Req() req: FastifyRequest & { user: AuthUser }) {
-    const tenantId = req.user.tenantId;
+    const tenantId = req.user.tenantId!;
     const [total, pending, approved] = await Promise.all([
       this.prisma.dailyReport.count({ where: { tenantId } }),
       this.prisma.dailyReport.count({ where: { tenantId, status: 'SUBMITTED' } }),
@@ -92,7 +92,7 @@ export class ConstructionController {
   ) {
     const report = await this.prisma.dailyReport.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         projectId: body.projectId,
         reportDate: new Date(body.reportDate),
         morningWeather: body.morningWeather,
@@ -115,7 +115,7 @@ export class ConstructionController {
         submittedBy: req.user.id,
         resources: {
           create: body.resources?.map(r => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             resourceType: r.resourceType,
             quantity: r.quantity,
             unit: r.unit,
@@ -124,7 +124,7 @@ export class ConstructionController {
         },
         photos: {
           create: body.photos?.map(p => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             fileId: p.fileId,
             caption: p.caption,
             category: p.category,
@@ -132,7 +132,7 @@ export class ConstructionController {
         },
         subcontractors: {
           create: body.subcontractors?.map(s => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             subcontractorName: s.subcontractorName,
             workerCount: s.workerCount,
             workDescription: s.workDescription,
@@ -185,7 +185,7 @@ export class ConstructionController {
           hseOfficerId: body.hseOfficerId,
           resources: body.resources ? {
             create: body.resources.map(r => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               resourceType: r.resourceType,
               quantity: r.quantity,
               unit: r.unit,
@@ -194,7 +194,7 @@ export class ConstructionController {
           } : undefined,
           photos: body.photos ? {
             create: body.photos.map(p => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               fileId: p.fileId,
               caption: p.caption,
               category: p.category,
@@ -202,7 +202,7 @@ export class ConstructionController {
           } : undefined,
           subcontractors: body.subcontractors ? {
             create: body.subcontractors.map(s => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               subcontractorName: s.subcontractorName,
               workerCount: s.workerCount,
               workDescription: s.workDescription,

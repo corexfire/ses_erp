@@ -78,7 +78,7 @@ export class DeliveryController {
     @Query('plannedShipDate') plannedShipDate?: string,
     @Query('q') q?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (isDeliveryOrderStatus(status)) where.status = status;
     if (warehouseId) where.warehouseId = warehouseId;
     if (plannedShipDate) where.plannedShipDate = { gte: new Date(plannedShipDate + 'T00:00:00Z'), lt: new Date(plannedShipDate + 'T23:59:59Z') };
@@ -105,7 +105,7 @@ export class DeliveryController {
     @Param('id') id: string,
   ) {
     const do_ = await this.prisma.deliveryOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         customer: true,
         warehouse: true,
@@ -129,7 +129,7 @@ export class DeliveryController {
     const shipments = await this.prisma.shipment.findMany({
       where: {
         id: { in: body.shipmentIds },
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         status: 'CREATED',
       },
       include: { order: { include: { customer: true, items: true } }, carrier: true },
@@ -141,7 +141,7 @@ export class DeliveryController {
 
     // Check warehouse
     const warehouse = await this.prisma.warehouse.findFirst({
-      where: { id: body.warehouseId, tenantId: req.user.tenantId },
+      where: { id: body.warehouseId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!warehouse) throw new NotFoundException('Warehouse not found');
@@ -155,12 +155,12 @@ export class DeliveryController {
 
       // Check if DO already exists for this shipment
       const existingDo = await this.prisma.deliveryOrder.findFirst({
-        where: { shipmentId: shipment.id, tenantId: req.user.tenantId },
+        where: { shipmentId: shipment.id, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (existingDo) continue;
 
-      const count = await this.prisma.deliveryOrder.count({ where: { tenantId: req.user.tenantId } });
+      const count = await this.prisma.deliveryOrder.count({ where: { tenantId: req.user.tenantId! } });
       const code = `DO-${today}-${String(count + 1 + i).padStart(4, '0')}`;
 
       // Generate pod token
@@ -170,7 +170,7 @@ export class DeliveryController {
 
       const deliveryOrder = await this.prisma.deliveryOrder.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code,
           shipmentId: shipment.id,
           salesOrderId: order?.id,
@@ -188,7 +188,7 @@ export class DeliveryController {
           podTokenExpiry,
           items: order?.items ? {
             create: order.items.map((item, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               lineNo: idx + 1,
               description: item.description,
               orderedQty: item.qty,
@@ -203,7 +203,7 @@ export class DeliveryController {
       deliveryOrders.push(deliveryOrder);
 
       await this.audit.log({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         actorUserId: req.user.id,
         action: 'GENERATE',
         entity: 'DeliveryOrder',
@@ -222,18 +222,18 @@ export class DeliveryController {
     @Body() body: CreateDeliveryOrderDto,
   ) {
     const warehouse = await this.prisma.warehouse.findFirst({
-      where: { id: body.warehouseId, tenantId: req.user.tenantId },
+      where: { id: body.warehouseId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!warehouse) throw new NotFoundException('Warehouse not found');
 
     const customer = await this.prisma.customer.findFirst({
-      where: { id: body.customerId, tenantId: req.user.tenantId },
+      where: { id: body.customerId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!customer) throw new NotFoundException('Customer not found');
 
-    const count = await this.prisma.deliveryOrder.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.deliveryOrder.count({ where: { tenantId: req.user.tenantId! } });
     const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
     const code = body.code || `DO-${today}-${String(count + 1).padStart(4, '0')}`;
 
@@ -243,7 +243,7 @@ export class DeliveryController {
 
     const deliveryOrder = await this.prisma.deliveryOrder.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code,
         shipmentId: body.shipmentId,
         salesOrderId: body.salesOrderId,
@@ -262,7 +262,7 @@ export class DeliveryController {
         podTokenExpiry,
         items: body.items ? {
           create: body.items.map((item, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             lineNo: idx + 1,
             itemId: item.itemId,
             description: item.description,
@@ -278,7 +278,7 @@ export class DeliveryController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'DeliveryOrder',
@@ -297,7 +297,7 @@ export class DeliveryController {
     @Body() body: UpdateDeliveryOrderDto,
   ) {
     const existing = await this.prisma.deliveryOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!existing) throw new NotFoundException('Delivery order not found');
@@ -322,7 +322,7 @@ export class DeliveryController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'UPDATE',
       entity: 'DeliveryOrder',
@@ -340,7 +340,7 @@ export class DeliveryController {
     @Param('id') id: string,
   ) {
     const existing = await this.prisma.deliveryOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true, status: true, items: { select: { id: true } } },
     });
     if (!existing) throw new NotFoundException('Delivery order not found');
@@ -360,7 +360,7 @@ export class DeliveryController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'RELEASE',
       entity: 'DeliveryOrder',
@@ -378,7 +378,7 @@ export class DeliveryController {
     @Param('id') id: string,
   ) {
     const existing = await this.prisma.deliveryOrder.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true, status: true, tripPlanId: true },
     });
     if (!existing) throw new NotFoundException('Delivery order not found');
@@ -401,7 +401,7 @@ export class DeliveryController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CANCEL',
       entity: 'DeliveryOrder',

@@ -15,7 +15,7 @@ export class AssetsController {
   @RequirePermissions('finance.asset.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const assets = await this.prisma.fixedAsset.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { depreciationEntries: true },
       orderBy: [{ createdAt: 'desc' }],
     });
@@ -26,7 +26,7 @@ export class AssetsController {
   @RequirePermissions('finance.asset.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const asset = await this.prisma.fixedAsset.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { depreciationEntries: { orderBy: [{ periodDate: 'desc' }] } },
     });
     return { asset };
@@ -37,7 +37,7 @@ export class AssetsController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { assetNo: string; name: string; category: string; purchaseDate: string; purchaseCost: number; usefulLife: number; salvageValue?: number; depreciationMethod?: string }) {
     const asset = await this.prisma.fixedAsset.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         assetNo: body.assetNo,
         name: body.name,
         category: body.category,
@@ -55,7 +55,7 @@ export class AssetsController {
   @Post(':id/depreciation')
   @RequirePermissions('finance.asset.depreciate')
   async addDepreciation(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { periodDate: string; depreciationAmount: number; notes?: string }) {
-    const asset = await this.prisma.fixedAsset.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const asset = await this.prisma.fixedAsset.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!asset) throw new Error('Asset not found');
 
     const existingDepr = await this.prisma.fixedAssetDepreciation.findMany({ where: { assetId: id } });
@@ -63,7 +63,7 @@ export class AssetsController {
 
     const depr = await this.prisma.fixedAssetDepreciation.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         assetId: id,
         periodDate: new Date(body.periodDate),
         depreciationAmount: body.depreciationAmount,

@@ -32,7 +32,7 @@ export class TransfersController {
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('q') q?: string, @Query('status') status?: string) {
     const transfers = await this.prisma.stockTransfer.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(isInventoryDocStatus(status) ? { status } : {}),
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }] } : {}),
       },
@@ -47,7 +47,7 @@ export class TransfersController {
   @RequirePermissions('inventory.transfer.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const transfer = await this.prisma.stockTransfer.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         fromWarehouse: true,
         toWarehouse: true,
@@ -64,21 +64,21 @@ export class TransfersController {
   @Post()
   @RequirePermissions('inventory.transfer.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateTransferDto) {
-    const fromWh = await this.prisma.warehouse.findFirst({ where: { id: body.fromWarehouseId, tenantId: req.user.tenantId }, select: { id: true } });
+    const fromWh = await this.prisma.warehouse.findFirst({ where: { id: body.fromWarehouseId, tenantId: req.user.tenantId! }, select: { id: true } });
     if (!fromWh) throw new NotFoundException('From warehouse not found');
-    const toWh = await this.prisma.warehouse.findFirst({ where: { id: body.toWarehouseId, tenantId: req.user.tenantId }, select: { id: true } });
+    const toWh = await this.prisma.warehouse.findFirst({ where: { id: body.toWarehouseId, tenantId: req.user.tenantId! }, select: { id: true } });
     if (!toWh) throw new NotFoundException('To warehouse not found');
 
     if (body.items.some((it) => it.itemId)) {
       const itemIds = Array.from(new Set(body.items.map((it) => it.itemId).filter(Boolean) as string[]));
-      const count = await this.prisma.item.count({ where: { tenantId: req.user.tenantId, id: { in: itemIds } } });
+      const count = await this.prisma.item.count({ where: { tenantId: req.user.tenantId!, id: { in: itemIds } } });
       if (count !== itemIds.length) throw new NotFoundException('Item not found');
     }
 
     const transfer = await this.prisma.$transaction(async (tx) => {
       const tr = await tx.stockTransfer.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           transferDate: new Date(body.transferDate),
           fromWarehouseId: body.fromWarehouseId,
@@ -89,7 +89,7 @@ export class TransfersController {
       if (body.items.length > 0) {
         await tx.stockTransferItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             transferId: tr.id,
             lineNo: idx + 1,
             itemId: it.itemId,
@@ -107,7 +107,7 @@ export class TransfersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'StockTransfer',
@@ -120,13 +120,13 @@ export class TransfersController {
   @Patch(':id')
   @RequirePermissions('inventory.transfer.update')
   async update(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: UpdateTransferDto) {
-    const existing = await this.prisma.stockTransfer.findFirst({ where: { id, tenantId: req.user.tenantId }, select: { id: true, status: true } });
+    const existing = await this.prisma.stockTransfer.findFirst({ where: { id, tenantId: req.user.tenantId! }, select: { id: true, status: true } });
     if (!existing) throw new NotFoundException('Transfer not found');
     if (existing.status === 'POSTED') throw new ForbiddenException('Transfer already posted');
 
     if (body.items?.some((it) => it.itemId)) {
       const itemIds = Array.from(new Set(body.items.map((it) => it.itemId).filter(Boolean) as string[]));
-      const count = await this.prisma.item.count({ where: { tenantId: req.user.tenantId, id: { in: itemIds } } });
+      const count = await this.prisma.item.count({ where: { tenantId: req.user.tenantId!, id: { in: itemIds } } });
       if (count !== itemIds.length) throw new NotFoundException('Item not found');
     }
 
@@ -136,11 +136,11 @@ export class TransfersController {
         data: { transferDate: body.transferDate ? new Date(body.transferDate) : undefined, notes: body.notes ?? undefined },
       });
       if (body.items) {
-        await tx.stockTransferItem.deleteMany({ where: { tenantId: req.user.tenantId, transferId: id } });
+        await tx.stockTransferItem.deleteMany({ where: { tenantId: req.user.tenantId!, transferId: id } });
         if (body.items.length > 0) {
           await tx.stockTransferItem.createMany({
             data: body.items.map((it, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               transferId: id,
               lineNo: idx + 1,
               itemId: it.itemId,
@@ -159,7 +159,7 @@ export class TransfersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'StockTransfer',
@@ -173,7 +173,7 @@ export class TransfersController {
   @RequirePermissions('inventory.transfer.post')
   async post(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const transfer = await this.prisma.stockTransfer.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { items: { orderBy: [{ lineNo: 'asc' }] } },
     });
     if (!transfer) throw new NotFoundException('Transfer not found');
@@ -188,9 +188,9 @@ export class TransfersController {
 
         if (it.itemId && it.batchCode) {
           const batch = await tx.itemBatch.upsert({
-            where: { tenantId_itemId_code: { tenantId: req.user.tenantId, itemId: it.itemId, code: it.batchCode } },
+            where: { tenantId_itemId_code: { tenantId: req.user.tenantId!, itemId: it.itemId, code: it.batchCode } },
             update: {},
-            create: { tenantId: req.user.tenantId, itemId: it.itemId, code: it.batchCode },
+            create: { tenantId: req.user.tenantId!, itemId: it.itemId, code: it.batchCode },
             select: { id: true },
           });
           batchId = batch.id;
@@ -198,9 +198,9 @@ export class TransfersController {
 
         if (it.itemId && it.serialNo) {
           const serial = await tx.itemSerial.upsert({
-            where: { tenantId_serialNo: { tenantId: req.user.tenantId, serialNo: it.serialNo } },
+            where: { tenantId_serialNo: { tenantId: req.user.tenantId!, serialNo: it.serialNo } },
             update: { itemId: it.itemId },
-            create: { tenantId: req.user.tenantId, itemId: it.itemId, serialNo: it.serialNo },
+            create: { tenantId: req.user.tenantId!, itemId: it.itemId, serialNo: it.serialNo },
             select: { id: true },
           });
           serialId = serial.id;
@@ -208,7 +208,7 @@ export class TransfersController {
 
         await tx.stockLedger.create({
           data: {
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             moveType: 'TRANSFER_OUT',
             refType: 'TRANSFER',
             refId: transfer.id,
@@ -227,7 +227,7 @@ export class TransfersController {
 
         await tx.stockLedger.create({
           data: {
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             moveType: 'TRANSFER_IN',
             refType: 'TRANSFER',
             refId: transfer.id,
@@ -249,7 +249,7 @@ export class TransfersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'post',
       entity: 'StockTransfer',

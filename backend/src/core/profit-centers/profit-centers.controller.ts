@@ -29,7 +29,7 @@ export class ProfitCentersController {
   @RequirePermissions('core.profit_center.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const profitCenters = await this.prisma.profitCenter.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ isActive: 'desc' }, { code: 'asc' }],
     });
     return { profitCenters };
@@ -42,11 +42,11 @@ export class ProfitCentersController {
     @Body() body: CreateProfitCenterDto,
   ) {
     const profitCenter = await this.prisma.profitCenter.create({
-      data: { tenantId: req.user.tenantId, code: body.code, name: body.name },
+      data: { tenantId: req.user.tenantId!, code: body.code, name: body.name },
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'ProfitCenter',
@@ -68,7 +68,7 @@ export class ProfitCentersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'ProfitCenter',

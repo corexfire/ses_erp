@@ -68,7 +68,7 @@ export class ProjectBudgetController {
   ) {
     return this.prisma.projectBudget.findMany({
       where: { 
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(projectId ? { projectId } : {})
       },
       include: { 
@@ -86,7 +86,7 @@ export class ProjectBudgetController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.projectBudget.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { 
         project: true,
         lines: { include: { wbsTask: true } }
@@ -104,7 +104,7 @@ export class ProjectBudgetController {
 
     return this.prisma.projectBudget.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         projectId: body.projectId,
         budgetNo: body.budgetNo,
         description: body.description,
@@ -113,7 +113,7 @@ export class ProjectBudgetController {
         allocatedBudget: totalAmount,
         lines: {
           create: body.lines.map(line => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             wbsTaskId: line.wbsTaskId,
             costCategory: line.costCategory,
             description: line.description,
@@ -141,7 +141,7 @@ export class ProjectBudgetController {
       
       // Delete old lines
       await this.prisma.projectBudgetLine.deleteMany({
-        where: { budgetId: id, tenantId: req.user.tenantId }
+        where: { budgetId: id, tenantId: req.user.tenantId! }
       });
 
       return this.prisma.projectBudget.update({
@@ -152,7 +152,7 @@ export class ProjectBudgetController {
           allocatedBudget: totalAmount,
           lines: {
             create: body.lines.map(line => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               wbsTaskId: line.wbsTaskId,
               costCategory: line.costCategory,
               description: line.description,
@@ -181,7 +181,7 @@ export class ProjectBudgetController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.projectBudget.update({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       data: { status }
     });
   }
@@ -193,7 +193,7 @@ export class ProjectBudgetController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.projectBudget.delete({
-      where: { id, tenantId: req.user.tenantId }
+      where: { id, tenantId: req.user.tenantId! }
     });
   }
 }

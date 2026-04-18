@@ -14,7 +14,7 @@ export class KpiController {
   @Get()
   @RequirePermissions('hris.kpi.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (period) where.period = period;
 
     const evaluations = await this.prisma.kpiEvaluation.findMany({
@@ -30,7 +30,7 @@ export class KpiController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { employeeId: string; period: string; score: number; grade?: string; comments?: string }) {
     const evaluation = await this.prisma.kpiEvaluation.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         employeeId: body.employeeId,
         period: body.period,
         score: body.score,
@@ -63,7 +63,7 @@ export class ExpenseController {
   @Get()
   @RequirePermissions('hris.expense.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (status) where.status = status;
 
     const claims = await this.prisma.expenseClaim.findMany({
@@ -78,7 +78,7 @@ export class ExpenseController {
   @RequirePermissions('hris.expense.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const claim = await this.prisma.expenseClaim.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { employee: true },
     });
     return { claim };
@@ -89,7 +89,7 @@ export class ExpenseController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { employeeId: string; claimNo: string; claimDate: string; amount: number; description?: string; category: string }) {
     const claim = await this.prisma.expenseClaim.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         employeeId: body.employeeId,
         claimNo: body.claimNo,
         claimDate: new Date(body.claimDate),

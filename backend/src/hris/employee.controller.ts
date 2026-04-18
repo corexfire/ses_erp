@@ -7,14 +7,14 @@ import { PermissionsGuard } from '../auth/permissions.guard';
 import { PrismaService } from '../prisma/prisma.service';
 
 @UseGuards(JwtAuthGuard, PermissionsGuard)
-@Controller('hris/employee')
+@Controller('hris/employees')
 export class EmployeeController {
   constructor(private readonly prisma: PrismaService) {}
 
   @Get()
   @RequirePermissions('hris.employee.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('department') department?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (department) where.department = department;
 
     const employees = await this.prisma.employee.findMany({
@@ -29,7 +29,7 @@ export class EmployeeController {
   @RequirePermissions('hris.employee.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const employee = await this.prisma.employee.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { manager: true, reports: true, attendances: { orderBy: [{ date: 'desc' }], take: 10 } },
     });
     return { employee };
@@ -40,7 +40,7 @@ export class EmployeeController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { employeeNo: string; firstName: string; lastName?: string; email: string; phone?: string; department?: string; position?: string; hireDate?: string; salary?: number; managerId?: string }) {
     const employee = await this.prisma.employee.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         employeeNo: body.employeeNo,
         firstName: body.firstName,
         lastName: body.lastName,
@@ -86,7 +86,7 @@ export class OrgStructureController {
   @RequirePermissions('hris.orgStructure.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const units = await this.prisma.organizationUnit.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { parent: true, children: true },
       orderBy: [{ name: 'asc' }],
     });
@@ -98,7 +98,7 @@ export class OrgStructureController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { name: string; code: string; parentId?: string; managerId?: string; type?: string }) {
     const unit = await this.prisma.organizationUnit.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         name: body.name,
         code: body.code,
         parentId: body.parentId,
@@ -118,7 +118,7 @@ export class RecruitmentController {
   @Get()
   @RequirePermissions('hris.recruitment.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (status) where.status = status;
 
     const candidates = await this.prisma.recruitmentCandidate.findMany({
@@ -133,7 +133,7 @@ export class RecruitmentController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { candidateNo: string; firstName: string; lastName?: string; email: string; phone?: string; position?: string }) {
     const candidate = await this.prisma.recruitmentCandidate.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         candidateNo: body.candidateNo,
         firstName: body.firstName,
         lastName: body.lastName,

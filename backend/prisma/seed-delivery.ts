@@ -162,14 +162,13 @@ export async function seedDelivery(prisma: PrismaClient, tenantId: string) {
           data: {
             tenantId,
             deliveryOrderId: deliveryOrder.id,
-            lineNo: i,
-            itemId: item?.id,
-            description: item?.name || `Barang Logistik ${i}`,
-            orderedQty: qty,
-            shippedQty: s.status === 'DELIVERED' || s.status === 'IN_TRANSIT' ? qty : 0,
-            deliveredQty: s.status === 'DELIVERED' ? qty : 0,
-            uomCode: item?.uomCode || 'PCS',
-            unitPrice: item?.unitPrice || 15000,
+             lineNo: i,
+             itemId: item?.id,
+             description: item?.name || `Barang Logistik ${i}`,
+             orderedQty: qty,
+             shippedQty: s.status === 'DELIVERED' || s.status === 'IN_TRANSIT' ? qty : 0,
+             deliveredQty: s.status === 'DELIVERED' ? qty : 0,
+             uomCode: item?.baseUomCode || 'PCS',
           }
         });
       }

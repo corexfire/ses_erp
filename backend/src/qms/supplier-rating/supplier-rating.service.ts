@@ -21,21 +21,21 @@ export class SupplierRatingService {
     for (const supplier of suppliers) {
       // 1. Quality Score: % of items passed in QC inspections
       const qcStats = await this.prisma.qcInspectionItem.aggregate({
-        where: {
-          tenantId,
-          inspection: { supplierId: supplier.id }, // GRN linked supplier
-        },
+         where: {
+           tenantId,
+           qcInspection: { grn: { supplierId: supplier.id } }, // GRN linked supplier
+         },
         _sum: { sampleQty: true, passedQty: true },
       });
 
-      const sampleQty = Number(qcStats._sum.sampleQty || 0);
-      const passedQty = Number(qcStats._sum.passedQty || 0);
+       const sampleQty = Number(qcStats._sum?.sampleQty || 0);
+       const passedQty = Number(qcStats._sum?.passedQty || 0);
       const qualityScore = sampleQty > 0 ? (passedQty / sampleQty) * 100 : 100;
 
-      // 2. NCR Score: Deduct points for NCRs (Max 100)
-      const ncrCount = await this.prisma.nonConformanceReport.count({
-        where: { tenantId, qc: { supplierId: supplier.id } },
-      });
+       // 2. NCR Score: Deduct points for NCRs (Max 100)
+       const ncrCount = await this.prisma.nonConformanceReport.count({
+         where: { tenantId, qc: { grn: { supplierId: supplier.id } } },
+       });
       const ncrScore = Math.max(0, 100 - ncrCount * 10);
 
       // 3. Delivery Score (Simulated/Placeholer for now)

@@ -49,7 +49,7 @@ export class SupportBiController {
   @Get('dashboard')
   @RequirePermissions('quality.read')
   async getDashboard(@Req() req: FastifyRequest & { user: AuthUser }) {
-    const tenantId = req.user.tenantId;
+    const tenantId = req.user.tenantId!;
 
     const [assets, docs, compliance, kpis] = await Promise.all([
       this.prisma.fixedAsset.count({ where: { tenantId } }),
@@ -90,7 +90,7 @@ export class SupportBiController {
   ) {
     return this.prisma.supportKpi.findMany({
       where: { 
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(category ? { category } : {})
       },
       orderBy: [
@@ -112,7 +112,7 @@ export class SupportBiController {
     return this.prisma.supportKpi.upsert({
       where: {
         tenantId_code_period: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           period: body.period
         }
@@ -122,7 +122,7 @@ export class SupportBiController {
         status
       },
       create: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...body,
         status
       }
@@ -136,7 +136,7 @@ export class SupportBiController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.supportKpi.delete({
-      where: { id, tenantId: req.user.tenantId }
+      where: { id, tenantId: req.user.tenantId! }
     });
   }
 }

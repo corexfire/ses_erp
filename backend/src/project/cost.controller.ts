@@ -26,7 +26,7 @@ export class CostController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Query('projectId') projectId?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (projectId) where.projectId = projectId;
 
     // Get WBS Tasks which are the source of truth for budget and actuals
@@ -74,7 +74,7 @@ export class CostController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const project = await this.prisma.project.findFirst({
-      where: { id: projectId, tenantId: req.user.tenantId },
+      where: { id: projectId, tenantId: req.user.tenantId! },
       include: { 
         wbsTasks: { 
           include: { commitments: { where: { status: 'ACTIVE' } } } 
@@ -124,7 +124,7 @@ export class CostController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const commitments = await this.prisma.projectCommitment.findMany({
-      where: { projectId, tenantId: req.user.tenantId },
+      where: { projectId, tenantId: req.user.tenantId! },
       orderBy: { createdAt: 'desc' },
       take: 200,
     });
@@ -138,7 +138,7 @@ export class CostController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Query('projectId') projectId?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (projectId) where.projectId = projectId;
 
     const commitments = await this.prisma.projectCommitment.findMany({
@@ -157,7 +157,7 @@ export class CostController {
   ) {
     const commitment = await this.prisma.projectCommitment.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         projectId: body.projectId,
         wbsTaskId: body.wbsTaskId,
         commitmentType: body.commitmentType,
@@ -177,7 +177,7 @@ export class CostController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const project = await this.prisma.project.findFirst({
-      where: { id: projectId, tenantId: req.user.tenantId },
+      where: { id: projectId, tenantId: req.user.tenantId! },
       include: { budgets: { include: { wbsTask: true } } },
     });
 

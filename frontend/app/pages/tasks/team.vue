@@ -18,7 +18,7 @@
             
             <div class="ml-4 flex items-center gap-2 bg-slate-100 p-1 rounded-2xl border border-slate-200 min-w-[200px]">
               <i class="pi pi-filter text-[10px] text-slate-400 ml-2"></i>
-              <Dropdown v-model="selectedTeamId" :options="myTeams" optionLabel="name" optionValue="id" placeholder="Pilih Tim Anda" @change="loadTasks" class="w-64 border-none shadow-none bg-transparent text-[10px] font-black uppercase" />
+              <Select v-model="selectedTeamId" :options="myTeams" optionLabel="name" optionValue="id" placeholder="Pilih Tim Anda" @change="loadTasks" class="w-64 border-none shadow-none bg-transparent text-[10px] font-black uppercase" />
             </div>
           </div>
         </div>
@@ -157,14 +157,14 @@
            </div>
            <div class="field">
              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Project <span class="text-rose-500">*</span></label>
-             <Dropdown v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" placeholder="Asosiasi Project" class="rounded-2xl" />
+             <Select v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" placeholder="Asosiasi Project" class="rounded-2xl" />
            </div>
         </div>
 
         <div class="space-y-6">
            <div class="field">
              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Penanggung Jawab (Pilihan)</label>
-             <Dropdown v-model="form.assigneeId" :options="users" optionLabel="name" optionValue="id" placeholder="Pilih Personel" class="rounded-2xl" />
+             <Select v-model="form.assigneeId" :options="users" optionLabel="name" optionValue="id" placeholder="Pilih Personel" class="rounded-2xl" />
            </div>
            <div class="field">
              <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Prioritas</label>
@@ -385,5 +385,5 @@ onMounted(() => {
 .custom-scrollbar::-webkit-scrollbar { height: 4px; width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { @apply bg-slate-200 rounded-full; }
 .p-button-indigo { @apply bg-indigo-600 border-indigo-600 text-white hover:bg-indigo-700; }
-:deep(.p-dropdown) { @apply bg-transparent; }
+:deep(.p-select) { @apply bg-transparent; }
 </style>

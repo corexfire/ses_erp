@@ -66,7 +66,7 @@ export class PurchaseInvoicesController {
   ) {
     const purchaseInvoices = await this.prisma.purchaseInvoice.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(isProcurementDocStatus(status) ? { status } : {}),
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }] } : {}),
       },
@@ -84,7 +84,7 @@ export class PurchaseInvoicesController {
     @Param('id') id: string,
   ) {
     const purchaseInvoice = await this.prisma.purchaseInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         supplier: true,
         order: true,
@@ -105,28 +105,28 @@ export class PurchaseInvoicesController {
     @Body() body: CreatePurchaseInvoiceDto,
   ) {
     const supplier = await this.prisma.supplier.findFirst({
-      where: { id: body.supplierId, tenantId: req.user.tenantId },
+      where: { id: body.supplierId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!supplier) throw new NotFoundException('Supplier not found');
 
     if (body.orderId) {
       const po = await this.prisma.purchaseOrder.findFirst({
-        where: { id: body.orderId, tenantId: req.user.tenantId },
+        where: { id: body.orderId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!po) throw new NotFoundException('Purchase order not found');
     }
 
     await this.validateTaxCodes({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       taxCodeIds: body.items.map((x) => x.taxCodeId ?? '').filter(Boolean),
     });
 
     const purchaseInvoice = await this.prisma.$transaction(async (tx) => {
       const inv = await tx.purchaseInvoice.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           supplierId: body.supplierId,
           orderId: body.orderId,
@@ -137,7 +137,7 @@ export class PurchaseInvoicesController {
       if (body.items.length > 0) {
         await tx.purchaseInvoiceItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             invoiceId: inv.id,
             lineNo: idx + 1,
             description: it.description,
@@ -153,7 +153,7 @@ export class PurchaseInvoicesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'PurchaseInvoice',
@@ -171,14 +171,14 @@ export class PurchaseInvoicesController {
     @Body() body: UpdatePurchaseInvoiceDto,
   ) {
     const exists = await this.prisma.purchaseInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Purchase invoice not found');
 
     if (body.items) {
       await this.validateTaxCodes({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         taxCodeIds: body.items.map((x) => x.taxCodeId ?? '').filter(Boolean),
       });
     }
@@ -195,12 +195,12 @@ export class PurchaseInvoicesController {
       });
       if (body.items) {
         await tx.purchaseInvoiceItem.deleteMany({
-          where: { tenantId: req.user.tenantId, invoiceId: id },
+          where: { tenantId: req.user.tenantId!, invoiceId: id },
         });
         if (body.items.length > 0) {
           await tx.purchaseInvoiceItem.createMany({
             data: body.items.map((it, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               invoiceId: id,
               lineNo: idx + 1,
               description: it.description,
@@ -217,7 +217,7 @@ export class PurchaseInvoicesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'PurchaseInvoice',
@@ -234,7 +234,7 @@ export class PurchaseInvoicesController {
     @Param('id') id: string,
   ) {
     const purchaseInvoice = await this.prisma.purchaseInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { 
         items: { include: { taxCode: true } },
         supplier: true,
@@ -279,63 +279,58 @@ export class PurchaseInvoicesController {
       const rnd = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
       const jeNo = `JE-PI-${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}-${rnd}`;
 
-      const journal = await tx.journalEntry.create({
-        data: {
-          tenantId: req.user.tenantId,
-          entryNo: jeNo,
-          entryDate: new Date(),
-          description: `Purchase Invoice Posting for ${purchaseInvoice.code} - ${purchaseInvoice.supplier?.name || 'Supplier'}`,
-          referenceNo: purchaseInvoice.code,
-          journalType: 'PURCHASE',
-          referenceType: 'PurchaseInvoice',
-          referenceId: purchaseInvoice.id,
-          status: 'POSTED',
-          totalDebit: cTot,
-          totalCredit: cTot,
-        }
-      });
+       const journal = await tx.journalEntry.create({
+         data: {
+           tenantId: req.user.tenantId!,
+           entryNo: jeNo,
+           entryDate: new Date(),
+           description: `Purchase Invoice Posting for ${purchaseInvoice.code} - ${purchaseInvoice.supplier?.name || 'Supplier'}`,
+           referenceNo: purchaseInvoice.code,
+           journalType: 'PURCHASE',
+           status: 'POSTED',
+           totalDebit: cTot,
+           totalCredit: cTot,
+         }
+       });
 
       const journalLines: any[] = [];
       let lineNo = 1;
 
       // Debit: Inventory/Expense
       journalLines.push({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         journalEntryId: journal.id,
         lineNo: lineNo++,
         accountCode: '1-1310-00',
         description: `Pembelian - ${purchaseInvoice.code}`,
         debit: subTotal,
         credit: 0,
-        referenceType: 'PurchaseInvoice',
         referenceId: purchaseInvoice.id,
       });
 
       // Debit: PPN Masukan (VAT Input) - 进项税
       if (totalTax > 0) {
         journalLines.push({
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           journalEntryId: journal.id,
           lineNo: lineNo++,
           accountCode: '1-1510-00',
           description: `PPN Masukan 11% - ${purchaseInvoice.code}`,
           debit: totalTax,
           credit: 0,
-          referenceType: 'PurchaseInvoice',
           referenceId: purchaseInvoice.id,
         });
       }
 
       // Credit: AP (Hutang Usaha)
       journalLines.push({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         journalEntryId: journal.id,
         lineNo: lineNo++,
         accountCode: '2-1100-00',
         description: `Hutang Usaha - ${purchaseInvoice.supplier?.name || 'Supplier'}`,
         debit: 0,
         credit: cTot,
-        referenceType: 'PurchaseInvoice',
         referenceId: purchaseInvoice.id,
       });
 
@@ -345,7 +340,7 @@ export class PurchaseInvoicesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'submit',
       entity: 'PurchaseInvoice',

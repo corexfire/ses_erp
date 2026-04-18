@@ -58,7 +58,7 @@ export class RouteController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const where: any = {};
-    where.tenantId = req.user.tenantId;
+    where.tenantId = req.user.tenantId!;
 
     if (query.search) {
       where.OR = [
@@ -94,7 +94,7 @@ export class RouteController {
   @RequirePermissions('logistics.route.read')
   async get(@Param('id') id: string, @Req() req: FastifyRequest & { user: AuthUser }) {
     const route = await this.prisma.routeTemplate.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { 
         warehouse: true,
         _count: { select: { tripPlans: true } } 
@@ -109,7 +109,7 @@ export class RouteController {
   async create(@Body() body: CreateRouteTemplateDto, @Req() req: FastifyRequest & { user: AuthUser }) {
     const route = await this.prisma.routeTemplate.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         warehouseId: body.warehouseId,
@@ -124,7 +124,7 @@ export class RouteController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'RouteTemplate',
@@ -139,7 +139,7 @@ export class RouteController {
   @RequirePermissions('logistics.route.manage')
   async update(@Param('id') id: string, @Body() body: UpdateRouteTemplateDto, @Req() req: FastifyRequest & { user: AuthUser }) {
     const existing = await this.prisma.routeTemplate.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!existing) throw new NotFoundException('Route template not found');
 
@@ -159,7 +159,7 @@ export class RouteController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'UPDATE',
       entity: 'RouteTemplate',

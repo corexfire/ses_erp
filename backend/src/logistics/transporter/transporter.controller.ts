@@ -56,7 +56,7 @@ export class TransporterController {
   ) {
     const transporters = await this.prisma.transporter.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -80,7 +80,7 @@ export class TransporterController {
     @Param('id') id: string,
   ) {
     const transporter = await this.prisma.transporter.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { vehicles: true, drivers: true },
     });
     if (!transporter) throw new NotFoundException('Transporter not found');
@@ -93,12 +93,12 @@ export class TransporterController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Body() body: CreateTransporterDto,
   ) {
-    const count = await this.prisma.transporter.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.transporter.count({ where: { tenantId: req.user.tenantId! } });
     const code = `TRN-${String(count + 1).padStart(6, '0')}`;
 
     const transporter = await this.prisma.transporter.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code || code,
         name: body.name,
         supplierId: body.supplierId,
@@ -111,7 +111,7 @@ export class TransporterController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'Transporter',
@@ -130,7 +130,7 @@ export class TransporterController {
     @Body() body: UpdateTransporterDto,
   ) {
     const exists = await this.prisma.transporter.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Transporter not found');
@@ -150,7 +150,7 @@ export class TransporterController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'UPDATE',
       entity: 'Transporter',

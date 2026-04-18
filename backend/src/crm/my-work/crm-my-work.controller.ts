@@ -39,7 +39,7 @@ export class CrmMyWorkController {
     @Query('ticketsStatus') ticketsStatus?: string,
     @Query('due') due?: string,
   ) {
-    const tenantId = req.user.tenantId;
+    const tenantId = req.user.tenantId!;
     const userId = req.user.id;
 
     const activityStatusWhere: ActivityStatus[] =

@@ -364,7 +364,7 @@ const load = async () => {
   loading.value = true;
   try {
     const [empRes, kpiRes] = await Promise.all([
-      api.get('/hris/employee'),
+      api.get('/hris/employees'),
       api.get('/hris/kpi')
     ]);
     employees.value = (empRes.data?.employees ?? empRes.employees ?? []).filter((e:any) => e.status === 'ACTIVE');

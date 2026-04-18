@@ -51,10 +51,10 @@ export class SparePartsController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Body() dto: CreateSparePartDto,
   ) {
-    if (!req.user.tenantId && req.user.isSuperAdmin) {
+    if (!req.user.tenantId! && req.user.isSuperAdmin) {
       throw new Error('Superadmin harus memilih tenant terlebih dahulu');
     }
-    return this.sparePartsService.create(req.user.tenantId, dto);
+    return this.sparePartsService.create(req.user.tenantId!, dto);
   }
 
   @Patch(':id')
@@ -63,10 +63,10 @@ export class SparePartsController {
     @Param('id') id: string,
     @Body() dto: UpdateSparePartDto,
   ) {
-    if (!req.user.tenantId && req.user.isSuperAdmin) {
+    if (!req.user.tenantId! && req.user.isSuperAdmin) {
       throw new Error('Superadmin harus memilih tenant terlebih dahulu');
     }
-    return this.sparePartsService.update(req.user.tenantId, id, dto);
+    return this.sparePartsService.update(req.user.tenantId!, id, dto);
   }
 
   @Delete(':id')
@@ -74,9 +74,9 @@ export class SparePartsController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Param('id') id: string,
   ) {
-    if (!req.user.tenantId && req.user.isSuperAdmin) {
+    if (!req.user.tenantId! && req.user.isSuperAdmin) {
       throw new Error('Superadmin harus memilih tenant terlebih dahulu');
     }
-    return this.sparePartsService.remove(req.user.tenantId, id);
+    return this.sparePartsService.remove(req.user.tenantId!, id);
   }
 }

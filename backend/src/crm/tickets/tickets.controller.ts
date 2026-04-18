@@ -45,7 +45,7 @@ export class TicketsController {
   ) {
     const tickets = await this.prisma.serviceTicket.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(customerId ? { customerId } : {}),
         ...(status && isTicketStatus(status) ? { status } : {}),
         ...(q
@@ -85,14 +85,14 @@ export class TicketsController {
     @Body() body: CreateTicketDto,
   ) {
     const customer = await this.prisma.customer.findFirst({
-      where: { id: body.customerId, tenantId: req.user.tenantId },
+      where: { id: body.customerId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!customer) throw new NotFoundException('Customer not found');
 
     const ticket = await this.prisma.serviceTicket.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         customerId: body.customerId,
         subject: body.subject,
@@ -105,7 +105,7 @@ export class TicketsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'ServiceTicket',
@@ -134,7 +134,7 @@ export class TicketsController {
     @Body() body: UpdateTicketDto,
   ) {
     const exists = await this.prisma.serviceTicket.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Ticket not found');
@@ -151,7 +151,7 @@ export class TicketsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'ServiceTicket',
@@ -180,7 +180,7 @@ export class TicketsController {
     @Body() body: AssignUserDto,
   ) {
     const exists = await this.prisma.serviceTicket.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Ticket not found');
@@ -188,7 +188,7 @@ export class TicketsController {
     const userId = body.userId?.trim() || null;
     if (userId) {
       const assignee = await this.prisma.user.findFirst({
-        where: { id: userId, tenantId: req.user.tenantId, isActive: true },
+        where: { id: userId, tenantId: req.user.tenantId!, isActive: true },
         select: { id: true },
       });
       if (!assignee) throw new NotFoundException('User not found');
@@ -201,7 +201,7 @@ export class TicketsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'assign',
       entity: 'ServiceTicket',

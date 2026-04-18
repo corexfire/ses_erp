@@ -35,7 +35,7 @@ export class WarehousesController {
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('q') q?: string) {
     const warehouses = await this.prisma.warehouse.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -60,7 +60,7 @@ export class WarehousesController {
   @RequirePermissions('inventory.warehouse.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const warehouse = await this.prisma.warehouse.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { 
         binLocations: { orderBy: [{ code: 'asc' }] },
         zones: { include: { bins: true } },
@@ -76,7 +76,7 @@ export class WarehousesController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateWarehouseDto) {
     const warehouse = await this.prisma.warehouse.create({
       data: { 
-        tenantId: req.user.tenantId, 
+        tenantId: req.user.tenantId!, 
         code: body.code, 
         name: body.name,
         type: body.type,
@@ -91,7 +91,7 @@ export class WarehousesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Warehouse',
@@ -109,7 +109,7 @@ export class WarehousesController {
     @Body() body: UpdateWarehouseDto,
   ) {
     const exists = await this.prisma.warehouse.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Warehouse not found');
@@ -130,7 +130,7 @@ export class WarehousesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'Warehouse',
@@ -144,7 +144,7 @@ export class WarehousesController {
   @RequirePermissions('inventory.warehouse.deactivate')
   async deactivate(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const exists = await this.prisma.warehouse.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Warehouse not found');
@@ -152,7 +152,7 @@ export class WarehousesController {
     const warehouse = await this.prisma.warehouse.update({ where: { id }, data: { isActive: false } });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'Warehouse',
@@ -168,7 +168,7 @@ export class WarehousesController {
   @RequirePermissions('inventory.warehouse.read')
   async listZones(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const zones = await this.prisma.warehouseZone.findMany({
-      where: { tenantId: req.user.tenantId, warehouseId: id },
+      where: { tenantId: req.user.tenantId!, warehouseId: id },
       include: { _count: { select: { bins: true } } },
     });
     return { zones };
@@ -183,7 +183,7 @@ export class WarehousesController {
   ) {
     const zone = await this.prisma.warehouseZone.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         warehouseId: id,
         code: body.code,
         name: body.name,
@@ -192,7 +192,7 @@ export class WarehousesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'WarehouseZone',
@@ -209,7 +209,7 @@ export class WarehousesController {
   @RequirePermissions('inventory.bin.read')
   async listBins(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const bins = await this.prisma.binLocation.findMany({
-      where: { tenantId: req.user.tenantId, warehouseId: id },
+      where: { tenantId: req.user.tenantId!, warehouseId: id },
       include: { zone: true },
       orderBy: [{ isActive: 'desc' }, { code: 'asc' }],
       take: 500,
@@ -222,7 +222,7 @@ export class WarehousesController {
   async createBin(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: CreateBinLocationDto) {
     const bin = await this.prisma.binLocation.create({
       data: { 
-        tenantId: req.user.tenantId, 
+        tenantId: req.user.tenantId!, 
         warehouseId: id, 
         code: body.code, 
         name: body.name,
@@ -232,7 +232,7 @@ export class WarehousesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'BinLocation',
@@ -247,7 +247,7 @@ export class WarehousesController {
   @RequirePermissions('inventory.bin.update')
   async updateBin(@Req() req: FastifyRequest & { user: AuthUser }, @Param('binId') binId: string, @Body() body: UpdateBinLocationDto) {
     const bin = await this.prisma.binLocation.update({
-      where: { id: binId, tenantId: req.user.tenantId },
+      where: { id: binId, tenantId: req.user.tenantId! },
       data: { 
         name: body.name ?? undefined,
         zoneId: body.zoneId ?? undefined,
@@ -256,7 +256,7 @@ export class WarehousesController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'BinLocation',
@@ -270,12 +270,12 @@ export class WarehousesController {
   @RequirePermissions('inventory.bin.deactivate')
   async deactivateBin(@Req() req: FastifyRequest & { user: AuthUser }, @Param('binId') binId: string) {
     const bin = await this.prisma.binLocation.update({
-      where: { id: binId, tenantId: req.user.tenantId },
+      where: { id: binId, tenantId: req.user.tenantId! },
       data: { isActive: false },
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'BinLocation',

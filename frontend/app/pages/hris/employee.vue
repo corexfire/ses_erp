@@ -175,184 +175,227 @@
       <i class="pi pi-spinner pi-spin mr-2 text-indigo-600"></i> Memuat data karyawan...
     </div>
 
-    <!-- Detail Drawer / Modal -->
-    <div v-if="detailEmployee" class="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm" @click.self="detailEmployee = null">
-      <div class="w-full max-w-lg h-full bg-white shadow-2xl flex flex-col overflow-y-auto animate-slide-in-right">
-        <div class="p-5 border-b flex items-center justify-between" :style="{ borderLeftWidth: '4px', borderLeftColor: avatarColor(detailEmployee.firstName), background: 'linear-gradient(to right, #eef2ff, #fff)' }">
-          <div class="flex items-center gap-4">
-            <div class="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl text-white shrink-0"
+    <!-- Detail Dialog (Universal Centered Style) -->
+    <div v-if="detailEmployee" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-2xl max-h-[90vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white">
+        <!-- Dialog Header -->
+        <div class="p-10 border-b flex items-center justify-between shrink-0 relative overflow-hidden" :style="{ background: 'linear-gradient(to right, #f8fafc, #ffffff)' }">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
+          <div class="relative flex items-center gap-5">
+            <div class="w-16 h-16 rounded-[1.5rem] flex items-center justify-center font-black text-2xl text-white shadow-xl rotate-3 transition-transform hover:rotate-0"
               :style="{ backgroundColor: avatarColor(detailEmployee.firstName) }">
               {{ initials(detailEmployee.firstName, detailEmployee.lastName) }}
             </div>
             <div>
-              <div class="font-black text-xl text-slate-800">{{ detailEmployee.firstName }} {{ detailEmployee.lastName ?? '' }}</div>
-              <div class="text-sm text-slate-500 font-medium">{{ detailEmployee.position }}</div>
-              <div class="text-[10px] font-mono text-slate-400 mt-0.5">{{ detailEmployee.employeeNo }}</div>
+              <div class="font-black text-3xl text-slate-900 tracking-tight leading-none uppercase">{{ detailEmployee.firstName }} <span class="text-indigo-600 italic">{{ detailEmployee.lastName ?? '' }}</span></div>
+              <div class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em] mt-2 px-1 border-l-2 border-indigo-500">{{ detailEmployee.position }}</div>
             </div>
           </div>
-          <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold shrink-0" @click="detailEmployee = null">✕</button>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="detailEmployee = null" class="relative z-10 hover:bg-slate-100 h-12 w-12" />
         </div>
-        <div class="p-5 space-y-5 flex-1">
+
+        <!-- Dialog Body -->
+        <div class="p-12 space-y-10 flex-1 overflow-y-auto bg-slate-50/30 custom-scrollbar">
           <!-- Identitas -->
-          <div class="space-y-3">
-            <div class="text-[11px] font-black text-indigo-700 uppercase tracking-widest">📋 Data Pribadi & Pekerjaan</div>
-            <div class="grid grid-cols-2 gap-3">
-              <div class="bg-slate-50 rounded-lg p-3">
-                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Email</div>
-                <div class="text-xs font-semibold text-slate-700 break-all">{{ detailEmployee.email }}</div>
+          <div class="space-y-4">
+            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 block ml-1">
+              <i class="pi pi-id-card"></i> Personal & Professional Profile
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+              <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">NIK (Employee Ref)</div>
+                <div class="text-xs font-black font-mono text-indigo-700">{{ detailEmployee.employeeNo }}</div>
               </div>
-              <div class="bg-slate-50 rounded-lg p-3">
-                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Phone</div>
-                <div class="text-xs font-semibold text-slate-700">{{ detailEmployee.phone ?? '—' }}</div>
+              <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Corporate Email</div>
+                <div class="text-xs font-bold text-slate-700 break-all">{{ detailEmployee.email }}</div>
               </div>
-              <div class="bg-slate-50 rounded-lg p-3">
-                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Departemen</div>
-                <div class="text-xs font-black text-indigo-700">{{ detailEmployee.department ?? '—' }}</div>
+              <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Primary Phone</div>
+                <div class="text-xs font-bold text-slate-700">{{ detailEmployee.phone ?? '—' }}</div>
               </div>
-              <div class="bg-slate-50 rounded-lg p-3">
-                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Status</div>
-                <span :class="statusBadge(detailEmployee.status)" class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase border">{{ detailEmployee.status }}</span>
+              <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Division / Dept</div>
+                <div class="text-xs font-black text-indigo-700 uppercase">{{ detailEmployee.department ?? '—' }}</div>
               </div>
-              <div class="bg-slate-50 rounded-lg p-3">
-                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Tgl Masuk</div>
-                <div class="text-xs font-semibold text-slate-700">{{ formatDate(detailEmployee.hireDate) }}</div>
+              <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Entry Date</div>
+                <div class="text-xs font-bold text-slate-700">{{ formatDate(detailEmployee.hireDate) }}</div>
               </div>
-              <div class="bg-indigo-50 rounded-lg p-3 border border-indigo-100">
-                <div class="text-[9px] font-black text-indigo-500 uppercase tracking-widest mb-0.5">Gaji Pokok</div>
-                <div class="text-sm font-black text-indigo-900">{{ detailEmployee.salary ? formatRupiahFull(Number(detailEmployee.salary)) : '—' }}</div>
+              <div class="bg-indigo-50/30 p-5 rounded-2xl border border-indigo-100 shadow-sm">
+                <div class="text-[9px] font-black text-indigo-500 uppercase tracking-widest mb-1">Basic Salary</div>
+                <div class="text-sm font-black text-indigo-900 font-mono">{{ detailEmployee.salary ? formatRupiahFull(Number(detailEmployee.salary)) : '—' }}</div>
               </div>
             </div>
           </div>
-          <!-- Manager -->
-          <div v-if="detailEmployee.manager" class="space-y-2">
-            <div class="text-[11px] font-black text-indigo-700 uppercase tracking-widest">👤 Atasan Langsung</div>
-            <div class="flex items-center gap-3 bg-slate-50 rounded-xl p-3 border">
-              <div class="w-9 h-9 rounded-full flex items-center justify-center font-black text-xs text-white shrink-0"
-                :style="{ backgroundColor: avatarColor(detailEmployee.manager.firstName) }">
-                {{ initials(detailEmployee.manager.firstName, detailEmployee.manager.lastName) }}
-              </div>
-              <div>
-                <div class="font-black text-sm text-slate-800">{{ detailEmployee.manager.firstName }} {{ detailEmployee.manager.lastName ?? '' }}</div>
-                <div class="text-xs text-slate-500">{{ detailEmployee.manager.position }}</div>
+
+          <!-- Manager & Reports -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-slate-100">
+            <!-- Manager -->
+            <div v-if="detailEmployee.manager" class="space-y-4">
+              <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1 lowercase">Operational Reporting</div>
+              <div class="flex items-center gap-4 bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs text-white shrink-0 shadow-lg"
+                  :style="{ backgroundColor: avatarColor(detailEmployee.manager.firstName) }">
+                  {{ initials(detailEmployee.manager.firstName, detailEmployee.manager.lastName) }}
+                </div>
+                <div>
+                  <div class="font-black text-sm text-slate-800">{{ detailEmployee.manager.firstName }} {{ detailEmployee.manager.lastName ?? '' }}</div>
+                  <div class="text-[9px] font-bold text-slate-400 uppercase">{{ detailEmployee.manager.position }}</div>
+                </div>
               </div>
             </div>
-          </div>
-          <!-- Reports -->
-          <div v-if="detailEmployee.reports?.length" class="space-y-2">
-            <div class="text-[11px] font-black text-indigo-700 uppercase tracking-widest">👥 Bawahan Langsung ({{ detailEmployee.reports.length }})</div>
-            <div v-for="r in detailEmployee.reports" :key="r.id" class="flex items-center gap-2 py-1.5 border-b border-slate-100 last:border-0">
-              <div class="w-7 h-7 rounded-full flex items-center justify-center font-black text-[10px] text-white shrink-0"
-                :style="{ backgroundColor: avatarColor(r.firstName) }">
-                {{ initials(r.firstName, r.lastName) }}
-              </div>
-              <div>
-                <div class="text-xs font-black text-slate-800">{{ r.firstName }} {{ r.lastName ?? '' }}</div>
-                <div class="text-[10px] text-slate-400">{{ r.position }}</div>
+
+            <!-- Reports -->
+            <div v-if="detailEmployee.reports?.length" class="space-y-4">
+              <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1 lowercase">Direct Reports ({{ detailEmployee.reports.length }})</div>
+              <div class="space-y-3">
+                <div v-for="r in detailEmployee.reports" :key="r.id" class="flex items-center gap-3 p-3 bg-white border border-slate-100 rounded-xl hover:shadow-md transition-all group">
+                  <div class="w-8 h-8 rounded-lg flex items-center justify-center font-black text-[10px] text-white shrink-0 group-hover:rotate-6 transition-transform"
+                    :style="{ backgroundColor: avatarColor(r.firstName) }">
+                    {{ initials(r.firstName, r.lastName) }}
+                  </div>
+                  <div class="min-w-0">
+                    <div class="text-xs font-black text-slate-800 truncate">{{ r.firstName }} {{ r.lastName ?? '' }}</div>
+                    <div class="text-[9px] font-bold text-slate-400 uppercase truncate">{{ r.position }}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="p-4 border-t bg-slate-50 flex gap-2">
-          <Button label="Edit Data" icon="pi pi-pencil" size="small" class="bg-indigo-700 text-white border-none font-bold flex-1" @click="openEdit(detailEmployee)" />
-          <Button v-if="detailEmployee.status === 'ACTIVE'" label="Nonaktifkan" size="small" outlined class="text-[10px] font-bold text-rose-600 border-rose-200 hover:bg-rose-600 hover:text-white" @click="deactivate(detailEmployee)" />
+
+        <!-- Dialog Footer Actions -->
+        <div class="p-10 border-t bg-white flex gap-4 shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
+          <Button label="Modify Personnel Info" icon="pi pi-pencil" class="p-button-rounded h-14 flex-1 bg-slate-900 border-none text-white font-black text-[10px] uppercase shadow-2xl hover:scale-105 active:scale-95 transition-all" @click="openEdit(detailEmployee)" />
+          <Button v-if="detailEmployee.status === 'ACTIVE'" label="Terminate" outlined class="p-button-rounded h-14 px-8 text-[10px] font-black border-2 border-rose-100 text-rose-600 hover:bg-rose-50 uppercase tracking-widest" @click="deactivate(detailEmployee)" />
         </div>
       </div>
     </div>
 
-    <!-- Create / Edit Dialog -->
-    <div v-if="formDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div class="w-full max-w-2xl rounded-2xl border bg-white shadow-2xl flex flex-col max-h-[90vh] animate-fade-in-up">
-        <div class="p-5 border-b bg-slate-50 flex justify-between items-center rounded-t-2xl">
-          <div class="text-lg font-black text-slate-800 flex items-center gap-2">
-            <i class="pi pi-user-plus text-indigo-700"></i>
-            {{ editId ? 'Edit Data Karyawan' : 'Tambah Karyawan Baru' }}
+    <!-- Create / Edit Dialog (Universal Centered Style) -->
+    <div v-if="formDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-2xl max-h-[90vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white">
+        <!-- Dialog Header -->
+        <div class="p-10 border-b bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
+          <div class="relative flex items-center gap-5">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-slate-900 flex items-center justify-center text-white shadow-xl rotate-3">
+              <i class="pi pi-user-plus text-3xl"></i>
+            </div>
+            <div>
+              <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase">{{ editId ? 'Update Data' : 'Registrasi' }} <span class="text-indigo-600 italic">Karyawan</span></h3>
+              <p class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em] mt-2 px-1 border-l-2 border-indigo-500">Employee Master Hub Provisioning</p>
+            </div>
           </div>
-          <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="formDialog = false">✕</button>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="formDialog = false" class="relative z-10 hover:bg-slate-50 h-12 w-12" />
         </div>
 
-        <div class="p-6 overflow-y-auto space-y-5">
+        <!-- Dialog Body -->
+        <div class="p-12 overflow-y-auto space-y-10 flex-1 bg-slate-50/30 custom-scrollbar">
           <!-- Identitas -->
-          <div>
-            <div class="text-[11px] font-black text-indigo-700 uppercase tracking-widest mb-3">👤 Identitas Karyawan</div>
-            <div class="grid grid-cols-3 gap-3">
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">NIK <span class="text-red-500">*</span></label>
-                <input v-model="form.employeeNo" :disabled="!!editId || saving" class="w-full border rounded-lg px-3 py-2 text-sm font-mono font-black text-indigo-700 outline-none focus:border-indigo-500 shadow-inner disabled:opacity-60" placeholder="EMP-102" />
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Nama Depan <span class="text-red-500">*</span></label>
-                <input v-model="form.firstName" :disabled="saving" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 shadow-inner" placeholder="Ahmad" />
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Nama Belakang</label>
-                <input v-model="form.lastName" :disabled="saving" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 shadow-inner" placeholder="Fauzi" />
-              </div>
+          <div class="space-y-6">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-[10px] font-black shadow-lg">01</div>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-800">Personel Identity (Master Info)</h4>
             </div>
-            <div class="grid grid-cols-2 gap-3 mt-3">
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Email <span class="text-red-500">*</span></label>
-                <input type="email" v-model="form.email" :disabled="saving" class="w-full border rounded-lg px-3 py-2 text-sm font-medium text-slate-800 outline-none focus:border-indigo-500 shadow-inner" placeholder="nama@seserp.co.id" />
+            <div class="pl-11 space-y-8">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">NIK System <span class="text-red-500">*</span></label>
+                  <input v-model="form.employeeNo" :disabled="!!editId || saving" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-mono font-black text-indigo-700 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100" placeholder="EMP-102" />
+                </div>
+                <div class="space-y-2 md:col-span-2">
+                   <div class="grid grid-cols-2 gap-4">
+                      <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">First Name <span class="text-red-500">*</span></label>
+                        <input v-model="form.firstName" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-bold text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100" placeholder="Ahmad" />
+                      </div>
+                      <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Last Name</label>
+                        <input v-model="form.lastName" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-bold text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100" placeholder="Fauzi" />
+                      </div>
+                   </div>
+                </div>
               </div>
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">No. HP</label>
-                <input v-model="form.phone" :disabled="saving" class="w-full border rounded-lg px-3 py-2 text-sm font-medium text-slate-800 outline-none focus:border-indigo-500 shadow-inner" placeholder="0812XXXXXXXX" />
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-dashed border-slate-200">
+                <div class="space-y-4">
+                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Corporate Email <span class="text-red-500">*</span></label>
+                  <input type="email" v-model="form.email" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-bold text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100 lowercase" placeholder="nama@seserp.co.id" />
+                </div>
+                <div class="space-y-4">
+                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Active Phone (WA)</label>
+                  <input v-model="form.phone" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-bold text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100" placeholder="0812XXXXXXXX" />
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Pekerjaan -->
-          <div>
-            <div class="text-[11px] font-black text-indigo-700 uppercase tracking-widest mb-3">💼 Data Pekerjaan</div>
-            <div class="grid grid-cols-2 gap-3">
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Departemen</label>
-                <select v-model="form.department" :disabled="saving" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 shadow-inner">
-                  <option value="">-- Pilih Departemen --</option>
-                  <option v-for="d in DEPARTMENTS" :key="d">{{ d }}</option>
-                </select>
+          <div class="space-y-6 pt-10 border-t border-slate-200">
+             <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[10px] font-black shadow-lg">02</div>
+              <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-indigo-900">Job Specification & Payroll</h4>
+            </div>
+            <div class="pl-11 space-y-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Departmental Assignment</label>
+                  <select v-model="form.department" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-xs font-black text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100 appearance-none cursor-pointer">
+                    <option value="">-- No Assignment --</option>
+                    <option v-for="d in DEPARTMENTS" :key="d">{{ d }}</option>
+                  </select>
+                </div>
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Designation / Role</label>
+                  <input v-model="form.position" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-bold text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100" placeholder="Operator Mesin Senior" />
+                </div>
               </div>
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Jabatan / Posisi</label>
-                <input v-model="form.position" :disabled="saving" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 shadow-inner" placeholder="Operator Mesin Senior" />
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Atasan Langsung</label>
-                <select v-model="form.managerId" :disabled="saving" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 shadow-inner">
-                  <option value="">-- Lapor langsung (tanpa atasan) --</option>
+              
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Direct Reporting Manager</label>
+                <select v-model="form.managerId" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-xs font-black text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100 appearance-none cursor-pointer">
+                  <option value="">-- No Direct Manager --</option>
                   <option v-for="m in managerOptions" :key="m.id" :value="m.id">
                     {{ m.employeeNo }} — {{ m.firstName }} {{ m.lastName || '' }} ({{ m.position }})
                   </option>
                 </select>
               </div>
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Status Kepegawaian</label>
-                <select v-model="form.status" :disabled="saving" class="w-full border rounded-lg px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-indigo-500 shadow-inner">
-                  <option value="ACTIVE">Aktif</option>
-                  <option value="PROBATION">Masa Percobaan</option>
-                  <option value="ON_LEAVE">Cuti Panjang</option>
-                  <option value="RESIGNED">Mengundurkan Diri</option>
-                  <option value="TERMINATED">PHK</option>
-                </select>
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Tanggal Masuk</label>
-                <input type="date" v-model="form.hireDate" :disabled="saving" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-indigo-500 shadow-inner" />
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Gaji Pokok (Rp)</label>
-                <input type="number" v-model.number="form.salary" :disabled="saving" class="w-full border rounded-lg px-3 py-2 text-sm font-black font-mono text-indigo-700 outline-none focus:border-indigo-500 shadow-inner" placeholder="8500000" />
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-dashed border-slate-200">
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Employment Status</label>
+                  <select v-model="form.status" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-xs font-black text-slate-800 bg-emerald-50 shadow-inner outline-none focus:ring-2 focus:ring-emerald-100 appearance-none cursor-pointer">
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="PROBATION">PROBATION</option>
+                    <option value="ON_LEAVE">ON_LEAVE</option>
+                    <option value="RESIGNED">RESIGNED</option>
+                    <option value="TERMINATED">TERMINATED</option>
+                  </select>
+                </div>
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Joining Date</label>
+                  <input type="date" v-model="form.hireDate" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-bold text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100" />
+                </div>
+                <div class="space-y-2">
+                  <label class="text-[10px] font-black text-indigo-600 uppercase tracking-widest block">Base Salary (IDR)</label>
+                  <input type="number" v-model.number="form.salary" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-black font-mono text-indigo-700 bg-indigo-50/30 shadow-inner outline-none focus:ring-2 focus:ring-indigo-100" placeholder="0.00" />
+                </div>
               </div>
             </div>
           </div>
 
-          <div v-if="formError" class="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600 border border-red-200">{{ formError }}</div>
+          <div v-if="formError" class="ml-11 rounded-2xl bg-rose-50 px-6 py-4 text-xs text-rose-600 border border-rose-100 font-bold shadow-sm animate-scale-in">
+             <i class="pi pi-exclamation-circle mr-2"></i> {{ formError }}
+          </div>
         </div>
 
-        <div class="p-4 border-t bg-slate-50 flex justify-end gap-3 rounded-b-2xl">
-          <Button label="Batal" severity="secondary" :disabled="saving" @click="formDialog = false" class="bg-white border text-slate-700 font-bold px-5" />
-          <Button :label="editId ? 'Simpan Perubahan' : 'Daftarkan Karyawan'"
+        <!-- Dialog Footer Actions -->
+        <div class="p-10 border-t bg-white flex justify-end gap-4 rounded-b-2xl shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
+          <Button label="Discard Changes" severity="secondary" text :disabled="saving" @click="formDialog = false" class="px-8 h-14 font-black text-[10px] uppercase tracking-widest" />
+          <Button :label="editId ? 'Commit Changes' : 'Publish Record'"
             :loading="saving" :disabled="!form.employeeNo || !form.firstName || !form.email"
-            @click="submit" class="bg-indigo-700 border-none text-white font-bold px-6" icon="pi pi-check" />
+            @click="submit" class="p-button-rounded h-14 px-12 bg-indigo-600 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-indigo-100 hover:scale-105 active:scale-95 transition-all" icon="pi pi-check-circle" />
         </div>
       </div>
     </div>
@@ -459,7 +502,7 @@ const formatRupiahFull = (n: number) => `Rp ${n.toLocaleString('id-ID')}`;
 const load = async () => {
   loading.value = true;
   try {
-    const res = await api.get('/hris/employee');
+    const res = await api.get('/hris/employees');
     employees.value = res.data?.employees ?? res.employees ?? [];
   } catch (e) { console.warn(e); }
   finally { loading.value = false; }
@@ -500,9 +543,9 @@ const submit = async () => {
       salary: form.salary ? Number(form.salary) : undefined,
     };
     if (editId.value) {
-      await api.post(`/hris/employee/${editId.value}`, payload);
+      await api.post(`/hris/employees/${editId.value}`, payload);
     } else {
-      await api.post('/hris/employee', payload);
+      await api.post('/hris/employees', payload);
     }
     formDialog.value = false;
     await load();
@@ -512,7 +555,7 @@ const submit = async () => {
 
 const deactivate = async (emp: Employee) => {
   try {
-    await api.post(`/hris/employee/${emp.id}`, { status: 'RESIGNED' });
+    await api.post(`/hris/employees/${emp.id}`, { status: 'RESIGNED' });
     detailEmployee.value = null;
     await load();
   } catch (e) { console.warn(e); }
@@ -522,8 +565,46 @@ onMounted(load);
 </script>
 
 <style scoped>
-.animate-fade-in-up { animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.animate-slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.animate-scale-in { 
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.95) translateY(10px); } 
+  to { opacity: 1; transform: scale(1) translateY(0); } 
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+  background: #cbd5e1; 
+}
+
+:deep(.p-inputtext) {
+   border-color: #f1f5f9 !important;
+   box-shadow: none !important;
+   background-color: #f8fafc !important;
+   border-radius: 16px !important;
+}
+
+:deep(.p-button-rounded) {
+  border-radius: 9999px !important;
+}
 </style>

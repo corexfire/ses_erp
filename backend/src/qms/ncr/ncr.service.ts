@@ -134,15 +134,14 @@ export class NcrService {
     for (const item of failedItems) {
       const ncrCode = `NCR-${qc.code}-${item.lineNo}`;
       
-      // Auto-create NCR for each failed item
-      const ncr = await this.prisma.nonConformanceReport.upsert({
-        where: {
-          tenantId_code_version: {
-            tenantId,
-            code: ncrCode,
-            version: '1.0',
-          },
-        },
+       // Auto-create NCR for each failed item
+       const ncr = await this.prisma.nonConformanceReport.upsert({
+         where: {
+           tenantId_code: {
+             tenantId,
+             code: ncrCode,
+           },
+         },
         update: {
           qty: Number(item.failedQty),
           description: `Auto-generated from QC rejection. Reason: ${item.defectReason || 'No details provided'}`,

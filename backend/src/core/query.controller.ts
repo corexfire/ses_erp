@@ -44,7 +44,7 @@ export class QueryController {
     const prismaTake = take ? parseInt(take, 10) : 100;
     const prismaSkip = skip ? parseInt(skip, 10) : 0;
 
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     
     // Simple Search Implementation
     if (search && searchField) {

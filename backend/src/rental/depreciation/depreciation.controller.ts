@@ -31,7 +31,7 @@ export class RentalDepreciationController {
     const user = req.user as AuthUser;
     
     // We target FixedAsset directly but attach the depreciation sub-table mapping calculation
-    const where: any = { tenantId: user.tenantId };
+    const where: any = { tenantId: user.tenantId! };
     
     if (search) {
       where.OR = [
@@ -91,7 +91,7 @@ export class RentalDepreciationController {
     const user = req.user as AuthUser;
     
     const logs = await this.prisma.fixedAssetDepreciation.findMany({
-        where: { tenantId: user.tenantId, assetId },
+        where: { tenantId: user.tenantId!, assetId },
         orderBy: { periodDate: 'desc' }
     });
 
@@ -103,7 +103,7 @@ export class RentalDepreciationController {
     const user = req.user as AuthUser;
     
     const asset = await this.prisma.fixedAsset.findUnique({ where: { id: body.assetId } });
-    if (!asset || asset.tenantId !== user.tenantId) {
+    if (!asset || asset.tenantId !== user.tenantId!) {
         throw new NotFoundException('Fixed Asset target not found.');
     }
 
@@ -119,7 +119,7 @@ export class RentalDepreciationController {
 
     const record = await this.prisma.fixedAssetDepreciation.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         assetId: body.assetId,
         periodDate: body.periodDate ? new Date(body.periodDate) : new Date(),
         depreciationAmount: depAmount,
@@ -128,15 +128,7 @@ export class RentalDepreciationController {
       },
     });
 
-    await this.audit.log(
-      user.tenantId,
-      user.id,
-      'CREATE',
-      'FixedAssetDepreciation',
-      record.id,
-      null,
-      record,
-    );
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'CREATE', entity: 'FixedAssetDepreciation', entityId: record.id,  });
 
     return { message: 'Asset Depreciation historical log mapped.', data: record };
   }

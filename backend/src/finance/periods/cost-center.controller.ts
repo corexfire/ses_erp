@@ -15,7 +15,7 @@ export class CostCenterController {
   @RequirePermissions('finance.costcenter.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const centers = await this.prisma.costCenter.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
     });
     return { costCenters: centers };
   }
@@ -25,7 +25,7 @@ export class CostCenterController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { code: string; name: string }) {
     const center = await this.prisma.costCenter.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
       },

@@ -473,12 +473,12 @@ onMounted(loadCapas);
   to { opacity: 1; transform: translateY(0); }
 }
 
-:deep(.p-dropdown), :deep(.p-inputtext), :deep(.p-textarea) {
+:deep(.p-select), :deep(.p-inputtext), :deep(.p-textarea) {
    border-color: #e2e8f0 !important;
    box-shadow: none !important;
 }
 
-:deep(.p-dropdown:hover), :deep(.p-inputtext:hover), :deep(.p-textarea:hover) {
+:deep(.p-select:hover), :deep(.p-inputtext:hover), :deep(.p-textarea:hover) {
    border-color: #10b981 !important;
 }
 </style>

@@ -31,7 +31,7 @@ export class CarriersController {
   @RequirePermissions('sales.shipping.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const carriers = await this.prisma.carrier.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ isActive: 'desc' }, { createdAt: 'desc' }],
       take: 200,
     });
@@ -45,11 +45,11 @@ export class CarriersController {
     @Body() body: CreateCarrierDto,
   ) {
     const carrier = await this.prisma.carrier.create({
-      data: { tenantId: req.user.tenantId, code: body.code, name: body.name },
+      data: { tenantId: req.user.tenantId!, code: body.code, name: body.name },
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Carrier',
@@ -67,7 +67,7 @@ export class CarriersController {
     @Body() body: UpdateCarrierDto,
   ) {
     const exists = await this.prisma.carrier.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Carrier not found');
@@ -78,7 +78,7 @@ export class CarriersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'Carrier',
@@ -95,7 +95,7 @@ export class CarriersController {
     @Param('id') id: string,
   ) {
     const exists = await this.prisma.carrier.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Carrier not found');
@@ -106,7 +106,7 @@ export class CarriersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'Carrier',

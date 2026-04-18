@@ -18,7 +18,7 @@ export class CustomerReceiptController {
   @Get()
   @RequirePermissions('finance.customerReceipt.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (status) where.status = status;
 
     const receipts = await this.prisma.customerReceipt.findMany({
@@ -32,7 +32,7 @@ export class CustomerReceiptController {
   @RequirePermissions('finance.customerReceipt.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const receipt = await this.prisma.customerReceipt.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { receipt };
   }
@@ -42,7 +42,7 @@ export class CustomerReceiptController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { receiptNo: string; receiptDate: string; customerCode: string; amount: number; paymentMethod: string; reference?: string; notes?: string }) {
     const receipt = await this.prisma.customerReceipt.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         receiptNo: body.receiptNo,
         receiptDate: new Date(body.receiptDate),
         customerCode: body.customerCode,
@@ -56,11 +56,11 @@ export class CustomerReceiptController {
 
     // Create cash/bank transaction based on payment method
     if (body.paymentMethod === 'CASH') {
-      const cashAccounts = await this.prisma.cashAccount.findMany({ where: { tenantId: req.user.tenantId, isActive: true }, take: 1 });
+      const cashAccounts = await this.prisma.cashAccount.findMany({ where: { tenantId: req.user.tenantId!, isActive: true }, take: 1 });
       if (cashAccounts.length > 0) {
         await this.prisma.cashTransaction.create({
           data: {
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             cashAccountId: cashAccounts[0].id,
             transDate: new Date(body.receiptDate),
             transType: 'CREDIT',
@@ -76,11 +76,11 @@ export class CustomerReceiptController {
         });
       }
     } else if (body.paymentMethod === 'BANK_TRANSFER') {
-      const bankAccounts = await this.prisma.bankAccount.findMany({ where: { tenantId: req.user.tenantId, isActive: true }, take: 1 });
+      const bankAccounts = await this.prisma.bankAccount.findMany({ where: { tenantId: req.user.tenantId!, isActive: true }, take: 1 });
       if (bankAccounts.length > 0) {
         await this.prisma.bankTransaction.create({
           data: {
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             bankAccountId: bankAccounts[0].id,
             transDate: new Date(body.receiptDate),
             transType: 'CREDIT',
@@ -102,7 +102,7 @@ export class CustomerReceiptController {
        // Support exact matches or extracted matches (e.g. INV-123 from AR-INV-123)
        const matchingInvoices = await this.prisma.customerInvoice.findMany({
           where: { 
-             tenantId: req.user.tenantId,
+             tenantId: req.user.tenantId!,
              invoiceNo: { contains: body.reference } 
           }
        });
@@ -131,7 +131,7 @@ export class CustomerReceiptController {
           // Record payment line
           await this.prisma.customerInvoicePayment.create({
               data: {
-                  tenantId: req.user.tenantId,
+                  tenantId: req.user.tenantId!,
                   invoiceId: targetInv.id,
                   paymentDate: new Date(body.receiptDate),
                   amount: body.amount,
@@ -142,24 +142,24 @@ export class CustomerReceiptController {
        }
     }
 
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'CREATE', entity: 'CustomerReceipt', entityId: receipt.id, metadata: { receipt } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'CREATE', entity: 'CustomerReceipt', entityId: receipt.id, metadata: { receipt } });
 
     const user = req.user;
     const amount = body.amount;
     let assetCode = '111-002';
     if (body.paymentMethod === 'BANK_TRANSFER') {
-      const bankAcct = await this.prisma.bankAccount.findFirst({ where: { tenantId: user.tenantId, isActive: true }, include: { coaAccount: true } });
+      const bankAcct = await this.prisma.bankAccount.findFirst({ where: { tenantId: user.tenantId!, isActive: true }, include: { coaAccount: true } });
       assetCode = bankAcct?.coaAccount?.code || '111-101';
     }
-    const arCode = await this.prisma.coaAccount.findFirst({ where: { tenantId: user.tenantId, code: { startsWith: '130' } } });
+    const arCode = await this.prisma.coaAccount.findFirst({ where: { tenantId: user.tenantId!, code: { startsWith: '130' } } });
     const arAccountCode = arCode?.code || '130-000';
 
-    const journalCount = await this.prisma.journalEntry.count({ where: { tenantId: user.tenantId } });
+    const journalCount = await this.prisma.journalEntry.count({ where: { tenantId: user.tenantId! } });
     const entryNo = `JE-CR-${String(journalCount + 1).padStart(6, '0')}`;
 
     await this.prisma.journalEntry.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         entryNo,
         entryDate: new Date(body.receiptDate),
         description: `Customer Receipt - ${body.customerCode}`,
@@ -171,23 +171,21 @@ export class CustomerReceiptController {
         lines: {
           create: [
             {
-              tenantId: user.tenantId,
+              tenantId: user.tenantId!,
               lineNo: 1,
               accountCode: assetCode,
               description: body.paymentMethod === 'CASH' ? 'Kas' : 'Bank',
               debit: amount,
               credit: 0,
-              referenceType: 'CustomerReceipt',
               referenceId: receipt.id
             },
             {
-              tenantId: user.tenantId,
+              tenantId: user.tenantId!,
               lineNo: 2,
               accountCode: arAccountCode,
               description: `Piutang ${body.customerCode}`,
               debit: 0,
               credit: amount,
-              referenceType: 'CustomerReceipt',
               referenceId: receipt.id
             }
           ]
@@ -201,8 +199,8 @@ export class CustomerReceiptController {
   @Post(':id/delete')
   @RequirePermissions('finance.customerReceipt.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    await this.prisma.customerReceipt.deleteMany({ where: { id, tenantId: req.user.tenantId } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'DELETE', entity: 'CustomerReceipt', entityId: id, metadata: { id } });
+    await this.prisma.customerReceipt.deleteMany({ where: { id, tenantId: req.user.tenantId! } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'DELETE', entity: 'CustomerReceipt', entityId: id, metadata: { id } });
     return { success: true };
   }
 }

@@ -18,7 +18,7 @@ export class VendorPaymentController {
   @Get()
   @RequirePermissions('finance.vendorPayment.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (status) where.status = status;
 
     const payments = await this.prisma.vendorPayment.findMany({
@@ -32,7 +32,7 @@ export class VendorPaymentController {
   @RequirePermissions('finance.vendorPayment.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const payment = await this.prisma.vendorPayment.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { payment };
   }
@@ -42,7 +42,7 @@ export class VendorPaymentController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { paymentNo: string; paymentDate: string; supplierCode: string; amount: number; paymentMethod: string; reference?: string; notes?: string }) {
     const payment = await this.prisma.vendorPayment.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         paymentNo: body.paymentNo,
         paymentDate: new Date(body.paymentDate),
         supplierCode: body.supplierCode,
@@ -56,11 +56,11 @@ export class VendorPaymentController {
 
     // Create cash/bank transaction based on payment method
     if (body.paymentMethod === 'CASH') {
-      const cashAccounts = await this.prisma.cashAccount.findMany({ where: { tenantId: req.user.tenantId, isActive: true }, take: 1 });
+      const cashAccounts = await this.prisma.cashAccount.findMany({ where: { tenantId: req.user.tenantId!, isActive: true }, take: 1 });
       if (cashAccounts.length > 0) {
         await this.prisma.cashTransaction.create({
           data: {
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             cashAccountId: cashAccounts[0].id,
             transDate: new Date(body.paymentDate),
             transType: 'DEBIT',
@@ -76,11 +76,11 @@ export class VendorPaymentController {
         });
       }
     } else if (body.paymentMethod === 'BANK_TRANSFER') {
-      const bankAccounts = await this.prisma.bankAccount.findMany({ where: { tenantId: req.user.tenantId, isActive: true }, take: 1 });
+      const bankAccounts = await this.prisma.bankAccount.findMany({ where: { tenantId: req.user.tenantId!, isActive: true }, take: 1 });
       if (bankAccounts.length > 0) {
         await this.prisma.bankTransaction.create({
           data: {
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             bankAccountId: bankAccounts[0].id,
             transDate: new Date(body.paymentDate),
             transType: 'DEBIT',
@@ -101,7 +101,7 @@ export class VendorPaymentController {
     if (body.reference) {
        const matchingInvoices = await this.prisma.purchaseInvoice.findMany({
           where: { 
-             tenantId: req.user.tenantId,
+             tenantId: req.user.tenantId!,
              code: { contains: body.reference } 
           }
        });
@@ -126,24 +126,24 @@ export class VendorPaymentController {
        }
     }
 
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'CREATE', entity: 'VendorPayment', entityId: payment.id, metadata: { payment } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'CREATE', entity: 'VendorPayment', entityId: payment.id, metadata: { payment } });
 
     const user = req.user;
     const amount = body.amount;
     let assetCode = '111-002';
     if (body.paymentMethod === 'BANK_TRANSFER') {
-      const bankAcct = await this.prisma.bankAccount.findFirst({ where: { tenantId: user.tenantId, isActive: true }, include: { coaAccount: true } });
+      const bankAcct = await this.prisma.bankAccount.findFirst({ where: { tenantId: user.tenantId!, isActive: true }, include: { coaAccount: true } });
       assetCode = bankAcct?.coaAccount?.code || '111-101';
     }
-    const apCode = await this.prisma.coaAccount.findFirst({ where: { tenantId: user.tenantId, code: { startsWith: '210' } } });
+    const apCode = await this.prisma.coaAccount.findFirst({ where: { tenantId: user.tenantId!, code: { startsWith: '210' } } });
     const apAccountCode = apCode?.code || '210-000';
 
-    const journalCount = await this.prisma.journalEntry.count({ where: { tenantId: user.tenantId } });
+    const journalCount = await this.prisma.journalEntry.count({ where: { tenantId: user.tenantId! } });
     const entryNo = `JE-VP-${String(journalCount + 1).padStart(6, '0')}`;
 
     await this.prisma.journalEntry.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         entryNo,
         entryDate: new Date(body.paymentDate),
         description: `Vendor Payment - ${body.supplierCode}`,
@@ -155,23 +155,21 @@ export class VendorPaymentController {
         lines: {
           create: [
             {
-              tenantId: user.tenantId,
+              tenantId: user.tenantId!,
               lineNo: 1,
               accountCode: apAccountCode,
               description: `Hutang ${body.supplierCode}`,
               debit: amount,
               credit: 0,
-              referenceType: 'VendorPayment',
               referenceId: payment.id
             },
             {
-              tenantId: user.tenantId,
+              tenantId: user.tenantId!,
               lineNo: 2,
               accountCode: assetCode,
               description: body.paymentMethod === 'CASH' ? 'Kas' : 'Bank',
               debit: 0,
               credit: amount,
-              referenceType: 'VendorPayment',
               referenceId: payment.id
             }
           ]
@@ -185,8 +183,8 @@ export class VendorPaymentController {
   @Post(':id/delete')
   @RequirePermissions('finance.vendorPayment.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    await this.prisma.vendorPayment.deleteMany({ where: { id, tenantId: req.user.tenantId } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'DELETE', entity: 'VendorPayment', entityId: id, metadata: { id } });
+    await this.prisma.vendorPayment.deleteMany({ where: { id, tenantId: req.user.tenantId! } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'DELETE', entity: 'VendorPayment', entityId: id, metadata: { id } });
     return { success: true };
   }
 }

@@ -42,7 +42,7 @@ export class MaintenanceController {
   ) {
     const equipment = await this.prisma.equipment.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }, { name: { contains: q, mode: 'insensitive' } }] } : {}),
       },
       include: {
@@ -59,7 +59,7 @@ export class MaintenanceController {
   async createEquipment(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateEquipmentDto) {
     const equipment = await this.prisma.equipment.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         type: body.type,
@@ -77,7 +77,7 @@ export class MaintenanceController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Equipment',
@@ -95,7 +95,7 @@ export class MaintenanceController {
     @Body() body: Partial<CreateEquipmentDto>,
   ) {
     const existing = await this.prisma.equipment.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!existing) throw new NotFoundException('Equipment not found');
 
@@ -124,7 +124,7 @@ export class MaintenanceController {
   @RequirePermissions('manufacturing.maintenance.read')
   async listSchedules(@Req() req: FastifyRequest & { user: AuthUser }) {
     const schedules = await this.prisma.maintenanceSchedule.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { equipment: true, maintenanceTasks: true },
       orderBy: [{ nextDate: 'asc' }],
     });
@@ -136,14 +136,14 @@ export class MaintenanceController {
   async createSchedule(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateMaintenanceScheduleDto) {
     const schedule = await this.prisma.maintenanceSchedule.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         equipmentId: body.equipmentId,
         name: body.name,
         frequency: body.frequency,
         intervalDays: body.intervalDays,
         nextDate: new Date(body.nextDate),
         maintenanceTasks: body.tasks ? {
-          create: body.tasks.map(t => ({ tenantId: req.user.tenantId, description: t }))
+          create: body.tasks.map(t => ({ tenantId: req.user.tenantId!, description: t }))
         } : undefined,
       },
       include: { maintenanceTasks: true }
@@ -157,7 +157,7 @@ export class MaintenanceController {
   async listRequests(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
     const requests = await this.prisma.maintenanceRequest.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(status ? { status } : {}),
       },
       include: { equipment: true },
@@ -171,7 +171,7 @@ export class MaintenanceController {
   async createRequest(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateMaintenanceRequestDto) {
     const request = await this.prisma.maintenanceRequest.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         equipmentId: body.equipmentId,
         requestDate: new Date(body.requestDate),
@@ -217,7 +217,7 @@ export class MaintenanceController {
   @RequirePermissions('manufacturing.maintenance.read')
   async listLogs(@Req() req: FastifyRequest & { user: AuthUser }) {
     const logs = await this.prisma.maintenanceLog.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: {
         equipment: true,
         parts: { include: { item: true } }
@@ -240,7 +240,7 @@ export class MaintenanceController {
 
       const log = await tx.maintenanceLog.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           equipmentId: body.equipmentId,
           requestId: body.requestId,
           scheduleId: body.scheduleId,
@@ -254,7 +254,7 @@ export class MaintenanceController {
           status: 'COMPLETED',
           parts: body.parts ? {
             create: body.parts.map(p => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               itemId: p.itemId,
               warehouseId: p.warehouseId,
               qtyUsed: p.qtyUsed,
@@ -286,7 +286,7 @@ export class MaintenanceController {
         for (const part of body.parts) {
           await tx.stockLedger.create({
             data: {
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               itemId: part.itemId,
               moveType: 'GOODS_ISSUE',
               refType: 'MAINTENANCE_LOG',

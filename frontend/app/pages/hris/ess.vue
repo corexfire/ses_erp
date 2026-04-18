@@ -339,7 +339,7 @@ const loadAllData = async () => {
   loading.value = true;
   try {
     const [empRes, attRes, payRes, expRes, kpiRes] = await Promise.all([
-      api.get('/hris/employee'),
+      api.get('/hris/employees'),
       api.get('/hris/attendance'), // usually admin endpoint, gives all
       api.get('/hris/payroll'),    // gives all runs
       api.get('/hris/expense'),    // gives all claims

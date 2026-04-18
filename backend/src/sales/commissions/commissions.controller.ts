@@ -29,7 +29,7 @@ export class CommissionsController {
   @RequirePermissions('sales.commission.read')
   async listSchemes(@Req() req: FastifyRequest & { user: AuthUser }) {
     const schemes = await this.prisma.commissionScheme.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ createdAt: 'desc' }],
       take: 200,
     });
@@ -44,7 +44,7 @@ export class CommissionsController {
   ) {
     const scheme = await this.prisma.commissionScheme.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         rate: body.rate,
@@ -52,7 +52,7 @@ export class CommissionsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'CommissionScheme',
@@ -66,7 +66,7 @@ export class CommissionsController {
   @RequirePermissions('sales.commission.read')
   async listEntries(@Req() req: FastifyRequest & { user: AuthUser }) {
     const entries = await this.prisma.commissionEntry.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ createdAt: 'desc' }],
       include: { scheme: true, invoice: true, salesUser: true },
       take: 200,
@@ -81,14 +81,14 @@ export class CommissionsController {
     @Body() body: CreateCommissionEntryDto,
   ) {
     const scheme = await this.prisma.commissionScheme.findFirst({
-      where: { id: body.schemeId, tenantId: req.user.tenantId, isActive: true },
+      where: { id: body.schemeId, tenantId: req.user.tenantId!, isActive: true },
       select: { id: true },
     });
     if (!scheme) throw new NotFoundException('Scheme not found');
 
     if (body.invoiceId) {
       const invoice = await this.prisma.salesInvoice.findFirst({
-        where: { id: body.invoiceId, tenantId: req.user.tenantId },
+        where: { id: body.invoiceId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!invoice) throw new NotFoundException('Invoice not found');
@@ -98,7 +98,7 @@ export class CommissionsController {
       const user = await this.prisma.user.findFirst({
         where: {
           id: body.salesUserId,
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           isActive: true,
         },
         select: { id: true },
@@ -108,7 +108,7 @@ export class CommissionsController {
 
     const entry = await this.prisma.commissionEntry.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         schemeId: body.schemeId,
         invoiceId: body.invoiceId,
         salesUserId: body.salesUserId,
@@ -119,7 +119,7 @@ export class CommissionsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'CommissionEntry',

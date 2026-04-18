@@ -14,21 +14,21 @@ export class QualityDocumentController {
   @Get()
   @RequirePermissions('qms.documents.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query() query: any) {
-    const list = await this.docService.findAll(req.user.tenantId, query);
+    const list = await this.docService.findAll(req.user.tenantId!, query);
     return { list };
   }
 
   @Get(':id')
   @RequirePermissions('qms.documents.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const document = await this.docService.findOne(req.user.tenantId, id);
+    const document = await this.docService.findOne(req.user.tenantId!, id);
     return { document };
   }
 
   @Post()
   @RequirePermissions('qms.documents.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: any) {
-    const document = await this.docService.create(req.user.tenantId, { ...body, ownerId: req.user.id });
+    const document = await this.docService.create(req.user.tenantId!, { ...body, ownerId: req.user.id });
     return { document };
   }
 
@@ -39,21 +39,21 @@ export class QualityDocumentController {
     @Param('id') id: string,
     @Body() body: any,
   ) {
-    const document = await this.docService.update(req.user.tenantId, id, body);
+    const document = await this.docService.update(req.user.tenantId!, id, body);
     return { document };
   }
 
   @Delete(':id')
   @RequirePermissions('qms.documents.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    await this.docService.delete(req.user.tenantId, id);
+    await this.docService.delete(req.user.tenantId!, id);
     return { success: true };
   }
 
   @Post(':id/submit')
   @RequirePermissions('qms.documents.update')
   async submit(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const instance = await this.docService.submitToWorkflow(req.user.tenantId, req.user.id, id);
+    const instance = await this.docService.submitToWorkflow(req.user.tenantId!, req.user.id, id);
     return { instance };
   }
 }

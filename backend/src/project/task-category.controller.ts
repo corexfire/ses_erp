@@ -15,7 +15,7 @@ export class TaskCategoryController {
   @RequirePermissions('project.task_category.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const categories = await this.prisma.wbsTaskCategory.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ code: 'asc' }],
       include: {
         _count: {
@@ -31,7 +31,7 @@ export class TaskCategoryController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { code: string; name: string; description?: string; color?: string; icon?: string }) {
     const category = await this.prisma.wbsTaskCategory.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         description: body.description,
@@ -46,7 +46,7 @@ export class TaskCategoryController {
   @RequirePermissions('project.task_category.update')
   async update(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { code?: string; name?: string; description?: string; color?: string; icon?: string }) {
     const category = await this.prisma.wbsTaskCategory.update({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       data: body,
     });
     return { data: category };
@@ -57,7 +57,7 @@ export class TaskCategoryController {
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     // Check if there are tasks using this category
     const taskCount = await this.prisma.wbsTask.count({
-      where: { categoryId: id, tenantId: req.user.tenantId }
+      where: { categoryId: id, tenantId: req.user.tenantId! }
     });
 
     if (taskCount > 0) {
@@ -65,7 +65,7 @@ export class TaskCategoryController {
     }
 
     await this.prisma.wbsTaskCategory.delete({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { success: true };
   }

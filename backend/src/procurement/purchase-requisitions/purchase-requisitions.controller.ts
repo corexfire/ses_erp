@@ -53,7 +53,7 @@ export class PurchaseRequisitionsController {
   ) {
     const requisitions = await this.prisma.purchaseRequisition.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(isProcurementDocStatus(status) ? { status } : {}),
         ...(q
           ? {
@@ -75,7 +75,7 @@ export class PurchaseRequisitionsController {
     @Param('id') id: string,
   ) {
     const requisition = await this.prisma.purchaseRequisition.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         items: { orderBy: [{ lineNo: 'asc' }] },
         workflowDef: { include: { steps: { orderBy: [{ stepNo: 'asc' }] } } },
@@ -95,7 +95,7 @@ export class PurchaseRequisitionsController {
     const requisition = await this.prisma.$transaction(async (tx) => {
       const pr = await tx.purchaseRequisition.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           requestDate: new Date(body.requestDate),
           notes: body.notes,
@@ -105,7 +105,7 @@ export class PurchaseRequisitionsController {
       if (body.items.length > 0) {
         await tx.purchaseRequisitionItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             requisitionId: pr.id,
             lineNo: idx + 1,
             description: it.description,
@@ -122,7 +122,7 @@ export class PurchaseRequisitionsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'PurchaseRequisition',
@@ -140,7 +140,7 @@ export class PurchaseRequisitionsController {
     @Body() body: UpdatePurchaseRequisitionDto,
   ) {
     const exists = await this.prisma.purchaseRequisition.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Purchase requisition not found');
@@ -158,12 +158,12 @@ export class PurchaseRequisitionsController {
 
       if (body.items) {
         await tx.purchaseRequisitionItem.deleteMany({
-          where: { tenantId: req.user.tenantId, requisitionId: id },
+          where: { tenantId: req.user.tenantId!, requisitionId: id },
         });
         if (body.items.length > 0) {
           await tx.purchaseRequisitionItem.createMany({
             data: body.items.map((it, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               requisitionId: id,
               lineNo: idx + 1,
               description: it.description,
@@ -181,7 +181,7 @@ export class PurchaseRequisitionsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'PurchaseRequisition',
@@ -198,14 +198,14 @@ export class PurchaseRequisitionsController {
     @Param('id') id: string,
   ) {
     const pr = await this.prisma.purchaseRequisition.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!pr) throw new NotFoundException('Purchase requisition not found');
 
     const workflow = await this.prisma.workflowDefinition.findFirst({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         moduleKey: 'procurement',
         docType: 'PURCHASE_REQUISITION',
         isActive: true,
@@ -214,7 +214,7 @@ export class PurchaseRequisitionsController {
     });
     const hasSteps = workflow
       ? (await this.prisma.workflowStep.count({
-          where: { tenantId: req.user.tenantId, definitionId: workflow.id },
+          where: { tenantId: req.user.tenantId!, definitionId: workflow.id },
         })) > 0
       : false;
 
@@ -228,7 +228,7 @@ export class PurchaseRequisitionsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'submit',
       entity: 'PurchaseRequisition',
@@ -249,7 +249,7 @@ export class PurchaseRequisitionsController {
     @Param('id') id: string,
   ) {
     const pr = await this.prisma.purchaseRequisition.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: {
         id: true,
         status: true,
@@ -264,7 +264,7 @@ export class PurchaseRequisitionsController {
     if (pr.workflowDefinitionId && pr.currentStepNo) {
       const step = await this.prisma.workflowStep.findFirst({
         where: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           definitionId: pr.workflowDefinitionId,
           stepNo: pr.currentStepNo,
         },
@@ -282,7 +282,7 @@ export class PurchaseRequisitionsController {
 
       const maxStep = await this.prisma.workflowStep.aggregate({
         where: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           definitionId: pr.workflowDefinitionId,
         },
         _max: { stepNo: true },
@@ -300,7 +300,7 @@ export class PurchaseRequisitionsController {
       });
 
       await this.audit.log({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         actorUserId: req.user.id,
         action: 'approve',
         entity: 'PurchaseRequisition',
@@ -324,7 +324,7 @@ export class PurchaseRequisitionsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'approve',
       entity: 'PurchaseRequisition',
@@ -341,7 +341,7 @@ export class PurchaseRequisitionsController {
     @Param('id') id: string,
   ) {
     const pr = await this.prisma.purchaseRequisition.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!pr) throw new NotFoundException('Purchase requisition not found');
@@ -354,7 +354,7 @@ export class PurchaseRequisitionsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'reject',
       entity: 'PurchaseRequisition',

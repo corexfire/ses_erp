@@ -15,7 +15,7 @@ export class CoaController {
   @Get()
   @RequirePermissions('finance.coa.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('type') type?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (type) where.type = type;
     const accounts = await this.prisma.coaAccount.findMany({
       where,
@@ -29,7 +29,7 @@ export class CoaController {
   @RequirePermissions('finance.coa.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const account = await this.prisma.coaAccount.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { parent: true, children: true },
     });
     return { account };
@@ -40,7 +40,7 @@ export class CoaController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { code: string; name: string; type: string; parentId?: string; isPosting?: boolean }) {
     const account = await this.prisma.coaAccount.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         type: body.type as any,
@@ -48,7 +48,7 @@ export class CoaController {
         isPosting: body.isPosting ?? true,
       },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'CREATE', entity: 'CoaAccount', entityId: account.id, metadata: { code: body.code } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'CREATE', entity: 'CoaAccount', entityId: account.id, metadata: { code: body.code } });
     return { account };
   }
 
@@ -59,7 +59,7 @@ export class CoaController {
       where: { id },
       data: { ...body },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'UPDATE', entity: 'CoaAccount', entityId: id });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'UPDATE', entity: 'CoaAccount', entityId: id });
     return { account };
   }
 
@@ -67,7 +67,7 @@ export class CoaController {
   @RequirePermissions('finance.coa.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     await this.prisma.coaAccount.delete({ where: { id } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'DELETE', entity: 'CoaAccount', entityId: id });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'DELETE', entity: 'CoaAccount', entityId: id });
     return { success: true };
   }
 }

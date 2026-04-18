@@ -528,31 +528,7 @@ onMounted(load);
 </script>
 
 <style scoped>
-:deep(.p-datatable-thead > tr > th) {
-  background: transparent !important;
-  font-size: 10px !important;
-  font-weight: 900 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.1em !important;
-  color: #94a3b8 !important;
-  border-bottom: 2px solid #f1f5f9 !important;
-  padding: 1.5rem 1rem !important;
-}
-
-:deep(.p-datatable-tbody > tr) {
-  background: transparent !important;
-  transition: all 0.2s ease;
-}
-
-:deep(.p-datatable-tbody > tr:hover) {
-  background: rgba(241, 245, 249, 0.5) !important;
-}
-
-:deep(.p-datatable-tbody > tr > td) {
-  padding: 1.25rem 1rem !important;
-  border-bottom: 1px solid #f8fafc !important;
-}
-
+/* Scoped overrides for Stock and Animations */
 .animate-fade-in {
   animation: fadeIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 }
@@ -562,19 +538,7 @@ onMounted(load);
   to { opacity: 1; transform: translateY(0); }
 }
 
-:deep(.p-select), :deep(.p-inputtext), :deep(.p-inputnumber-input), :deep(.p-textarea) {
-   border-color: #f1f5f9 !important;
-   box-shadow: none !important;
-   background-color: #f8fafc !important;
-}
-
-:deep(.p-select:hover), :deep(.p-inputtext:hover) {
-   border-color: #3b82f6 !important;
-}
-
-:deep(.p-select-label) {
-   font-size: 12px !important;
-   font-weight: 700 !important;
-   color: #1e293b !important;
+:deep(.p-datatable-tbody > tr > td) {
+  padding: 1.25rem 1rem !important; /* Specific padding for stock desk */
 }
 </style>

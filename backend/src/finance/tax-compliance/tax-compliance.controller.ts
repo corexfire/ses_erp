@@ -18,7 +18,7 @@ export class FakturKeluaranController {
   @Get()
   @RequirePermissions('finance.tax.fakturKeluaran.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string, @Query('status') status?: string) {
-    const where: any = { tenantId: req.user.tenantId, invoiceType: 'OUTPUT' };
+    const where: any = { tenantId: req.user.tenantId!, invoiceType: 'OUTPUT' };
     
     if (period) {
       const [year, month] = period.split('-');
@@ -39,7 +39,7 @@ export class FakturKeluaranController {
   @RequirePermissions('finance.tax.fakturKeluaran.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const invoice = await this.prisma.taxInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { invoice };
   }
@@ -49,7 +49,7 @@ export class FakturKeluaranController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: any) {
     const invoice = await this.prisma.taxInvoice.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceNo: body.invoiceNo,
         invoiceDate: new Date(body.invoiceDate),
         customerId: body.customerId,
@@ -62,7 +62,6 @@ export class FakturKeluaranController {
         discountAmount: body.discountAmount || 0,
         stampDuty: body.stampDuty || 0,
         referenceNo: body.referenceNo,
-        referenceType: body.referenceType,
         taxPeriod: body.taxPeriod || (new Date().getMonth() + 1).toString().padStart(2, '0'),
         taxYear: body.taxYear || new Date().getFullYear(),
         invoiceType: 'OUTPUT',
@@ -76,7 +75,7 @@ export class FakturKeluaranController {
   @RequirePermissions('finance.tax.fakturKeluaran.create')
   async autoGenerate(@Req() req: FastifyRequest & { user: AuthUser }, @Param('invoiceId') invoiceId: string) {
     const salesInvoice = await this.prisma.salesInvoice.findFirst({
-      where: { id: invoiceId, tenantId: req.user.tenantId },
+      where: { id: invoiceId, tenantId: req.user.tenantId! },
       include: { customer: true, items: { include: { taxCode: true } } }
     });
     if (!salesInvoice) throw new Error('Sales Invoice not found');
@@ -98,7 +97,7 @@ export class FakturKeluaranController {
 
     const invoice = await this.prisma.taxInvoice.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceNo: `FK-${salesInvoice.code}`,
         invoiceDate: new Date(),
         customerId: salesInvoice.customerId,
@@ -108,7 +107,6 @@ export class FakturKeluaranController {
         baseAmount,
         taxAmount,
         referenceNo: salesInvoice.code,
-        referenceType: 'SALES_INVOICE',
         taxPeriod: (new Date().getMonth() + 1).toString().padStart(2, '0'),
         taxYear: new Date().getFullYear(),
         invoiceType: 'OUTPUT',
@@ -121,11 +119,11 @@ export class FakturKeluaranController {
   @Post(':id/issue-fp')
   @RequirePermissions('finance.tax.fakturKeluaran.issue')
   async issueFp(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const invoice = await this.prisma.taxInvoice.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const invoice = await this.prisma.taxInvoice.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!invoice) throw new Error('Invoice not found');
 
     const nsfpRange = await this.prisma.nsfpRange.findFirst({
-      where: { tenantId: req.user.tenantId, endDate: null },
+      where: { tenantId: req.user.tenantId!, endDate: null },
       orderBy: { startNo: 'asc' }
     });
     if (!nsfpRange) throw new Error('No active NSFP range found. Please upload NSFP range first.');
@@ -155,7 +153,7 @@ export class FakturMasukanController {
   @Get()
   @RequirePermissions('finance.tax.fakturMasukan.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string) {
-    const where: any = { tenantId: req.user.tenantId, invoiceType: 'INPUT' };
+    const where: any = { tenantId: req.user.tenantId!, invoiceType: 'INPUT' };
     if (period) {
       const [year, month] = period.split('-');
       where.taxYear = parseInt(year);
@@ -174,7 +172,7 @@ export class FakturMasukanController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { invoiceNo: string; invoiceDate: string; supplierId?: string; baseAmount: number; taxAmount: number; fpNumber?: string; fpDate?: string }) {
     const invoice = await this.prisma.taxInvoice.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceNo: body.invoiceNo,
         invoiceDate: new Date(body.invoiceDate),
         supplierId: body.supplierId,
@@ -199,7 +197,7 @@ export class NsfpController {
   @RequirePermissions('finance.tax.nsfp.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const ranges = await this.prisma.nsfpRange.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: { startNo: 'desc' },
     });
     return { ranges };
@@ -210,7 +208,7 @@ export class NsfpController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { startNo: string; endNo: string; startDate: string }) {
     const range = await this.prisma.nsfpRange.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         startNo: body.startNo,
         endNo: body.endNo,
         startDate: new Date(body.startDate),
@@ -235,7 +233,7 @@ export class PpnMasaController {
 
     const outputInvoices = await this.prisma.taxInvoice.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceType: 'OUTPUT',
         invoiceDate: { gte: startDate, lte: endDate },
         status: 'POSTED',
@@ -244,7 +242,7 @@ export class PpnMasaController {
 
     const inputInvoices = await this.prisma.taxInvoice.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceType: 'INPUT',
         invoiceDate: { gte: startDate, lte: endDate },
         status: 'POSTED',
@@ -275,7 +273,7 @@ export class EBupotController {
   @Get()
   @RequirePermissions('finance.tax.eBupot.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (period) {
       const [year, month] = period.split('-').map(Number);
       where.transDate = {
@@ -295,7 +293,7 @@ export class EBupotController {
   @RequirePermissions('finance.tax.eBupot.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const withholding = await this.prisma.pphWithholding.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { withholding };
   }
@@ -307,7 +305,7 @@ export class EBupotController {
 
     const withholding = await this.prisma.pphWithholding.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         transNo: body.transNo,
         transDate: new Date(body.transDate),
         incomeType: body.incomeType,
@@ -326,7 +324,7 @@ export class EBupotController {
   @Post(':id/issue-bupot')
   @RequirePermissions('finance.tax.eBupot.issue')
   async issueBupot(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { bupotNo: string; bupotDate: string }) {
-    const withholding = await this.prisma.pphWithholding.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const withholding = await this.prisma.pphWithholding.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!withholding) throw new Error('Withholding not found');
 
     const updated = await this.prisma.pphWithholding.update({
@@ -345,7 +343,7 @@ export class Pph21Controller {
   @Get()
   @RequirePermissions('finance.tax.pph21.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string) {
-    const where: any = { tenantId: req.user.tenantId, incomeType: '21' };
+    const where: any = { tenantId: req.user.tenantId!, incomeType: '21' };
     if (period) {
       const [year, month] = period.split('-').map(Number);
       where.transDate = {
@@ -368,7 +366,7 @@ export class Pph21Controller {
 
     const withholding = await this.prisma.pphWithholding.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         transNo: body.transNo,
         transDate: new Date(body.transDate),
         incomeType: '21',
@@ -394,7 +392,7 @@ export class BuktiPotongController {
   @RequirePermissions('finance.tax.buktiPotong.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('year') year?: string) {
     const where: any = { 
-      tenantId: req.user.tenantId, 
+      tenantId: req.user.tenantId!, 
       status: 'POSTED',
       incomeType: '21-A1'
     };
@@ -417,7 +415,7 @@ export class BuktiPotongController {
   @RequirePermissions('finance.tax.buktiPotong.read')
   async print(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const withholding = await this.prisma.pphWithholding.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { withholding };
   }
@@ -432,7 +430,7 @@ export class IdBillingController {
   @RequirePermissions('finance.tax.idBilling.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const billings = await this.prisma.idBilling.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: { createdAt: 'desc' },
     });
     return { billings };
@@ -443,7 +441,7 @@ export class IdBillingController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { billingNo: string; taxType: string; period: string; amount: number; dueDate: string }) {
     const billing = await this.prisma.idBilling.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         billingNo: body.billingNo,
         taxType: body.taxType,
         period: body.period,
@@ -458,7 +456,7 @@ export class IdBillingController {
   @Post(':id/paid')
   @RequirePermissions('finance.tax.idBilling.paid')
   async markPaid(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const billing = await this.prisma.idBilling.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const billing = await this.prisma.idBilling.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!billing) throw new Error('Billing not found');
 
     const updated = await this.prisma.idBilling.update({
@@ -482,7 +480,7 @@ export class EqualizationController {
   @RequirePermissions('finance.tax.equalization.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const equalizations = await this.prisma.taxEqualization.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: { period: 'desc' },
     });
     return { equalizations };
@@ -492,7 +490,7 @@ export class EqualizationController {
   @RequirePermissions('finance.tax.equalization.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const equalization = await this.prisma.taxEqualization.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { equalization };
   }
@@ -504,7 +502,7 @@ export class EqualizationController {
 
     const equalization = await this.prisma.taxEqualization.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         period: body.period,
         bookIncome: body.bookIncome,
         fiscalIncome: body.fiscalIncome,
@@ -519,7 +517,7 @@ export class EqualizationController {
   @Post(':id/approve')
   @RequirePermissions('finance.tax.equalization.approve')
   async approve(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const equalization = await this.prisma.taxEqualization.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const equalization = await this.prisma.taxEqualization.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!equalization) throw new Error('Equalization not found');
 
     const updated = await this.prisma.taxEqualization.update({
@@ -538,7 +536,7 @@ export class FiscalReconciliationController {
   @Get()
   @RequirePermissions('finance.tax.fiscalReconciliation.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (period) where.period = period;
 
     const equalizations = await this.prisma.taxEqualization.findMany({
@@ -552,7 +550,7 @@ export class FiscalReconciliationController {
   @RequirePermissions('finance.tax.fiscalReconciliation.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const equalization = await this.prisma.taxEqualization.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { equalization };
   }
@@ -560,12 +558,12 @@ export class FiscalReconciliationController {
   @Post(':id/generate-report')
   @RequirePermissions('finance.tax.fiscalReconciliation.generate')
   async generateReport(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const equalization = await this.prisma.taxEqualization.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const equalization = await this.prisma.taxEqualization.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!equalization) throw new Error('Equalization not found');
 
     const journalLines = await this.prisma.journalEntryLine.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         journalEntry: { status: 'POSTED' },
       },
       include: { journalEntry: true },

@@ -31,7 +31,7 @@ export class RentalMaintenanceController {
   async findAll(@Req() req: FastifyRequest, @Query('search') search?: string, @Query('status') status?: string) {
     const user = req.user as AuthUser;
     
-    const where: any = user.isSuperAdmin ? {} : { tenantId: user.tenantId };
+    const where: any = user.isSuperAdmin ? {} : { tenantId: user.tenantId! };
     
     if (search) {
       where.OR = [
@@ -56,7 +56,7 @@ export class RentalMaintenanceController {
     });
     
     // Summary logic for dashboards
-    const summaryWhere = user.isSuperAdmin ? {} : { tenantId: user.tenantId };
+    const summaryWhere = user.isSuperAdmin ? {} : { tenantId: user.tenantId! };
     const summaryAggr = await this.prisma.rentalMaintenance.groupBy({
        by: ['status'],
        where: summaryWhere,
@@ -81,7 +81,7 @@ export class RentalMaintenanceController {
 
     const record = await this.prisma.rentalMaintenance.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         ticketNo,
         contractId: body.contractId || null,
         assetId: body.assetId || null,
@@ -96,15 +96,7 @@ export class RentalMaintenanceController {
       },
     });
 
-    await this.audit.log(
-      user.tenantId,
-      user.id,
-      'CREATE',
-      'RentalMaintenance',
-      record.id,
-      null,
-      record,
-    );
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'CREATE', entity: 'RentalMaintenance', entityId: record.id,  });
 
     return { message: 'Maintenance Work Order created', data: record };
   }
@@ -120,7 +112,7 @@ export class RentalMaintenanceController {
       where: { id },
     });
 
-    if (!existing || existing.tenantId !== user.tenantId) {
+    if (!existing || existing.tenantId !== user.tenantId!) {
       throw new NotFoundException('Work Order not found');
     }
 
@@ -144,15 +136,7 @@ export class RentalMaintenanceController {
       data,
     });
 
-    await this.audit.log(
-      user.tenantId,
-      user.id,
-      'UPDATE',
-      'RentalMaintenance',
-      id,
-      existing,
-      updated,
-    );
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'UPDATE', entity: 'RentalMaintenance', entityId: id, metadata: existing });
 
     return { message: 'Maintenance Work Order updated', data: updated };
   }
@@ -160,8 +144,8 @@ export class RentalMaintenanceController {
   @Get('lookups')
   async getLookups(@Req() req: FastifyRequest) {
     const user = req.user as AuthUser;
-    const contractWhere = user.isSuperAdmin ? { status: 'ACTIVE' } : { tenantId: user.tenantId, status: 'ACTIVE' };
-    const assetWhere = user.isSuperAdmin ? {} : { tenantId: user.tenantId };
+    const contractWhere = user.isSuperAdmin ? { status: 'ACTIVE' } : { tenantId: user.tenantId!, status: 'ACTIVE' };
+    const assetWhere = user.isSuperAdmin ? {} : { tenantId: user.tenantId! };
     const contracts = await this.prisma.rentalContract.findMany({
       where: contractWhere,
       select: { id: true, contractNo: true }

@@ -73,7 +73,7 @@ export class DriverController {
   ) {
     const drivers = await this.prisma.logisticsDriver.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -98,7 +98,7 @@ export class DriverController {
     @Param('id') id: string,
   ) {
     const driver = await this.prisma.logisticsDriver.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { transporter: true, tripPlans: { take: 10, orderBy: { routeDate: 'desc' } } },
     });
     if (!driver) throw new NotFoundException('Driver not found');
@@ -113,18 +113,18 @@ export class DriverController {
   ) {
     if (body.transporterId) {
       const transporter = await this.prisma.transporter.findFirst({
-        where: { id: body.transporterId, tenantId: req.user.tenantId },
+        where: { id: body.transporterId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!transporter) throw new NotFoundException('Transporter not found');
     }
 
-    const count = await this.prisma.logisticsDriver.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.logisticsDriver.count({ where: { tenantId: req.user.tenantId! } });
     const code = `DRV-${String(count + 1).padStart(6, '0')}`;
 
     const driver = await this.prisma.logisticsDriver.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code || code,
         name: body.name,
         employeeId: body.employeeId,
@@ -142,7 +142,7 @@ export class DriverController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'LogisticsDriver',
@@ -161,14 +161,14 @@ export class DriverController {
     @Body() body: UpdateDriverDto,
   ) {
     const exists = await this.prisma.logisticsDriver.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Driver not found');
 
     if (body.transporterId) {
       const transporter = await this.prisma.transporter.findFirst({
-        where: { id: body.transporterId, tenantId: req.user.tenantId },
+        where: { id: body.transporterId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!transporter) throw new NotFoundException('Transporter not found');
@@ -193,7 +193,7 @@ export class DriverController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'UPDATE',
       entity: 'LogisticsDriver',

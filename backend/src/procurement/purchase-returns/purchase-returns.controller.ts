@@ -66,7 +66,7 @@ export class PurchaseReturnsController {
   ) {
     const purchaseReturns = await this.prisma.purchaseReturn.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(isProcurementDocStatus(status) ? { status } : {}),
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }] } : {}),
       },
@@ -84,7 +84,7 @@ export class PurchaseReturnsController {
     @Param('id') id: string,
   ) {
     const purchaseReturn = await this.prisma.purchaseReturn.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         supplier: true,
         order: true,
@@ -104,35 +104,35 @@ export class PurchaseReturnsController {
     @Body() body: CreatePurchaseReturnDto,
   ) {
     const supplier = await this.prisma.supplier.findFirst({
-      where: { id: body.supplierId, tenantId: req.user.tenantId },
+      where: { id: body.supplierId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!supplier) throw new NotFoundException('Supplier not found');
 
     if (body.orderId) {
       const po = await this.prisma.purchaseOrder.findFirst({
-        where: { id: body.orderId, tenantId: req.user.tenantId },
+        where: { id: body.orderId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!po) throw new NotFoundException('Purchase order not found');
     }
     if (body.invoiceId) {
       const inv = await this.prisma.purchaseInvoice.findFirst({
-        where: { id: body.invoiceId, tenantId: req.user.tenantId },
+        where: { id: body.invoiceId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!inv) throw new NotFoundException('Purchase invoice not found');
     }
 
     await this.validateTaxCodes({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       taxCodeIds: body.items.map((x) => x.taxCodeId ?? '').filter(Boolean),
     });
 
     const purchaseReturn = await this.prisma.$transaction(async (tx) => {
       const pr = await tx.purchaseReturn.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           supplierId: body.supplierId,
           orderId: body.orderId,
@@ -144,7 +144,7 @@ export class PurchaseReturnsController {
       if (body.items.length > 0) {
         await tx.purchaseReturnItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             returnId: pr.id,
             lineNo: idx + 1,
             description: it.description,
@@ -159,7 +159,7 @@ export class PurchaseReturnsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'PurchaseReturn',
@@ -177,14 +177,14 @@ export class PurchaseReturnsController {
     @Body() body: UpdatePurchaseReturnDto,
   ) {
     const exists = await this.prisma.purchaseReturn.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Purchase return not found');
 
     if (body.items) {
       await this.validateTaxCodes({
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         taxCodeIds: body.items.map((x) => x.taxCodeId ?? '').filter(Boolean),
       });
     }
@@ -199,12 +199,12 @@ export class PurchaseReturnsController {
       });
       if (body.items) {
         await tx.purchaseReturnItem.deleteMany({
-          where: { tenantId: req.user.tenantId, returnId: id },
+          where: { tenantId: req.user.tenantId!, returnId: id },
         });
         if (body.items.length > 0) {
           await tx.purchaseReturnItem.createMany({
             data: body.items.map((it, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               returnId: id,
               lineNo: idx + 1,
               description: it.description,
@@ -220,7 +220,7 @@ export class PurchaseReturnsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'PurchaseReturn',

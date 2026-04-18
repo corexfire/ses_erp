@@ -308,7 +308,7 @@ const load = async () => {
   try {
     const [orgRes, empRes] = await Promise.all([
       api.get('/hris/org-structure'),
-      api.get('/hris/employee'),
+      api.get('/hris/employees'),
     ]);
     units.value = orgRes.data?.units ?? orgRes.units ?? [];
     employees.value = (empRes.data?.employees ?? empRes.employees ?? []).filter((e: any) => e.status === 'ACTIVE');

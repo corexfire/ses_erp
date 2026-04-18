@@ -23,7 +23,7 @@ export class QcController {
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
     const inspections = await this.prisma.qcInspection.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(status && ['DRAFT', 'SUBMITTED', 'POSTED', 'VOID'].includes(status)
           ? { status: status as any }
           : {}),
@@ -39,7 +39,7 @@ export class QcController {
   @RequirePermissions('inventory.qc.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const inspection = await this.prisma.qcInspection.findUnique({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { grn: { include: { supplier: true, warehouse: true } }, items: true },
     });
     if (!inspection) throw new NotFoundException('QC inspection not found');
@@ -54,7 +54,7 @@ export class QcController {
     @Body() body: UpdateQcDto,
   ) {
     const exists = await this.prisma.qcInspection.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('QC inspection not found');
@@ -65,11 +65,11 @@ export class QcController {
     });
 
     if (body.status === 'POSTED') {
-      await this.ncrService.generateFromQc(req.user.tenantId, req.user.id, id);
+      await this.ncrService.generateFromQc(req.user.tenantId!, req.user.id, id);
     }
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'QcInspection',

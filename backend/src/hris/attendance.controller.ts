@@ -14,7 +14,7 @@ export class AttendanceController {
   @Get()
   @RequirePermissions('hris.attendance.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('date') date?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (date) where.date = { gte: new Date(date), lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000) };
 
     const attendances = await this.prisma.attendance.findMany({
@@ -30,7 +30,7 @@ export class AttendanceController {
   async summary(@Req() req: FastifyRequest & { user: AuthUser }, @Query('startDate') startDate: string, @Query('endDate') endDate: string) {
     const attendances = await this.prisma.attendance.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         date: { gte: new Date(startDate), lte: new Date(endDate) },
       },
       include: { employee: true },
@@ -53,7 +53,7 @@ export class AttendanceController {
 
     const attendance = await this.prisma.attendance.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         employeeId: body.employeeId,
         date: new Date(body.date),
         checkIn: body.checkIn ? new Date(body.checkIn) : null,
@@ -77,7 +77,7 @@ export class ShiftController {
   @RequirePermissions('hris.shift.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const shifts = await this.prisma.shift.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ name: 'asc' }],
     });
     return { shifts };
@@ -88,7 +88,7 @@ export class ShiftController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { name: string; code: string; startTime: string; endTime: string; isFlexi?: boolean }) {
     const shift = await this.prisma.shift.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         name: body.name,
         code: body.code,
         startTime: body.startTime,

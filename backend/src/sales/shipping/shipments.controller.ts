@@ -47,7 +47,7 @@ export class ShipmentsController {
   ) {
     const shipments = await this.prisma.shipment.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -72,7 +72,7 @@ export class ShipmentsController {
     @Param('id') id: string,
   ) {
     const shipment = await this.prisma.shipment.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         carrier: true,
         order: {
@@ -92,7 +92,7 @@ export class ShipmentsController {
   ) {
     if (body.orderId) {
       const order = await this.prisma.salesOrder.findFirst({
-        where: { id: body.orderId, tenantId: req.user.tenantId },
+        where: { id: body.orderId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!order) throw new NotFoundException('Sales order not found');
@@ -100,7 +100,7 @@ export class ShipmentsController {
 
     if (body.carrierId) {
       const carrier = await this.prisma.carrier.findFirst({
-        where: { id: body.carrierId, tenantId: req.user.tenantId },
+        where: { id: body.carrierId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!carrier) throw new NotFoundException('Carrier not found');
@@ -108,7 +108,7 @@ export class ShipmentsController {
 
     const shipment = await this.prisma.shipment.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         orderId: body.orderId,
         carrierId: body.carrierId,
@@ -122,7 +122,7 @@ export class ShipmentsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Shipment',
@@ -140,14 +140,14 @@ export class ShipmentsController {
     @Body() body: UpdateShipmentDto,
   ) {
     const exists = await this.prisma.shipment.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Shipment not found');
 
     if (body.orderId) {
       const order = await this.prisma.salesOrder.findFirst({
-        where: { id: body.orderId, tenantId: req.user.tenantId },
+        where: { id: body.orderId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!order) throw new NotFoundException('Sales order not found');
@@ -155,7 +155,7 @@ export class ShipmentsController {
 
     if (body.carrierId) {
       const carrier = await this.prisma.carrier.findFirst({
-        where: { id: body.carrierId, tenantId: req.user.tenantId },
+        where: { id: body.carrierId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!carrier) throw new NotFoundException('Carrier not found');
@@ -176,7 +176,7 @@ export class ShipmentsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'Shipment',

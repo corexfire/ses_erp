@@ -67,7 +67,7 @@ export class SupportDocumentController {
   ) {
     return this.prisma.supportDocument.findMany({
       where: { 
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(category ? { category } : {}),
         ...(status ? { status } : {}),
       },
@@ -83,7 +83,7 @@ export class SupportDocumentController {
   @RequirePermissions('quality.read')
   async getStats(@Req() req: FastifyRequest & { user: AuthUser }) {
     const docs = await this.prisma.supportDocument.findMany({
-      where: { tenantId: req.user.tenantId }
+      where: { tenantId: req.user.tenantId! }
     });
 
     const now = new Date();
@@ -105,7 +105,7 @@ export class SupportDocumentController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.supportDocument.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { 
         author: true,
         department: true,
@@ -121,7 +121,7 @@ export class SupportDocumentController {
   ) {
     return this.prisma.supportDocument.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         title: body.title,
         description: body.description,
@@ -149,7 +149,7 @@ export class SupportDocumentController {
     if (body.expiryDate) data.expiryDate = new Date(body.expiryDate);
 
     return this.prisma.supportDocument.update({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       data
     });
   }
@@ -161,7 +161,7 @@ export class SupportDocumentController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     return this.prisma.supportDocument.delete({
-      where: { id, tenantId: req.user.tenantId }
+      where: { id, tenantId: req.user.tenantId! }
     });
   }
 }

@@ -20,7 +20,7 @@ export class ValuationController {
     @Query('warehouseId') warehouseId?: string,
     @Query('itemId') itemId?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (warehouseId) where.warehouseId = warehouseId;
     if (itemId) where.itemId = itemId;
 
@@ -64,7 +64,7 @@ export class ValuationController {
         unitCost = totalValue / currentQty || 0;
       } else {
         const layers = await this.prisma.valuationLayer.findMany({
-          where: { tenantId: req.user.tenantId, itemId },
+          where: { tenantId: req.user.tenantId!, itemId },
           orderBy: [{ postingDate: 'asc' }],
         });
         const totalValQty = layers.reduce((sum, l) => sum + Number(l.qty), 0);
@@ -94,14 +94,14 @@ export class ValuationController {
   @RequirePermissions('inventory.valuation.read')
   async getValuationByWarehouse(@Req() req: FastifyRequest & { user: AuthUser }) {
     const warehouses = await this.prisma.warehouse.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       select: { id: true, code: true, name: true },
     });
 
     const result = [];
     for (const wh of warehouses) {
       const ledgers = await this.prisma.stockLedger.findMany({
-        where: { tenantId: req.user.tenantId, warehouseId: wh.id },
+        where: { tenantId: req.user.tenantId!, warehouseId: wh.id },
       });
 
       const totalIn = ledgers.reduce((sum, l) => sum + Number(l.qtyIn), 0);
@@ -126,7 +126,7 @@ export class ValuationController {
     this.activeJobs.set(jobId, { progress: 0, status: 'IN_PROGRESS' });
 
     // Simulate background processing
-    void this.processRecalculation(jobId, req.user.tenantId);
+    void this.processRecalculation(jobId, req.user.tenantId!);
 
     return { jobId, message: 'Recalculation started in background' };
   }
@@ -148,7 +148,7 @@ export class ValuationController {
   ) {
     const layers = await this.prisma.valuationLayer.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(itemId ? { itemId } : {}),
       },
       orderBy: [{ postingDate: 'desc' }],

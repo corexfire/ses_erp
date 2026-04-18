@@ -16,21 +16,21 @@ export class NcrController {
   @Get()
   @RequirePermissions('qms.ncr.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query() query: any) {
-    const list = await this.ncrService.findAll(req.user.tenantId, query);
+    const list = await this.ncrService.findAll(req.user.tenantId!, query);
     return { list };
   }
 
   @Get(':id')
   @RequirePermissions('qms.ncr.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const ncr = await this.ncrService.findOne(req.user.tenantId, id);
+    const ncr = await this.ncrService.findOne(req.user.tenantId!, id);
     return { ncr };
   }
 
   @Post()
   @RequirePermissions('qms.ncr.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateNcrDto) {
-    const ncr = await this.ncrService.create(req.user.tenantId, req.user.id, body);
+    const ncr = await this.ncrService.create(req.user.tenantId!, req.user.id, body);
     return { ncr };
   }
 
@@ -41,14 +41,14 @@ export class NcrController {
     @Param('id') id: string,
     @Body() body: UpdateNcrDto,
   ) {
-    const ncr = await this.ncrService.update(req.user.tenantId, id, body);
+    const ncr = await this.ncrService.update(req.user.tenantId!, id, body);
     return { ncr };
   }
 
   @Post(':id/submit')
   @RequirePermissions('qms.ncr.update')
   async submit(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const instance = await this.ncrService.submitToWorkflow(req.user.tenantId, req.user.id, id);
+    const instance = await this.ncrService.submitToWorkflow(req.user.tenantId!, req.user.id, id);
     return { instance };
   }
 }

@@ -112,7 +112,7 @@
              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
                    <label class="text-[10px] font-black text-slate-400 uppercase pl-2">Kategori Pajak</label>
-                   <Dropdown v-model="form.taxType" :options="['PPN', 'PPh 21', 'PPh 22', 'PPh 23', 'PPh 4(2)']" class="w-full !rounded-2xl" />
+                   <Select v-model="form.taxType" :options="['PPN', 'PPh 21', 'PPh 22', 'PPh 23', 'PPh 4(2)']" class="w-full !rounded-2xl" />
                 </div>
                 <div class="space-y-1">
                    <label class="text-[10px] font-black text-slate-400 uppercase pl-2">Masa Pajak</label>
@@ -276,7 +276,7 @@ onMounted(load);
   border-bottom: 1px solid #f8fafc !important;
 }
 
-:deep(.p-dropdown) {
+:deep(.p-select) {
   border-radius: 1rem !important;
   padding: 0.5rem !important;
 }

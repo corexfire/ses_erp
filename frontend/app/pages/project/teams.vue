@@ -146,7 +146,7 @@
              <div class="flex gap-4 items-end">
                 <div class="flex-1 space-y-1">
                    <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Pilih Employee</label>
-                   <Dropdown v-model="selectedEmployeeId" :options="employees" optionLabel="firstName" optionValue="id" placeholder="PILIH PERSONEL.." class="rounded-2xl" filter>
+                   <Select v-model="selectedEmployeeId" :options="employees" optionLabel="firstName" optionValue="id" placeholder="PILIH PERSONEL.." class="rounded-2xl" filter>
                       <template #option="{ option }">
                         <div class="flex items-center gap-2">
                            <Avatar :label="getInitials(option.firstName)" shape="circle" size="small" />
@@ -156,11 +156,11 @@
                            </div>
                         </div>
                       </template>
-                   </Dropdown>
+                   </Select>
                 </div>
                 <div class="w-40 space-y-1">
                    <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Role Tim</label>
-                   <Dropdown v-model="memberRole" :options="['MEMBER', 'LEAD', 'REVIEWER', 'GUEST']" placeholder="ROLE" class="rounded-2xl" />
+                   <Select v-model="memberRole" :options="['MEMBER', 'LEAD', 'REVIEWER', 'GUEST']" placeholder="ROLE" class="rounded-2xl" />
                 </div>
                 <Button icon="pi pi-plus" class="w-12 h-12 rounded-2xl p-button-indigo shadow-lg shadow-indigo-100" @click="addMember" :loading="addingMember" />
              </div>
@@ -247,7 +247,7 @@ async function load() {
   try {
     const [teamRes, empRes, userRes] = await Promise.all([
       api.get('/hris/team'),
-      api.get('/hris/employee'),
+      api.get('/hris/employees'),
       api.get('/core/users')
     ]);
     teams.value = teamRes.data?.data || [];

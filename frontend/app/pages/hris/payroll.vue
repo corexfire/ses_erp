@@ -420,7 +420,7 @@ const load = async () => {
   try {
     const [runRes, empRes] = await Promise.all([
       api.get('/hris/payroll', { params: { period: filterPeriod.value } }),
-      api.get('/hris/employee'),
+      api.get('/hris/employees'),
     ]);
     runs.value = runRes.data?.runs ?? runRes.runs ?? [];
     employees.value = (empRes.data?.employees ?? empRes.employees ?? []).filter((e: any) => e.status === 'ACTIVE' && e.salary);

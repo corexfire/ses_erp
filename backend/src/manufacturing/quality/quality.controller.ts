@@ -35,7 +35,7 @@ export class QualityController {
   ) {
     const inspections = await this.prisma.inProcessQc.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(status ? { status } : {}),
       },
       orderBy: [{ createdAt: 'desc' }],
@@ -49,7 +49,7 @@ export class QualityController {
   @RequirePermissions('manufacturing.quality.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const inspection = await this.prisma.inProcessQc.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { workOrder: { include: { finishedGood: true } } },
     });
     if (!inspection) throw new NotFoundException('Quality inspection not found');
@@ -60,14 +60,14 @@ export class QualityController {
   @RequirePermissions('manufacturing.quality.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateInProcessQcDto) {
     const wo = await this.prisma.workOrder.findFirst({
-      where: { id: body.workOrderId, tenantId: req.user.tenantId },
+      where: { id: body.workOrderId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!wo) throw new NotFoundException('Work Order not found');
 
     const inspection = await this.prisma.inProcessQc.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         workOrderId: body.workOrderId,
         qtyInspected: body.qtyInspected,
         qtyPassed: body.qtyPassed,
@@ -77,7 +77,7 @@ export class QualityController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'InProcessQc',
@@ -95,7 +95,7 @@ export class QualityController {
     @Body() body: UpdateInProcessQcDto,
   ) {
     const existing = await this.prisma.inProcessQc.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!existing) throw new NotFoundException('Quality inspection not found');
@@ -113,7 +113,7 @@ export class QualityController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'InProcessQc',

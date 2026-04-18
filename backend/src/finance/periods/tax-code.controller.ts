@@ -15,7 +15,7 @@ export class TaxCodeController {
   @RequirePermissions('finance.taxcode.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const codes = await this.prisma.taxCode.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ code: 'asc' }],
     });
     return { taxCodes: codes };
@@ -26,7 +26,7 @@ export class TaxCodeController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { code: string; name: string; rate: number; effectiveDate: string }) {
     const taxCode = await this.prisma.taxCode.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         rate: body.rate,

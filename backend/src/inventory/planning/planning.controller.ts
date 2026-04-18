@@ -15,14 +15,14 @@ export class PlanningController {
   @RequirePermissions('inventory.planning.read')
   async getPlanning(@Req() req: FastifyRequest & { user: AuthUser }) {
     const items = await this.prisma.item.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true },
+      where: { tenantId: req.user.tenantId!, isActive: true },
       include: { uoms: true },
     });
 
     const result = [];
     for (const item of items) {
       const ledgers = await this.prisma.stockLedger.findMany({
-        where: { tenantId: req.user.tenantId, itemId: item.id },
+        where: { tenantId: req.user.tenantId!, itemId: item.id },
       });
       const qtyIn = ledgers.reduce((sum, l) => sum + Number(l.qtyIn), 0);
       const qtyOut = ledgers.reduce((sum, l) => sum + Number(l.qtyOut), 0);
@@ -54,13 +54,13 @@ export class PlanningController {
   @RequirePermissions('inventory.planning.run')
   async runReorderCheck(@Req() req: FastifyRequest & { user: AuthUser }) {
     const items = await this.prisma.item.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true },
+      where: { tenantId: req.user.tenantId!, isActive: true },
     });
 
     const suggestions = [];
     for (const item of items) {
       const ledgers = await this.prisma.stockLedger.findMany({
-        where: { tenantId: req.user.tenantId, itemId: item.id },
+        where: { tenantId: req.user.tenantId!, itemId: item.id },
       });
       const qtyIn = ledgers.reduce((sum, l) => sum + Number(l.qtyIn), 0);
       const qtyOut = ledgers.reduce((sum, l) => sum + Number(l.qtyOut), 0);
@@ -89,14 +89,14 @@ export class PlanningController {
   async runMrp(@Req() req: FastifyRequest & { user: AuthUser }) {
     try {
       const items = await this.prisma.item.findMany({
-        where: { tenantId: req.user.tenantId, isActive: true },
+        where: { tenantId: req.user.tenantId!, isActive: true },
         include: { stockBalances: true }
       });
 
       // 1. Create MrpRun record first (Required for MrpSuggestion foreign key)
       const mrpRun = await this.prisma.mrpRun.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           runDate: new Date(),
           status: 'COMPLETED',
           notes: 'Global intelligent scan'
@@ -114,7 +114,7 @@ export class PlanningController {
           const qtySuggested = item.reorderQty ? Number(item.reorderQty) : (rop * 2);
           
           suggestionsData.push({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             mrpRunId: mrpRun.id,
             itemId: item.id,
             suggestionType: type,
@@ -131,7 +131,7 @@ export class PlanningController {
       // 2. Clean up old OPEN suggestions and save new ones within a transaction
       await this.prisma.$transaction([
         this.prisma.mrpSuggestion.deleteMany({ 
-          where: { tenantId: req.user.tenantId, status: 'OPEN' } 
+          where: { tenantId: req.user.tenantId!, status: 'OPEN' } 
         }),
         this.prisma.mrpSuggestion.createMany({ data: suggestionsData })
       ]);
@@ -150,7 +150,7 @@ export class PlanningController {
   @RequirePermissions('inventory.planning.run')
   async executeSuggestion(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const suggestion = await this.prisma.mrpSuggestion.findFirst({
-      where: { id, tenantId: req.user.tenantId }
+      where: { id, tenantId: req.user.tenantId! }
     });
 
     if (!suggestion) return { success: false, message: 'Suggestion not found' };
@@ -169,7 +169,7 @@ export class PlanningController {
   @RequirePermissions('inventory.planning.read')
   async getSuggestions(@Req() req: FastifyRequest & { user: AuthUser }) {
     const suggestions = await this.prisma.mrpSuggestion.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { item: true },
       orderBy: { dueDate: 'asc' }
     });

@@ -31,7 +31,7 @@ export class CostingController {
   @RequirePermissions('manufacturing.costing.read')
   async listSummaries(@Req() req: FastifyRequest & { user: AuthUser }) {
     const costs = await this.prisma.productionCost.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: {
         workOrder: {
           include: { finishedGood: true }
@@ -47,10 +47,10 @@ export class CostingController {
   @RequirePermissions('manufacturing.costing.create')
   async calculateCost(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CalculateCostDto) {
     const wo = await this.prisma.workOrder.findFirst({
-      where: { id: body.workOrderId, tenantId: req.user.tenantId },
+      where: { id: body.workOrderId, tenantId: req.user.tenantId! },
       include: {
         bom: {
-          include: { items: { include: { item: true } } }
+          include: { items: { include: { componentItem: true } } }
         },
         productionIssues: {
           include: { items: true }
@@ -66,15 +66,15 @@ export class CostingController {
     for (const issue of wo.productionIssues) {
       for (const item of issue.items) {
         // In a real ERP, we'd take the cost from the valuation layer or stock ledger
-        // For simulation, we'll assume unitCost is stored or use a fallback
-        actualMaterialCost += Number(item.qtyIssued) * (Number(item.unitCost) || 1000);
+        // For simulation, we'll assume costPrice is stored or use a fallback
+        actualMaterialCost += Number(item.qty) * (Number(item.costPrice) || 1000);
       }
     }
 
     // 2. Calculate Actual Labor Cost
     let totalLaborHours = 0;
     wo.shopFloorLogs.forEach(log => {
-      totalLaborHours += Number(log.actualLaborHours || 0);
+      totalLaborHours += Number(log.laborHours || 0);
     });
     const laborRate = 75000; // IDR per hour simulation
     const actualLaborCost = totalLaborHours * laborRate;
@@ -100,7 +100,7 @@ export class CostingController {
     const costRecord = await this.prisma.productionCost.upsert({
       where: {
         tenantId_workOrderId_period: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           workOrderId: wo.id,
           period: body.period
         }
@@ -116,7 +116,7 @@ export class CostingController {
         calculatedAt: new Date()
       },
       create: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         workOrderId: wo.id,
         period: body.period,
         materialCost: actualMaterialCost,
@@ -133,10 +133,10 @@ export class CostingController {
     await this.prisma.productionCostDetail.deleteMany({ where: { productionCostId: costRecord.id } });
     await this.prisma.productionCostDetail.createMany({
       data: [
-        { tenantId: req.user.tenantId, productionCostId: costRecord.id, costCategory: 'MATERIAL', name: 'Raw Material Consumption', actualAmount: actualMaterialCost, standardAmount: standardMaterialCost, variance: actualMaterialCost - standardMaterialCost },
-        { tenantId: req.user.tenantId, productionCostId: costRecord.id, costCategory: 'LABOR', name: 'Shop Floor Direct Labor', actualAmount: actualLaborCost, standardAmount: standardTotalCost * 0.1, variance: 0 },
-        { tenantId: req.user.tenantId, productionCostId: costRecord.id, costCategory: 'OVERHEAD_FIXED', name: 'Factory Rent & Utilities', actualAmount: fixedOverhead, standardAmount: fixedOverhead, variance: 0 },
-        { tenantId: req.user.tenantId, productionCostId: costRecord.id, costCategory: 'OVERHEAD_VARIABLE', name: 'Machine Maintenance & Power', actualAmount: variableOverhead, standardAmount: variableOverhead, variance: 0 },
+        { tenantId: req.user.tenantId!, productionCostId: costRecord.id, costCategory: 'MATERIAL', name: 'Raw Material Consumption', actualAmount: actualMaterialCost, standardAmount: standardMaterialCost, variance: actualMaterialCost - standardMaterialCost },
+        { tenantId: req.user.tenantId!, productionCostId: costRecord.id, costCategory: 'LABOR', name: 'Shop Floor Direct Labor', actualAmount: actualLaborCost, standardAmount: standardTotalCost * 0.1, variance: 0 },
+        { tenantId: req.user.tenantId!, productionCostId: costRecord.id, costCategory: 'OVERHEAD_FIXED', name: 'Factory Rent & Utilities', actualAmount: fixedOverhead, standardAmount: fixedOverhead, variance: 0 },
+        { tenantId: req.user.tenantId!, productionCostId: costRecord.id, costCategory: 'OVERHEAD_VARIABLE', name: 'Machine Maintenance & Power', actualAmount: variableOverhead, standardAmount: variableOverhead, variance: 0 },
       ]
     });
 
@@ -147,7 +147,7 @@ export class CostingController {
   @RequirePermissions('manufacturing.costing.update')
   async finalizeCost(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: FinalizeCostDto) {
     const cost = await this.prisma.productionCost.findFirst({
-      where: { id: body.costId, tenantId: req.user.tenantId },
+      where: { id: body.costId, tenantId: req.user.tenantId! },
       include: { workOrder: true }
     });
     if (!cost) throw new NotFoundException('Cost record not found');
@@ -157,7 +157,7 @@ export class CostingController {
       const entryNo = `JV-COST-${Date.now()}`;
       const journal = await tx.journalEntry.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           entryNo,
           entryDate: new Date(),
           description: `Manufacturing Cost Settlement for WO ${cost.workOrder.code}`,
@@ -167,7 +167,7 @@ export class CostingController {
           lines: {
             create: [
               {
-                tenantId: req.user.tenantId,
+                tenantId: req.user.tenantId!,
                 lineNo: 1,
                 accountCode: '1-1330-00', // Persediaan Barang Jadi
                 debit: cost.totalCost,
@@ -175,7 +175,7 @@ export class CostingController {
                 description: 'Finished Goods Valuation'
               },
               {
-                tenantId: req.user.tenantId,
+                tenantId: req.user.tenantId!,
                 lineNo: 2,
                 accountCode: '1-1320-00', // Persediaan Barang Dalam Proses
                 debit: 0,

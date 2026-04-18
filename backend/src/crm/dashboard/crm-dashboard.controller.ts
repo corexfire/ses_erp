@@ -15,7 +15,7 @@ export class CrmDashboardController {
   @Get()
   @RequirePermissions('crm.dashboard.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }) {
-    const tenantId = req.user.tenantId;
+    const tenantId = req.user.tenantId!;
     const now = new Date();
     const startToday = new Date(
       now.getFullYear(),

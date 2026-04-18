@@ -19,7 +19,7 @@ export class CostCenterAllocationController {
   @RequirePermissions('finance.costCenterAllocation.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('periodId') periodId?: string) {
     const user = req.user;
-    const where: any = user.isSuperAdmin ? {} : { tenantId: user.tenantId };
+    const where: any = user.isSuperAdmin ? {} : { tenantId: user.tenantId! };
     if (periodId) where.periodId = periodId;
 
     const allocations = await this.prisma.costCenterAllocation.findMany({
@@ -34,7 +34,7 @@ export class CostCenterAllocationController {
   @RequirePermissions('finance.costCenterAllocation.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const user = req.user;
-    const where = user.isSuperAdmin ? { id } : { id, tenantId: user.tenantId };
+    const where = user.isSuperAdmin ? { id } : { id, tenantId: user.tenantId! };
     const allocation = await this.prisma.costCenterAllocation.findFirst({
       where,
       include: { costCenter: true },
@@ -50,7 +50,7 @@ export class CostCenterAllocationController {
     
     const allocation = await this.prisma.costCenterAllocation.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         periodId: body.periodId,
         costCenterId: body.costCenterId,
         accountCode: body.accountCode,
@@ -61,17 +61,17 @@ export class CostCenterAllocationController {
       include: { costCenter: true },
     });
 
-    const journalCount = await this.prisma.journalEntry.count({ where: { tenantId: user.tenantId } });
+    const journalCount = await this.prisma.journalEntry.count({ where: { tenantId: user.tenantId! } });
     const entryNo = `JE-CCA-${String(journalCount + 1).padStart(6, '0')}`;
     const expenseCode = body.accountCode || '5-3100-00';
     const allocCode = await this.prisma.coaAccount.findFirst({
-      where: { tenantId: user.tenantId, code: '2-1210-00' }
+      where: { tenantId: user.tenantId!, code: '2-1210-00' }
     });
     const allocAccountCode = allocCode?.code || '2-1210-00';
 
     await this.prisma.journalEntry.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         entryNo,
         entryDate: new Date(),
         description: `Cost Center Allocation - ${cc?.code || 'CC'} (${body.description || 'Alokasi Biaya'})`,
@@ -83,25 +83,23 @@ export class CostCenterAllocationController {
         lines: {
           create: [
             {
-              tenantId: user.tenantId,
+              tenantId: user.tenantId!,
               lineNo: 1,
               accountCode: expenseCode,
               description: `Beban ${cc?.code || ''}`,
               debit: body.allocatedAmount,
               credit: 0,
               costCenterId: body.costCenterId,
-              referenceType: 'CostCenterAllocation',
               referenceId: allocation.id
             },
             {
-              tenantId: user.tenantId,
+              tenantId: user.tenantId!,
               lineNo: 2,
               accountCode: allocAccountCode,
               description: `Alokasi ${cc?.code || ''}`,
               debit: 0,
               credit: body.allocatedAmount,
               costCenterId: body.costCenterId,
-              referenceType: 'CostCenterAllocation',
               referenceId: allocation.id
             }
           ]
@@ -109,14 +107,14 @@ export class CostCenterAllocationController {
       }
     });
 
-    await this.audit.log({ tenantId: user.tenantId, actorUserId: user.id, action: 'CREATE', entity: 'CostCenterAllocation', entityId: allocation.id, metadata: { allocation } });
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'CREATE', entity: 'CostCenterAllocation', entityId: allocation.id, metadata: { allocation } });
     return { allocation };
   }
 
   @Post(':id')
   @RequirePermissions('finance.costCenterAllocation.update')
   async update(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { allocatedAmount?: number; accountCode?: string; referenceNo?: string; description?: string }) {
-    const allocation = await this.prisma.costCenterAllocation.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const allocation = await this.prisma.costCenterAllocation.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!allocation) throw new Error('Allocation not found');
 
     const updated = await this.prisma.costCenterAllocation.update({
@@ -129,15 +127,15 @@ export class CostCenterAllocationController {
       },
       include: { costCenter: true },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'UPDATE', entity: 'CostCenterAllocation', entityId: id, metadata: { allocation: updated } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'UPDATE', entity: 'CostCenterAllocation', entityId: id, metadata: { allocation: updated } });
     return { allocation: updated };
   }
 
   @Post(':id/delete')
   @RequirePermissions('finance.costCenterAllocation.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    await this.prisma.costCenterAllocation.deleteMany({ where: { id, tenantId: req.user.tenantId } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'DELETE', entity: 'CostCenterAllocation', entityId: id, metadata: { id } });
+    await this.prisma.costCenterAllocation.deleteMany({ where: { id, tenantId: req.user.tenantId! } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'DELETE', entity: 'CostCenterAllocation', entityId: id, metadata: { id } });
     return { success: true };
   }
 }

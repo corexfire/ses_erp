@@ -38,7 +38,6 @@ import Tab from 'primevue/tab';
 import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
 import RadioButton from 'primevue/radiobutton';
-import Dropdown from 'primevue/dropdown';
 import Checkbox from 'primevue/checkbox';
 import TreeTable from 'primevue/treetable';
 
@@ -80,7 +79,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component('TabPanels', TabPanels);
   nuxtApp.vueApp.component('TabPanel', TabPanel);
   nuxtApp.vueApp.component('RadioButton', RadioButton);
-  nuxtApp.vueApp.component('Dropdown', Dropdown);
   nuxtApp.vueApp.component('Checkbox', Checkbox);
   nuxtApp.vueApp.component('DatePicker', DatePicker);
   nuxtApp.vueApp.component('TreeTable', TreeTable);

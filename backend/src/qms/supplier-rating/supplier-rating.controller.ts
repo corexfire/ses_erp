@@ -14,13 +14,13 @@ export class SupplierRatingController {
   @Get()
   @RequirePermissions('qms.supplier_rating.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period: string) {
-    const list = await this.ratingService.findAll(req.user.tenantId, period || '2024-Q2');
+    const list = await this.ratingService.findAll(req.user.tenantId!, period || '2024-Q2');
     return { list };
   }
 
   @Post('calculate')
   @RequirePermissions('qms.supplier_rating.update')
   async calculate(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period: string) {
-    return this.ratingService.calculateRatings(req.user.tenantId, period || '2024-Q2');
+    return this.ratingService.calculateRatings(req.user.tenantId!, period || '2024-Q2');
   }
 }

@@ -40,7 +40,7 @@ export class PricingController {
   ) {
     const priceLists = await this.prisma.priceList.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -64,7 +64,7 @@ export class PricingController {
     @Param('id') id: string,
   ) {
     const priceList = await this.prisma.priceList.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { items: { orderBy: [{ effectiveDate: 'desc' }] } },
     });
     if (!priceList) throw new NotFoundException('Price list not found');
@@ -79,12 +79,12 @@ export class PricingController {
   ) {
     const priceList = await this.prisma.$transaction(async (tx) => {
       const pl = await tx.priceList.create({
-        data: { tenantId: req.user.tenantId, code: body.code, name: body.name },
+        data: { tenantId: req.user.tenantId!, code: body.code, name: body.name },
       });
       if (body.items && body.items.length > 0) {
         await tx.priceListItem.createMany({
           data: body.items.map((it) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             priceListId: pl.id,
             itemCode: it.itemCode,
             uomCode: it.uomCode,
@@ -99,7 +99,7 @@ export class PricingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'PriceList',
@@ -117,7 +117,7 @@ export class PricingController {
     @Body() body: UpdatePriceListDto,
   ) {
     const exists = await this.prisma.priceList.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Price list not found');
@@ -129,12 +129,12 @@ export class PricingController {
       });
       if (body.items) {
         await tx.priceListItem.deleteMany({
-          where: { tenantId: req.user.tenantId, priceListId: id },
+          where: { tenantId: req.user.tenantId!, priceListId: id },
         });
         if (body.items.length > 0) {
           await tx.priceListItem.createMany({
             data: body.items.map((it) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               priceListId: id,
               itemCode: it.itemCode,
               uomCode: it.uomCode,
@@ -150,7 +150,7 @@ export class PricingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'PriceList',
@@ -169,7 +169,7 @@ export class PricingController {
   ) {
     const priceRules = await this.prisma.priceRule.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(typeof isActive === 'string'
           ? { isActive: isActive === 'true' }
           : {}),
@@ -202,7 +202,7 @@ export class PricingController {
     @Param('id') id: string,
   ) {
     const priceRule = await this.prisma.priceRule.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { customer: true },
     });
     if (!priceRule) throw new NotFoundException('Price rule not found');
@@ -217,7 +217,7 @@ export class PricingController {
   ) {
     if (body.customerId) {
       const customer = await this.prisma.customer.findFirst({
-        where: { id: body.customerId, tenantId: req.user.tenantId },
+        where: { id: body.customerId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!customer) throw new NotFoundException('Customer not found');
@@ -225,7 +225,7 @@ export class PricingController {
 
     const priceRule = await this.prisma.priceRule.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         priority: body.priority ? parseInt(body.priority, 10) : undefined,
@@ -240,7 +240,7 @@ export class PricingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'PriceRule',
@@ -258,14 +258,14 @@ export class PricingController {
     @Body() body: UpdatePriceRuleDto,
   ) {
     const exists = await this.prisma.priceRule.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Price rule not found');
 
     if (body.customerId) {
       const customer = await this.prisma.customer.findFirst({
-        where: { id: body.customerId, tenantId: req.user.tenantId },
+        where: { id: body.customerId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!customer) throw new NotFoundException('Customer not found');
@@ -289,7 +289,7 @@ export class PricingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'PriceRule',
@@ -306,7 +306,7 @@ export class PricingController {
     @Param('id') id: string,
   ) {
     const exists = await this.prisma.priceRule.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, isActive: true },
     });
     if (!exists) throw new NotFoundException('Price rule not found');
@@ -317,7 +317,7 @@ export class PricingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'PriceRule',
@@ -336,7 +336,7 @@ export class PricingController {
   ) {
     const discountRules = await this.prisma.discountRule.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(typeof isActive === 'string'
           ? { isActive: isActive === 'true' }
           : {}),
@@ -369,7 +369,7 @@ export class PricingController {
     @Param('id') id: string,
   ) {
     const discountRule = await this.prisma.discountRule.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { customer: true },
     });
     if (!discountRule) throw new NotFoundException('Discount rule not found');
@@ -384,7 +384,7 @@ export class PricingController {
   ) {
     if (body.customerId) {
       const customer = await this.prisma.customer.findFirst({
-        where: { id: body.customerId, tenantId: req.user.tenantId },
+        where: { id: body.customerId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!customer) throw new NotFoundException('Customer not found');
@@ -392,7 +392,7 @@ export class PricingController {
 
     const discountRule = await this.prisma.discountRule.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         priority: body.priority ? parseInt(body.priority, 10) : undefined,
@@ -407,7 +407,7 @@ export class PricingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'DiscountRule',
@@ -425,14 +425,14 @@ export class PricingController {
     @Body() body: UpdateDiscountRuleDto,
   ) {
     const exists = await this.prisma.discountRule.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Discount rule not found');
 
     if (body.customerId) {
       const customer = await this.prisma.customer.findFirst({
-        where: { id: body.customerId, tenantId: req.user.tenantId },
+        where: { id: body.customerId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!customer) throw new NotFoundException('Customer not found');
@@ -456,7 +456,7 @@ export class PricingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'DiscountRule',
@@ -473,7 +473,7 @@ export class PricingController {
     @Param('id') id: string,
   ) {
     const exists = await this.prisma.discountRule.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, isActive: true },
     });
     if (!exists) throw new NotFoundException('Discount rule not found');
@@ -484,7 +484,7 @@ export class PricingController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'DiscountRule',

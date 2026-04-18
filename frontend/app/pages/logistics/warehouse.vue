@@ -48,7 +48,7 @@
                 <i class="pi pi-search text-slate-400" />
                 <InputText v-model="q" placeholder="Cari Kode atau Nama..." class="p-inputtext-sm rounded-xl border-slate-200 w-64" />
              </div>
-             <Dropdown v-model="typeFilter" :options="typeOptions" optionLabel="label" optionValue="value" placeholder="Tipe Gudang" class="p-dropdown-sm rounded-xl text-[10px] font-bold uppercase w-48" />
+             <Select v-model="typeFilter" :options="typeOptions" optionLabel="label" optionValue="value" placeholder="Tipe Gudang" class="p-select-sm rounded-xl text-[10px] font-bold uppercase w-48" />
           </div>
        </div>
 
@@ -131,7 +131,7 @@
                    </div>
                    <div class="space-y-1">
                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tipe Fasilitas</label>
-                      <Dropdown v-model="form.type" :options="typeOptions" optionLabel="label" optionValue="value" class="w-full rounded-xl" />
+                      <Select v-model="form.type" :options="typeOptions" optionLabel="label" optionValue="value" class="w-full rounded-xl" />
                    </div>
                    <div class="col-span-2 space-y-1">
                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Lengkap Gudang</label>
@@ -139,7 +139,7 @@
                    </div>
                    <div class="space-y-1">
                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pengelola (Manager)</label>
-                      <Dropdown v-model="form.managerId" :options="users" optionLabel="name" optionValue="id" filter placeholder="Pilih Manager" class="w-full rounded-xl" />
+                      <Select v-model="form.managerId" :options="users" optionLabel="name" optionValue="id" filter placeholder="Pilih Manager" class="w-full rounded-xl" />
                    </div>
                    <div class="space-y-1">
                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kontak Telepon</label>

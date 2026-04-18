@@ -52,7 +52,7 @@ export class RfqsController {
   ) {
     const rfqs = await this.prisma.rfq.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(isProcurementDocStatus(status) ? { status } : {}),
         ...(q ? { OR: [{ code: { contains: q, mode: 'insensitive' } }] } : {}),
       },
@@ -73,7 +73,7 @@ export class RfqsController {
     @Param('id') id: string,
   ) {
     const rfq = await this.prisma.rfq.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         vendors: { include: { supplier: true } },
         items: { orderBy: [{ lineNo: 'asc' }] },
@@ -95,7 +95,7 @@ export class RfqsController {
       .filter(Boolean);
     if (supplierIds.length > 0) {
       const count = await this.prisma.supplier.count({
-        where: { tenantId: req.user.tenantId, id: { in: supplierIds } },
+        where: { tenantId: req.user.tenantId!, id: { in: supplierIds } },
       });
       if (count !== supplierIds.length)
         throw new NotFoundException('Supplier not found');
@@ -104,7 +104,7 @@ export class RfqsController {
     const rfq = await this.prisma.$transaction(async (tx) => {
       const r = await tx.rfq.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           issueDate: new Date(body.issueDate),
           notes: body.notes,
@@ -114,7 +114,7 @@ export class RfqsController {
       if (supplierIds.length > 0) {
         await tx.rfqVendor.createMany({
           data: supplierIds.map((supplierId) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             rfqId: r.id,
             supplierId,
           })),
@@ -124,7 +124,7 @@ export class RfqsController {
       if (body.items.length > 0) {
         await tx.rfqItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             rfqId: r.id,
             lineNo: idx + 1,
             description: it.description,
@@ -138,7 +138,7 @@ export class RfqsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Rfq',
@@ -156,7 +156,7 @@ export class RfqsController {
     @Body() body: UpdateRfqDto,
   ) {
     const exists = await this.prisma.rfq.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('RFQ not found');
@@ -166,7 +166,7 @@ export class RfqsController {
       : null;
     if (supplierIds && supplierIds.length > 0) {
       const count = await this.prisma.supplier.count({
-        where: { tenantId: req.user.tenantId, id: { in: supplierIds } },
+        where: { tenantId: req.user.tenantId!, id: { in: supplierIds } },
       });
       if (count !== supplierIds.length)
         throw new NotFoundException('Supplier not found');
@@ -183,12 +183,12 @@ export class RfqsController {
 
       if (supplierIds) {
         await tx.rfqVendor.deleteMany({
-          where: { tenantId: req.user.tenantId, rfqId: id },
+          where: { tenantId: req.user.tenantId!, rfqId: id },
         });
         if (supplierIds.length > 0) {
           await tx.rfqVendor.createMany({
             data: supplierIds.map((supplierId) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               rfqId: id,
               supplierId,
             })),
@@ -198,12 +198,12 @@ export class RfqsController {
 
       if (body.items) {
         await tx.rfqItem.deleteMany({
-          where: { tenantId: req.user.tenantId, rfqId: id },
+          where: { tenantId: req.user.tenantId!, rfqId: id },
         });
         if (body.items.length > 0) {
           await tx.rfqItem.createMany({
             data: body.items.map((it, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               rfqId: id,
               lineNo: idx + 1,
               description: it.description,
@@ -218,7 +218,7 @@ export class RfqsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'Rfq',

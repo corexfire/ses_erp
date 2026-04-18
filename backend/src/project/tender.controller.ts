@@ -24,7 +24,7 @@ export class TenderController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Query('status') status?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (status) where.status = status;
 
     const tenders = await this.prisma.tender.findMany({
@@ -44,7 +44,7 @@ export class TenderController {
   ) {
     const tender = await this.prisma.tender.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         title: body.title,
         projectId: body.projectId,
         description: body.description,
@@ -62,7 +62,7 @@ export class TenderController {
     @Req() req: FastifyRequest & { user: AuthUser },
   ) {
     const tender = await this.prisma.tender.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return tender;
   }

@@ -31,7 +31,7 @@ export class RentalContractsController {
   async findAll(@Req() req: FastifyRequest, @Query('search') search?: string, @Query('status') status?: string) {
     const user = req.user as AuthUser;
     
-    const where: any = user.isSuperAdmin ? {} : { tenantId: user.tenantId };
+    const where: any = user.isSuperAdmin ? {} : { tenantId: user.tenantId! };
     
     if (search) {
       where.OR = [
@@ -55,11 +55,11 @@ export class RentalContractsController {
     });
     
     // Summary logic for dashboards
-    const summaryWhere = user.isSuperAdmin ? { status: 'ACTIVE' } : { tenantId: user.tenantId, status: 'ACTIVE' };
+    const summaryWhere = user.isSuperAdmin ? { status: 'ACTIVE' } : { tenantId: user.tenantId!, status: 'ACTIVE' };
     const summary = {
-       active: await this.prisma.rentalContract.count({ where: user.isSuperAdmin ? { status: 'ACTIVE' } : { tenantId: user.tenantId, status: 'ACTIVE' } }),
-       completed: await this.prisma.rentalContract.count({ where: user.isSuperAdmin ? { status: 'COMPLETED' } : { tenantId: user.tenantId, status: 'COMPLETED' } }),
-       terminated: await this.prisma.rentalContract.count({ where: user.isSuperAdmin ? { status: 'TERMINATED' } : { tenantId: user.tenantId, status: 'TERMINATED' } })
+       active: await this.prisma.rentalContract.count({ where: user.isSuperAdmin ? { status: 'ACTIVE' } : { tenantId: user.tenantId!, status: 'ACTIVE' } }),
+       completed: await this.prisma.rentalContract.count({ where: user.isSuperAdmin ? { status: 'COMPLETED' } : { tenantId: user.tenantId!, status: 'COMPLETED' } }),
+       terminated: await this.prisma.rentalContract.count({ where: user.isSuperAdmin ? { status: 'TERMINATED' } : { tenantId: user.tenantId!, status: 'TERMINATED' } })
     };
 
     return { data: contracts, summary };
@@ -74,7 +74,7 @@ export class RentalContractsController {
 
     const contract = await this.prisma.rentalContract.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         contractNo,
         customerId: body.customerId,
         assetId: body.assetId || null,
@@ -89,15 +89,7 @@ export class RentalContractsController {
       },
     });
 
-    await this.audit.log(
-      user.tenantId,
-      user.id,
-      'CREATE',
-      'RentalContract',
-      contract.id,
-      null,
-      contract,
-    );
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'CREATE', entity: 'RentalContract', entityId: contract.id,  });
 
     return { message: 'Rental Contract created successfully', data: contract };
   }
@@ -113,7 +105,7 @@ export class RentalContractsController {
       where: { id },
     });
 
-    if (!existing || existing.tenantId !== user.tenantId) {
+    if (!existing || existing.tenantId !== user.tenantId!) {
       throw new NotFoundException('Contract not found');
     }
 
@@ -134,15 +126,7 @@ export class RentalContractsController {
       data,
     });
 
-    await this.audit.log(
-      user.tenantId,
-      user.id,
-      'UPDATE',
-      'RentalContract',
-      id,
-      existing,
-      updated,
-    );
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'UPDATE', entity: 'RentalContract', entityId: id, metadata: existing });
 
     return { message: 'Rental Contract updated successfully', data: updated };
   }
@@ -151,7 +135,7 @@ export class RentalContractsController {
   async getAssets(@Req() req: FastifyRequest) {
     const user = req.user as AuthUser;
     const assets = await this.prisma.fixedAsset.findMany({
-      where: { tenantId: user.tenantId },
+      where: { tenantId: user.tenantId! },
       select: { id: true, assetNo: true }
     });
     return { data: assets };

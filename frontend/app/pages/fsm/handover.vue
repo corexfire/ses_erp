@@ -400,11 +400,11 @@ const formatDate = (date) => {
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer</label>
-            <Dropdown v-model="handover.customerId" :options="customerOptions" optionLabel="label" optionValue="value" placeholder="Pilih Customer" class="!rounded-xl !bg-slate-50 !border-slate-100" />
+            <Select v-model="handover.customerId" :options="customerOptions" optionLabel="label" optionValue="value" placeholder="Pilih Customer" class="!rounded-xl !bg-slate-50 !border-slate-100" />
           </div>
           <div class="flex flex-col gap-2">
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Service Order (Referensi)</label>
-            <Dropdown v-model="handover.serviceOrderId" :options="serviceOrderOptions" optionLabel="label" optionValue="value" placeholder="Pilih Referensi WO" class="!rounded-xl !bg-slate-50 !border-slate-100" />
+            <Select v-model="handover.serviceOrderId" :options="serviceOrderOptions" optionLabel="label" optionValue="value" placeholder="Pilih Referensi WO" class="!rounded-xl !bg-slate-50 !border-slate-100" />
           </div>
           <div class="grid grid-cols-2 gap-4">
              <div class="flex flex-col gap-2">
@@ -489,12 +489,12 @@ const formatDate = (date) => {
   font-size: 1.25rem !important;
 }
 
-.p-inputtext, .p-dropdown {
+.p-inputtext, .p-select {
   font-size: 12px !important;
   padding: 0.8rem 1rem !important;
 }
 
-.p-dropdown .p-dropdown-label {
+.p-select .p-select-label {
   font-weight: 700 !important;
   color: #1e293b !important;
 }

@@ -10,7 +10,8 @@ import {
   Activity,
   ArrowRight,
   ShieldCheck,
-  Radar
+  Radar,
+  LayoutGrid
 } from 'lucide-vue-next'
 
 const risks = ref([

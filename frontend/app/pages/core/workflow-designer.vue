@@ -110,7 +110,7 @@
                 </div>
                 <div class="space-y-1">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Module Key</label>
-                   <Dropdown v-model="form.moduleKey" :options="moduleOptions" placeholder="Select Module" class="w-full rounded-xl text-xs font-bold" />
+                   <Select v-model="form.moduleKey" :options="moduleOptions" placeholder="Select Module" class="w-full rounded-xl text-xs font-bold" />
                 </div>
                 <div class="space-y-1">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Document Type</label>
@@ -145,7 +145,7 @@
                       </div>
                       <div class="col-span-5 space-y-1">
                          <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Target Role (Approver)</label>
-                         <Dropdown v-model="step.roleId" :options="roles" optionLabel="name" optionValue="id" placeholder="Select Authority" class="w-full rounded-xl text-xs font-bold" />
+                         <Select v-model="step.roleId" :options="roles" optionLabel="name" optionValue="id" placeholder="Select Authority" class="w-full rounded-xl text-xs font-bold" />
                       </div>
                       <div class="col-span-2 space-y-1">
                          <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">SLA (Hours)</label>
@@ -342,7 +342,7 @@ onMounted(load);
   padding: 0 2.5rem 2rem !important;
 }
 
-:deep(.p-dropdown), :deep(.p-inputtext), :deep(.p-inputnumber-input) {
+:deep(.p-select), :deep(.p-inputtext), :deep(.p-inputnumber-input) {
     @apply border-slate-200 focus:border-indigo-400 focus:ring-indigo-100 placeholder:text-slate-300;
 }
 

@@ -1,121 +1,153 @@
 <template>
-  <div class="space-y-6 h-[calc(100vh-10rem)] flex flex-col">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm border-l-4 border-l-indigo-600 shrink-0">
-      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <div>
-          <div class="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
-            <i class="pi pi-filter text-indigo-600"></i> Sales Pipeline
+  <div class="space-y-6 min-h-screen flex flex-col pb-8">
+    <!-- Header (Premium CRM Style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-indigo-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">CRM Management</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-indigo-600">Sales Pipeline</span>
           </div>
-          <div class="mt-1 text-sm text-slate-500 font-medium">
-            Visualisasi Kanban untuk mengelola transaksi Anda di setiap tahap. <b>Geser (Drag & Drop)</b> kartu untuk mengubah status.
-          </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">Pipeline <span class="text-indigo-600 italic">Visualisasi</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-xl">Geser (Drag & Drop) kartu untuk mengubah status transaksi di setiap tahap penjualan.</p>
         </div>
         <div class="flex items-center gap-3">
-          <InputText v-model="q" placeholder="Cari deal atau kode..." class="w-64 text-sm h-10" :disabled="!canRead" />
-          <Button icon="pi pi-search" severity="secondary" :disabled="loading || !canRead" @click="load" class="h-10 w-10 p-0 shadow-sm" />
-          <Button icon="pi pi-refresh" severity="secondary" :disabled="loading || !canRead" @click="load" class="h-10 w-10 p-0 shadow-sm" />
-        </div>
-      </div>
-
-      <!-- Quick Metrics Pipeline -->
-      <div class="mt-4 pt-4 border-t flex gap-8 items-center overflow-x-auto hide-scrollbar">
-        <div>
-          <div class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Total Pipeline</div>
-          <div class="text-xl font-black text-indigo-700 mt-1">{{ fmtRpScale(totalValue) }}</div>
-        </div>
-        <div class="w-px h-8 bg-slate-200"></div>
-        <div>
-           <div class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Active Deals</div>
-           <div class="text-lg font-bold text-slate-700 mt-1">{{ activeDeals }} Deals</div>
-        </div>
-        <div class="w-px h-8 bg-slate-200"></div>
-        <div v-for="c in columns" :key="c.stage" class="whitespace-nowrap">
-          <div class="text-[10px] font-black uppercase tracking-widest" :style="{ color: stageMeta(c.stage).color }">{{ c.title }}</div>
-          <div class="text-sm font-bold text-slate-700 mt-1">{{ fmtRpScale(c.sum) }} <span class="text-xs text-slate-400">({{ c.items.length }})</span></div>
+          <div class="relative group">
+            <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <InputText v-model="q" placeholder="Cari deal atau kode..." class="w-72 h-12 pl-11 rounded-2xl border-slate-200 bg-slate-50 focus:bg-white transition-all text-sm font-bold shadow-inner" :disabled="!canRead" />
+          </div>
+          <Button icon="pi pi-refresh" :loading="loading" class="p-button-rounded h-12 w-12 bg-white border-slate-200 text-slate-600 shadow-sm hover:text-indigo-600 transition-all active:scale-95" @click="load" />
         </div>
       </div>
     </div>
 
-    <div v-if="!canRead" class="mt-4 rounded-xl border border-dashed bg-slate-50 p-12 text-center text-slate-500 flex-1 flex flex-col items-center justify-center">
-      <i class="pi pi-lock text-4xl mb-3 text-slate-400"></i>
-      Anda tidak memiliki izin untuk melihat Pipeline Penjualan.
+    <div v-if="!canRead" class="mt-4 rounded-xl border border-dashed bg-slate-50 p-24 text-center text-slate-500 flex flex-col items-center justify-center">
+      <i class="pi pi-lock text-5xl mb-4 text-slate-300"></i>
+      <div class="text-lg font-black uppercase tracking-widest">Akses Terbatas</div>
+      <p class="mt-2 text-sm font-medium">Anda tidak memiliki izin untuk melihat Pipeline Penjualan.</p>
     </div>
 
-    <div v-if="success" class="bg-emerald-50 text-emerald-700 p-3 rounded-lg border border-emerald-200 text-sm font-bold flex items-center gap-2 animate-fade-in-up">
+    <!-- Quick Metrics Pipeline (Premium Banners) -->
+    <div v-if="canRead" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 overflow-x-auto pb-2 custom-scrollbar shrink-0">
+      <!-- Total Pipeline -->
+      <div class="p-5 rounded-2xl bg-indigo-900 text-white shadow-xl flex flex-col justify-between border border-indigo-800 transition-all hover:bg-indigo-950 group min-w-[200px]">
+        <div class="text-[10px] font-black uppercase text-indigo-300 tracking-[0.2em] mb-3 opacity-80">Total Pipeline</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-xl font-black text-white tracking-tighter font-mono">{{ fmtRpRp(totalValue) }}</h3>
+          <div class="p-2 bg-indigo-600 rounded-xl text-indigo-100 shadow-lg animate-pulse">
+            <i class="pi pi-chart-line text-xs"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Deals -->
+      <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-lg min-w-[160px]">
+        <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Active Deals</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ activeDeals }} <span class="text-xs text-slate-400 uppercase font-sans">Deals</span></h3>
+          <div class="p-2 bg-slate-50 text-slate-400 rounded-xl border border-slate-100"><i class="pi pi-briefcase text-xs"></i></div>
+        </div>
+      </div>
+
+      <!-- Stage Metrics -->
+      <div v-for="c in columns" :key="c.stage" class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-lg min-w-[180px]">
+        <div class="text-[10px] font-black uppercase tracking-[0.2em] mb-3" :style="{ color: stageMeta(c.stage).color }">{{ c.title }}</div>
+        <div class="flex items-end justify-between">
+           <div>
+              <h3 class="text-lg font-black text-slate-900 tracking-tighter font-mono">{{ fmtRpRp(c.sum) }}</h3>
+              <div class="text-[10px] font-bold text-slate-400 uppercase mt-0.5">{{ c.items.length }} Deals</div>
+           </div>
+           <div class="p-2 rounded-xl border opacity-20" :style="{ color: stageMeta(c.stage).color, backgroundColor: stageMeta(c.stage).color + '11', borderColor: stageMeta(c.stage).color }">
+              <i class="pi pi-folder-open text-xs"></i>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="success" class="p-3 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm font-bold flex items-center gap-2 animate-fade-in-up">
       <i class="pi pi-check-circle"></i> {{ success }}
     </div>
-    <div v-if="error" class="bg-rose-50 text-rose-700 p-3 rounded-lg border border-rose-200 text-sm font-bold flex items-center gap-2 animate-fade-in-up">
+    <div v-if="error" class="p-3 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-sm font-bold flex items-center gap-2 animate-fade-in-up">
       <i class="pi pi-exclamation-triangle"></i> {{ error }}
     </div>
 
-    <!-- KANBAN BOARD -->
-    <div v-if="canRead" class="flex-1 overflow-x-auto overflow-y-hidden rounded-xl border bg-slate-100 shadow-inner flex relative">
-      <div class="flex gap-4 p-4 min-w-max h-full">
+    <!-- KANBAN BOARD (Premium Style) -->
+    <div v-if="canRead" class="h-[calc(100vh-22rem)] min-h-[500px] overflow-x-auto overflow-y-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-inner flex relative">
+      <div class="flex gap-6 p-6 min-w-max h-full">
 
         <!-- KANBAN COLUMN -->
-        <div v-for="col in columns" :key="col.stage" class="w-80 flex flex-col h-full shrink-0"
+        <div v-for="col in columns" :key="col.stage" class="w-[340px] flex flex-col h-full shrink-0 group/col"
              @dragover.prevent="e => onDragOver(e, col.stage)"
              @drop="e => onDrop(e, col.stage)"
              @dragenter.prevent="e => onDragEnter(e, col.stage)"
              @dragleave.prevent="e => onDragLeave(e)"
-             :class="{ 'opacity-75': draggingStage === col.stage, 'ring-2 ring-indigo-400 bg-indigo-50/50 rounded-xl': dropTargetStage === col.stage }">
+             :class="{ 'opacity-75': draggingStage === col.stage, 'ring-2 ring-indigo-400 bg-indigo-50/50 rounded-2xl': dropTargetStage === col.stage }">
           
           <!-- Column Header -->
-          <div class="rounded-t-xl border-t-4 bg-white p-3 shadow-sm shrink-0 border-x border-b border-b-slate-200"
-               :style="{ borderTopColor: stageMeta(col.stage).color }">
-            <div class="flex items-center justify-between">
-              <div class="font-black text-slate-700 text-sm tracking-wide">{{ col.title }}</div>
-              <div class="bg-slate-100 text-slate-600 text-xs font-bold px-2 py-0.5 rounded-full">{{ col.items.length }}</div>
+          <div class="rounded-2xl bg-white p-5 shadow-sm shrink-0 border border-slate-200 mb-4 transition-all group-hover/col:shadow-md"
+               :style="{ borderTop: `4px solid ${stageMeta(col.stage).color}` }">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">{{ col.title }}</h3>
+              <div class="bg-slate-100 text-slate-600 text-[10px] font-black px-2.5 py-1 rounded-full">{{ col.items.length }}</div>
             </div>
-            <div class="text-xs font-black mt-1" :style="{ color: stageMeta(col.stage).color }">{{ fmtRpScale(col.sum) }}</div>
+            <div class="text-sm font-black font-mono tracking-tighter" :style="{ color: stageMeta(col.stage).color }">{{ fmtRpRp(col.sum) }}</div>
           </div>
 
           <!-- Cards Container -->
-          <div class="flex-1 overflow-y-auto px-1 py-3 space-y-3 kanban-scroll relative">
-            <div v-if="loading && col.items.length === 0" class="animate-pulse bg-white p-4 rounded-xl border h-24"></div>
+          <div class="flex-1 overflow-y-auto px-1 space-y-4 kanban-scroll relative custom-scrollbar">
+            <div v-if="loading && col.items.length === 0" class="animate-pulse bg-white p-6 rounded-2xl border h-32"></div>
             
             <div v-for="o in col.items" :key="o.id" 
                  draggable="true" 
                  @dragstart="e => onDragStart(e, o)"
                  @dragend="onDragEnd"
-                 class="rounded-xl border bg-white p-4 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all cursor-grab active:cursor-grabbing group relative overflow-hidden"
+                 class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all cursor-grab active:cursor-grabbing group relative overflow-hidden active:scale-[0.98]"
                  :class="{ 'opacity-50 scale-95': draggingId === o.id }">
                  
               <!-- Decorator line on left -->
-              <div class="absolute left-0 top-0 bottom-0 w-1 opacity-0 group-hover:opacity-100 transition-opacity" :style="{ backgroundColor: stageMeta(col.stage).color }"></div>
+              <div class="absolute left-0 top-0 bottom-0 w-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300" :style="{ backgroundColor: stageMeta(col.stage).color }"></div>
 
-              <div class="flex items-start justify-between gap-2 mb-2">
-                <a class="text-[10px] font-black font-mono text-indigo-600 hover:text-indigo-800 hover:underline px-1.5 py-0.5 bg-indigo-50 rounded" :href="`/crm/opportunities/${o.id}`" @click.stop v-tooltip="'Buka Detail Deal'">
+              <div class="flex items-start justify-between gap-3 mb-4">
+                <a class="text-[10px] font-black font-mono text-indigo-600 hover:text-indigo-800 hover:underline px-2 py-1 bg-indigo-50 rounded-lg border border-indigo-100" :href="`/crm/opportunities/${o.id}`" @click.stop v-tooltip="'Buka Detail Deal'">
                   {{ o.code }}
                 </a>
-                <span class="text-[10px] font-bold text-slate-400" v-if="o.closeDate" :class="isPast(o.closeDate) && col.stage !== 'CLOSED_WON' && col.stage !== 'CLOSED_LOST' ? 'text-rose-500 font-black' : ''">
-                  <i class="pi pi-clock text-[9px]"></i> {{ fmtDateShort(o.closeDate) }}
+                <span class="text-[9px] font-black px-2 py-0.5 rounded-lg uppercase tracking-wider" :class="isPast(o.closeDate) && col.stage !== 'CLOSED_WON' && col.stage !== 'CLOSED_LOST' ? 'bg-rose-50 text-rose-600 border border-rose-100 animate-pulse' : 'bg-slate-50 text-slate-400 border border-slate-100'">
+                  <i class="pi pi-clock text-[8px] mr-1"></i> {{ fmtDateShort(o.closeDate) }}
                 </span>
               </div>
               
-              <div class="font-bold text-slate-800 text-sm leading-snug line-clamp-2 mb-3">{{ o.name }}</div>
+              <div class="font-black text-slate-900 text-[15px] leading-snug line-clamp-2 mb-4 uppercase tracking-tight group-hover:text-indigo-600 transition-colors">{{ o.name }}</div>
               
-              <div class="flex items-center gap-1.5 text-[11px] text-slate-600 mb-3 truncate font-medium">
-                <i class="pi pi-building text-slate-400"></i> {{ o.customer?.name || o.customer?.code || o.lead?.name || o.lead?.code || 'No Client' }}
+              <div class="flex items-center gap-2 mb-5">
+                <div class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                  <i class="pi pi-building text-xs"></i>
+                </div>
+                <div class="text-[11px] font-black text-slate-500 uppercase tracking-tighter truncate w-48 group-hover:text-slate-700 transition-colors">
+                  {{ o.customer?.name || o.customer?.code || o.lead?.name || o.lead?.code || 'Unspecified Client' }}
+                </div>
               </div>
               
-              <div class="flex items-end justify-between border-t border-dashed pt-3 mt-auto">
-                <div class="flex gap-1">
-                   <div v-if="o.ownerUserId" class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[8px] font-black text-slate-600" v-tooltip="'Owner'">ME</div>
+              <div class="flex items-center justify-between border-t border-slate-50 pt-4 mt-auto border-dashed group-hover:border-slate-100 transition-colors">
+                <div class="flex gap-1.5">
+                   <div v-if="o.ownerUserId" class="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-[9px] font-black text-slate-400 uppercase group-hover:bg-amber-50 group-hover:text-amber-600 group-hover:border-amber-100 transition-all" v-tooltip="'Account Manager'">ME</div>
                 </div>
-                <div class="text-sm font-black tracking-tight" :style="{ color: stageMeta(col.stage).color }">{{ fmtRpScale(o.expectedValue ?? 0) }}</div>
+                <div class="text-right">
+                  <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity">Expected Value</div>
+                  <div class="text-lg font-black font-mono tracking-tighter" :style="{ color: stageMeta(col.stage).color }">{{ fmtRpRp(o.expectedValue ?? 0) }}</div>
+                </div>
               </div>
               
               <!-- Saving Overlay -->
-              <div v-if="savingStageId === o.id" class="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
-                <i class="pi pi-spinner pi-spin text-indigo-600 text-2xl"></i>
+              <div v-if="savingStageId === o.id" class="absolute inset-0 bg-white/60 backdrop-blur-md flex items-center justify-center z-20">
+                <i class="pi pi-spinner pi-spin text-indigo-600 text-3xl"></i>
               </div>
             </div>
 
-            <div v-if="!loading && col.items.length === 0" class="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center text-slate-400 flex flex-col items-center">
-              <i class="pi pi-inbox text-2xl mb-2 opacity-50"></i>
-              <div class="text-xs font-medium">Sini Kosong</div>
+            <div v-if="!loading && col.items.length === 0" class="border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center text-slate-400 flex flex-col items-center justify-center bg-white/50">
+              <i class="pi pi-inbox text-4xl mb-4 opacity-20"></i>
+              <div class="text-xs font-black uppercase tracking-widest text-slate-300">Tahap Ini Kosong</div>
             </div>
             
             <!-- Drag Target placeholder -->
@@ -156,7 +188,7 @@ const draggingId = ref<string | null>(null);
 const draggingStage = ref<string | null>(null);
 const dropTargetStage = ref<string | null>(null);
 
-const fmtRpScale = (n: number|string|null|undefined) => {
+const fmtRpRp = (n: number|string|null|undefined) => {
   const v = Number(n || 0);
   if (v >= 1_000_000_000) return `Rp ${(v/1_000_000_000).toFixed(2)} M`;
   if (v >= 1_000_000) return `Rp ${(v/1_000_000).toFixed(1)} Jt`;
@@ -165,16 +197,17 @@ const fmtRpScale = (n: number|string|null|undefined) => {
 };
 
 const fmtDateShort = (iso: string) => {
+  if (!iso) return 'N/A';
   const d = new Date(iso);
   const map = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   return `${d.getDate()} ${map[d.getMonth()]}`;
 };
 
-const isPast = (iso: string) => new Date(iso) < new Date();
+const isPast = (iso: string) => iso && new Date(iso) < new Date();
 
 const stageMeta = (stage: string) => {
   const meta: any = {
-    'QUALIFICATION': { title: 'Qualification', color: '#8b5cf6' }, // Purple
+    'QUALIFICATION': { title: 'Qualification', color: '#6366f1' }, // Indigo
     'PROPOSAL': { title: 'Proposal', color: '#f59e0b' }, // Amber
     'NEGOTIATION': { title: 'Negotiation', color: '#3b82f6' }, // Blue
     'CLOSED_WON': { title: 'Closed Won', color: '#10b981' }, // Emerald
@@ -218,6 +251,7 @@ const onDragStart = (e: DragEvent, o: Opportunity) => {
   draggingStage.value = o.stage;
   if (e.dataTransfer) {
     e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.dropEffect = 'move';
     e.dataTransfer.setData('text/plain', o.id);
   }
 };
@@ -234,7 +268,7 @@ const onDrop = async (e: DragEvent, newStage: Opportunity['stage']) => {
   }
   
   const id = draggingId.value;
-  onDragEnd();
+  onDragEnd(); // Reset drop visual feedback immediately
   
   const obj = opportunities.value.find(o => o.id === id);
   if (!obj) return;
@@ -262,14 +296,34 @@ onMounted(load);
 </script>
 
 <style scoped>
-.animate-fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
 
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
 
-.kanban-scroll::-webkit-scrollbar { width: 4px; }
-.kanban-scroll::-webkit-scrollbar-track { background: transparent; }
-.kanban-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-.kanban-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+  background: #cbd5e1; 
+}
+
+.kanban-scroll {
+  scrollbar-gutter: stable;
+}
+
+:deep(.p-button-rounded) {
+  border-radius: 9999px !important;
+}
 </style>

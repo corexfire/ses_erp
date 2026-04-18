@@ -31,7 +31,7 @@ export class RentalBillingController {
   async findAll(@Req() req: FastifyRequest, @Query('search') search?: string, @Query('status') status?: string) {
     const user = req.user as AuthUser;
     
-    const where: any = user.isSuperAdmin ? {} : { tenantId: user.tenantId };
+    const where: any = user.isSuperAdmin ? {} : { tenantId: user.tenantId! };
     
     if (search) {
       where.OR = [
@@ -55,7 +55,7 @@ export class RentalBillingController {
     });
     
     // Summary logic for dashboards
-    const summaryWhere = user.isSuperAdmin ? {} : { tenantId: user.tenantId };
+    const summaryWhere = user.isSuperAdmin ? {} : { tenantId: user.tenantId! };
     const summaryAggr = await this.prisma.rentalBilling.groupBy({
        by: ['status'],
        where: summaryWhere,
@@ -82,13 +82,13 @@ export class RentalBillingController {
 
     // Must fetch customerId from the contract if not pushed directly (safety mechanism)
     const contract = await this.prisma.rentalContract.findUnique({ where: { id: body.contractId } });
-    if (!contract || contract.tenantId !== user.tenantId) {
+    if (!contract || contract.tenantId !== user.tenantId!) {
         throw new NotFoundException('Rental Contract not found or invalid.');
     }
 
     const billing = await this.prisma.rentalBilling.create({
       data: {
-        tenantId: user.tenantId,
+        tenantId: user.tenantId!,
         billingNo,
         contractId: body.contractId,
         customerId: contract.customerId,
@@ -103,15 +103,7 @@ export class RentalBillingController {
       },
     });
 
-    await this.audit.log(
-      user.tenantId,
-      user.id,
-      'CREATE',
-      'RentalBilling',
-      billing.id,
-      null,
-      billing,
-    );
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'CREATE', entity: 'RentalBilling', entityId: billing.id,  });
 
     return { message: 'Rental Invoice created successfully', data: billing };
   }
@@ -127,7 +119,7 @@ export class RentalBillingController {
       where: { id },
     });
 
-    if (!existing || existing.tenantId !== user.tenantId) {
+    if (!existing || existing.tenantId !== user.tenantId!) {
       throw new NotFoundException('Invoice not found');
     }
 
@@ -148,15 +140,7 @@ export class RentalBillingController {
       data,
     });
 
-    await this.audit.log(
-      user.tenantId,
-      user.id,
-      'UPDATE',
-      'RentalBilling',
-      id,
-      existing,
-      updated,
-    );
+    await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'UPDATE', entity: 'RentalBilling', entityId: id, metadata: existing });
 
     return { message: 'Invoice updated successfully', data: updated };
   }
@@ -164,7 +148,7 @@ export class RentalBillingController {
   @Get('contracts')
   async getContracts(@Req() req: FastifyRequest) {
     const user = req.user as AuthUser;
-    const where = user.isSuperAdmin ? { status: 'ACTIVE' } : { tenantId: user.tenantId, status: 'ACTIVE' };
+    const where = user.isSuperAdmin ? { status: 'ACTIVE' } : { tenantId: user.tenantId!, status: 'ACTIVE' };
     const items = await this.prisma.rentalContract.findMany({
       where,
       select: { id: true, contractNo: true, rentalRate: true, billingCycle: true }

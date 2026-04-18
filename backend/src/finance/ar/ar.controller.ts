@@ -15,7 +15,7 @@ export class ArController {
   @RequirePermissions('finance.ar.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
     const invoices = await this.prisma.customerInvoice.findMany({
-      where: { tenantId: req.user.tenantId, ...(status ? { status } : {}) },
+      where: { tenantId: req.user.tenantId!, ...(status ? { status } : {}) },
       include: { payments: true, lines: true },
       orderBy: [{ invoiceDate: 'desc' }],
       take: 200,
@@ -27,7 +27,7 @@ export class ArController {
   @RequirePermissions('finance.ar.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const invoice = await this.prisma.customerInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { payments: true, lines: { orderBy: [{ lineNo: 'asc' }] } },
     });
     return { invoice };
@@ -40,7 +40,7 @@ export class ArController {
 
     const invoice = await this.prisma.customerInvoice.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceNo: body.invoiceNo,
         customerCode: body.customerCode,
         invoiceDate: new Date(body.invoiceDate),
@@ -52,7 +52,7 @@ export class ArController {
         status: 'OPEN',
         lines: {
           create: body.lines.map((line, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             lineNo: idx + 1,
             description: line.description,
             qty: line.qty,
@@ -70,12 +70,12 @@ export class ArController {
   @Post(':id/payment')
   @RequirePermissions('finance.ar.payment')
   async addPayment(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { paymentDate: string; amount: number; reference?: string; notes?: string }) {
-    const invoice = await this.prisma.customerInvoice.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const invoice = await this.prisma.customerInvoice.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!invoice) throw new Error('Invoice not found');
 
     await this.prisma.customerInvoicePayment.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceId: id,
         paymentDate: new Date(body.paymentDate),
         amount: body.amount,
@@ -98,7 +98,7 @@ export class ArController {
   @RequirePermissions('finance.ar.read')
   async debtCollection(@Req() req: FastifyRequest & { user: AuthUser }) {
     const overdueInvoices = await this.prisma.customerInvoice.findMany({
-      where: { tenantId: req.user.tenantId, status: { in: ['OPEN', 'OVERDUE'] } },
+      where: { tenantId: req.user.tenantId!, status: { in: ['OPEN', 'OVERDUE'] } },
       include: { payments: true },
     });
 

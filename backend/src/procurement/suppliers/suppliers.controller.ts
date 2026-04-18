@@ -36,7 +36,7 @@ export class SuppliersController {
   ) {
     const suppliers = await this.prisma.supplier.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -60,7 +60,7 @@ export class SuppliersController {
     @Param('id') id: string,
   ) {
     const supplier = await this.prisma.supplier.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!supplier) throw new NotFoundException('Supplier not found');
     return { supplier };
@@ -74,7 +74,7 @@ export class SuppliersController {
   ) {
     const supplier = await this.prisma.supplier.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         email: body.email,
@@ -94,7 +94,7 @@ export class SuppliersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Supplier',
@@ -112,7 +112,7 @@ export class SuppliersController {
     @Body() body: UpdateSupplierDto,
   ) {
     const exists = await this.prisma.supplier.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Supplier not found');
@@ -138,7 +138,7 @@ export class SuppliersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'Supplier',
@@ -155,7 +155,7 @@ export class SuppliersController {
     @Param('id') id: string,
   ) {
     const exists = await this.prisma.supplier.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Supplier not found');
@@ -166,7 +166,7 @@ export class SuppliersController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'Supplier',

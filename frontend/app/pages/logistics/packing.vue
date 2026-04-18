@@ -48,7 +48,7 @@
                 <i class="pi pi-search text-slate-400 pl-4" />
                 <InputText v-model="q" placeholder="Cari Kode atau Tanda Kirim..." class="p-inputtext-sm rounded-xl border-slate-200 pl-10 w-64" />
              </div>
-             <Dropdown v-model="statusFilter" :options="statusOptions" optionLabel="label" optionValue="value" placeholder="Status Filter" class="p-dropdown-sm rounded-xl text-[10px] font-bold uppercase w-48" />
+             <Select v-model="statusFilter" :options="statusOptions" optionLabel="label" optionValue="value" placeholder="Status Filter" class="p-select-sm rounded-xl text-[10px] font-bold uppercase w-48" />
           </div>
        </div>
 
@@ -130,11 +130,11 @@
                 <div class="grid grid-cols-2 gap-6">
                    <div class="space-y-1">
                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Delivery Order (Ref)</label>
-                      <Dropdown v-model="form.deliveryOrderId" :options="deliveryOrders" optionLabel="label" optionValue="value" :disabled="!!editingId" class="w-full rounded-xl border-slate-200" placeholder="Pilih Order" />
+                      <Select v-model="form.deliveryOrderId" :options="deliveryOrders" optionLabel="label" optionValue="value" :disabled="!!editingId" class="w-full rounded-xl border-slate-200" placeholder="Pilih Order" />
                    </div>
                    <div class="space-y-1">
                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Carrier (Kurir)</label>
-                      <Dropdown v-model="form.carrierId" :options="carriers" optionLabel="name" optionValue="id" class="w-full rounded-xl" placeholder="Pilih Carrier" />
+                      <Select v-model="form.carrierId" :options="carriers" optionLabel="name" optionValue="id" class="w-full rounded-xl" placeholder="Pilih Carrier" />
                    </div>
                 </div>
 
@@ -164,7 +164,7 @@
                    </div>
                    <div class="space-y-1">
                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Warehouse (Gudang)</label>
-                      <Dropdown v-model="form.warehouseId" :options="warehouses" optionLabel="name" optionValue="id" class="w-full rounded-xl" />
+                      <Select v-model="form.warehouseId" :options="warehouses" optionLabel="name" optionValue="id" class="w-full rounded-xl" />
                    </div>
                 </div>
              </div>

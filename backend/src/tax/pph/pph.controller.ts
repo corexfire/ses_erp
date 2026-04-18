@@ -14,7 +14,7 @@ export class EBupotController {
   @Get()
   @RequirePermissions('tax.eBupot.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (period) {
       const [year, month] = period.split('-').map(Number);
       where.transDate = {
@@ -34,7 +34,7 @@ export class EBupotController {
   @RequirePermissions('tax.eBupot.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const withholding = await this.prisma.pphWithholding.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { withholding };
   }
@@ -46,7 +46,7 @@ export class EBupotController {
 
     const withholding = await this.prisma.pphWithholding.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         transNo: body.transNo,
         transDate: new Date(body.transDate),
         incomeType: body.incomeType,
@@ -65,7 +65,7 @@ export class EBupotController {
   @Post(':id/issue-bupot')
   @RequirePermissions('tax.eBupot.issue')
   async issueBupot(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { bupotNo: string; bupotDate: string }) {
-    const withholding = await this.prisma.pphWithholding.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const withholding = await this.prisma.pphWithholding.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!withholding) throw new Error('Withholding not found');
 
     const updated = await this.prisma.pphWithholding.update({
@@ -84,7 +84,7 @@ export class Pph21Controller {
   @Get()
   @RequirePermissions('tax.pph21.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string) {
-    const where: any = { tenantId: req.user.tenantId, incomeType: '21' };
+    const where: any = { tenantId: req.user.tenantId!, incomeType: '21' };
     if (period) {
       const [year, month] = period.split('-').map(Number);
       where.transDate = {
@@ -107,7 +107,7 @@ export class Pph21Controller {
 
     const withholding = await this.prisma.pphWithholding.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         transNo: body.transNo,
         transDate: new Date(body.transDate),
         incomeType: '21',
@@ -133,7 +133,7 @@ export class BuktiPotongController {
   @RequirePermissions('tax.buktiPotong.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('year') year?: string) {
     const where: any = { 
-      tenantId: req.user.tenantId, 
+      tenantId: req.user.tenantId!, 
       status: 'POSTED',
       incomeType: '21-A1' // Specialized annual type
     };
@@ -156,7 +156,7 @@ export class BuktiPotongController {
   @RequirePermissions('tax.buktiPotong.read')
   async print(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const withholding = await this.prisma.pphWithholding.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { withholding };
   }
@@ -171,7 +171,7 @@ export class IdBillingController {
   @RequirePermissions('tax.idBilling.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const billings = await this.prisma.idBilling.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: { createdAt: 'desc' },
     });
     return { billings };
@@ -182,7 +182,7 @@ export class IdBillingController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { billingNo: string; taxType: string; period: string; amount: number; dueDate: string }) {
     const billing = await this.prisma.idBilling.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         billingNo: body.billingNo,
         taxType: body.taxType,
         period: body.period,
@@ -197,7 +197,7 @@ export class IdBillingController {
   @Post(':id/paid')
   @RequirePermissions('tax.idBilling.paid')
   async markPaid(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const billing = await this.prisma.idBilling.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const billing = await this.prisma.idBilling.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!billing) throw new Error('Billing not found');
 
     const updated = await this.prisma.idBilling.update({

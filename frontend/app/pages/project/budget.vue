@@ -308,7 +308,7 @@ onMounted(fetchData);
              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-10 bg-white border border-slate-200 rounded-xl shadow-sm">
                 <div class="flex flex-col gap-3">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Target Proyek <span class="text-rose-500">*</span></label>
-                   <Dropdown v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" filter placeholder="Pilih Proyek Proyek..." class="w-full rounded-2xl border-slate-200" @change="fetchWbsTasks(form.projectId)" />
+                   <Select v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" filter placeholder="Pilih Proyek Proyek..." class="w-full rounded-2xl border-slate-200" @change="fetchWbsTasks(form.projectId)" />
                 </div>
                 <div class="flex flex-col gap-3">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Budget Document No <span class="text-rose-500">*</span></label>
@@ -441,11 +441,11 @@ onMounted(fetchData);
   overflow: hidden !important;
 }
 
-:deep(.p-inputtext), :deep(.p-dropdown), :deep(.p-textarea), :deep(.p-inputnumber-input), :deep(.p-select) {
+:deep(.p-inputtext), :deep(.p-select), :deep(.p-textarea), :deep(.p-inputnumber-input), :deep(.p-select) {
   @apply bg-slate-50/50 border-slate-200 focus:bg-white focus:border-indigo-400 focus:ring-0 transition-all !important;
 }
 
-:deep(.p-dropdown-panel), :deep(.p-select-panel) {
+:deep(.p-select-panel), :deep(.p-select-panel) {
   @apply rounded-2xl shadow-2xl border-slate-100 p-2;
 }
 </style>

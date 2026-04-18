@@ -20,7 +20,7 @@ export class CompanyProfileController {
   @RequirePermissions('core.company.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }) {
     const companyProfile = await this.prisma.companyProfile.findUnique({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
     });
     return { companyProfile };
   }
@@ -32,7 +32,7 @@ export class CompanyProfileController {
     @Body() body: UpsertCompanyProfileDto,
   ) {
     const companyProfile = await this.prisma.companyProfile.upsert({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       update: {
         legalName: body.legalName,
         tradeName: body.tradeName,
@@ -50,7 +50,7 @@ export class CompanyProfileController {
         companySize: body.companySize ?? 'KECIL',
       },
       create: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         legalName: body.legalName,
         tradeName: body.tradeName,
         npwp: body.npwp,
@@ -69,7 +69,7 @@ export class CompanyProfileController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'upsert',
       entity: 'CompanyProfile',

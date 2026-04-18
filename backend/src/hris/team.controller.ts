@@ -15,7 +15,7 @@ export class TeamController {
   async listMyTeams(@Req() req: FastifyRequest & { user: AuthUser }) {
     const memberships = await this.prisma.teamMember.findMany({
       where: { 
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         userId: req.user.id 
       },
       include: { team: true },
@@ -27,31 +27,31 @@ export class TeamController {
   @RequirePermissions('hris.team.read')
   async listAll(@Req() req: FastifyRequest & { user: AuthUser }) {
     const teams = await this.prisma.team.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { members: { include: { user: true } } },
     });
     return { data: teams };
   }
 
-  @Post()
-  @RequirePermissions('hris.team.create')
-  async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { name: string; description?: string }) {
-    const team = await this.prisma.team.create({
-      data: {
-        tenantId: req.user.tenantId,
-        name: body.name,
-        description: body.description,
-      },
-    });
-    return { data: team };
-  }
+   @Post()
+   @RequirePermissions('hris.team.create')
+   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { name: string; description?: string }) {
+     const team = await this.prisma.team.create({
+       data: {
+         tenantId: req.user.tenantId!,
+         name: body.name,
+         description: body.description ?? null,
+       },
+     });
+     return { data: team };
+   }
 
   @Post(':id/members')
   @RequirePermissions('hris.team.update')
   async addMember(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { userId: string; role?: string }) {
     const member = await this.prisma.teamMember.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         teamId: id,
         userId: body.userId,
         role: body.role || 'MEMBER',
@@ -64,7 +64,7 @@ export class TeamController {
   @RequirePermissions('hris.team.update')
   async update(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { name?: string; description?: string }) {
     const team = await this.prisma.team.update({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       data: body,
     });
     return { data: team };
@@ -74,7 +74,7 @@ export class TeamController {
   @RequirePermissions('hris.team.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     await this.prisma.team.delete({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { success: true };
   }
@@ -86,7 +86,7 @@ export class TeamController {
       where: { 
         id: memberId,
         teamId: teamId,
-        tenantId: req.user.tenantId 
+        tenantId: req.user.tenantId! 
       },
     });
     return { success: true };

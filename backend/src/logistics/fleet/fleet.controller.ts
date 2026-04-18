@@ -47,7 +47,7 @@ export class FleetController {
   ) {
     const vehicles = await this.prisma.fleetVehicle.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q
           ? {
               OR: [
@@ -72,7 +72,7 @@ export class FleetController {
     @Param('id') id: string,
   ) {
     const vehicle = await this.prisma.fleetVehicle.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { transporter: true, tripPlans: { take: 10, orderBy: { routeDate: 'desc' } } },
     });
     if (!vehicle) throw new NotFoundException('Vehicle not found');
@@ -87,18 +87,18 @@ export class FleetController {
   ) {
     if (body.transporterId) {
       const transporter = await this.prisma.transporter.findFirst({
-        where: { id: body.transporterId, tenantId: req.user.tenantId },
+        where: { id: body.transporterId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!transporter) throw new NotFoundException('Transporter not found');
     }
 
-    const count = await this.prisma.fleetVehicle.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.fleetVehicle.count({ where: { tenantId: req.user.tenantId! } });
     const code = `VEH-${String(count + 1).padStart(6, '0')}`;
 
     const vehicle = await this.prisma.fleetVehicle.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code || code,
         plateNo: body.plateNo,
         vehicleType: body.vehicleType,
@@ -120,7 +120,7 @@ export class FleetController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'FleetVehicle',
@@ -139,14 +139,14 @@ export class FleetController {
     @Body() body: UpdateFleetVehicleDto,
   ) {
     const exists = await this.prisma.fleetVehicle.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!exists) throw new NotFoundException('Vehicle not found');
 
     if (body.transporterId) {
       const transporter = await this.prisma.transporter.findFirst({
-        where: { id: body.transporterId, tenantId: req.user.tenantId },
+        where: { id: body.transporterId, tenantId: req.user.tenantId! },
         select: { id: true },
       });
       if (!transporter) throw new NotFoundException('Transporter not found');
@@ -175,7 +175,7 @@ export class FleetController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'UPDATE',
       entity: 'FleetVehicle',
@@ -193,7 +193,7 @@ export class FleetController {
     @Param('id') id: string,
   ) {
     const vehicle = await this.prisma.fleetVehicle.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true },
     });
     if (!vehicle) throw new NotFoundException('Vehicle not found');
@@ -204,7 +204,7 @@ export class FleetController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'DEACTIVATE',
       entity: 'FleetVehicle',

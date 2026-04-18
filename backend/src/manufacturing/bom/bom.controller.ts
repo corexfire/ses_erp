@@ -36,7 +36,7 @@ export class BomController {
   ) {
     const boms = await this.prisma.billOfMaterials.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(typeof isActive === 'string' ? { isActive: isActive === 'true' } : {}),
         ...(q
           ? {
@@ -58,7 +58,7 @@ export class BomController {
   @RequirePermissions('manufacturing.bom.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const bom = await this.prisma.billOfMaterials.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { item: true, items: { include: { componentItem: true }, orderBy: { lineNo: 'asc' } }, operations: { orderBy: { operationNo: 'asc' } } },
     });
     if (!bom) throw new NotFoundException('BOM not found');
@@ -69,7 +69,7 @@ export class BomController {
   @RequirePermissions('manufacturing.bom.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateBomDto) {
     const item = await this.prisma.item.findFirst({
-      where: { id: body.itemId, tenantId: req.user.tenantId },
+      where: { id: body.itemId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!item) throw new NotFoundException('Item not found');
@@ -77,7 +77,7 @@ export class BomController {
     const bom = await this.prisma.$transaction(async (tx) => {
       const created = await tx.billOfMaterials.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           name: body.name,
           itemId: body.itemId,
@@ -94,7 +94,7 @@ export class BomController {
       if (body.items && body.items.length > 0) {
         await tx.billOfMaterialsItem.createMany({
           data: body.items.map((it, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             bomId: created.id,
             lineNo: idx + 1,
             componentItemId: it.componentItemId,
@@ -111,7 +111,7 @@ export class BomController {
       if (body.operations && body.operations.length > 0) {
         await tx.bomOperation.createMany({
           data: body.operations.map((op) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             bomId: created.id,
             operationNo: op.operationNo,
             description: op.description,
@@ -128,7 +128,7 @@ export class BomController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'BillOfMaterials',
@@ -146,7 +146,7 @@ export class BomController {
     @Body() body: UpdateBomDto,
   ) {
     const existing = await this.prisma.billOfMaterials.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!existing) throw new NotFoundException('BOM not found');
@@ -162,7 +162,7 @@ export class BomController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'BillOfMaterials',
@@ -176,7 +176,7 @@ export class BomController {
   @RequirePermissions('manufacturing.bom.deactivate')
   async deactivate(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const existing = await this.prisma.billOfMaterials.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!existing) throw new NotFoundException('BOM not found');
@@ -187,7 +187,7 @@ export class BomController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'BillOfMaterials',

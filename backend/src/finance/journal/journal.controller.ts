@@ -16,7 +16,7 @@ export class JournalController {
   @RequirePermissions('finance.journal.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
     const entries = await this.prisma.journalEntry.findMany({
-      where: { tenantId: req.user.tenantId, ...(status ? { status } : {}) },
+      where: { tenantId: req.user.tenantId!, ...(status ? { status } : {}) },
       include: { lines: true },
       orderBy: [{ entryDate: 'desc' }],
       take: 200,
@@ -28,7 +28,7 @@ export class JournalController {
   @RequirePermissions('finance.journal.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const entry = await this.prisma.journalEntry.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { lines: { orderBy: [{ lineNo: 'asc' }] } },
     });
     return { entry };
@@ -37,7 +37,7 @@ export class JournalController {
   @Post()
   @RequirePermissions('finance.journal.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { entryDate: string; description?: string; referenceNo?: string; journalType?: string; lines: { accountCode: string; description?: string; debit: number; credit: number; costCenterId?: string }[] }) {
-    const count = await this.prisma.journalEntry.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.journalEntry.count({ where: { tenantId: req.user.tenantId! } });
     const entryNo = `JE-${String(count + 1).padStart(6, '0')}`;
 
     const totalDebit = body.lines.reduce((sum, l) => sum + (l.debit || 0), 0);
@@ -45,7 +45,7 @@ export class JournalController {
 
     const entry = await this.prisma.journalEntry.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         entryNo,
         entryDate: new Date(body.entryDate),
         description: body.description,
@@ -56,7 +56,7 @@ export class JournalController {
         status: 'DRAFT',
         lines: {
           create: body.lines.map((line, idx) => ({
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             lineNo: idx + 1,
             accountCode: line.accountCode,
             description: line.description,
@@ -69,14 +69,14 @@ export class JournalController {
       include: { lines: true },
     });
 
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'CREATE', entity: 'JournalEntry', entityId: entry.id, metadata: { entryNo } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'CREATE', entity: 'JournalEntry', entityId: entry.id, metadata: { entryNo } });
     return { entry };
   }
 
   @Patch(':id')
   @RequirePermissions('finance.journal.update')
   async update(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { entryDate?: string; description?: string; referenceNo?: string; journalType?: string; lines?: { accountCode: string; description?: string; debit: number; credit: number; costCenterId?: string }[] }) {
-    const existing = await this.prisma.journalEntry.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const existing = await this.prisma.journalEntry.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!existing) throw new NotFoundException('Journal entry not found');
     if (existing.status !== 'DRAFT') throw new ForbiddenException('Can only update draft entries');
 
@@ -99,7 +99,7 @@ export class JournalController {
           totalCredit,
           lines: {
             create: body.lines.map((line, idx) => ({
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               lineNo: idx + 1,
               accountCode: line.accountCode,
               description: line.description,
@@ -113,20 +113,20 @@ export class JournalController {
       include: { lines: true },
     });
 
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'UPDATE', entity: 'JournalEntry', entityId: id });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'UPDATE', entity: 'JournalEntry', entityId: id });
     return { entry };
   }
 
   @Delete(':id')
   @RequirePermissions('finance.journal.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const existing = await this.prisma.journalEntry.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const existing = await this.prisma.journalEntry.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!existing) throw new NotFoundException('Journal entry not found');
     if (existing.status !== 'DRAFT') throw new ForbiddenException('Can only delete draft entries');
 
     await this.prisma.journalEntryLine.deleteMany({ where: { journalEntryId: id } });
     await this.prisma.journalEntry.delete({ where: { id } });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'DELETE', entity: 'JournalEntry', entityId: id });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'DELETE', entity: 'JournalEntry', entityId: id });
     return { success: true };
   }
 
@@ -134,7 +134,7 @@ export class JournalController {
   @RequirePermissions('finance.journal.post')
   async post(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const entry = await this.prisma.journalEntry.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { lines: true },
     });
     if (!entry) throw new NotFoundException('Journal entry not found');
@@ -146,7 +146,7 @@ export class JournalController {
       where: { id },
       data: { status: 'POSTED' },
     });
-    await this.audit.log({ tenantId: req.user.tenantId, actorUserId: req.user.id, action: 'POST', entity: 'JournalEntry', entityId: id, metadata: { entryNo: entry.entryNo } });
+    await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'POST', entity: 'JournalEntry', entityId: id, metadata: { entryNo: entry.entryNo } });
     return { entry: updated };
   }
 }

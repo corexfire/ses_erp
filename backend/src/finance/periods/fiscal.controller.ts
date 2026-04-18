@@ -15,7 +15,7 @@ export class FiscalController {
   @RequirePermissions('finance.fiscal.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const years = await this.prisma.fiscalYear.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { periods: { orderBy: [{ periodNo: 'asc' }] } },
     });
     return { fiscalYears: years };
@@ -26,7 +26,7 @@ export class FiscalController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { code: string; name: string; startDate: string; endDate: string }) {
     const year = await this.prisma.fiscalYear.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
         startDate: new Date(body.startDate),
@@ -40,7 +40,7 @@ export class FiscalController {
             end.setMonth(end.getMonth() + 1);
             end.setDate(end.getDate() - 1);
             return {
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               fiscalYearId: '',
               periodNo: i + 1,
               startDate: start,
@@ -79,7 +79,7 @@ export class PeriodController {
   @RequirePermissions('finance.period.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const periods = await this.prisma.accountingPeriod.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { fiscalYear: true },
       orderBy: [{ startDate: 'desc' }],
     });

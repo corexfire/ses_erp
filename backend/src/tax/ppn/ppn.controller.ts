@@ -14,7 +14,7 @@ export class FakturKeluaranController {
   @Get()
   @RequirePermissions('tax.fakturKeluaran.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string, @Query('status') status?: string) {
-    const where: any = { tenantId: req.user.tenantId, invoiceType: 'OUTPUT' };
+    const where: any = { tenantId: req.user.tenantId!, invoiceType: 'OUTPUT' };
     
     if (period) {
       const [year, month] = period.split('-');
@@ -35,7 +35,7 @@ export class FakturKeluaranController {
   @RequirePermissions('tax.fakturKeluaran.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const invoice = await this.prisma.taxInvoice.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     return { invoice };
   }
@@ -45,7 +45,7 @@ export class FakturKeluaranController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: any) {
     const invoice = await this.prisma.taxInvoice.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceNo: body.invoiceNo,
         invoiceDate: new Date(body.invoiceDate),
         customerId: body.customerId,
@@ -58,7 +58,6 @@ export class FakturKeluaranController {
         discountAmount: body.discountAmount || 0,
         stampDuty: body.stampDuty || 0,
         referenceNo: body.referenceNo,
-        referenceType: body.referenceType,
         taxPeriod: body.taxPeriod || (new Date().getMonth() + 1).toString().padStart(2, '0'),
         taxYear: body.taxYear || new Date().getFullYear(),
         invoiceType: 'OUTPUT',
@@ -72,7 +71,7 @@ export class FakturKeluaranController {
   @RequirePermissions('tax.fakturKeluaran.create')
   async autoGenerate(@Req() req: FastifyRequest & { user: AuthUser }, @Param('invoiceId') invoiceId: string) {
     const salesInvoice = await this.prisma.salesInvoice.findFirst({
-      where: { id: invoiceId, tenantId: req.user.tenantId },
+      where: { id: invoiceId, tenantId: req.user.tenantId! },
       include: { customer: true, items: true }
     });
     if (!salesInvoice) throw new Error('Sales Invoice not found');
@@ -82,7 +81,7 @@ export class FakturKeluaranController {
 
     const invoice = await this.prisma.taxInvoice.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceNo: `TAX-${salesInvoice.code}`,
         invoiceDate: new Date(),
         customerId: salesInvoice.customerId,
@@ -92,7 +91,6 @@ export class FakturKeluaranController {
         baseAmount,
         taxAmount,
         referenceNo: salesInvoice.code,
-        referenceType: 'SALES_INVOICE',
         taxPeriod: (new Date().getMonth() + 1).toString().padStart(2, '0'),
         taxYear: new Date().getFullYear(),
         invoiceType: 'OUTPUT',
@@ -105,12 +103,12 @@ export class FakturKeluaranController {
   @Post(':id/issue-fp')
   @RequirePermissions('tax.fakturKeluaran.issue')
   async issueFp(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const invoice = await this.prisma.taxInvoice.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const invoice = await this.prisma.taxInvoice.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!invoice) throw new Error('Invoice not found');
 
     // Logic to find available NSFP
     const nsfpRange = await this.prisma.nsfpRange.findFirst({
-      where: { tenantId: req.user.tenantId, endDate: null },
+      where: { tenantId: req.user.tenantId!, endDate: null },
       orderBy: { startNo: 'asc' }
     });
     if (!nsfpRange) throw new Error('No active NSFP range found. Please upload NSFP range first.');
@@ -145,7 +143,7 @@ export class FakturMasukanController {
   @Get()
   @RequirePermissions('tax.fakturMasukan.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period?: string) {
-    const where: any = { tenantId: req.user.tenantId, invoiceType: 'INPUT' };
+    const where: any = { tenantId: req.user.tenantId!, invoiceType: 'INPUT' };
     if (period) {
       const [year, month] = period.split('-');
       where.taxYear = parseInt(year);
@@ -164,7 +162,7 @@ export class FakturMasukanController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { invoiceNo: string; invoiceDate: string; supplierId?: string; baseAmount: number; taxAmount: number; fpNumber?: string; fpDate?: string }) {
     const invoice = await this.prisma.taxInvoice.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceNo: body.invoiceNo,
         invoiceDate: new Date(body.invoiceDate),
         supplierId: body.supplierId,
@@ -189,7 +187,7 @@ export class NsfpController {
   @RequirePermissions('tax.nsfp.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const ranges = await this.prisma.nsfpRange.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: { startNo: 'desc' },
     });
     return { ranges };
@@ -200,7 +198,7 @@ export class NsfpController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { startNo: string; endNo: string; startDate: string }) {
     const range = await this.prisma.nsfpRange.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         startNo: body.startNo,
         endNo: body.endNo,
         startDate: new Date(body.startDate),
@@ -213,7 +211,7 @@ export class NsfpController {
   @Post(':id/use')
   @RequirePermissions('tax.nsfp.use')
   async useNsfp(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string, @Body() body: { usedNo: string }) {
-    const range = await this.prisma.nsfpRange.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const range = await this.prisma.nsfpRange.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!range) throw new Error('NSFP range not found');
 
     const updated = await this.prisma.nsfpRange.update({
@@ -238,7 +236,7 @@ export class PpnMasaController {
 
     const outputInvoices = await this.prisma.taxInvoice.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceType: 'OUTPUT',
         invoiceDate: { gte: startDate, lte: endDate },
         status: 'POSTED',
@@ -247,7 +245,7 @@ export class PpnMasaController {
 
     const inputInvoices = await this.prisma.taxInvoice.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         invoiceType: 'INPUT',
         invoiceDate: { gte: startDate, lte: endDate },
         status: 'POSTED',

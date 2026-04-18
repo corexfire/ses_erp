@@ -17,59 +17,59 @@ export class FsmController {
   // ─── Dashboard ─────────────────────────────────────
   @Get('stats')
   getDashboardStats(@Request() req: any) {
-    return this.fsmService.getDashboardStats(req.user.tenantId);
+    return this.fsmService.getDashboardStats(req.user.tenantId!);
   }
 
   // ─── Service Orders ────────────────────────────────
   @Post('service-orders')
   createServiceOrder(@Request() req: any, @Body() dto: CreateFsmServiceOrderDto) {
-    return this.fsmService.createServiceOrder(req.user.tenantId, dto);
+    return this.fsmService.createServiceOrder(req.user.tenantId!, dto);
   }
 
   @Get('service-orders')
   findAllServiceOrders(@Request() req: any, @Query('status') status?: string) {
-    return this.fsmService.findAllServiceOrders(req.user.tenantId, status);
+    return this.fsmService.findAllServiceOrders(req.user.tenantId!, status);
   }
 
   @Get('service-orders/:id')
   findOneServiceOrder(@Request() req: any, @Param('id') id: string) {
-    return this.fsmService.findOneServiceOrder(req.user.tenantId, id);
+    return this.fsmService.findOneServiceOrder(req.user.tenantId!, id);
   }
 
   @Patch('service-orders/:id')
   updateServiceOrder(@Request() req: any, @Param('id') id: string, @Body() dto: UpdateFsmServiceOrderDto) {
-    return this.fsmService.updateServiceOrder(req.user.tenantId, id, dto);
+    return this.fsmService.updateServiceOrder(req.user.tenantId!, id, dto);
   }
 
   @Delete('service-orders/:id')
   removeServiceOrder(@Request() req: any, @Param('id') id: string) {
-    return this.fsmService.deleteServiceOrder(req.user.tenantId, id);
+    return this.fsmService.deleteServiceOrder(req.user.tenantId!, id);
   }
 
   // ─── Appointments (Work Orders) ────────────────────
   @Get('work-orders/active')
   getActiveWorkOrders(@Request() req: any) {
-    return this.fsmService.findActiveAppointments(req.user.tenantId);
+    return this.fsmService.findActiveAppointments(req.user.tenantId!);
   }
 
   @Post('appointments')
   createAppointment(@Request() req: any, @Body() dto: CreateFsmAppointmentDto) {
-    return this.fsmService.createAppointment(req.user.tenantId, dto);
+    return this.fsmService.createAppointment(req.user.tenantId!, dto);
   }
 
   @Get('appointments')
   findAllAppointments(@Request() req: any) {
-    return this.fsmService.findAllAppointments(req.user.tenantId);
+    return this.fsmService.findAllAppointments(req.user.tenantId!);
   }
 
   @Patch('appointments/:id')
   updateAppointment(@Request() req: any, @Param('id') id: string, @Body() dto: UpdateFsmAppointmentDto) {
-    return this.fsmService.updateAppointment(req.user.tenantId, id, dto);
+    return this.fsmService.updateAppointment(req.user.tenantId!, id, dto);
   }
 
   @Patch('appointments/:id/status')
   updateStatus(@Request() req: any, @Param('id') id: string, @Body('status') status: any) {
-    return this.fsmService.updateAppointmentStatus(req.user.tenantId, id, status);
+    return this.fsmService.updateAppointmentStatus(req.user.tenantId!, id, status);
   }
 
   // ─── Service Report ────────────────────────────────
@@ -79,12 +79,12 @@ export class FsmController {
     @Param('id') id: string,
     @Body() body: { summary: string; resolution: string },
   ) {
-    return this.fsmService.createReport(req.user.tenantId, id, body.summary, body.resolution);
+    return this.fsmService.createReport(req.user.tenantId!, id, body.summary, body.resolution);
   }
 
   // ─── Master Data ───────────────────────────────────
   @Get('technicians')
   findTechnicians(@Request() req: any) {
-    return this.fsmService.findTechnicians(req.user.tenantId);
+    return this.fsmService.findTechnicians(req.user.tenantId!);
   }
 }

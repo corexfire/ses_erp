@@ -47,7 +47,7 @@ export class WarehouseController {
   ) {
     const waves = await this.prisma.wavePicking.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(status && { status: status as any }),
         ...(warehouseId && { warehouseId }),
       },
@@ -65,7 +65,7 @@ export class WarehouseController {
     @Param('id') id: string,
   ) {
     const wave = await this.prisma.wavePicking.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: {
         warehouse: true,
       },
@@ -74,7 +74,7 @@ export class WarehouseController {
 
     const deliveryOrders = await this.prisma.deliveryOrder.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         warehouseId: wave.warehouseId,
         status: 'RELEASED',
         plannedShipDate: { gte: new Date(wave.plannedDate + 'T00:00:00Z'), lt: new Date(wave.plannedDate + 'T23:59:59Z') },
@@ -93,7 +93,7 @@ export class WarehouseController {
     @Body() body: CreateWavePickingDto,
   ) {
     const warehouse = await this.prisma.warehouse.findFirst({
-      where: { id: body.warehouseId, tenantId: req.user.tenantId },
+      where: { id: body.warehouseId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!warehouse) throw new NotFoundException('Warehouse not found');
@@ -101,7 +101,7 @@ export class WarehouseController {
     const deliveryOrders = await this.prisma.deliveryOrder.findMany({
       where: {
         id: { in: body.deliveryOrderIds },
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         status: 'RELEASED',
       },
       select: { id: true, _count: { select: { items: true } } },
@@ -111,14 +111,14 @@ export class WarehouseController {
       throw new Error('Some delivery orders not found or not eligible');
     }
 
-    const count = await this.prisma.wavePicking.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.wavePicking.count({ where: { tenantId: req.user.tenantId! } });
     const code = `WAVE-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(count + 1).padStart(4, '0')}`;
 
     const totalItemCount = deliveryOrders.reduce((sum, do_) => sum + do_._count.items, 0);
 
     const wave = await this.prisma.wavePicking.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code,
         warehouseId: body.warehouseId,
         plannedDate: new Date(body.plannedDate),
@@ -131,7 +131,7 @@ export class WarehouseController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CREATE',
       entity: 'WavePicking',
@@ -149,7 +149,7 @@ export class WarehouseController {
     @Param('id') id: string,
   ) {
     const wave = await this.prisma.wavePicking.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true, status: true },
     });
     if (!wave) throw new NotFoundException('Wave picking not found');
@@ -164,7 +164,7 @@ export class WarehouseController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'RELEASE',
       entity: 'WavePicking',
@@ -182,7 +182,7 @@ export class WarehouseController {
     @Param('id') id: string,
   ) {
     const wave = await this.prisma.wavePicking.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, code: true, status: true },
     });
     if (!wave) throw new NotFoundException('Wave picking not found');
@@ -197,7 +197,7 @@ export class WarehouseController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'COMPLETE_PICKING',
       entity: 'WavePicking',
@@ -214,7 +214,7 @@ export class WarehouseController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Query('status') status?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (status) where.status = status;
 
     const stagings = await this.prisma.stagingLoad.findMany({
@@ -233,17 +233,17 @@ export class WarehouseController {
     @Body() body: CreateStagingLoadDto,
   ) {
     const warehouse = await this.prisma.warehouse.findFirst({
-      where: { id: body.warehouseId, tenantId: req.user.tenantId },
+      where: { id: body.warehouseId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!warehouse) throw new NotFoundException('Warehouse not found');
 
-    const count = await this.prisma.stagingLoad.count({ where: { tenantId: req.user.tenantId } });
+    const count = await this.prisma.stagingLoad.count({ where: { tenantId: req.user.tenantId! } });
     const code = `STG-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${String(count + 1).padStart(4, '0')}`;
 
     const staging = await this.prisma.stagingLoad.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code,
         waveId: body.waveId,
         tripPlanId: body.tripPlanId,
@@ -262,7 +262,7 @@ export class WarehouseController {
     @Param('id') id: string,
   ) {
     const staging = await this.prisma.stagingLoad.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!staging) throw new NotFoundException('Staging load not found');
@@ -282,7 +282,7 @@ export class WarehouseController {
     @Param('id') id: string,
   ) {
     const staging = await this.prisma.stagingLoad.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { warehouse: true },
     });
     if (!staging) throw new NotFoundException('Staging load not found');
@@ -296,7 +296,7 @@ export class WarehouseController {
     @Param('tripId') tripId: string,
   ) {
     const trip = await this.prisma.tripPlan.findFirst({
-      where: { id: tripId, tenantId: req.user.tenantId },
+      where: { id: tripId, tenantId: req.user.tenantId! },
       select: { id: true, status: true },
     });
     if (!trip) throw new NotFoundException('Trip not found');
@@ -307,7 +307,7 @@ export class WarehouseController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CONFIRM_LOADING',
       entity: 'TripPlan',

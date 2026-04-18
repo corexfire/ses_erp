@@ -35,7 +35,7 @@ export class ProductionController {
   ) {
     const issues = await this.prisma.productionIssue.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q ? { code: { contains: q, mode: 'insensitive' } } : {}),
       },
       orderBy: [{ createdAt: 'desc' }],
@@ -49,7 +49,7 @@ export class ProductionController {
   @RequirePermissions('manufacturing.production_issue.read')
   async getIssue(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const issue = await this.prisma.productionIssue.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { workOrder: true, items: { include: { item: true } } },
     });
     if (!issue) throw new NotFoundException('Production issue not found');
@@ -60,7 +60,7 @@ export class ProductionController {
   @RequirePermissions('manufacturing.production_issue.create')
   async createIssue(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateProductionIssueDto) {
     const wo = await this.prisma.workOrder.findFirst({
-      where: { id: body.workOrderId, tenantId: req.user.tenantId },
+      where: { id: body.workOrderId, tenantId: req.user.tenantId! },
       select: { id: true, warehouseId: true, status: true },
     });
     if (!wo) throw new NotFoundException('Work Order not found');
@@ -71,7 +71,7 @@ export class ProductionController {
     const issue = await this.prisma.$transaction(async (tx) => {
       const created = await tx.productionIssue.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           workOrderId: body.workOrderId,
           issueDate: new Date(body.issueDate),
@@ -83,7 +83,7 @@ export class ProductionController {
         const it = body.items[i];
         await tx.productionIssueItem.create({
           data: {
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             issueId: created.id,
             lineNo: i + 1,
             itemId: it.itemId,
@@ -95,7 +95,7 @@ export class ProductionController {
         if (wo.warehouseId) {
           await tx.stockLedger.create({
             data: {
-              tenantId: req.user.tenantId,
+              tenantId: req.user.tenantId!,
               moveType: 'PRODUCTION_ISSUE',
               refType: 'PRODUCTION_ISSUE',
               refId: created.id,
@@ -115,7 +115,7 @@ export class ProductionController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'ProductionIssue',
@@ -133,7 +133,7 @@ export class ProductionController {
   ) {
     const receipts = await this.prisma.productionReceipt.findMany({
       where: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         ...(q ? { code: { contains: q, mode: 'insensitive' } } : {}),
       },
       orderBy: [{ createdAt: 'desc' }],
@@ -147,7 +147,7 @@ export class ProductionController {
   @RequirePermissions('manufacturing.production_receipt.read')
   async getReceipt(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const receipt = await this.prisma.productionReceipt.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { workOrder: true },
     });
     if (!receipt) throw new NotFoundException('Production receipt not found');
@@ -158,7 +158,7 @@ export class ProductionController {
   @RequirePermissions('manufacturing.production_receipt.create')
   async createReceipt(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateProductionReceiptDto) {
     const wo = await this.prisma.workOrder.findFirst({
-      where: { id: body.workOrderId, tenantId: req.user.tenantId },
+      where: { id: body.workOrderId, tenantId: req.user.tenantId! },
       select: { id: true, finishedGoodItemId: true, warehouseId: true, qtyProduced: true, status: true },
     });
     if (!wo) throw new NotFoundException('Work Order not found');
@@ -166,7 +166,7 @@ export class ProductionController {
     const receipt = await this.prisma.$transaction(async (tx) => {
       const created = await tx.productionReceipt.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           code: body.code,
           workOrderId: body.workOrderId,
           receiptDate: new Date(body.receiptDate),
@@ -182,7 +182,7 @@ export class ProductionController {
       if (wo.warehouseId) {
         await tx.stockLedger.create({
           data: {
-            tenantId: req.user.tenantId,
+            tenantId: req.user.tenantId!,
             moveType: 'PRODUCTION_RECEIPT',
             refType: 'PRODUCTION_RECEIPT',
             refId: created.id,
@@ -209,7 +209,7 @@ export class ProductionController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'ProductionReceipt',
@@ -225,7 +225,7 @@ export class ProductionController {
   @RequirePermissions('manufacturing.qc.read')
   async listQc(@Req() req: FastifyRequest & { user: AuthUser }) {
     const qcs = await this.prisma.inProcessQc.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ createdAt: 'desc' }],
       include: { workOrder: { include: { finishedGood: true } } },
       take: 200,
@@ -240,14 +240,14 @@ export class ProductionController {
     @Body() body: { workOrderId: string; qtyInspected: number; qtyPassed: number; qtyFailed: number; notes?: string; disposition?: string; inspectedBy?: string; qcDate?: string },
   ) {
     const wo = await this.prisma.workOrder.findFirst({
-      where: { id: body.workOrderId, tenantId: req.user.tenantId },
+      where: { id: body.workOrderId, tenantId: req.user.tenantId! },
       select: { id: true },
     });
     if (!wo) throw new NotFoundException('Work Order not found');
 
     const qc = await this.prisma.inProcessQc.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         workOrderId: body.workOrderId,
         qtyInspected: body.qtyInspected,
         qtyPassed: body.qtyPassed,
@@ -261,7 +261,7 @@ export class ProductionController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'InProcessQc',
@@ -278,7 +278,7 @@ export class ProductionController {
     @Param('id') id: string,
     @Body() body: { status?: string; disposition?: string; notes?: string },
   ) {
-    const qc = await this.prisma.inProcessQc.findFirst({ where: { id, tenantId: req.user.tenantId } });
+    const qc = await this.prisma.inProcessQc.findFirst({ where: { id, tenantId: req.user.tenantId! } });
     if (!qc) throw new NotFoundException('QC record not found');
     const updated = await this.prisma.inProcessQc.update({
       where: { id },

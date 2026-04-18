@@ -23,7 +23,7 @@ export class DashboardController {
     const endOfDay = new Date(targetDate);
     endOfDay.setHours(23, 59, 59, 999);
 
-    const tenantId = req.user.tenantId;
+    const tenantId = req.user.tenantId!;
 
     const [doStatusCounts, tripStatusCounts, todayDeliveries, activeTrips, pendingPods] = await Promise.all([
       this.prisma.deliveryOrder.groupBy({

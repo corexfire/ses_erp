@@ -15,7 +15,7 @@ export class ProfitCenterController {
   @RequirePermissions('finance.profitcenter.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const centers = await this.prisma.profitCenter.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
     });
     return { profitCenters: centers };
   }
@@ -25,7 +25,7 @@ export class ProfitCenterController {
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { code: string; name: string }) {
     const center = await this.prisma.profitCenter.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         code: body.code,
         name: body.name,
       },

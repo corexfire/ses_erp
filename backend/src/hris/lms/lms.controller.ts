@@ -30,7 +30,7 @@ export class HrisLmsController {
   async getCourses(@Req() req: FastifyRequest, @Query('search') search?: string) {
     const user = req.user as AuthUser;
     
-    const where: any = { tenantId: user.tenantId };
+    const where: any = { tenantId: user.tenantId! };
     
     if (search) {
       where.OR = [
@@ -51,7 +51,7 @@ export class HrisLmsController {
     const enrollmentsAgg = await this.prisma.courseEnrollment.groupBy({
        by: ['status'],
        _count: { status: true },
-       where: { tenantId: user.tenantId }
+       where: { tenantId: user.tenantId! }
     });
     
     const countEnrolled = enrollmentsAgg.reduce((sum, item) => sum + (item._count?.status || 0), 0);
@@ -71,7 +71,7 @@ export class HrisLmsController {
   @Get('enrollments')
   async getEnrollments(@Req() req: FastifyRequest, @Query('courseId') courseId?: string) {
     const user = req.user as AuthUser;
-    const where: any = { tenantId: user.tenantId };
+    const where: any = { tenantId: user.tenantId! };
     if (courseId) {
         where.courseId = courseId;
     }
@@ -95,7 +95,7 @@ export class HrisLmsController {
      
      const created = await this.prisma.course.create({
          data: {
-             tenantId: user.tenantId,
+             tenantId: user.tenantId!,
              code,
              title: body.title,
              description: body.description || '',
@@ -106,7 +106,7 @@ export class HrisLmsController {
          }
      });
 
-     await this.audit.log(user.tenantId, user.id, 'CREATE', 'Course', created.id, null, created);
+      await this.audit.log({ tenantId: user.tenantId!, actorUserId: user.id, action: 'CREATE', entity: 'Course', entityId: created.id,  });
      return { message: 'Training Course registered successfully', data: created };
   }
 
@@ -143,7 +143,7 @@ export class HrisLmsController {
        // Fresh enrollment
        record = await this.prisma.courseEnrollment.create({
          data: {
-           tenantId: user.tenantId,
+           tenantId: user.tenantId!,
            courseId: body.courseId,
            employeeId: body.employeeId,
            status,
@@ -161,7 +161,7 @@ export class HrisLmsController {
   async getLookups(@Req() req: FastifyRequest) {
     const user = req.user as AuthUser;
     const employees = await this.prisma.employee.findMany({
-      where: { tenantId: user.tenantId, status: 'ACTIVE' },
+      where: { tenantId: user.tenantId!, status: 'ACTIVE' },
       select: { id: true, firstName: true, lastName: true, employeeNo: true }
     });
     return { data: { employees } };

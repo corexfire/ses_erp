@@ -30,7 +30,7 @@ export class UomsController {
   @RequirePermissions('core.uom.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }) {
     const uoms = await this.prisma.uom.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       orderBy: [{ isActive: 'desc' }, { code: 'asc' }],
     });
     return { uoms };
@@ -40,7 +40,7 @@ export class UomsController {
   @RequirePermissions('core.uom_conversion.read')
   async listConversions(@Req() req: FastifyRequest & { user: AuthUser }) {
     const conversions = await this.prisma.uomConversion.findMany({
-      where: { tenantId: req.user.tenantId },
+      where: { tenantId: req.user.tenantId! },
       include: { fromUom: true, toUom: true },
       orderBy: [{ createdAt: 'desc' }],
       take: 500,
@@ -56,7 +56,7 @@ export class UomsController {
   ) {
     const conversion = await this.prisma.uomConversion.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         fromUomId: body.fromUomId,
         toUomId: body.toUomId,
         factor: body.factor,
@@ -64,7 +64,7 @@ export class UomsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'UomConversion',
@@ -85,7 +85,7 @@ export class UomsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'delete',
       entity: 'UomConversion',
@@ -102,11 +102,11 @@ export class UomsController {
     @Body() body: CreateUomDto,
   ) {
     const uom = await this.prisma.uom.create({
-      data: { tenantId: req.user.tenantId, code: body.code, name: body.name },
+      data: { tenantId: req.user.tenantId!, code: body.code, name: body.name },
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'Uom',
@@ -128,7 +128,7 @@ export class UomsController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'deactivate',
       entity: 'Uom',

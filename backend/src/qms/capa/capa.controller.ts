@@ -20,14 +20,14 @@ export class CapaController {
   @Get()
   @RequirePermissions('qms.capa.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query() query: any) {
-    const list = await this.capaService.findAll(req.user.tenantId, query);
+    const list = await this.capaService.findAll(req.user.tenantId!, query);
     return { list };
   }
 
   @Get('references/audits')
   @RequirePermissions('qms.capa.read')
   async getAuditFindings(@Req() req: FastifyRequest & { user: AuthUser }) {
-    const findings = await this.capaService.getAuditFindings(req.user.tenantId);
+    const findings = await this.capaService.getAuditFindings(req.user.tenantId!);
     return { findings };
   }
 
@@ -35,7 +35,7 @@ export class CapaController {
   @RequirePermissions('qms.capa.read')
   async getUsers(@Req() req: FastifyRequest & { user: AuthUser }) {
     const users = await this.prisma.user.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true },
+      where: { tenantId: req.user.tenantId!, isActive: true },
       select: { id: true, name: true, email: true },
     });
     return { users };
@@ -44,14 +44,14 @@ export class CapaController {
   @Get(':id')
   @RequirePermissions('qms.capa.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
-    const capa = await this.capaService.findOne(req.user.tenantId, id);
+    const capa = await this.capaService.findOne(req.user.tenantId!, id);
     return { capa };
   }
 
   @Post()
   @RequirePermissions('qms.capa.create')
   async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: CreateCapaDto) {
-    const capa = await this.capaService.create(req.user.tenantId, body);
+    const capa = await this.capaService.create(req.user.tenantId!, body);
     return { capa };
   }
 
@@ -62,7 +62,7 @@ export class CapaController {
     @Param('id') id: string,
     @Body() body: UpdateCapaDto,
   ) {
-    const capa = await this.capaService.update(req.user.tenantId, id, body);
+    const capa = await this.capaService.update(req.user.tenantId!, id, body);
     return { capa };
   }
 }

@@ -23,7 +23,7 @@ export class MarketplaceController {
     @Query('channelId') channelId?: string,
     @Query('status') status?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     
     if (q) {
       where.OR = [
@@ -48,7 +48,7 @@ export class MarketplaceController {
   @RequirePermissions('ecommerce.marketplace.read')
   async listChannels(@Req() req: FastifyRequest & { user: AuthUser }) {
     const channels = await this.prisma.marketplaceChannel.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true },
+      where: { tenantId: req.user.tenantId!, isActive: true },
       orderBy: { name: 'asc' },
     });
     return { channels };
@@ -60,7 +60,7 @@ export class MarketplaceController {
     @Req() req: FastifyRequest & { user: AuthUser },
     @Query('listingId') listingId?: string,
   ) {
-    const where: any = { tenantId: req.user.tenantId };
+    const where: any = { tenantId: req.user.tenantId! };
     if (listingId) where.listingId = listingId;
 
     const logs = await this.prisma.marketplaceSyncLog.findMany({
@@ -75,7 +75,7 @@ export class MarketplaceController {
   @Get('stats')
   @RequirePermissions('ecommerce.marketplace.read')
   async getStats(@Req() req: FastifyRequest & { user: AuthUser }) {
-    const tenantId = req.user.tenantId;
+    const tenantId = req.user.tenantId!;
 
     const [total, synced, pending, failed, byChannel] = await Promise.all([
       this.prisma.marketplaceListing.count({ where: { tenantId } }),
@@ -113,7 +113,7 @@ export class MarketplaceController {
   @RequirePermissions('ecommerce.marketplace.read')
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const listing = await this.prisma.marketplaceListing.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { channel: true, item: true },
     });
     if (!listing) throw new NotFoundException('Listing tidak ditemukan');
@@ -140,7 +140,7 @@ export class MarketplaceController {
   ) {
     const listing = await this.prisma.marketplaceListing.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         channelId: body.channelId,
         itemId: body.itemId,
         productName: body.productName,
@@ -158,7 +158,7 @@ export class MarketplaceController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'create',
       entity: 'MarketplaceListing',
@@ -188,7 +188,7 @@ export class MarketplaceController {
     },
   ) {
     const exists = await this.prisma.marketplaceListing.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!exists) throw new NotFoundException('Listing tidak ditemukan');
 
@@ -211,7 +211,7 @@ export class MarketplaceController {
     });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'update',
       entity: 'MarketplaceListing',
@@ -225,7 +225,7 @@ export class MarketplaceController {
   @RequirePermissions('ecommerce.marketplace.sync')
   async sync(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const listing = await this.prisma.marketplaceListing.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
       include: { channel: true },
     });
     if (!listing) throw new NotFoundException('Listing tidak ditemukan');
@@ -249,7 +249,7 @@ export class MarketplaceController {
 
     await this.prisma.marketplaceSyncLog.create({
       data: {
-        tenantId: req.user.tenantId,
+        tenantId: req.user.tenantId!,
         listingId: id,
         channelId: listing.channelId,
         syncType: 'MANUAL',
@@ -269,7 +269,7 @@ export class MarketplaceController {
   @RequirePermissions('ecommerce.marketplace.sync')
   async syncAll(@Req() req: FastifyRequest & { user: AuthUser }) {
     const pending = await this.prisma.marketplaceListing.findMany({
-      where: { tenantId: req.user.tenantId, isActive: true },
+      where: { tenantId: req.user.tenantId!, isActive: true },
       include: { channel: true },
     });
 
@@ -292,7 +292,7 @@ export class MarketplaceController {
 
       await this.prisma.marketplaceSyncLog.create({
         data: {
-          tenantId: req.user.tenantId,
+          tenantId: req.user.tenantId!,
           listingId: listing.id,
           channelId: listing.channelId,
           syncType: 'BULK',
@@ -314,14 +314,14 @@ export class MarketplaceController {
   @RequirePermissions('ecommerce.marketplace.delete')
   async delete(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const exists = await this.prisma.marketplaceListing.findFirst({
-      where: { id, tenantId: req.user.tenantId },
+      where: { id, tenantId: req.user.tenantId! },
     });
     if (!exists) throw new NotFoundException('Listing tidak ditemukan');
 
     await this.prisma.marketplaceListing.delete({ where: { id } });
 
     await this.audit.log({
-      tenantId: req.user.tenantId,
+      tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'delete',
       entity: 'MarketplaceListing',
