@@ -11,7 +11,7 @@
             <span class="text-slate-300">/</span>
             <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-emerald-600">Manajemen Aset & CMMS Engine</span>
           </div>
-          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Aset & <span class="text-emerald-600 not-italic text-3xl">Peralatan Produksi</span></h1>
+          <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Aset & <span class="text-emerald-600 not-italic text-xl md:text-2xl lg:text-3xl">Peralatan Produksi</span></h1>
           <p class="text-slate-500 text-sm font-medium max-w-2xl text-emerald-900/60 leading-relaxed mt-3">Sistem terintegrasi untuk pemeliharaan fasilitas, pencegahan kerusakan, dan pencatatan riwayat pekerjaan teknis secara real-time.</p>
         </div>
         <div class="flex items-center gap-3">
@@ -46,7 +46,7 @@
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Reliabilitas Peralatan</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
-            <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ stats[0].value }}</h3>
+            <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ stats[0].value }}</h3>
             <span class="text-[10px] font-bold text-emerald-400 mt-2 uppercase tracking-widest">{{ stats[0].trend }} vs Bulan Lalu</span>
           </div>
           <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
@@ -59,7 +59,7 @@
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Kerusakan Aktif (Breakdown)</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
-             <h3 class="text-5xl font-black text-rose-700 tracking-tighter leading-none">{{ stats[1].value }}</h3>
+             <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-rose-700 tracking-tighter leading-none">{{ stats[1].value }}</h3>
              <span class="text-[10px] font-bold text-rose-400 mt-2 uppercase tracking-widest">Memerlukan Audit Teknis</span>
           </div>
           <div class="p-3 bg-rose-50 text-rose-600 rounded-xl border border-rose-100 group-hover:rotate-12 transition-transform"><i class="pi pi-exclamation-triangle text-lg"></i></div>
@@ -70,7 +70,7 @@
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Urutan Antrean Preventif</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
-             <h3 class="text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ stats[2].value }}</h3>
+             <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ stats[2].value }}</h3>
              <span class="text-[10px] font-bold text-emerald-400 mt-2 uppercase tracking-widest">Sesi Terjadwal</span>
           </div>
           <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 group-hover:rotate-12 transition-transform"><i class="pi pi-calendar text-lg"></i></div>

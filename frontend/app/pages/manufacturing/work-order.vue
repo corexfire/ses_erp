@@ -11,7 +11,7 @@
             <span class="text-slate-300">/</span>
             <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-emerald-600">Perintah Kerja Produksi</span>
           </div>
-          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Work Order <span class="text-emerald-600 not-italic text-3xl">Operations Center</span></h1>
+          <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Work Order <span class="text-emerald-600 not-italic text-xl md:text-2xl lg:text-3xl">Operations Center</span></h1>
           <p class="text-slate-500 text-sm font-medium max-w-2xl text-emerald-900/60 leading-relaxed mt-3">Sistem kendali perintah kerja produksi terintegrasi. Monitor alur kerja dari persiapan bahan hingga output fisik dengan presisi telemetri manufaktur.</p>
         </div>
         <div class="flex items-center gap-3">
@@ -29,7 +29,7 @@
       <div @click="filterByStatus('')" class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group cursor-pointer" :class="!statusFilter ? 'ring-4 ring-emerald-500 ring-offset-2' : ''">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total Perintah Kerja</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ workOrders.length }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ workOrders.length }}</h3>
           <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
             <i class="pi pi-list text-lg"></i>
           </div>
@@ -39,7 +39,7 @@
       <div @click="filterByStatus('RELEASED')" class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group cursor-pointer" :class="statusFilter === 'RELEASED' ? 'ring-4 ring-emerald-500 ring-offset-2' : ''">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Released & In-Progress</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ workOrders.filter(x => ['RELEASED', 'IN_PROGRESS'].includes(x.status)).length }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ workOrders.filter(x => ['RELEASED', 'IN_PROGRESS'].includes(x.status)).length }}</h3>
           <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100 group-hover:rotate-12 transition-transform"><i class="pi pi-send text-lg"></i></div>
         </div>
       </div>
@@ -47,8 +47,8 @@
       <div @click="filterByStatus('COMPLETED')" class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group cursor-pointer" :class="statusFilter === 'COMPLETED' ? 'ring-4 ring-emerald-500 ring-offset-2' : ''">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Akurasi Penyelesaian</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-emerald-700 tracking-tighter leading-none">
-             {{ workOrders.length > 0 ? (workOrders.filter(w => w.status === 'COMPLETED').length / workOrders.length * 100).toFixed(0) : '0' }}<span class="text-xl ml-1 font-black">%</span>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">
+             {{ workOrders.length > 0 ? (workOrders.filter(w => w.status === 'COMPLETED').length / workOrders.length * 100).toFixed(0) : '0' }}<span class="text-sm md:text-lg lg:text-xl ml-1 font-black">%</span>
           </h3>
           <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 group-hover:rotate-12 transition-transform"><i class="pi pi-verified text-lg"></i></div>
         </div>

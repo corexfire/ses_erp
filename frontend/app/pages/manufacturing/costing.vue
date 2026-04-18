@@ -11,7 +11,7 @@
             <span class="text-slate-300">/</span>
             <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-emerald-600">Manajemen Biaya & Kalkulasi COGM</span>
           </div>
-          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Biaya & <span class="text-emerald-600 not-italic text-3xl">Kalkulasi Produksi</span></h1>
+          <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Biaya & <span class="text-emerald-600 not-italic text-xl md:text-2xl lg:text-3xl">Kalkulasi Produksi</span></h1>
           <p class="text-slate-500 text-sm font-medium max-w-2xl text-emerald-900/60 leading-relaxed mt-3">Lakukan kalkulasi Harga Pokok Produksi (COGM), analisis varian bahan baku, serta settlement jurnal akuntansi secara otomatis dan terintegrasi.</p>
         </div>
         <div class="flex items-center gap-3">
@@ -36,7 +36,7 @@
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total COGM (MTD)</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
-            <h3 class="text-3xl font-black text-white tracking-tighter leading-none italic">IDR {{ fmtMoney(totalCogm) }}</h3>
+            <h3 class="text-xl md:text-2xl lg:text-3xl font-black text-white tracking-tighter leading-none italic">IDR {{ fmtMoney(totalCogm) }}</h3>
             <span class="text-[10px] font-bold text-emerald-400 mt-2 uppercase tracking-widest">+4.2% vs Anggaran</span>
           </div>
           <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
@@ -49,7 +49,7 @@
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Valuasi WIP Aktif</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
-             <h3 class="text-3xl font-black text-slate-800 tracking-tighter leading-none font-mono italic">IDR {{ fmtMoney(totalWip) }}</h3>
+             <h3 class="text-xl md:text-2xl lg:text-3xl font-black text-slate-800 tracking-tighter leading-none font-mono italic">IDR {{ fmtMoney(totalWip) }}</h3>
              <span class="text-[10px] font-bold text-indigo-500 mt-2 uppercase tracking-widest italic">12 Perintah Kerja Aktif</span>
           </div>
           <div class="p-3 bg-slate-50 text-slate-400 rounded-xl border border-slate-100 group-hover:rotate-12 transition-transform"><i class="pi pi-sync text-lg"></i></div>
@@ -60,7 +60,7 @@
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Rata-Rata Varian Biaya</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
-             <h3 class="text-5xl font-black text-rose-700 tracking-tighter leading-none italic">{{ avgVariance > 0 ? '+' : '' }}{{ avgVariance }}%</h3>
+             <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-rose-700 tracking-tighter leading-none italic">{{ avgVariance > 0 ? '+' : '' }}{{ avgVariance }}%</h3>
              <span class="text-[10px] font-bold text-rose-400 mt-2 uppercase tracking-widest italic">Anomali Material Scrap</span>
           </div>
           <div class="p-3 bg-rose-50 text-rose-600 rounded-xl border border-rose-100 group-hover:rotate-12 transition-transform"><i class="pi pi-exclamation-triangle text-lg"></i></div>
@@ -305,7 +305,7 @@
            <div class="flex flex-col items-center bg-slate-900 rounded-[2.5rem] p-12 shadow-2xl text-white relative overflow-hidden mb-10 transition-all hover:bg-black group">
               <div class="absolute right-[-40px] top-[-40px] w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl opacity-50 group-hover:bg-emerald-500/20 transition-all"></div>
               <p class="text-[10px] font-black uppercase tracking-[0.3em] text-white/50 mb-4 z-10">Total Unit Cost Actual (Per Batch)</p>
-              <h2 class="text-6xl font-black font-mono tracking-tighter z-10 italic">IDR {{ fmtMoney(selectedCost.totalCost) }}</h2>
+              <h2 class="text-3xl md:text-4xl lg:text-6xl font-black font-mono tracking-tighter z-10 italic">IDR {{ fmtMoney(selectedCost.totalCost) }}</h2>
               
               <div class="mt-8 flex items-center gap-10 z-10 border-t border-white/10 pt-8 w-full justify-center">
                  <div class="flex flex-col items-center">

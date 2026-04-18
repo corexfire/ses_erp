@@ -11,7 +11,7 @@
             <span class="text-slate-300">/</span>
             <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-indigo-600 font-mono tracking-tighter italic">MRP Control Panel</span>
           </div>
-          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Planning <span class="text-indigo-600 not-italic text-3xl font-light">Command Center</span></h1>
+          <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Planning <span class="text-indigo-600 not-italic text-xl md:text-2xl lg:text-3xl font-light">Command Center</span></h1>
           <p class="text-slate-500 text-sm font-medium max-w-2xl text-indigo-900/60 leading-relaxed mt-3">Sistem sinkronisasi kebutuhan material terpadu. Analisis permintaan, optimasi stok, dan penjadwalan produksi presisi untuk menjamin ketersediaan rantai pasok manufaktur.</p>
         </div>
         <div class="flex items-center gap-3">
@@ -35,7 +35,7 @@
       <div v-for="stat in stats" :key="stat.label" class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4 opacity-80 group-hover:text-indigo-400 transition-colors">{{ stat.label }}</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-slate-800 tracking-tighter leading-none">{{ stat.value }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-slate-800 tracking-tighter leading-none">{{ stat.value }}</h3>
           <div :class="`p-3 ${stat.color} text-white rounded-xl shadow-lg shadow-indigo-100 group-hover:rotate-12 transition-transform`">
             <i :class="`pi ${stat.icon} text-lg`"></i>
           </div>

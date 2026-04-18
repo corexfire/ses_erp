@@ -10,7 +10,7 @@
             <span class="text-slate-300">/</span>
             <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-indigo-600">Struktur Produk (BOM)</span>
           </div>
-          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Engineering <span class="text-indigo-600 not-italic text-3xl font-light">Structure</span></h1>
+          <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Engineering <span class="text-indigo-600 not-italic text-xl md:text-2xl lg:text-3xl font-light">Structure</span></h1>
           <p class="text-slate-500 text-sm font-medium max-w-2xl text-indigo-900/60 leading-relaxed mt-3">Sistem manajemen Bill of Materials (BOM) tingkat lanjut. Definisi struktur produk, perakitan bertingkat, dan routing operasi produksi untuk jaminan presisi manufaktur dan efisiensi rantai pasok.</p>
         </div>
         <div class="flex items-center gap-3">
@@ -24,7 +24,7 @@
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4 opacity-80">Total Struktur BOM</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-slate-800 tracking-tighter leading-none">{{ boms.length }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-slate-800 tracking-tighter leading-none">{{ boms.length }}</h3>
           <div class="p-3 bg-slate-50 text-slate-400 rounded-xl border border-slate-100 group-hover:rotate-12 transition-transform">
             <i class="pi pi-sitemap text-lg"></i>
           </div>
@@ -34,7 +34,7 @@
       <div class="p-6 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-amber-500 tracking-[0.2em] mb-4">Main BOM (Primary)</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ boms.filter(b => b.isMain).length }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ boms.filter(b => b.isMain).length }}</h3>
           <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
             <i class="pi pi-star-fill text-lg text-amber-500"></i>
           </div>
@@ -44,7 +44,7 @@
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Akurasi Struktur</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-indigo-700 tracking-tighter leading-none">99.2%</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-indigo-700 tracking-tighter leading-none">99.2%</h3>
           <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100 group-hover:rotate-12 transition-transform"><i class="pi pi-verified text-lg"></i></div>
         </div>
       </div>
@@ -69,7 +69,7 @@
           </div>
           <div>
              <div class="text-[11px] font-black uppercase text-indigo-600 tracking-[0.2em] leading-none mb-2">Engineering Synchronization Ledger</div>
-             <h2 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase italic">Daftar <span class="text-indigo-600 not-italic">Struktur BOM</span></h2>
+             <h2 class="text-xl md:text-2xl lg:text-3xl font-black text-slate-800 tracking-tight leading-none uppercase italic">Daftar <span class="text-indigo-600 not-italic">Struktur BOM</span></h2>
           </div>
        </div>
 
@@ -207,7 +207,7 @@
                    <span class="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
                    <span class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em]">BOM Edition v{{ form.version || 1 }}</span>
                 </div>
-                <h2 class="text-4xl font-black text-slate-800 tracking-tight leading-none uppercase italic">BOM <span class="text-indigo-600 not-italic">Engineering Hub</span></h2>
+                <h2 class="text-2xl md:text-3xl lg:text-4xl font-black text-slate-800 tracking-tight leading-none uppercase italic">BOM <span class="text-indigo-600 not-italic">Engineering Hub</span></h2>
               </div>
             </div>
             <div class="flex items-center gap-4">

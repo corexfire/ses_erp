@@ -11,7 +11,7 @@
             <span class="text-slate-300">/</span>
             <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-emerald-600">Kendali Progres Produksi</span>
           </div>
-          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Shop Floor <span class="text-emerald-600 not-italic text-3xl">Control Hub</span></h1>
+          <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Shop Floor <span class="text-emerald-600 not-italic text-xl md:text-2xl lg:text-3xl">Control Hub</span></h1>
           <p class="text-slate-500 text-sm font-medium max-w-2xl text-emerald-900/60 leading-relaxed mt-3">Monitor real-time progres perintah kerja, alokasi workstation, dan performa operator di lantai produksi untuk memastikan pencapaian target secara presisi.</p>
         </div>
         <div class="flex items-center gap-3">
@@ -33,7 +33,7 @@
       <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Pesanan Aktif (WIP)</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ stats[0].value }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ stats[0].value }}</h3>
           <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
             <i class="pi pi-bolt text-lg text-emerald-400"></i>
           </div>
@@ -43,7 +43,7 @@
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Operasi Dalam Antrean</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ stats[1].value }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ stats[1].value }}</h3>
           <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100 group-hover:rotate-12 transition-transform"><i class="pi pi-clock text-lg"></i></div>
         </div>
       </div>
@@ -51,7 +51,7 @@
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Total Selesai (Shift)</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ stats[2].value }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ stats[2].value }}</h3>
           <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 group-hover:rotate-12 transition-transform"><i class="pi pi-check-circle text-lg"></i></div>
         </div>
       </div>

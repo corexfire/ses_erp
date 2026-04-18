@@ -1,5 +1,5 @@
 <template>
-  <aside class="flex flex-col border-r bg-white">
+  <aside class="flex h-full flex-col border-r bg-white">
     <div class="flex items-center gap-2 border-b px-4 py-3 shrink-0">
       <i class="pi pi-th-large text-slate-700" />
       <div class="text-sm font-semibold tracking-wide text-slate-800">Menu</div>

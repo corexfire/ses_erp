@@ -11,7 +11,7 @@
             <span class="text-slate-300">/</span>
             <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-emerald-600">Eksekusi Manufaktur</span>
           </div>
-          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Shop Floor <span class="text-emerald-600 not-italic text-3xl">Operations</span></h1>
+          <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Shop Floor <span class="text-emerald-600 not-italic text-xl md:text-2xl lg:text-3xl">Operations</span></h1>
           <p class="text-slate-500 text-sm font-medium max-w-2xl text-emerald-900/60 leading-relaxed mt-3">Pusat kendali eksekusi lantai produksi: Registrasikan pengeluaran bahan baku, penerimaan produk jadi, dan audit kualitas secara real-time untuk transparansi operasional.</p>
         </div>
         <div class="flex items-center gap-3">
@@ -32,7 +32,7 @@
       <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total Pengeluaran Bahan</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ issues.length }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ issues.length }}</h3>
           <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
             <i class="pi pi-arrow-right-arrow-left text-lg"></i>
           </div>
@@ -42,7 +42,7 @@
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Pending Audit Kualitas</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ qcs.filter(x => x.status === 'PENDING').length }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ qcs.filter(x => x.status === 'PENDING').length }}</h3>
           <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100"><i class="pi pi-search text-lg"></i></div>
         </div>
       </div>
@@ -50,8 +50,8 @@
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Rasio Lulus (Yield)</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-5xl font-black text-emerald-700 tracking-tighter leading-none">
-             {{ qcs.length > 0 ? (qcs.filter(q => q.status === 'PASSED').length / qcs.length * 100).toFixed(0) : '0' }}<span class="text-xl ml-1 font-black">%</span>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">
+             {{ qcs.length > 0 ? (qcs.filter(q => q.status === 'PASSED').length / qcs.length * 100).toFixed(0) : '0' }}<span class="text-sm md:text-lg lg:text-xl ml-1 font-black">%</span>
           </h3>
           <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 transition-all hover:rotate-12"><i class="pi pi-verified text-lg"></i></div>
         </div>
