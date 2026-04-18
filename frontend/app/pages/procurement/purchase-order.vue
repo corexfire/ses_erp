@@ -1,88 +1,157 @@
 <template>
   <div class="space-y-4">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-5">
-      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <div>
-          <div class="text-sm font-semibold text-slate-800">Pesanan Pembelian (Purchase Order)</div>
-          <div class="mt-1 text-sm text-slate-600">
-            Dokumen resmi perintah pembelian kepada Pemasok. Kelola rincian barang, pajak (VAT), dan jadwal pengiriman.
+    <!-- Header (Premium Procurement Style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100/50"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-indigo-400">Governance Core</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-indigo-600">Official Purchase Committments</span>
           </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">Pesanan <span class="text-indigo-600 italic text-3xl">Pembelian (PO)</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-2xl">Dokumen resmi perintah pembelian kepada Pemasok. Kelola komitmen keuangan, rincian barang, dan jadwal logistik perusahaan secara terpusat.</p>
         </div>
-        <div class="flex gap-2">
-          <Button label="Laporan PO" severity="secondary" size="small" outlined icon="pi pi-print" />
-          <Button v-if="canManage" label="+ Buat PO Baru" size="small" bg="bg-indigo-600" @click="openCreate" />
+        <div class="flex items-center gap-3">
+          <Button label="Laporan PO" size="small" icon="pi pi-print" class="p-button-rounded h-12 px-8 bg-slate-100 border-none text-slate-600 font-black text-[10px] uppercase hover:bg-slate-200 transition-all shadow-sm" />
+          <Button label="Buat PO Baru" size="small" icon="pi pi-plus-circle" class="p-button-rounded h-12 px-8 bg-indigo-600 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-indigo-100 hover:scale-105 active:scale-95 transition-all" v-if="canManage" @click="openCreate" />
         </div>
       </div>
     </div>
 
-    <!-- Data List and Filters -->
-    <div class="rounded-xl border bg-white p-5">
-      <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2 w-full md:w-auto">
-          <InputText v-model="search" placeholder="Cari Kode PO, Naman Pemasok..." class="w-full md:w-72 text-xs" />
-          <select v-model="statusFilter" class="p-2 border rounded-md text-xs bg-white text-slate-700 min-w-32">
-            <option value="">Semua Status</option>
-            <option value="DRAFT">Draft</option>
-            <option value="PENDING_APPROVAL">Pending Approval</option>
-            <option value="APPROVED">Open / Disetujui</option>
-            <option value="CANCELLED">Batal</option>
-          </select>
-          <Button label="Filter" severity="secondary" size="small" :disabled="loading" @click="load" />
+    <!-- Dynamic Procurement KPIs (High-Contrast Style) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
+      <div class="p-6 rounded-2xl bg-indigo-600 text-white shadow-xl flex flex-col justify-between border border-indigo-500 transition-all hover:bg-indigo-700 group">
+        <div class="text-[10px] font-black uppercase text-indigo-200 tracking-[0.2em] mb-4 opacity-80">Total PO Aktif</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ pos.length }}</h3>
+          <div class="p-3 bg-white/20 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
+            <i class="pi pi-file-check text-lg"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Nilai Pengadaan (Q2)</div>
+        <div class="flex flex-col items-start">
+           <div class="flex items-center gap-1">
+              <span class="text-xs font-black text-emerald-800 uppercase">Rp</span>
+              <h3 class="text-4xl font-black text-emerald-700 tracking-tighter leading-none">2.4B</h3>
+           </div>
+        </div>
+      </div>
+      
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Menunggu Persetujuan</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ pos.filter(p => p.status === 'PENDING_APPROVAL').length }}</h3>
+          <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100"><i class="pi pi-clock text-lg"></i></div>
+        </div>
+      </div>
+
+       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Efisiensi Budget</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-indigo-700 tracking-tighter leading-none">94.2%</h3>
+          <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100"><i class="pi pi-chart-pie text-lg"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Procurement Ledger (Premium Grid) -->
+    <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
+      <!-- Controls Bar -->
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-200/20 rounded-full blur-3xl"></div>
+        
+        <div class="relative flex items-center gap-4">
+           <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-indigo-400 shadow-xl"><i class="pi pi-shopping-bag text-xl"></i></div>
+           <div>
+              <h3 class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em] leading-none mb-1">Daftar Purchase Order</h3>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono">Fulfillment & Procurement Ledger</p>
+           </div>
+        </div>
+
+        <div class="relative flex items-center gap-3">
+          <div class="flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm p-1">
+            <i class="pi pi-search px-3 text-slate-300 text-xs"></i>
+            <InputText v-model="search" placeholder="Cari Kode PO / Pemasok..." class="border-none bg-transparent text-[11px] h-9 w-64 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" @keyup.enter="load" />
+            <div class="h-6 w-[1px] bg-slate-100 mx-2"></div>
+            <select v-model="statusFilter" class="bg-transparent text-[10px] font-black uppercase tracking-widest text-slate-500 pr-8 outline-none cursor-pointer hover:text-indigo-600 transition-colors">
+              <option value="">Semua Status</option>
+              <option value="DRAFT">Draft</option>
+              <option value="PENDING_APPROVAL">Pending Approval</option>
+              <option value="APPROVED">Open / Disetujui</option>
+              <option value="CANCELLED">Batal</option>
+            </select>
+          </div>
+          <Button icon="pi pi-refresh" severity="secondary" rounded text @click="load" :loading="loading" class="h-10 w-10 text-slate-400 hover:text-indigo-600 transition-all shadow-sm bg-white" />
         </div>
       </div>
 
       <!-- PO Table -->
-      <div class="overflow-x-auto rounded-lg border">
+      <div class="overflow-x-auto custom-scrollbar">
         <table class="w-full text-sm">
-          <thead class="bg-indigo-50/50 text-left text-xs text-indigo-900 border-b border-indigo-100 uppercase tracking-wider">
+          <thead class="bg-white text-left font-bold border-b border-slate-50">
             <tr>
-              <th class="px-4 py-3 font-semibold">Dokumen PO</th>
-              <th class="px-4 py-3 font-semibold">Pemasok (Vendor)</th>
-              <th class="px-4 py-3 font-semibold text-right">Penagihan (Grand Total)</th>
-              <th class="px-4 py-3 font-semibold">Termin & Pengiriman</th>
-              <th class="px-4 py-3 font-semibold text-center w-32">Status</th>
-              <th class="px-4 py-3 text-right font-semibold">Aksi</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-48">Dokumen PO</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Pemasok (Vendor)</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-48 border-l border-slate-50">Grand Total</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50">Termin & Pengiriman</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center w-40 border-l border-slate-50">Status</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-40 border-l border-slate-50">Aksi</th>
             </tr>
           </thead>
-          <tbody class="divide-y relative">
-            <tr v-if="loading">
-              <td colspan="6" class="px-4 py-16 text-center text-sm text-slate-500">
-                <i class="pi pi-spinner pi-spin mr-2"></i> Mengambil data Purchase Order...
+          <tbody class="divide-y divide-slate-50">
+             <tr v-if="loading">
+              <td colspan="6" class="py-24 text-center">
+                <i class="pi pi-spinner pi-spin text-4xl text-indigo-500 opacity-20"></i>
+                <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-indigo-600">Mensinkronisasi data procurement...</div>
               </td>
             </tr>
-            <!-- Iteration rows -->
-            <tr v-for="po in filteredPos" v-else :key="po.id" class="transition hover:bg-slate-50/70 group" :class="{'opacity-75': po.status === 'CANCELLED'}">
-              <td class="px-4 py-3 align-top">
-                <div class="font-bold text-slate-800 text-xs">{{ po.code }}</div>
-                <div class="text-[10px] text-slate-500 font-mono mt-1">🗓️ Order: {{ formatDate(po.orderDate) }}</div>
-                <div v-if="po.rfqId" class="text-[9px] bg-slate-100 text-slate-500 px-1 mt-1 rounded border border-slate-200 inline-block">via Sourcing</div>
+            
+            <tr v-for="po in filteredPos" v-else :key="po.id" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent hover:border-l-indigo-400" @click="openView(po)">
+              <td class="px-8 py-6 align-middle">
+                <div>
+                   <div class="font-black text-slate-900 text-[13px] tracking-tight leading-none mb-2 group-hover:text-indigo-700 transition-colors uppercase">{{ po.code }}</div>
+                   <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none flex items-center gap-1.5"><i class="pi pi-calendar text-indigo-400"></i> Order: {{ formatDate(po.orderDate) }}</div>
+                </div>
               </td>
-              <td class="px-4 py-3 align-top">
-                <div class="text-xs font-bold text-indigo-700">{{ po.supplier?.name || 'Unknown Vendor' }}</div>
-                <div class="text-[10px] text-slate-500 mt-1 max-w-[180px] truncate">{{ po.supplier?.address1 || po.supplierCode }}</div>
+              
+              <td class="px-6 py-6 align-middle border-l border-slate-50">
+                 <div class="font-black text-indigo-700 text-[11px] uppercase tracking-tight line-clamp-1 mb-1">{{ po.supplier?.name || 'Unknown Vendor' }}</div>
+                 <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none truncate max-w-[200px]">{{ po.supplier?.address1 || po.supplierCode }}</div>
               </td>
-              <td class="px-4 py-3 align-top text-right">
-                <div class="font-bold font-mono text-xs text-slate-800">{{ formatCurrency(po.grandTotal) }}</div>
-                <div class="text-[9px] text-slate-400 mt-0.5">Exc. Tax: <span class="text-slate-500">{{ formatCurrency(po.subtotal) }}</span></div>
+
+              <td class="px-6 py-6 align-middle text-right border-l border-slate-50 bg-slate-50/20 group-hover:bg-slate-100/30 transition-colors">
+                 <div class="text-sm font-black text-slate-900 font-mono tracking-tighter">{{ formatCurrency(po.grandTotal) }}</div>
+                 <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-1">DPP: {{ formatCurrency(po.subtotal) }}</div>
               </td>
-              <td class="px-4 py-3 align-top">
-                <div class="text-[10px] font-bold text-slate-700"><span class="text-slate-400 font-normal">ToP: </span>{{ formatPaymentTerm(po.paymentTerms) }}</div>
-                <div class="text-[10px] font-bold text-rose-600 mt-1"><span class="text-slate-400 font-normal">Tiba: </span>{{ formatDate(po.expectedDeliveryDate) }}</div>
+
+              <td class="px-6 py-6 align-middle border-l border-slate-50 bg-indigo-50/5 group-hover:bg-indigo-50/20 transition-colors">
+                 <div class="text-[9px] font-black text-slate-700 uppercase tracking-widest flex items-center gap-1.5"><i class="pi pi-credit-card text-slate-300"></i> ToP: {{ formatPaymentTerm(po.paymentTerms) }}</div>
+                 <div class="text-[9px] font-black text-rose-500 uppercase tracking-widest flex items-center gap-1.5 mt-2 transition-all group-hover:translate-x-1"><i class="pi pi-truck text-rose-300"></i> ETA: {{ formatDate(po.expectedDeliveryDate) }}</div>
               </td>
-              <td class="px-4 py-3 align-top text-center">
-                <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider" :class="getStatusStyle(po.status)">
-                  {{ po.status.replace('_', ' ') }}
-                </span>
+
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50 relative overflow-hidden">
+                 <div class="absolute left-0 bottom-0 w-2 h-full bg-indigo-400 opacity-20 transition-all group-hover:w-full"></div>
+                 <div class="relative z-10">
+                    <span class="inline-flex rounded-xl px-4 py-1.5 text-[9px] font-black tracking-[0.2em] border w-40 flex items-center justify-center shadow-sm backdrop-blur-sm" :class="getStatusStyle(po.status)">
+                       {{ po.status.replace('_', ' ') }}
+                    </span>
+                 </div>
               </td>
-              <td class="px-4 py-3 align-top text-right">
-                <Button label="Review" size="small" severity="secondary" outlined class="text-[10px] px-2 py-1" @click="openView(po)" />
+
+              <td class="px-8 py-6 align-middle text-right border-l border-slate-50">
+                 <Button label="Buka Dokumen" size="small" rounded outlined class="text-[10px] px-6 font-black py-2.5 h-10 border-slate-200 text-slate-600 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all uppercase tracking-widest" />
               </td>
             </tr>
+            
             <tr v-if="!loading && filteredPos.length === 0">
-              <td colspan="6" class="px-4 py-16 text-center text-slate-500 border-t">
-                <div class="text-4xl mb-3 opacity-50">📑</div>
-                Tidak ditemukan Purchase Order.
+              <td colspan="6" class="py-32 text-center text-slate-500">
+                 <i class="pi pi-file-excel text-6xl text-slate-100 mb-4 block"></i>
+                 <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Tidak ditemukan Purchase Order dalam sistem.</div>
               </td>
             </tr>
           </tbody>
@@ -90,168 +159,250 @@
       </div>
     </div>
 
-    <!-- Viewer/Editor Modal (ERP Grade PO Print Preview Style) -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-      <div class="w-full max-w-5xl rounded-xl border-t-[6px] border-t-indigo-600 border-x border-b bg-white shadow-2xl flex flex-col max-h-[95vh] h-full overflow-hidden">
-        
-        <div class="flex-1 overflow-y-auto bg-slate-50/50 p-6 flex justify-center">
-          
-          <!-- Virtual Document Paper -->
-          <div class="w-full max-w-4xl bg-white border border-slate-200 shadow-sm rounded p-8 flex flex-col gap-6 relative print:shadow-none print:border-none print:p-0">
-            
-            <div class="absolute right-8 top-8 opacity-20 pointer-events-none">
-              <span class="text-[80px] font-black uppercase rotate-[-15deg] block leading-none" :class="activePO?.status === 'CANCELLED' ? 'text-red-500' : 'text-slate-300'">
-                {{ activePO?.status || 'DRAFT' }}
-              </span>
+    <!-- Dialog Authorization Hub (Universal Centered Style) -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-7xl max-h-[95vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-slate-900">
+        <!-- Dialog Header -->
+        <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
+          <div class="relative flex items-center gap-6">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-indigo-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
+               <i class="pi pi-file-check text-3xl font-black"></i>
             </div>
-
-            <div class="flex justify-between items-start border-b-2 border-slate-800 pb-4">
-              <div>
-                <h1 class="text-2xl font-black text-slate-800 tracking-tighter">PURCHASE ORDER</h1>
-                <div class="text-xs text-slate-500 mt-1 font-mono">Doc No: {{ activePO?.code || 'PO-*NEW*' }}</div>
+            <div>
+              <div class="flex items-center gap-3">
+                <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase">Panel <span class="text-indigo-600 italic text-2xl">Otorisasi PO</span></h3>
+                <span v-if="activePO?.id" class="inline-flex rounded-xl text-[10px] font-black uppercase shadow-sm border px-4 py-1.5 h-8 items-center tracking-widest" :class="getStatusStyle(activePO.status)">
+                   {{ activePO.status }}
+                </span>
               </div>
-              <div class="text-right">
-                <div class="font-bold text-sm text-slate-800">PT SUPRA ERP SEMESTA (HQ)</div>
-                <div class="text-xs text-slate-500 mt-1 max-w-[200px]">SCBD Tower 2, Kawasan Niaga Terpadu<br/>Jakarta Selatan 12190</div>
-              </div>
+              <p class="text-[10px] font-black uppercase tracking-[0.2em] mt-3 px-1 border-l-2 border-indigo-500 text-indigo-600">Purchase Order Authorization & Documentation Hub</p>
             </div>
-
-            <div class="grid grid-cols-2 gap-8 text-xs">
-              <!-- To Vendor -->
-              <div class="border rounded-lg p-3 bg-slate-50 relative">
-                <div class="absolute top-[-8px] left-3 bg-slate-50 px-1 text-[10px] font-bold text-indigo-700 uppercase">Vendor (Pemasok)</div>
-                <div v-if="!isReadonly" class="space-y-2 mt-2">
-                   <select v-model="form.supplierId" class="w-full border p-1 rounded">
-                     <option value="">-- Pilih Supplier --</option>
-                     <option v-for="s in mockSuppliers" :value="s.id">{{ s.name }} ({{ s.code }})</option>
-                   </select>
-                </div>
-                <div v-else class="mt-1">
-                  <div class="font-bold text-sm text-slate-800">{{ activePO?.supplier?.name || 'Pemasok Belum Dipilih' }}</div>
-                  <div class="text-slate-600 mt-1 max-w-[250px] leading-relaxed">{{ activePO?.supplier?.address1 || '-' }}</div>
-                  <div class="text-slate-500 mt-1">Attn: Sales Dept</div>
-                </div>
-              </div>
-
-              <!-- Metrics -->
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="text-[9px] font-bold uppercase text-slate-400">Tgl Order</label>
-                  <div v-if="isReadonly" class="font-mono font-semibold text-slate-800">{{ formatDate(activePO?.orderDate) }}</div>
-                  <input v-else type="date" v-model="form.orderDate" class="w-full border rounded p-1 text-xs" />
-                </div>
-                <div>
-                  <label class="text-[9px] font-bold uppercase text-slate-400">Estimasi Tiba</label>
-                  <div v-if="isReadonly" class="font-mono font-semibold text-rose-600">{{ formatDate(activePO?.expectedDeliveryDate) }}</div>
-                  <input v-else type="date" v-model="form.expectedDeliveryDate" class="w-full border border-rose-200 rounded p-1 text-xs" />
-                </div>
-                <div class="col-span-2">
-                  <label class="text-[9px] font-bold uppercase text-slate-400">Termin Pembayaran (ToP)</label>
-                  <div v-if="isReadonly" class="font-bold text-slate-800">{{ formatPaymentTerm(activePO?.paymentTerms) }}</div>
-                  <select v-else v-model="form.paymentTerms" class="w-full border rounded p-1 text-xs">
-                     <option value="CASH">CASH</option>
-                     <option value="NET30">Net 30 Days</option>
-                     <option value="NET45">Net 45 Days</option>
-                     <option value="DP50_NET30">DP 50%, Net 30</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <!-- Shipping Info -->
-            <div class="bg-indigo-50/30 border border-indigo-100 p-3 rounded-lg text-xs">
-              <label class="text-[9px] font-bold uppercase text-indigo-400 block mb-1">Alamat Pengiriman (Ship To)</label>
-              <textarea v-if="!isReadonly" v-model="form.shippingAddress" rows="2" class="w-full border rounded p-1" placeholder="Lokasi Gudang Penerima"></textarea>
-              <div v-else class="font-semibold text-slate-700 leading-relaxed">{{ activePO?.shippingAddress || 'Head Office' }}</div>
-            </div>
-
-            <!-- Line Items Table -->
-            <div class="border rounded flex flex-col font-mono text-xs">
-              <div class="flex items-center justify-between bg-slate-800 text-white font-bold p-2 text-[10px] uppercase">
-                <span>Daftar Barang (Item Description)</span>
-                <Button v-if="!isReadonly" label="Tambah Baris" size="small" bg="bg-indigo-500 text-white" class="h-5 px-2 py-0 border-none hover:bg-indigo-400" @click="addLine" />
-              </div>
-              
-              <table class="w-full text-xs">
-                <thead class="bg-slate-50 border-b text-slate-500 text-left">
-                  <tr>
-                    <th class="p-2 w-8">#</th>
-                    <th class="p-2">Deskripsi Barang</th>
-                    <th class="p-2 text-right w-20">Qty</th>
-                    <th class="p-2 w-16 text-center">UOM</th>
-                    <th class="p-2 text-right w-28">Harga (IDR)</th>
-                    <th class="p-2 text-right w-32 border-l">Ammount (IDR)</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y text-slate-700">
-                  <tr v-for="(line, idx) in form.lines" :key="idx" class="hover:bg-slate-50">
-                    <td class="p-2 align-top">{{ idx + 1 }}</td>
-                    <td class="p-2 align-top">
-                      <textarea v-if="!isReadonly" v-model="line.desc" rows="1" class="w-full border rounded p-1 bg-white"></textarea>
-                      <span v-else class="font-sans font-semibold">{{ line.desc }}</span>
-                    </td>
-                    <td class="p-2 align-top text-right">
-                      <input v-if="!isReadonly" type="number" v-model.number="line.qty" class="w-full border rounded p-1 text-right" />
-                      <span v-else>{{ line.qty }}</span>
-                    </td>
-                    <td class="p-2 align-top text-center">
-                      <select v-if="!isReadonly" v-model="line.uomCode" class="w-[50px] border rounded p-1 text-center">
-                        <option value="PCS">PCS</option><option value="BOX">BOX</option><option value="UNIT">UNT</option>
-                      </select>
-                      <span v-else>{{ line.uomCode }}</span>
-                    </td>
-                    <td class="p-2 align-top text-right">
-                      <input v-if="!isReadonly" type="number" v-model.number="line.unitPrice" class="w-full border rounded p-1 text-right" />
-                      <span v-else>{{ formatCurrency(line.unitPrice) }}</span>
-                    </td>
-                    <td class="p-2 align-top text-right font-bold border-l bg-slate-50/50">
-                      {{ formatCurrency((line.qty || 0) * (line.unitPrice || 0)) }}
-                      <span v-if="!isReadonly" class="block text-red-500 text-[10px] cursor-pointer cursor mt-1" @click="removeLine(idx)">Hapus</span>
-                    </td>
-                  </tr>
-                  <tr v-if="form.lines.length === 0">
-                    <td colspan="6" class="p-6 text-center text-slate-400 font-sans text-xs italic">Belum ada rincian pembelian.</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <!-- Financial Summary Block -->
-              <div class="flex border-t border-slate-300">
-                <div class="flex-1 p-3 border-r">
-                   <label class="text-[9px] font-bold uppercase text-slate-400 mb-1 block font-sans">Keterangan / Notes</label>
-                   <textarea v-if="!isReadonly" v-model="form.notes" rows="3" class="w-full border rounded p-1 font-sans"></textarea>
-                   <div v-else class="text-slate-600 font-sans">{{ activePO?.notes || '-' }}</div>
-                </div>
-                <div class="w-64">
-                   <div class="flex justify-between p-2 border-b">
-                     <span class="text-slate-500 font-sans text-[10px] uppercase font-bold">Subtotal</span>
-                     <span>{{ formatCurrency(calculatedSubtotal) }}</span>
-                   </div>
-                   <div class="flex justify-between p-2 border-b text-rose-700 bg-rose-50/30">
-                     <span class="text-rose-700 font-sans text-[10px] uppercase font-bold">PPN (11%)</span>
-                     <span>{{ formatCurrency(calculatedTax) }}</span>
-                   </div>
-                   <div class="flex justify-between p-3 bg-slate-800 text-white text-sm">
-                     <span class="font-sans font-bold uppercase tracking-wider">Grand Total</span>
-                     <span class="font-bold border-b border-double border-white pb-0.5">{{ formatCurrency(calculatedGrand) }}</span>
-                   </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-4 pt-4 border-t border-slate-200 text-center text-[10px] text-slate-400 print:hidden">
-              Pusat Persetujuan ERP | Dicetak dari Sistem Digital
-            </div>
-
           </div>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="dialogOpen = false" class="relative z-10 hover:bg-slate-50 h-12 w-12" />
+        </div>
+        
+        <!-- Dialog Body (Workspace) -->
+        <div class="flex-1 overflow-y-hidden bg-slate-50/30 flex flex-col lg:row">
+           <div class="flex-1 overflow-y-auto custom-scrollbar p-10 flex flex-col gap-10">
+              
+              <!-- Document Paper Standard -->
+              <div class="w-full max-w-5xl mx-auto bg-white border border-slate-200 shadow-2xl rounded-[2.5rem] p-12 flex flex-col gap-12 relative overflow-hidden">
+                 
+                 <!-- Watermark -->
+                 <div class="absolute right-12 top-12 opacity-[0.03] pointer-events-none select-none">
+                    <span class="text-[120px] font-black uppercase rotate-[-15deg] block leading-none text-slate-900">
+                       {{ activePO?.status || 'DRAFT' }}
+                    </span>
+                 </div>
+
+                 <!-- Doc Header -->
+                 <div class="flex justify-between items-start border-b-4 border-slate-900 pb-8 relative z-10">
+                    <div class="space-y-4">
+                       <h1 class="text-4xl font-black text-slate-900 tracking-tighter leading-none uppercase">Purchase <span class="text-indigo-600 italic block mt-1">Order</span></h1>
+                       <div class="flex items-center gap-2">
+                          <span class="px-3 py-1 bg-slate-100 text-[11px] font-black text-slate-500 uppercase rounded italic tracking-widest">Doc No:</span>
+                          <span class="text-[13px] font-black text-indigo-700 font-mono tracking-widest">{{ activePO?.code || 'PO-*NEW*' }}</span>
+                       </div>
+                    </div>
+                    <div class="text-right space-y-2">
+                       <div class="text-xl font-black text-slate-900 uppercase italic">PT Supra ERP Semesta (HQ)</div>
+                       <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">SCBD Tower 2, Kawasan Niaga Terpadu<br/>Jakarta Selatan 12190, Indonesia</p>
+                       <div class="text-[10px] font-black text-indigo-600 uppercase border border-indigo-100 inline-block px-3 py-1 rounded-full">Enterprise Grade Procurement</div>
+                    </div>
+                 </div>
+
+                 <!-- Entity Connection -->
+                 <div class="grid grid-cols-2 gap-12 relative z-10">
+                    <!-- Supplier Info -->
+                    <div class="relative">
+                       <div class="flex items-center gap-3 mb-6">
+                          <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-[10px]">01</div>
+                          <div class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Partner / Vendor</div>
+                       </div>
+                       
+                       <div class="p-8 rounded-[2rem] bg-slate-50 border-2 border-slate-100 shadow-inner group transition-all hover:bg-indigo-50/50 hover:border-indigo-100 min-h-[160px]">
+                          <div v-if="!isReadonly" class="space-y-4">
+                             <select v-model="form.supplierId" class="w-full h-12 border-none rounded-xl px-4 text-[12px] font-black text-slate-900 bg-white shadow-lg outline-none focus:ring-4 focus:ring-indigo-400 transition-all">
+                                <option value="">-- Pilih Supplier --</option>
+                                <option v-for="s in mockSuppliers" :value="s.id">{{ s.name }} ({{ s.code }})</option>
+                             </select>
+                             <p class="text-[9px] font-bold text-slate-400 italic px-2">Pastikan Vendor telah terverifikasi di Vendor Module.</p>
+                          </div>
+                          <div v-else class="space-y-3">
+                             <div class="text-lg font-black text-slate-900 uppercase tracking-tight group-hover:text-indigo-700 transition-colors">{{ activePO?.supplier?.name || 'Pemasok Belum Dipilih' }}</div>
+                             <div class="text-[11px] font-bold text-slate-500 leading-relaxed max-w-[300px]">{{ activePO?.supplier?.address1 || '-' }}</div>
+                             <div class="flex items-center gap-2 mt-4">
+                                <span class="px-2 py-0.5 bg-slate-200 text-[8px] font-black uppercase rounded tracking-widest text-slate-600">Attn:</span>
+                                <span class="text-[10px] font-black text-slate-400 italic font-mono uppercase">Sales Dept / Finance Hub</span>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+
+                    <!-- Logistics & Terms -->
+                    <div class="relative">
+                       <div class="flex items-center gap-3 mb-6">
+                          <div class="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600 font-black text-[10px]">02</div>
+                          <div class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Logistics & Payments</div>
+                       </div>
+
+                       <div class="grid grid-cols-2 gap-6 p-8 rounded-[2rem] border-2 border-slate-100 bg-slate-50 shadow-inner transition-all hover:bg-slate-50/80">
+                          <div class="space-y-3">
+                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block px-1">Tgl Order</label>
+                             <input v-if="!isReadonly" type="date" v-model="form.orderDate" class="w-full h-12 border-none rounded-xl px-4 text-[12px] font-black text-slate-900 bg-white shadow-lg outline-none" />
+                             <div v-else class="font-mono font-black text-[13px] text-slate-800 tracking-widest bg-white rounded-xl px-4 h-12 flex items-center shadow-sm">
+                                {{ formatDate(activePO?.orderDate) }}
+                             </div>
+                          </div>
+                          <div class="space-y-3">
+                             <label class="text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] block px-1">Target Tiba (ETA)</label>
+                             <input v-if="!isReadonly" type="date" v-model="form.expectedDeliveryDate" class="w-full h-12 border-none rounded-xl px-4 text-[12px] font-black text-rose-700 bg-white shadow-lg outline-none" />
+                             <div v-else class="font-mono font-black text-[13px] text-rose-600 tracking-widest bg-white rounded-xl px-4 h-12 flex items-center shadow-sm border-l-4 border-l-rose-500">
+                                {{ formatDate(activePO?.expectedDeliveryDate) }}
+                             </div>
+                          </div>
+                          <div class="col-span-2 space-y-3 mt-2">
+                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block px-1">Termin Pembayaran (ToP)</label>
+                             <select v-if="!isReadonly" v-model="form.paymentTerms" class="w-full h-12 border-none rounded-xl px-4 text-[12px] font-black text-slate-900 bg-white shadow-lg outline-none">
+                                <option value="CASH">CASH</option>
+                                <option value="NET30">Net 30 Days</option>
+                                <option value="NET45">Net 45 Days</option>
+                                <option value="DP50_NET30">DP 50%, Net 30</option>
+                             </select>
+                             <div v-else class="font-black text-[12px] text-slate-800 tracking-widest bg-white rounded-xl px-4 h-12 flex items-center shadow-sm transition-all hover:bg-indigo-50 uppercase">
+                                <i class="pi pi-credit-card mr-3 text-indigo-400"></i> {{ formatPaymentTerm(activePO?.paymentTerms) }}
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+
+                 <!-- Shipping Hub Preview -->
+                 <div class="space-y-4 relative z-10 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                       <div class="flex items-center gap-3">
+                          <div class="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center text-teal-600 font-black text-[10px]">03</div>
+                          <div class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Destinasi Pengiriman (Ship To)</div>
+                       </div>
+                    </div>
+                    <div class="p-8 rounded-[2rem] border-2 border-teal-100 bg-teal-50/20 shadow-sm relative overflow-hidden group/ship">
+                       <div class="absolute -right-12 -bottom-12 opacity-[0.05] group-hover/ship:scale-110 transition-transform"><i class="pi pi-truck text-[140px]"></i></div>
+                       <textarea v-if="!isReadonly" v-model="form.shippingAddress" rows="2" class="w-full border-none rounded-2xl p-6 text-[13px] font-black text-slate-900 bg-white shadow-xl outline-none focus:ring-4 focus:ring-teal-400 resize-none transition-all" placeholder="Lokasi Gudang Penerima / Proyek..."></textarea>
+                       <div v-else class="relative z-10 font-black text-slate-700 leading-relaxed uppercase italic text-sm tracking-tight"><i class="pi pi-map-marker mr-2 text-teal-500"></i> {{ activePO?.shippingAddress || 'Head Office (Gudang Utama)' }}</div>
+                    </div>
+                 </div>
+
+                 <!-- Line Items Matrix -->
+                 <div class="space-y-6 relative z-10 animate-fade-in-up">
+                    <div class="flex items-center justify-between">
+                       <div class="flex items-center gap-3">
+                          <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white font-black text-[10px]">04</div>
+                          <div class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em]">Rincian Barang & Kalkulasi Harga</div>
+                       </div>
+                       <Button v-if="!isReadonly" label="Tambah Baris Pesanan" icon="pi pi-plus" size="small" rounded elevated class="text-[10px] font-black uppercase tracking-widest bg-slate-900 border-none text-white px-8 h-12 shadow-xl hover:scale-105 active:scale-95 transition-all" @click="addLine" />
+                    </div>
+
+                    <div class="border-4 border-slate-900 rounded-[2.5rem] overflow-hidden shadow-2xl">
+                       <table class="w-full text-sm border-collapse">
+                          <thead class="bg-slate-900 text-white">
+                             <tr>
+                                <th class="px-8 py-5 text-[9px] font-black uppercase tracking-[0.2em] w-16 text-center italic text-slate-500 border-r border-slate-800">#</th>
+                                <th class="px-8 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-left">Deskripsi Barang / Specification</th>
+                                <th class="px-8 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-center w-32 border-l border-slate-800">Qty</th>
+                                <th class="px-8 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-center w-32 border-l border-slate-800">Unit</th>
+                                <th class="px-8 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-right w-52 border-l border-slate-800">Harga Satuan (IDR)</th>
+                                <th class="px-10 py-5 text-[9px] font-black uppercase tracking-[0.2em] text-right w-64 border-l border-slate-700 bg-slate-800">Total Harga</th>
+                             </tr>
+                          </thead>
+                          <tbody class="divide-y divide-slate-100 bg-white">
+                             <tr v-for="(line, idx) in form.lines" :key="idx" class="group/line hover:bg-slate-50 transition-colors">
+                                <td class="px-8 py-6 text-center font-mono font-black text-slate-300 border-r border-slate-100">{{ idx + 1 }}</td>
+                                <td class="px-8 py-6 font-black text-slate-800 uppercase tracking-tight">
+                                   <input v-if="!isReadonly" v-model="line.desc" class="w-full border-none bg-transparent outline-none focus:text-indigo-600 transition-colors" placeholder="Masukkan Nama Barang..." />
+                                   <span v-else>{{ line.desc }}</span>
+                                </td>
+                                <td class="px-8 py-6 text-center border-l border-slate-100">
+                                   <input v-if="!isReadonly" type="number" v-model.number="line.qty" class="w-full border-none bg-transparent text-center font-black font-mono outline-none" />
+                                   <span v-else class="font-mono font-black text-slate-600">{{ line.qty }}</span>
+                                </td>
+                                <td class="px-8 py-6 text-center border-l border-slate-100">
+                                   <select v-if="!isReadonly" v-model="line.uomCode" class="bg-transparent border-none font-black text-slate-400 uppercase text-[10px] tracking-widest outline-none cursor-pointer">
+                                      <option value="PCS">PCS</option><option value="BOX">BOX</option><option value="UNIT">UNIT</option><option value="SET">SET</option>
+                                   </select>
+                                   <span v-else class="font-black text-slate-400 uppercase text-[10px] tracking-widest">{{ line.uomCode }}</span>
+                                </td>
+                                <td class="px-8 py-6 text-right border-l border-slate-100 font-mono font-bold text-slate-600">
+                                   <input v-if="!isReadonly" type="number" v-model.number="line.unitPrice" class="w-full border-none bg-transparent text-right font-black font-mono outline-none" />
+                                   <span v-else>{{ formatCurrency(line.unitPrice) }}</span>
+                                </td>
+                                <td class="px-10 py-6 text-right font-black font-mono border-l border-slate-100 bg-slate-50 relative group-hover/line:bg-indigo-50/30 transition-colors">
+                                   <div class="flex items-center justify-end gap-1 text-[16px] tracking-tighter text-slate-900 group-hover/line:text-indigo-700 transition-colors">
+                                      <span class="text-[10px] italic text-slate-400">RP</span>{{ formatCurrency((line.qty || 0) * (line.unitPrice || 0)) }}
+                                   </div>
+                                   <Button v-if="!isReadonly" icon="pi pi-trash" rounded text severity="danger" class="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 opacity-0 group-hover/line:opacity-100 transition-all hover:bg-rose-50" @click="removeLine(idx)" />
+                                </td>
+                             </tr>
+                             <tr v-if="form.lines.length === 0">
+                                <td colspan="6" class="py-24 text-center text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] italic">Belum ada rincian pembelian yang diinput.</td>
+                             </tr>
+                          </tbody>
+                          <tfoot class="bg-slate-900 text-white font-mono uppercase tracking-widest border-t-2 border-slate-700">
+                             <tr>
+                                <td colspan="4" class="px-8 py-8 border-r border-slate-800">
+                                   <div class="flex flex-col gap-2">
+                                      <label class="text-[9px] font-black text-slate-500 mb-1">Catatan Dokumen / Notes</label>
+                                      <textarea v-if="!isReadonly" v-model="form.notes" rows="3" class="w-full border-none rounded-xl p-4 text-[11px] font-black text-slate-300 bg-slate-800/50 outline-none focus:ring-1 focus:ring-slate-700 transition-all" placeholder="Catatan internal atau syarat distribusi..."></textarea>
+                                      <p v-else class="text-[11px] font-medium leading-relaxed italic text-slate-400 max-w-lg">{{ activePO?.notes || 'Tidak ada catatan khusus.' }}</p>
+                                   </div>
+                                </td>
+                                <td class="p-0 border-l border-slate-800" colspan="2">
+                                   <div class="flex flex-col divide-y divide-slate-800">
+                                      <div class="flex justify-between items-center p-6 bg-slate-800/20">
+                                         <span class="text-[10px] font-black text-slate-500 tracking-[0.2em]">Total DPP</span>
+                                         <span class="text-lg font-black tracking-tighter text-slate-300">Rp {{ formatCurrency(calculatedSubtotal) }}</span>
+                                      </div>
+                                      <div class="flex justify-between items-center p-6 bg-amber-900/10">
+                                         <span class="text-[10px] font-black text-amber-500 tracking-[0.2em]">VAT/PPN (11%)</span>
+                                         <span class="text-lg font-black tracking-tighter text-amber-400">Rp {{ formatCurrency(calculatedTax) }}</span>
+                                      </div>
+                                      <div class="flex justify-between items-center p-8 bg-indigo-600 shadow-[inset_0_4px_10px_rgba(0,0,0,0.3)] border-t-4 border-white">
+                                         <span class="text-[11px] font-black text-indigo-100 tracking-[0.3em]">Grand Total</span>
+                                         <span class="text-3xl font-black tracking-tighter text-white border-b-4 border-double border-white pb-1">Rp {{ formatCurrency(calculatedGrand) }}</span>
+                                      </div>
+                                   </div>
+                                </td>
+                             </tr>
+                          </tfoot>
+                       </table>
+                    </div>
+                 </div>
+
+                 <!-- Footer Gate -->
+                 <div class="flex justify-between items-center pt-8 border-t border-slate-100 relative z-10 print:hidden">
+                    <div class="flex items-center gap-6">
+                       <div class="flex flex-col">
+                          <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Digital Auth Center</span>
+                          <span class="text-[10px] font-black text-slate-800 uppercase italic">Verified by Enterprise Core</span>
+                       </div>
+                    </div>
+                    <div class="text-right">
+                       <p class="text-[9px] font-bold text-slate-300 italic">Harap periksa kembali rincian unit dan harga sebelum menekan tombol Submit.</p>
+                    </div>
+                 </div>
+              </div>
+           </div>
         </div>
 
-        <div class="p-4 border-t bg-slate-50 flex justify-between shrink-0 rounded-b-xl shadow-inner">
-          <Button label="Tutup Dokumen" severity="secondary" size="small" @click="dialogOpen = false" outlined />
-          <div class="flex gap-2">
-            <Button v-if="isReadonly" label="Cetak PDF / Print" severity="secondary" size="small" icon="pi pi-print" class="bg-white" />
-            <Button v-if="!isReadonly" label="Simpan sebagai Draft" size="small" :loading="saving" :disabled="saving || form.lines.length === 0" @click="save" class="bg-indigo-600 border-none text-white hover:bg-indigo-700" />
-            <Button v-if="isReadonly && canManage && activePO?.status === 'DRAFT'" label="Submit untuk Persetujuan" severity="success" size="small" icon="pi pi-check" />
+        <!-- Dialog Action Gates -->
+        <div class="p-10 border-t bg-white flex justify-between items-center shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] rounded-b-[2.5rem]">
+          <Button label="Keluar dari Panel" severity="secondary" text @click="dialogOpen = false" class="px-8 h-12 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 rounded-xl" />
+          <div class="flex gap-4">
+            <Button v-if="isReadonly" label="Cetak PDF / Pratinjau" severity="secondary" icon="pi pi-print" size="large" rounded class="h-14 px-10 font-black text-[10px] uppercase tracking-widest bg-white border-2 border-slate-200 text-slate-700 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-xl" />
+            
+            <Button v-if="!isReadonly" label="Simpan sebagai Draft" severity="primary" size="large" icon="pi pi-save" :loading="saving" :disabled="saving || form.lines.length === 0" @click="save" class="h-14 px-12 bg-indigo-600 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-indigo-100 hover:scale-105 active:scale-95 transition-all" />
+            
+            <Button v-if="isReadonly && canManage && activePO?.status === 'DRAFT'" label="Submit Otorisasi" severity="success" size="large" icon="pi pi-check-circle" class="h-14 px-12 bg-emerald-600 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-emerald-100 hover:scale-105 active:scale-95 transition-all" />
           </div>
         </div>
       </div>
@@ -432,11 +583,55 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.animate-scale-in { 
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.95); } 
+  to { opacity: 1; transform: scale(1); } 
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+  background: #cbd5e1; 
+}
+
+:deep(.p-inputtext) {
+   border-color: #f1f5f9 !important;
+   box-shadow: none !important;
+   background-color: #f8fafc !important;
+   border-radius: 16px !important;
+}
+
+:deep(.p-button-rounded) {
+  border-radius: 9999px !important;
+}
+
 /* Print reset helpers */
 @media print {
   .fixed { position: static !important; }
   .overflow-hidden { overflow: visible !important; }
   .max-h-[95vh] { max-height: none !important; height: auto !important; }
-  .bg-black\/40 { background: white !important; }
+  .bg-slate-900\/60 { background: white !important; }
+  .p-10 { padding: 0 !important; }
 }
 </style>

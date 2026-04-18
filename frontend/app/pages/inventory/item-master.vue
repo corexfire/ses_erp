@@ -1,116 +1,168 @@
 <template>
   <div class="space-y-4">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-5">
-      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <div>
-          <div class="text-sm font-semibold text-slate-800">Master Data Inventaris (Item Master)</div>
-          <div class="mt-1 text-sm text-slate-600">
-            Jantung informasi seluruh material & produk perusahaan. Mengelola pengelompokan Barang Mentah hingga Barang Jadi, melacak unit konversi, barcode, sampai manajemen parameter suplai logistik.
+    <!-- Header (Premium Inventory Logistics Style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-100">Catalog Governance</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-emerald-600">Master Data Inventaris</span>
           </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">Item <span class="text-emerald-600 italic text-3xl">Master</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-2xl text-emerald-900/60 leading-relaxed mt-3">Jantung informasi seluruh material & produk perusahaan. Mengelola pengelompokan Barang Mentah hingga Barang Jadi, melacak unit konversi, barcode, sampai manajemen parameter suplai logistik.</p>
         </div>
-        <div class="flex gap-2">
-          <Button label="Sinkronisasi Katalog Pusat" severity="secondary" size="small" outlined icon="pi pi-sync" />
-          <Button v-if="canManage" label="+ Daftarkan Item Baru" size="small" bg="bg-emerald-600" @click="openCreate" />
+        <div class="flex items-center gap-3">
+          <Button label="Sinkronisasi Katalog Pusat" size="small" icon="pi pi-sync" class="p-button-rounded h-12 px-8 bg-slate-100 border-none text-slate-600 font-black text-[10px] uppercase hover:bg-slate-200 transition-all shadow-sm" />
+          <Button label="+ Daftarkan Item Baru" size="small" icon="pi pi-plus" class="p-button-rounded h-12 px-8 bg-emerald-600 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-emerald-100 hover:scale-105 active:scale-95 transition-all" v-if="canManage" @click="openCreate" />
         </div>
       </div>
     </div>
 
-    <!-- Data List and Filters -->
-    <div class="rounded-xl border bg-white p-5">
-      <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2 w-full md:w-auto">
-          <InputText v-model="search" placeholder="Cari Kode Barang / SKU / Nama Produk..." class="w-full md:w-80 text-xs" />
-          <select v-model="groupFilter" class="p-2 border rounded-md text-xs bg-white text-slate-700 min-w-32">
-            <option value="">Semua Kategori</option>
-            <option v-for="g in groups" :key="g.id" :value="g.id">{{ g.name }}</option>
-          </select>
-          <Button label="Filter" severity="secondary" size="small" :disabled="loading" @click="load" />
+    <!-- Dynamic Catalog Telemetry KPIs (High-Contrast Style) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
+      <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
+        <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total Katalog SKUs</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ items.length }}</h3>
+          <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
+            <i class="pi pi-box text-lg"></i>
+          </div>
         </div>
       </div>
 
-      <!-- Item Master Table -->
-      <div class="overflow-x-auto rounded-lg border">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Item Tidak Aktif</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-slate-700 tracking-tighter leading-none">{{ items.filter(x => !x.isActive).length }}</h3>
+          <div class="p-3 bg-rose-50 text-rose-600 rounded-xl border border-rose-100"><i class="pi pi-ban text-lg"></i></div>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Out of Stock Alert</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">8<span class="text-xl ml-1">SKUs</span></h3>
+          <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100 transition-all hover:rotate-12"><i class="pi pi-exclamation-triangle text-lg"></i></div>
+        </div>
+      </div>
+
+       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden group">
+        <div class="absolute right-0 top-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-all"></div>
+        <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Valuasi Katalog</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-2xl font-black text-slate-700 tracking-tight leading-none uppercase">High <span class="text-indigo-600 italic">Value</span></h3>
+          <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl border border-indigo-100 group-hover:rotate-12 transition-transform"><i class="pi pi-chart-line text-lg"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventory Ledger (Premium Grid Architecture) -->
+    <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
+      <!-- Controls Bar -->
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-200/20 rounded-full blur-3xl"></div>
+        
+        <div class="relative flex items-center gap-4">
+           <div class="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-xl transition-transform hover:rotate-6"><i class="pi pi-box text-xl"></i></div>
+           <div>
+              <h3 class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em] leading-none mb-1">Audit Ledger Katalog Aset</h3>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono">Master Product Inventory Records</p>
+           </div>
+        </div>
+
+        <div class="relative flex items-center gap-3">
+          <div class="flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm p-1">
+            <i class="pi pi-search px-3 text-slate-300 text-xs"></i>
+            <InputText v-model="search" placeholder="Cari Kode Barang / SKU..." class="border-none bg-transparent text-[11px] h-9 w-64 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" @keyup.enter="load" />
+          </div>
+          <Button icon="pi pi-refresh" severity="secondary" rounded text @click="load" :loading="loading" class="h-10 w-10 text-slate-400 hover:text-emerald-600 transition-all shadow-sm bg-white" />
+        </div>
+      </div>
+
+      <!-- Item Table -->
+      <div class="overflow-x-auto custom-scrollbar">
         <table class="w-full text-sm">
-          <thead class="bg-emerald-900 text-left text-xs text-emerald-50 border-b-2 border-emerald-950 uppercase tracking-wider">
+          <thead class="bg-white text-left font-bold border-b border-slate-50 text-slate-900 uppercase">
             <tr>
-              <th class="px-4 py-3 font-semibold">SKU / Katalog Utama</th>
-              <th class="px-4 py-3 font-semibold text-center w-36">Klasifikasi & Kategori</th>
-              <th class="px-4 py-3 font-semibold text-center">Unit Dasar (Base UOM)</th>
-              <th class="px-4 py-3 font-semibold text-center">Setup Operasional</th>
-              <th class="px-4 py-3 font-semibold text-center">Pengendalian & Valuasi</th>
-              <th class="px-4 py-3 text-right font-semibold">Tindakan</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[400px]">Identitas SKU / Katalog Utama</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center w-48">Klasifikasi Barang</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center w-36">Unit Dasar</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center w-40">Setup Operasional</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center border-l border-slate-50 w-56">Pengendalian & Valuasi</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-36 border-l border-slate-50">Aksi</th>
             </tr>
           </thead>
-          <tbody class="divide-y relative">
+          <tbody class="divide-y divide-slate-50">
              <tr v-if="loading">
-              <td colspan="6" class="px-4 py-16 text-center text-sm text-slate-500">
-                <i class="pi pi-spinner pi-spin mr-2"></i> Merender struktur katalog aset...
+              <td colspan="6" class="py-24 text-center">
+                <i class="pi pi-spinner pi-spin text-4xl text-emerald-500 opacity-20"></i>
+                <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-emerald-600">Sinkronisasi struktur katalog aset perusahaan...</div>
               </td>
             </tr>
-            <!-- Iteration rows -->
-            <tr v-for="item in filteredItems" v-else :key="item.id" class="transition hover:bg-slate-50 group">
-              <!-- Item -->
-              <td class="px-4 py-3 align-middle">
-                <div class="flex items-center gap-3">
-                   <div class="w-10 h-10 rounded border bg-slate-100/50 flex justify-center items-center shrink-0">
-                      <i class="pi pi-box text-xl text-slate-400"></i>
-                   </div>
-                   <div>
-                     <div class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                        {{ item.code }}
-                     </div>
-                     <div class="text-xs text-slate-600 font-semibold mt-0.5" :title="item.name">{{ item.name }}</div>
-                   </div>
-                </div>
+            
+            <tr v-for="item in filteredItems" v-else :key="item.id" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent" :class="item.isActive ? 'hover:border-l-emerald-400' : 'hover:border-l-rose-400 bg-slate-100/10 opacity-70'">
+              <td class="px-8 py-6 align-middle">
+                 <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
+                       <i class="pi pi-box text-2xl"></i>
+                    </div>
+                    <div>
+                       <div class="font-mono text-[11px] font-black text-slate-500 tracking-tight group-hover:text-emerald-700 transition-colors uppercase">
+                          {{ item.code }}
+                       </div>
+                       <div class="mt-1 font-black text-[13px] text-slate-800 uppercase tracking-tight leading-none group-hover:text-emerald-600 transition-colors">
+                          {{ item.name }}
+                       </div>
+                    </div>
+                 </div>
               </td>
               
-              <!-- Kategori -->
-              <td class="px-4 py-3 align-middle text-center">
-                <span class="inline-flex rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700 border shadow-sm">
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50">
+                <span class="inline-flex rounded-xl px-4 py-1.5 text-[9px] font-black tracking-[0.2em] bg-slate-100 text-slate-600 border border-slate-200 uppercase shadow-sm group-hover:bg-emerald-50 group-hover:text-emerald-700 transition-all">
                   {{ item.itemGroup?.name || 'UMUM' }}
                 </span>
-                <div class="mt-1 flex justify-center gap-1">
-                   <div v-if="item.isSalesItem" class="text-[8px] bg-blue-100 text-blue-700 font-bold px-1 rounded shadow-sm">Dijual (Sale)</div>
-                   <div v-if="item.isPurchaseItem" class="text-[8px] bg-amber-100 text-amber-700 font-bold px-1 rounded shadow-sm">Dibeli (Purc)</div>
+                <div class="mt-2 flex justify-center gap-1.5">
+                   <div v-if="item.isSalesItem" class="text-[7px] font-black uppercase px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100 tracking-widest">Sale</div>
+                   <div v-if="item.isPurchaseItem" class="text-[7px] font-black uppercase px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-100 tracking-widest">Purc</div>
                 </div>
               </td>
 
-              <!-- Base Unit & Prices -->
-              <td class="px-4 py-3 align-middle text-center">
-                 <div class="font-black text-rose-700 text-xs px-2 bg-rose-50 border border-rose-100 inline-block rounded uppercase shadow-inner pt-[1px]">{{ item.baseUomCode }}</div>
-                 <div class="mt-1 text-[9px] font-bold text-slate-400 tracking-wider">
-                    {{ (item.uoms || []).length }} TIPE SATUAN
-                 </div>
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50">
+                 <div class="font-black text-emerald-700 text-[11px] px-3 py-1 bg-emerald-50 border border-emerald-100 inline-block rounded-xl tracking-widest shadow-sm uppercase group-hover:scale-110 transition-transform">{{ item.baseUomCode }}</div>
+                 <div class="mt-1 text-[8px] font-black text-slate-400 tracking-[0.2em] uppercase">Base Unit</div>
               </td>
-              
-              <!-- Setup Operasional -->
-              <td class="px-4 py-3 align-middle text-center">
-                 <div class="flex flex-col items-center gap-1">
-                    <span v-if="item.isActive" class="text-[9px] bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold px-2 py-0.5 rounded-full"><i class="pi pi-circle-fill text-[7px] mr-1 text-emerald-500 animate-pulse"></i>AKTIF</span>
-                    <span v-else class="text-[9px] bg-rose-50 border border-rose-200 text-rose-700 font-bold px-2 py-0.5 rounded-full"><i class="pi pi-ban text-[7px] mr-1 text-rose-500"></i>NONAKTIF</span>
+
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50">
+                 <div class="relative flex flex-col items-center gap-1.5">
+                    <span v-if="item.isActive" class="inline-flex rounded-full px-4 py-1.5 text-[9px] font-black tracking-[0.2em] bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase shadow-sm group-hover:scale-105 transition-all">
+                       <i class="pi pi-circle-fill text-[7px] mr-2 text-emerald-500 animate-pulse"></i> AKTIF
+                    </span>
+                    <span v-else class="inline-flex rounded-full px-4 py-1.5 text-[9px] font-black tracking-[0.2em] bg-rose-50 text-rose-700 border border-rose-200 uppercase shadow-sm">
+                       <i class="pi pi-ban text-[7px] mr-2"></i> FREEZED
+                    </span>
                  </div>
               </td>
 
-              <!-- Pengendalian -->
-              <td class="px-4 py-3 align-middle text-center">
-                 <div class="text-[10px] text-slate-600 font-semibold mb-1 relative group-hover:text-indigo-600 transition-colors cursor-help">
-                    <i class="pi pi-tag text-[9px] opacity-70"></i> Valuation: <b>{{ item.valuationMethod === 'MOVING_AVERAGE' ? 'M-AVG' : item.valuationMethod }}</b>
-                 </div>
-                 <div class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded" :class="item.trackingType !== 'NONE' ? 'bg-indigo-50 text-indigo-700 border border-indigo-200' : 'text-slate-400'">
-                    TRACKING: {{ item.trackingType === 'NONE' ? 'GENERIC' : item.trackingType }}
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50 bg-slate-50/20 group-hover:bg-slate-100/30 transition-colors">
+                 <div class="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-1.5">Val: <span class="text-indigo-600 italic">{{ item.valuationMethod === 'MOVING_AVERAGE' ? 'M-AVG' : item.valuationMethod }}</span></div>
+                 <div class="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-lg border w-32 mx-auto transition-all" :class="item.trackingType !== 'NONE' ? 'bg-indigo-50 text-indigo-700 border-indigo-100 shadow-sm' : 'bg-slate-100 text-slate-400 border-slate-200'">
+                    {{ item.trackingType === 'NONE' ? 'GENERIC' : item.trackingType }}
                  </div>
               </td>
-              
-              <!-- Actions -->
-              <td class="px-4 py-3 align-middle text-right">
-                <Button label="Kelola SKU" size="small" severity="secondary" outlined class="text-[10px] px-3 font-bold py-1 text-center hover:bg-slate-100" @click="openView(item)" />
+
+              <td class="px-8 py-6 align-middle text-right border-l border-slate-50">
+                 <div class="flex flex-col gap-2 items-end opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
+                    <Button label="Kelola SKU" severity="secondary" rounded outlined @click="openView(item)" class="h-9 px-6 border-slate-200 text-slate-600 hover:bg-slate-900 hover:text-white transition-all text-[9px] font-black uppercase tracking-widest" />
+                 </div>
               </td>
             </tr>
+            
             <tr v-if="!loading && filteredItems.length === 0">
-              <td colspan="6" class="px-4 py-16 text-center text-slate-500 border-t">
-                <div class="text-4xl mb-3 opacity-50 text-emerald-200"><i class="pi pi-box"></i></div>
-                Rak inventaris kosong. Belum ada Master Data yang didaftarkan.
+              <td colspan="6" class="py-32 text-center text-slate-500">
+                 <div class="text-6xl mb-4 opacity-10">⚓</div>
+                 <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Rak inventaris kosong. Belum ada Master Data yang didaftarkan.</div>
               </td>
             </tr>
           </tbody>
@@ -118,211 +170,214 @@
       </div>
     </div>
 
-    <!-- Viewer/Editor Modal (Item Master Configuration) -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-2 sm:p-4 backdrop-blur-sm relative">
-      <div class="w-full max-w-[1200px] h-full sm:h-[95vh] rounded-xl border bg-slate-50 shadow-2xl flex flex-col overflow-hidden animate-fade-in-up">
-        
-        <!-- Header -->
-        <div class="p-5 border-b bg-white flex flex-col sm:flex-row items-center justify-between shrink-0 gap-4 relative z-10 shadow-sm">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded bg-emerald-50 border border-emerald-100 text-emerald-700 flex items-center justify-center text-xl shadow-inner"><i class="pi pi-box"></i></div>
+    <!-- Arsitektur Katalog (Universal Centered Dialog) -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-7xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
+        <!-- Workspace Header -->
+        <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
+          <div class="relative flex items-center gap-6">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
+               <i class="pi pi-box text-3xl font-black"></i>
+            </div>
             <div>
-               <div class="flex items-center gap-3">
-                 <span class="text-lg font-black text-slate-800 tracking-tight">{{ activeItem?.id ? form.code : 'Registrasi SKUs Baru' }}</span>
-                 <span v-if="activeItem?.id" class="inline-flex rounded text-[9px] font-bold uppercase shadow-sm border px-2 py-0.5" :class="form.isActive ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-red-100 text-red-700 border-red-200'">
-                   {{ form.isActive ? 'STATUS: AKTIF DISTRIBUSI' : 'STATUS: DIBEKUKAN' }}
-                 </span>
-               </div>
-               <div class="text-xs text-slate-500 mt-1 font-medium">{{ activeItem?.id ? 'Mengubah rincian material data.' : 'Identifikasi unit dan spesifikasi awal material perusahaan.' }}</div>
+              <div class="flex items-center gap-3">
+                 <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase">{{ activeItem?.id ? 'Audit' : 'Draft' }} <span class="text-emerald-600 italic text-2xl">Katalog Item Master</span></h3>
+                 <span v-if="activeItem?.id" class="inline-flex rounded-xl px-4 py-1.5 text-[9px] font-black tracking-[0.2em] border shadow-sm uppercase shadow-sm" :class="form.isActive ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-red-100 text-red-700 border-red-200'">{{ form.isActive ? 'ACTIVE' : 'FROZEN' }}</span>
+              </div>
+              <p class="text-[10px] font-black uppercase tracking-[0.2em] mt-3 px-1 border-l-2 border-emerald-500 text-emerald-600">Product Lifecycle Management & WMS Governance</p>
             </div>
           </div>
-          <button class="text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded text-lg font-bold flex items-center justify-center transition-colors" @click="dialogOpen = false">✕</button>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="dialogOpen = false" class="relative z-10 hover:bg-emerald-50 h-12 w-12" />
         </div>
+        
+        <!-- Workspace Body -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 p-10">
+           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              
+              <!-- Panel 1: Identitas & Flagging -->
+              <div class="animate-fade-in-up">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center gap-2">
+                    <i class="pi pi-id-card text-emerald-500"></i> I. Parameter Identitas & Flagging
+                 </div>
+                 <div class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm space-y-6 transition-all hover:border-emerald-100">
+                    <div class="grid grid-cols-2 gap-6">
+                       <div class="space-y-4">
+                          <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Nomor SKU Utama <span class="text-emerald-500 ml-1 opacity-50 font-black">*</span></label>
+                          <InputText v-model="form.code" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-emerald-400 transition-all font-mono tracking-widest uppercase" placeholder="SKU-..." />
+                       </div>
+                       <div class="space-y-4">
+                          <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Keluarga Barang</label>
+                          <select v-model="form.itemGroupId" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-emerald-400 transition-all appearance-none cursor-pointer uppercase tracking-widest">
+                             <option value="">-- PILIH JENIS --</option>
+                             <option v-for="g in groups" :value="g.id">{{ g.name }}</option>
+                          </select>
+                       </div>
+                    </div>
 
-        <div class="flex-1 overflow-y-auto flex flex-col sm:flex-row bg-slate-50/50">
-          
-          <!-- LEFT PANEL: Core Configurations -->
-          <div class="w-full sm:w-1/2 lg:w-[45%] p-6 border-r border-slate-200 flex flex-col gap-6 bg-white overflow-y-auto">
-             
-             <!-- Identitas Dasar -->
-             <div class="space-y-4">
-                <div class="uppercase text-[10px] font-black text-slate-400 tracking-widest border-b pb-2 flex gap-2 items-center"><i class="pi pi-id-card"></i> Parameter Identitas</div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                   <div class="col-span-1 space-y-1">
-                     <label class="text-[10px] font-bold text-slate-500">Nomor Registrasi / SKU Utama</label>
-                     <input :disabled="isReadonly" type="text" v-model="form.code" class="w-full border rounded p-2 text-sm font-mono font-bold bg-slate-50 outline-none focus:border-emerald-500 uppercase disabled:opacity-70" placeholder="SKU-..." />
-                   </div>
-                   <div class="col-span-1 space-y-1">
-                     <label class="text-[10px] font-bold text-slate-500">Klasifikasi Keluarga Barang</label>
-                     <select :disabled="isReadonly" v-model="form.itemGroupId" class="w-full border rounded p-2 text-sm font-semibold bg-white outline-none focus:border-emerald-500 disabled:bg-slate-50 disabled:opacity-70">
-                        <option value="">-- Pilih Jenis --</option>
-                        <option v-for="g in groups" :value="g.id">{{ g.name }}</option>
-                     </select>
-                   </div>
-                </div>
+                    <div class="space-y-4">
+                       <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Label Komersial (Nama Produk)</label>
+                       <InputText v-model="form.name" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-emerald-400 transition-all uppercase" placeholder="Contoh: Kopi Bubuk Arabica 500g" />
+                    </div>
 
-                <div class="space-y-1">
-                   <label class="text-[10px] font-bold text-slate-500">Label Komersial (Nama Produk/Material)</label>
-                   <input :disabled="isReadonly" type="text" v-model="form.name" class="w-full border rounded p-2 text-sm font-semibold bg-white outline-none focus:border-emerald-500 disabled:opacity-70" placeholder="Contoh: Kopi Bubuk Arabica 500g" />
-                </div>
-
-                <div class="space-y-1">
-                   <label class="text-[10px] font-bold text-slate-500">Deskripsi / Spesifikasi Fungsional</label>
-                   <textarea :disabled="isReadonly" v-model="form.description" rows="2" class="w-full border rounded p-2 text-xs bg-white outline-none focus:border-emerald-500 disabled:bg-slate-50 disabled:opacity-70"></textarea>
-                </div>
-             </div>
-
-             <!-- Fitur Transaksi -->
-             <div class="space-y-4">
-                <div class="uppercase text-[10px] font-black text-slate-400 tracking-widest border-b pb-2 flex gap-2 items-center"><i class="pi pi-briefcase"></i> Ketersediaan Transaksional (Flagging)</div>
-                <div class="flex gap-4 flex-wrap bg-slate-50 p-4 rounded-xl border border-slate-100 shadow-inner">
-                   <label class="flex items-center gap-2 cursor-pointer opacity-90 hover:opacity-100 transition-opacity">
-                      <input type="checkbox" :disabled="isReadonly" v-model="form.isSalesItem" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 rounded" />
-                      <span class="text-xs font-bold text-slate-700">Modul Penjualan (Sales)</span>
-                   </label>
-                   <label class="flex items-center gap-2 cursor-pointer opacity-90 hover:opacity-100 transition-opacity">
-                      <input type="checkbox" :disabled="isReadonly" v-model="form.isPurchaseItem" class="w-4 h-4 text-amber-600 focus:ring-amber-500 rounded" />
-                      <span class="text-xs font-bold text-slate-700">Modul Belanja (Purchase PO)</span>
-                   </label>
-                   <label class="flex items-center gap-2 cursor-pointer opacity-90 hover:opacity-100 transition-opacity whitespace-nowrap pt-2 md:pt-0 border-t md:border-none border-slate-200 mt-2 md:mt-0 w-full md:w-auto">
-                      <input type="checkbox" :disabled="isReadonly" v-model="form.isActive" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500 rounded" />
-                      <span class="text-xs font-bold text-indigo-700">Aktif & Digunakan (Inventory)</span>
-                   </label>
-                </div>
-             </div>
-
-             <!-- Standar Pergudangan & Validasi Cost -->
-             <div class="space-y-4 mt-auto">
-                <div class="uppercase text-[10px] font-black text-emerald-700 tracking-widest border-b border-emerald-100 pb-2 flex gap-2 items-center"><i class="pi pi-calculator"></i> Konfigurasi Akuntansi & Restocking WMS</div>
-                
-                <div class="grid grid-cols-2 gap-4">
-                   <div class="col-span-1 space-y-1">
-                     <label class="text-[10px] font-bold text-slate-500">Metode Valuasi HPP</label>
-                     <select :disabled="isReadonly" v-model="form.valuationMethod" class="w-full border rounded p-2 text-xs font-bold bg-slate-50 outline-none">
-                        <option value="MOVING_AVERAGE">Moving Average (Rata-rata Bergerak)</option>
-                        <option value="FIFO">FIFO (First In First Out)</option>
-                        <option value="STANDARD">Standard Harga Baku</option>
-                     </select>
-                   </div>
-                   <div class="col-span-1 space-y-1">
-                     <label class="text-[10px] font-bold text-slate-500">Metode Penelusuran Aset</label>
-                     <select :disabled="isReadonly" v-model="form.trackingType" class="w-full border rounded p-2 text-xs font-bold bg-slate-50 outline-none">
-                        <option value="NONE">Reguler (Tanpa Lacak)</option>
-                        <option value="BATCH">Sistem Batch / Lot Mesin</option>
-                        <option value="SERIAL">Nomor Seri Spesifik (Unitized)</option>
-                     </select>
-                   </div>
-                   <div class="col-span-1 space-y-1">
-                     <label class="text-[10px] font-bold text-slate-500 bg-amber-100 px-1 rounded text-amber-800" title="Batas Stok Minimal Untuk Alert">Reorder Point (Titik Kritis) <i class="pi pi-bell text-[8px]"></i></label>
-                     <input :disabled="isReadonly" type="number" v-model.number="form.reorderPoint" class="w-full border rounded p-2 text-xs font-mono font-bold text-right outline-none" />
-                   </div>
-                   <div class="col-span-1 space-y-1">
-                     <label class="text-[10px] font-bold text-slate-500" title="Target Pesanan Jika Sedang Kritis">Plafon Target (Reorder Qty)</label>
-                     <input :disabled="isReadonly" type="number" v-model.number="form.reorderQty" class="w-full border rounded p-2 text-xs font-mono font-bold text-right outline-none" />
-                   </div>
-                </div>
-             </div>
-
-          </div>
-
-          <!-- RIGHT PANEL: UOM & Equivalency Table -->
-          <div class="w-full sm:w-1/2 lg:w-[55%] flex flex-col">
-             
-             <!-- Satuan Dasar Header -->
-             <div class="bg-indigo-950 text-indigo-50 p-6 flex flex-col justify-center relative overflow-hidden shrink-0 shadow-lg">
-                <div class="absolute right-[-20px] top-[-20px] opacity-10">
-                   <i class="pi pi-box text-[200px]"></i>
-                </div>
-                <div class="z-10 text-[10px] font-black uppercase text-indigo-300 tracking-widest flex items-center mb-1">
-                   Indikator Skala Komersial Utama
-                </div>
-                <div class="z-10 flex gap-4 items-center">
-                   <div class="text-3xl font-black font-mono">1</div>
-                   <div>
-                       <input :disabled="isReadonly" type="text" v-model="form.baseUomCode" class="w-24 border-b-2 border-indigo-400 focus:border-white px-2 py-1 text-2xl font-black bg-transparent outline-none uppercase placeholder-indigo-500 disabled:opacity-100 text-white" placeholder="PCS" @input="syncBaseUom" />
-                   </div>
-                   <div class="text-xs text-indigo-300 leading-tight">
-                      Merupakan Unit of Measurement (UOM) mendasar untuk penyimpanan kardinal & inventarisasi historis fisik di gudang.
-                   </div>
-                </div>
-             </div>
-
-             <!-- Satuan Multikonversi Matrix -->
-             <div class="flex-1 p-6 bg-slate-100 overflow-y-auto">
-                <div class="flex items-center justify-between mb-4">
-                   <div>
-                      <div class="text-sm font-black text-slate-800 uppercase tracking-widest"><i class="pi pi-sort-alt mr-2 text-indigo-500"></i> Matriks Multi-Konversi (Equivalent Hierarchy)</div>
-                      <div class="text-[10px] text-slate-500 mt-1 leading-tight">Konversikan rasio unit berskala, harga akan dikalkulasi mendatar mengikuti unit kardinal ERP. <b>(Sistem Auto-Pricing Unit)</b>.</div>
-                   </div>
-                   <Button v-if="!isReadonly" label="Tambah Varian/Satuan" icon="pi pi-plus" size="small" bg="bg-white" class="h-8 shadow-sm text-indigo-700 text-[10px] font-bold border-slate-200" @click="addUom" />
-                </div>
-                
-                <div class="space-y-3">
-                   <!-- UOM Rows -->
-                   <div v-for="(u, idx) in form.uoms" :key="idx" class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm relative group overflow-hidden" :class="idx===0 ? 'border-indigo-400 ring-2 ring-indigo-500/10' : ''">
-                      
-                      <!-- Tag Base / Hierarchy badge -->
-                      <div class="absolute left-0 top-0 bottom-0 w-1 rounded-l-xl" :class="idx===0 ? 'bg-indigo-500/80' : 'bg-slate-200'"></div>
-                      <div v-if="idx===0" class="absolute right-0 top-0 bg-indigo-500 text-white text-[8px] font-black px-3 py-1 rounded-bl-lg shadow-sm z-10 w-24 text-center">
-                         BASE UOM ❤️
-                      </div>
-
-                      <div class="grid grid-cols-12 gap-4 items-center">
-                         <div class="col-span-4 sm:col-span-3 space-y-1 z-10">
-                            <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">ID Satuan <span v-if="idx !== 0">Besar</span></label>
-                            <input :disabled="isReadonly || idx===0" type="text" v-model="u.code" class="w-full border-b px-2 py-1 text-sm font-black text-slate-700 uppercase outline-none focus:border-indigo-500 bg-transparent disabled:opacity-100" placeholder="DUS/KARTON" />
-                         </div>
-
-                         <div class="col-span-8 sm:col-span-5 flex items-center justify-between gap-2 border bg-slate-50/50 rounded-lg pr-4 overflow-hidden h-12 shadow-inner group-hover:bg-slate-100 transition-colors">
-                            <div class="bg-slate-200 px-3 h-full flex flex-col justify-center text-center">
-                               <div class="text-[8px] font-black text-slate-500 uppercase pb-0.5">Ratio</div>
-                               <div class="text-xs font-mono font-bold">{{ idx===0 ? '1' : '=' }}</div>
-                            </div>
-                            <div class="flex-1 flex gap-2 items-center w-full min-w-0 pr-1 py-1">
-                               <!-- Rumus Konversi dari Master -->
-                               <template v-if="idx===0">
-                                   <div class="text-xs font-semibold text-slate-600 truncate opacity-50 px-2 italic">Standard Utama</div>
-                               </template>
-                               <template v-else>
-                                   <input :disabled="isReadonly" type="number" v-model.number="u.conv" class="w-16 border rounded text-right px-2 py-1 text-sm font-bold font-mono text-indigo-700 outline-none shadow-sm" @input="recalcEquivalentPrice(idx)" />
-                                   <div class="text-xs font-bold text-slate-400 truncate mt-0.5">{{ form.baseUomCode || 'BASE' }}</div>
-                               </template>
-                            </div>
-                         </div>
-
-                         <div class="col-span-10 sm:col-span-4 pl-4 sm:pl-0 sm:border-l sm:h-full sm:flex sm:flex-col sm:justify-center border-slate-200">
-                             <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block sm:pl-3">Harga Komersial / Nilai HPP</label>
-                             <div class="flex items-center mt-1 sm:pl-3">
-                                <span class="text-[10px] text-slate-400 mr-2 font-mono">Rp</span>
-                                <input :disabled="isReadonly && idx!==0" type="number" v-model.number="u.price" class="w-full border-b px-1 py-1 text-sm font-mono font-black text-rose-700 bg-transparent outline-none disabled:opacity-100" @input="idx===0 ? cascadePricing() : null" />
+                    <div class="space-y-4">
+                       <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Ketersediaan Transaksional (Flags)</label>
+                       <div class="grid grid-cols-1 gap-3 bg-emerald-50/50 p-6 rounded-[1.5rem] border border-emerald-100 shadow-inner">
+                          <label class="flex items-center gap-4 cursor-pointer group/flag">
+                             <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm border border-emerald-100 group-hover/flag:scale-110 transition-transform"><input type="checkbox" v-model="form.isSalesItem" class="w-5 h-5 accent-emerald-600" /></div>
+                             <div class="flex flex-col">
+                                <span class="text-[11px] font-black text-slate-800 uppercase tracking-widest">Modul Penjualan</span>
+                                <span class="text-[9px] font-bold text-slate-400 uppercase italic">Can be sold to customers</span>
                              </div>
-                         </div>
+                          </label>
+                          <label class="flex items-center gap-4 cursor-pointer group/flag border-t border-emerald-100/50 pt-3">
+                             <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm border border-emerald-100 group-hover/flag:scale-110 transition-transform"><input type="checkbox" v-model="form.isPurchaseItem" class="w-5 h-5 accent-emerald-600" /></div>
+                             <div class="flex flex-col">
+                                <span class="text-[11px] font-black text-slate-800 uppercase tracking-widest">Modul Pembelian</span>
+                                <span class="text-[9px] font-bold text-slate-400 uppercase italic">Purchasable from suppliers</span>
+                             </div>
+                          </label>
+                          <label class="flex items-center gap-4 cursor-pointer group/flag border-t border-emerald-100/50 pt-3">
+                             <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg group-hover/flag:scale-110 transition-transform text-white"><input type="checkbox" v-model="form.isActive" class="w-5 h-5 accent-emerald-400" /></div>
+                             <div class="flex flex-col">
+                                <span class="text-[11px] font-black text-indigo-700 uppercase tracking-widest">Status Aktif (Inventory)</span>
+                                <span class="text-[9px] font-bold text-indigo-400 uppercase italic">Participates in stock ledger</span>
+                             </div>
+                          </label>
+                       </div>
+                    </div>
+                 </div>
+              </div>
 
-                         <div v-if="!isReadonly && idx !== 0" class="col-span-2 sm:absolute sm:bottom-2 sm:right-3 sm:top-auto flex justify-end">
-                            <button @click="removeUom(idx)" class="w-6 h-6 rounded bg-rose-100 text-rose-600 flex items-center justify-center font-black hover:bg-rose-500 hover:text-white transition-colors">✕</button>
-                         </div>
-                      </div>
-                   </div>
-                </div>
+              <!-- Panel 2: WMS Governance -->
+              <div class="animate-fade-in-up" style="animation-delay: 0.1s">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center gap-2">
+                    <i class="pi pi-calculator text-amber-500"></i> II. Konfigurasi WMS & Valuasi
+                 </div>
+                 <div class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm space-y-8 transition-all hover:border-amber-100 border-b-[8px] border-b-amber-600">
+                    <div class="space-y-4">
+                       <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Skema Valuasi HPP (Accounting)</label>
+                       <select v-model="form.valuationMethod" class="w-full h-14 border-none rounded-2xl px-6 text-[11px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-emerald-400 transition-all appearance-none cursor-pointer uppercase tracking-widest">
+                          <option value="MOVING_AVERAGE">Moving Average (Rata-rata Bergerak)</option>
+                          <option value="FIFO">First-In First-Out (FIFO)</option>
+                          <option value="STANDARD">Harga Baku (Standard Cost)</option>
+                       </select>
+                    </div>
 
-                <!-- Info Box based on user specific rules -->
-                <div class="mt-4 p-4 rounded-xl border border-indigo-100 bg-indigo-50/50 shadow-inner flex gap-3 text-[10px] text-slate-600 leading-relaxed font-medium">
-                   <div class="text-xl opacity-30 mt-1"><i class="pi pi-info-circle"></i></div>
-                   <div>
-                     Sesuai SOP Perusahaan/Algoritma ERP Klasik, Satuan Unit dengan konversi terbesar akan mendikte persediaan terendah. <b>1 Karung = 50 Kg</b>. Maka harga akan melipat 50x dari harga base unit secara dinamis. Nilai inventaris akan selalu dibaca di angka fundamentalnya (Base).
-                   </div>
-                </div>
+                    <div class="space-y-4">
+                       <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Sistem Penelusuran (Tracking)</label>
+                       <select v-model="form.trackingType" class="w-full h-14 border-none rounded-2xl px-6 text-[11px] font-black text-indigo-700 bg-indigo-50/30 border-2 border-indigo-100 shadow-inner outline-none focus:ring-4 focus:ring-indigo-400 transition-all appearance-none cursor-pointer uppercase tracking-widest">
+                          <option value="NONE">Generic (Tanpa Lacak)</option>
+                          <option value="BATCH">Batch / Lot Control</option>
+                          <option value="SERIAL">Unique Serialized No</option>
+                       </select>
+                    </div>
 
-             </div>
-          </div>
+                    <div class="bg-amber-50/50 p-8 rounded-[2rem] border-2 border-amber-100 shadow-inner space-y-6">
+                       <div class="text-[10px] font-black text-amber-700 uppercase tracking-[0.2em] mb-2 flex items-center gap-2 italic">
+                          <i class="pi pi-bell animate-bounce"></i> Resupply Parameters
+                       </div>
+                       <div class="grid grid-cols-2 gap-6">
+                          <div class="space-y-4">
+                             <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 leading-tight">Reorder Point (Min)</label>
+                             <InputText type="number" v-model.number="form.reorderPoint" class="w-full h-14 border-none rounded-2xl px-4 text-right font-mono font-black text-amber-700 bg-white shadow-md outline-none focus:ring-4 focus:ring-amber-400 transition-all" />
+                          </div>
+                          <div class="space-y-4">
+                             <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 leading-tight">Replenishment Qty</label>
+                             <InputText type="number" v-model.number="form.reorderQty" class="w-full h-14 border-none rounded-2xl px-4 text-right font-mono font-black text-slate-900 bg-white shadow-md outline-none focus:ring-4 focus:ring-amber-400 transition-all" />
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+
+              <!-- Panel 3: UOM & Pricing Matrix -->
+              <div class="animate-fade-in-up" style="animation-delay: 0.2s">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center gap-2">
+                    <i class="pi pi-sort-alt text-indigo-500"></i> III. Matriks Multi-Konversi & Harga
+                 </div>
+                 <div class="bg-indigo-950 p-10 rounded-[2.5rem] shadow-2xl shadow-indigo-900/10 border-4 border-indigo-900 relative overflow-hidden group min-h-[500px] flex flex-col">
+                    <div class="absolute right-[-20px] top-[-20px] w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl opacity-30"></div>
+                    
+                    <div class="flex justify-between items-center mb-10 border-b border-indigo-900/50 pb-6 shrink-0">
+                       <div class="flex items-center gap-4">
+                          <div class="w-14 h-14 rounded-2xl bg-white flex flex-col items-center justify-center text-indigo-950 shadow-xl group-hover:rotate-12 transition-transform">
+                             <span class="text-[8px] font-black uppercase opacity-60 leading-none">BASE</span>
+                             <span class="text-xl font-black font-mono leading-none mt-1">1</span>
+                          </div>
+                          <div>
+                             <InputText v-model="form.baseUomCode" @input="syncBaseUom" class="w-32 h-14 bg-transparent border-b-4 border-indigo-500 text-white text-3xl font-black font-mono focus:border-white focus:ring-0 outline-none uppercase placeholder-indigo-700 transition-all rounded-none px-2" placeholder="PCS" />
+                             <p class="text-[9px] font-black text-indigo-400 uppercase tracking-widest mt-2 px-1">Primary Stock Unit</p>
+                          </div>
+                       </div>
+                       <Button icon="pi pi-plus" severity="secondary" rounded @click="addUom" class="w-12 h-12 bg-white/10 border-none text-white hover:bg-emerald-600 transition-all shadow-xl" />
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 -mr-6 px-1">
+                       <div class="space-y-4">
+                          <div v-for="(u, idx) in form.uoms" :key="idx" class="bg-white/5 rounded-[2rem] p-6 border border-white/10 relative overflow-hidden transition-all hover:bg-white/10 hover:border-white/20 group/uom" :class="idx === 0 ? 'bg-indigo-500/10 border-indigo-500/30 ring-2 ring-indigo-500/20' : ''">
+                             <div class="flex items-center gap-6 relative z-10">
+                                <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white font-black text-xs border border-white/5">
+                                   {{ idx === 0 ? '1' : '=' }}
+                                </div>
+                                <div class="flex-1 grid grid-cols-2 gap-4">
+                                   <div class="space-y-2">
+                                      <label class="text-[8px] font-black text-indigo-300 uppercase tracking-widest px-1">Satuan SKU</label>
+                                      <InputText v-model="u.code" :disabled="idx === 0" class="w-full h-10 bg-white/5 border-none text-white font-black text-xs rounded-xl px-4 focus:ring-2 focus:ring-emerald-400 transition-all uppercase disabled:opacity-30" placeholder="KARUNG" />
+                                   </div>
+                                   <div class="space-y-2 text-right">
+                                      <label class="text-[8px] font-black text-indigo-300 uppercase tracking-widest px-1 leading-none">Rasio @ {{ form.baseUomCode }}</label>
+                                      <InputText type="number" v-model.number="u.conv" :disabled="idx === 0" @input="recalcEquivalentPrice(idx)" class="w-full h-10 bg-white/5 border-none text-right text-emerald-400 font-mono font-black text-xl rounded-xl px-4 focus:ring-2 focus:ring-emerald-400 transition-all disabled:opacity-30" />
+                                   </div>
+                                </div>
+                             </div>
+                             
+                             <div class="mt-6 flex justify-between items-center border-t border-white/5 pt-4">
+                                <div class="flex items-center gap-2">
+                                   <span class="text-[9px] font-black text-indigo-400 uppercase italic">Base Valuation Price</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                   <div class="flex flex-col items-end">
+                                      <span class="text-[7px] font-black text-indigo-500 uppercase">Unit Price IDR</span>
+                                      <InputText type="number" v-model.number="u.price" :disabled="idx !== 0" @input="idx===0 ? cascadePricing() : null" class="w-32 h-8 bg-transparent border-none text-right text-white font-mono font-black text-lg p-0 focus:ring-0 outline-none disabled:opacity-100" />
+                                   </div>
+                                   <button v-if="idx !== 0" @click="removeUom(idx)" class="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all scale-75 group-hover/uom:scale-100 opacity-0 group-hover/uom:opacity-100">✕</button>
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+
+                    <div class="mt-8 border-t border-indigo-900/50 pt-6 shrink-0">
+                       <div class="bg-emerald-600/10 rounded-2xl p-4 border border-emerald-500/20 flex gap-3">
+                          <i class="pi pi-info-circle text-emerald-500 mt-0.5"></i>
+                          <p class="text-[9px] font-medium text-emerald-300 leading-relaxed uppercase italic">Sistem Auto-Pricing Unit Aktif: Harga varian akan ter-update otomatis mengikuti rasio konversi unit dasar (Standard ERP Logic).</p>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
         </div>
 
-        <!-- Footer Actions -->
-        <div class="p-5 border-t border-slate-200 shadow-[0_-10px_10px_-10px_rgba(0,0,0,0.05)] bg-white flex justify-between shrink-0 z-20">
-          <Button label="Tutup Jendela" severity="secondary" size="small" @click="dialogOpen = false" outlined class="bg-slate-50 border-slate-300 font-bold" />
-          <div class="flex items-center gap-2">
-             <Button v-if="!isReadonly" label="Kunci & Publikasi Katalog" severity="success" size="large" :loading="saving" :disabled="saving || !form.code || !form.baseUomCode" @click="save" class="bg-emerald-600 border-none text-white font-bold tracking-wide hover:bg-emerald-700 px-8 shadow-sm h-10" />
+        <!-- Workspace Footer Actions -->
+        <div class="p-10 border-t bg-white flex justify-between items-center shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] rounded-b-[2.5rem]">
+          <div class="flex items-center gap-4">
+             <div class="px-6 py-3 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-600 text-[9px] font-black uppercase tracking-widest italic flex items-center gap-2 transition-all hover:scale-105">
+                <i class="pi pi-verified"></i> Katalog Tervalidasi Sistem
+             </div>
+          </div>
+          <div class="flex items-center gap-4">
+             <Button label="Batal & Tutup" severity="secondary" text @click="dialogOpen = false" class="px-8 h-12 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 rounded-xl" />
+             <Button 
+                label="Simpan & Publikasikan Katalog" 
+                icon="pi pi-arrow-up-right" 
+                iconPos="right"
+                size="large" 
+                :loading="saving" 
+                :disabled="saving || !form.code || !form.baseUomCode" 
+                @click="save" 
+                class="h-14 px-12 bg-emerald-600 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-emerald-100 hover:scale-105 active:scale-95 transition-all rounded-xl" 
+             />
           </div>
         </div>
       </div>
@@ -517,10 +572,54 @@ onMounted(() => {
 </script>
 
 <style scoped>
-select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 2rem; }
-.animate-fade-in-up { animation: fadeInUp 0.4s ease-out forwards; }
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.animate-scale-in { 
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.95); } 
+  to { opacity: 1; transform: scale(1); } 
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+  background: #cbd5e1; 
+}
+
+:deep(.p-inputtext) {
+   border-color: #f1f5f9 !important;
+   box-shadow: none !important;
+   background-color: #f8fafc !important;
+   border-radius: 16px !important;
+}
+
+:deep(.p-button-rounded) {
+  border-radius: 9999px !important;
+}
+
+select { 
+  appearance: none; 
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); 
+  background-repeat: no-repeat; 
+  background-position: right 1rem center; 
+  background-size: 1em; 
 }
 </style>

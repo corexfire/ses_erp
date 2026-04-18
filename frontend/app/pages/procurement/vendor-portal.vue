@@ -1,18 +1,55 @@
 <template>
   <div class="space-y-6">
-    <!-- Header Admin Dashboard -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-teal-600 relative overflow-hidden">
-      <div class="absolute right-[0px] top-[-30px] opacity-[0.03] pointer-events-none">
-        <i class="pi pi-box text-[190px] text-teal-900"></i>
+    <!-- Header (Premium Connectivity Style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-teal-100/50"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-teal-400">Connectivity Core</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-teal-600">B2B Collaboration Node</span>
+          </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">Administrasi <span class="text-teal-600 italic text-3xl">Portal Pemasok</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-2xl">Manajemen hak akses Ekstranet e-Procurement. Kelola provisioning akun vendor, pantau interaksi bidding, dan audit telemetri aktivitas secara real-time.</p>
+        </div>
       </div>
-      <div class="flex flex-col md:flex-row justify-between md:items-start gap-4 relative z-10">
-        <div>
-          <div class="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-            <i class="pi pi-building text-teal-600"></i> B2B Vendor Portal Administration
+    </div>
+
+    <!-- Dynamic Portal KPIs (High-Contrast Style) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
+      <div class="p-6 rounded-2xl bg-teal-600 text-white shadow-xl flex flex-col justify-between border border-teal-500 transition-all hover:bg-teal-700 group">
+        <div class="text-[10px] font-black uppercase text-teal-200 tracking-[0.2em] mb-4 opacity-80">Total Rekanan Pemasok</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ summary.totalSuppliers || 0 }}</h3>
+          <div class="p-3 bg-white/20 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
+            <i class="pi pi-briefcase text-lg"></i>
           </div>
-          <div class="mt-1 text-sm text-slate-600 font-medium max-w-2xl">
-            Pusat manajemen hak akses Ekstranet e-Procurement untuk Pemasok/Vendor (*Portal Provisioning*) dan pemantauan interaksi mereka (RFQ Bids, Invoices).
-          </div>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-teal-600 tracking-[0.2em] mb-4">Akses Portal Diberikan</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-teal-700 tracking-tighter leading-none">{{ summary.portalUsers || 0 }}</h3>
+          <div class="p-3 bg-teal-50 text-teal-600 rounded-xl border border-teal-100"><i class="pi pi-key text-lg"></i></div>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Tingkat Adopsi B2B</div>
+        <div class="flex flex-col items-start gap-1">
+          <h3 class="text-4xl font-black text-indigo-700 tracking-tighter leading-none">{{ Math.round((summary.portalUsers / (summary.totalSuppliers || 1)) * 100) }}<span class="text-xl text-indigo-300 ml-1">%</span></h3>
+          <div class="text-[9px] font-black text-indigo-500 uppercase tracking-widest leading-none mt-1">Expansion Target: 100%</div>
+        </div>
+      </div>
+
+       <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl flex flex-col justify-between transition-all hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden group">
+        <div class="absolute right-0 top-0 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl group-hover:bg-teal-500/20 transition-all"></div>
+        <div class="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-4 relative z-10">Aktivitas Telemetri (24j)</div>
+        <div class="flex items-end justify-between relative z-10">
+          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ summary.engagementLogs || 0 }}</h3>
+          <div class="p-3 bg-white/5 text-teal-400 rounded-xl border border-white/10 group-hover:rotate-12 transition-transform"><i class="pi pi-wifi text-lg animate-pulse"></i></div>
         </div>
       </div>
     </div>
@@ -46,106 +83,144 @@
       </div>
     </div>
 
-    <!-- Toggle View Nav -->
-    <div class="flex gap-4 border-b border-slate-200">
-      <button :class="['pb-2 px-1 text-sm font-black transition', activeTab === 'access' ? 'border-b-2 border-teal-600 text-teal-700' : 'text-slate-500 hover:text-slate-700']" @click="activeTab = 'access'">🔐 Supplier Provisioning</button>
-      <button :class="['pb-2 px-1 text-sm font-black transition', activeTab === 'logs' ? 'border-b-2 border-teal-600 text-teal-700' : 'text-slate-500 hover:text-slate-700']" @click="activeTab = 'logs'; loadLogs()">📡 Engagement Telemetry (Live)</button>
+    <!-- Modern View Navigation -->
+    <div class="flex gap-10 border-b border-slate-100 mb-6 shrink-0 bg-white p-4 px-8 rounded-2xl shadow-sm">
+      <button :class="['pb-4 px-2 text-[11px] font-black uppercase tracking-[0.2em] transition-all relative group', activeTab === 'access' ? 'text-teal-700' : 'text-slate-400 hover:text-slate-600']" @click="activeTab = 'access'">
+        <i class="pi pi-shield mr-2"></i> Supplier Provisioning
+        <div v-if="activeTab === 'access'" class="absolute bottom-0 left-0 w-full h-1 bg-teal-600 rounded-full shadow-[0_-4px_10px_rgba(13,148,136,0.3)]"></div>
+      </button>
+      <button :class="['pb-4 px-2 text-[11px] font-black uppercase tracking-[0.2em] transition-all relative group', activeTab === 'logs' ? 'text-teal-700' : 'text-slate-400 hover:text-slate-600']" @click="activeTab = 'logs'; loadLogs()">
+        <i class="pi pi-bolt mr-2"></i> Engagement Telemetry (Live)
+        <div v-if="activeTab === 'logs'" class="absolute bottom-0 left-0 w-full h-1 bg-teal-600 rounded-full shadow-[0_-4px_10px_rgba(13,148,136,0.3)]"></div>
+      </button>
     </div>
 
-    <!-- TAB 1: Access Management Grid -->
-    <div v-if="activeTab === 'access'" class="space-y-4 animate-fade-in-up">
-       <div class="bg-white border rounded-xl p-4 shadow-sm flex flex-wrap gap-3 items-center">
-         <span class="p-input-icon-left w-72">
-            <i class="pi pi-search" />
-            <InputText v-model="q" placeholder="Cari Kode/Nama Vendor..." class="w-full text-sm h-10" @keyup.enter="load" :disabled="!canRead" />
-         </span>
-         <Button severity="secondary" size="small" :loading="loading" icon="pi pi-refresh" @click="load" class="h-10 w-10 shrink-0" :disabled="!canRead" />
+    <!-- TAB 1: Access Management Ledger (Premium Grid) -->
+    <div v-if="activeTab === 'access'" class="animate-fade-in-up space-y-6">
+       <!-- Controls Bar -->
+       <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex flex-wrap gap-4 items-center justify-between">
+          <div class="flex items-center bg-slate-50 rounded-xl border border-slate-100 p-1 w-full md:w-96 shadow-inner">
+            <i class="pi pi-search px-4 text-slate-300 text-xs"></i>
+            <InputText v-model="q" placeholder="Cari Kode atau Nama Vendor..." class="border-none bg-transparent text-[11px] h-10 w-full font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" @keyup.enter="load" :disabled="!canRead" />
+          </div>
+          <Button icon="pi pi-refresh" severity="secondary" rounded text @click="load" :loading="loading" class="h-10 w-10 text-slate-400 hover:text-teal-600 transition-all shadow-sm bg-white" :disabled="!canRead" />
        </div>
 
-       <div class="bg-white border rounded-xl overflow-hidden shadow-sm">
-         <table class="w-full text-sm">
-           <thead class="bg-slate-50 text-left text-[11px] text-slate-500 uppercase tracking-widest font-black">
-             <tr>
-               <th class="px-5 py-3 border-b">Supplier Entity Name</th>
-               <th class="px-4 py-3 border-l border-b">Vendor Extranet Admins</th>
-               <th class="px-4 py-3 border-l border-b text-center">Docs Status</th>
-               <th class="px-4 py-3 border-l border-b text-center">Access State</th>
-               <th class="px-4 py-3 border-l border-b text-center w-36">Management</th>
-             </tr>
-           </thead>
-           <tbody class="divide-y divide-slate-100">
-             <tr v-if="loading">
-               <td colspan="5" class="py-16 text-center text-slate-400"><i class="pi pi-spinner pi-spin mr-2 text-teal-500 shadow-sm"></i> Pulling network directories...</td>
-             </tr>
-             <tr v-for="c in suppliers" v-else :key="c.id" class="transition hover:bg-slate-50 group border-l-4" :style="{ borderLeftColor: getEdgeColor(c) }">
-               <td class="px-5 py-3 align-top">
-                 <div class="font-bold text-slate-800 text-sm">{{ c.code }} | {{ c.name }}</div>
-                 <div class="mt-1 flex items-center gap-1.5 text-[10px] text-slate-500">
-                   📍 {{ c.city || 'No City' }}, NPWP: {{ c.npwp || '-' }}
-                 </div>
-               </td>
-               
-               <td class="px-4 py-3 align-top border-l bg-slate-50/50">
-                  <div v-if="c.portalUsers && c.portalUsers.length > 0" class="flex flex-col gap-1.5">
-                     <div v-for="pu in c.portalUsers" :key="pu.id" class="text-[11px] font-bold text-teal-800 bg-teal-50 border border-teal-100 px-2 py-0.5 rounded flex items-center gap-1.5 pb-1">
-                        <i class="pi pi-at text-[9px]"></i> {{ pu.email }}
+       <!-- Provisioning Ledger -->
+       <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up pb-20">
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-sm">
+              <thead class="bg-white text-left font-bold border-b border-slate-100">
+                <tr>
+                  <th class="px-8 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-1/3">Supplier Entity Detail</th>
+                  <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50">Authorized Portal Admins</th>
+                  <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center border-l border-slate-50 w-48">Activity Index</th>
+                  <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center border-l border-slate-50 w-40">Status Akses</th>
+                  <th class="px-8 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right border-l border-slate-50 w-48">Management</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50">
+                <tr v-if="loading">
+                  <td colspan="5" class="py-24 text-center">
+                    <i class="pi pi-spinner pi-spin text-4xl text-teal-500 opacity-20"></i>
+                    <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-teal-600 uppercase">Pulling network directories...</div>
+                  </td>
+                </tr>
+                
+                <tr v-for="c in suppliers" v-else :key="c.id" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent" :style="{ borderLeftColor: getEdgeColor(c) }">
+                  <td class="px-8 py-6 align-middle">
+                    <div class="flex items-center gap-4">
+                       <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 font-black text-xs shadow-inner">
+                          {{ c.name.charAt(0) }}
+                       </div>
+                       <div>
+                          <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ c.code }}</p>
+                          <div class="font-black text-slate-900 text-[13px] tracking-tight leading-none group-hover:text-teal-700 transition-colors uppercase">{{ c.name }}</div>
+                          <div class="mt-1.5 flex items-center gap-2 text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                             <i class="pi pi-map-marker text-teal-400"></i> {{ c.city || 'National' }}
+                             <span class="text-slate-200">|</span>
+                             <span class="font-mono text-slate-400">{{ c.npwp || '-' }}</span>
+                          </div>
+                       </div>
+                    </div>
+                  </td>
+                  
+                  <td class="px-6 py-6 align-middle border-l border-slate-50 bg-slate-50/20 group-hover:bg-slate-100/30 transition-colors">
+                     <div v-if="c.portalUsers && c.portalUsers.length > 0" class="flex flex-col gap-2">
+                        <div v-for="pu in c.portalUsers" :key="pu.id" class="text-[10px] font-black text-teal-800 bg-teal-100/50 border border-teal-200 px-3 py-1.5 rounded-xl shadow-sm flex items-center gap-2 w-fit italic">
+                           <i class="pi pi-at text-teal-400"></i> {{ pu.email }}
+                        </div>
                      </div>
-                  </div>
-                  <div v-else class="text-[11px] font-medium text-slate-400 italic mt-1">Vendor has no portal mapping.</div>
-               </td>
+                     <div v-else class="text-[10px] font-black text-slate-300 uppercase tracking-widest italic flex items-center gap-2">
+                        <i class="pi pi-ban text-slate-200"></i> No portal mapping
+                     </div>
+                  </td>
 
-               <td class="px-4 py-3 align-top border-l text-center">
-                 <div class="flex flex-col gap-1 items-center justify-center h-full">
-                     <div class="text-[9px] font-bold text-slate-500">📥 {{ c._count?.purchaseOrders || 0 }} POs Recv</div>
-                     <div class="text-[9px] font-bold text-rose-500">📤 {{ c._count?.purchaseInvoices || 0 }} Inv Issued</div>
-                 </div>
-               </td>
+                  <td class="px-6 py-6 align-middle border-l border-slate-50 text-center">
+                    <div class="flex flex-col gap-2 items-center">
+                       <div class="flex items-center gap-3">
+                          <span class="text-[10px] font-black text-slate-700 bg-slate-100 px-3 py-1 rounded-xl shadow-sm border border-slate-100">📥 {{ c._count?.purchaseOrders || 0 }} PO</span>
+                          <span class="text-[10px] font-black text-rose-700 bg-rose-50 px-3 py-1 rounded-xl shadow-sm border border-rose-100">📤 {{ c._count?.purchaseInvoices || 0 }} INV</span>
+                       </div>
+                    </div>
+                  </td>
 
-               <td class="px-4 py-3 align-top border-l text-center">
-                 <span v-if="c.portalUsers?.length > 0" :class="getBadge(c.portalUsers[0].portalStatus)">
-                   {{ c.portalUsers[0].portalStatus }}
-                 </span>
-                 <span v-else class="text-[10px] font-black uppercase px-2 py-1 rounded bg-slate-100 text-slate-400 border">UNREGISTERED</span>
-               </td>
-               
-               <td class="px-4 py-3 align-top border-l text-center">
-                 <div class="flex justify-center gap-1.5 mt-1">
-                   <Button v-if="c.portalUsers?.length === 0" icon="pi pi-send" label="Provision" size="small" class="h-7 text-[10px] px-2 text-white bg-slate-800 border-none hover:bg-black" @click="openProvision(c)" />
-                   <Button v-if="c.portalUsers?.length > 0 && c.portalUsers[0].portalStatus !== 'SUSPENDED'" icon="pi pi-ban" label="Block" size="small" class="h-7 text-[10px] px-2 text-rose-700 bg-rose-50 border-rose-200 hover:bg-rose-100" @click="revokeAccess(c.portalUsers[0].id)" />
-                   <Button v-if="c.portalUsers?.length > 0 && c.portalUsers[0].portalStatus === 'SUSPENDED'" icon="pi pi-refresh" label="Restore" size="small" class="h-7 text-[10px] px-2 text-emerald-700 bg-emerald-50 border-emerald-200 hover:bg-emerald-100" @click="openProvision(c)" />
-                 </div>
-               </td>
-             </tr>
-             <tr v-if="!loading && suppliers.length === 0">
-               <td colspan="5" class="py-12 text-center text-slate-400 italic text-sm font-medium">Buku Supplier kosong.</td>
-             </tr>
-           </tbody>
-         </table>
+                  <td class="px-6 py-6 align-middle border-l border-slate-50 text-center relative overflow-hidden">
+                    <span v-if="c.portalUsers?.length > 0" :class="getBadge(c.portalUsers[0].portalStatus)" class="w-32 py-1.5 shadow-sm">
+                      {{ c.portalUsers[0].portalStatus }}
+                    </span>
+                    <span v-else class="text-[9px] font-black uppercase px-4 py-1.5 rounded-xl bg-slate-100 text-slate-400 border border-slate-200 w-32 inline-flex justify-center shadow-sm">UNREGISTERED</span>
+                  </td>
+                  
+                  <td class="px-8 py-6 align-middle border-l border-slate-50 text-right">
+                    <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
+                      <Button v-if="c.portalUsers?.length === 0" label="Provision Portal" size="small" class="h-10 text-[9px] font-black px-6 bg-slate-900 border-none text-teal-400 uppercase tracking-widest hover:bg-black rounded-xl shadow-xl" @click="openProvision(c)" />
+                      <Button v-if="c.portalUsers?.length > 0 && c.portalUsers[0].portalStatus !== 'SUSPENDED'" icon="pi pi-ban" label="Block Access" size="small" class="h-10 text-[9px] font-black px-6 bg-rose-50 border-rose-100 text-rose-700 uppercase tracking-widest hover:bg-rose-100 rounded-xl" @click="revokeAccess(c.portalUsers[0].id)" />
+                      <Button v-if="c.portalUsers?.length > 0 && c.portalUsers[0].portalStatus === 'SUSPENDED'" icon="pi pi-refresh" label="Restore Access" size="small" class="h-10 text-[9px] font-black px-6 bg-emerald-50 border-emerald-100 text-emerald-700 uppercase tracking-widest hover:bg-emerald-100 rounded-xl" @click="openProvision(c)" />
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
        </div>
     </div>
 
-    <!-- TAB 2: Feed / Logs -->
-    <div v-if="activeTab === 'logs'" class="space-y-4 animate-fade-in-up">
-       <div v-if="loadingLogs" class="py-10 text-center"><i class="pi pi-spinner pi-spin text-2xl text-teal-600"></i></div>
+    <!-- TAB 2: Engagement Telemetry (High-Fidelity Feed) -->
+    <div v-if="activeTab === 'logs'" class="animate-fade-in-up space-y-6">
+       <div v-if="loadingLogs" class="py-32 text-center">
+          <i class="pi pi-bolt pi-spin text-5xl text-teal-600 opacity-20"></i>
+          <div class="mt-4 text-[10px] font-black uppercase text-teal-600 tracking-[0.2em]">Interpreting encrypted telemetry cycles...</div>
+       </div>
        
-       <div v-if="!loadingLogs && logs.length === 0" class="py-20 text-center border-2 border-dashed rounded-xl bg-slate-50 text-slate-400">
-           <i class="pi pi-server text-4xl mb-3"></i>
-           <div>No vendor telemetry data intercepted.</div>
+       <div v-if="!loadingLogs && logs.length === 0" class="py-40 text-center border-4 border-dashed rounded-[3rem] bg-slate-50 text-slate-300">
+           <i class="pi pi-wifi text-7xl mb-6 opacity-20"></i>
+           <div class="text-[11px] font-black uppercase tracking-[0.3em]">No vendor network activity intercepted.</div>
        </div>
 
-       <div v-else class="bg-white border rounded-xl overflow-hidden shadow-sm flex flex-col">
-          <div v-for="lg in logs" :key="lg.id" class="p-4 border-b border-slate-100 flex items-start gap-4 hover:bg-slate-50 transition">
-              <div :class="['w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm border', getLogIcon(lg.activityType).bg]">
-                  <i :class="['pi text-lg', getLogIcon(lg.activityType).icon]"></i>
+       <div v-else class="grid grid-cols-1 gap-4">
+          <div v-for="lg in logs" :key="lg.id" class="bg-white border-2 border-slate-100 p-8 rounded-[2rem] shadow-sm flex items-start gap-8 hover:bg-slate-50 transition-all hover:-translate-y-1 group relative overflow-hidden">
+              <div class="absolute right-0 top-0 w-32 h-32 bg-teal-50 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-teal-100/50 transition-all"></div>
+              
+              <div :class="['w-16 h-16 rounded-[1.2rem] flex items-center justify-center shrink-0 shadow-lg border-2 rotate-2 group-hover:rotate-0 transition-transform', getLogIcon(lg.activityType).bg]">
+                  <i :class="['pi text-2xl', getLogIcon(lg.activityType).icon]"></i>
               </div>
-              <div class="flex-1">
-                 <div class="text-sm font-medium text-slate-800 leading-tight">
-                    <span class="font-black">{{ lg.user?.supplier?.name }}</span> via <span class="text-teal-700 font-bold">{{ lg.user?.email }}</span>
+              
+              <div class="flex-1 space-y-2">
+                 <div class="flex items-center gap-3">
+                    <span class="text-[13px] font-black text-slate-900 uppercase tracking-tight">{{ lg.user?.supplier?.name }}</span>
+                    <span class="text-slate-300">/</span>
+                    <span class="text-[11px] font-black text-teal-600 italic tracking-tight">{{ lg.user?.email }}</span>
                  </div>
-                 <div class="text-xs text-slate-600 mt-1">{{ lg.description }}</div>
-                 <div class="mt-1.5 flex gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    <span><i class="pi pi-clock text-[9px]"></i> {{ formatDateTime(lg.createdAt) }}</span>
-                    <span>ACT: {{ lg.activityType }}</span>
+                 <div class="text-[13px] font-black text-slate-500 italic leading-relaxed">{{ lg.description }}</div>
+                 
+                 <div class="pt-2 flex flex-wrap gap-4">
+                    <div class="px-4 py-1.5 bg-slate-100 rounded-full text-[9px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                       <i class="pi pi-clock text-[8px]"></i> {{ formatDateTime(lg.createdAt) }}
+                    </div>
+                    <div class="px-4 py-1.5 bg-slate-900 rounded-full text-[9px] font-black text-teal-400 uppercase tracking-widest flex items-center gap-2">
+                       <i class="pi pi-tag text-[8px]"></i> ACT: {{ lg.activityType }}
+                    </div>
                  </div>
               </div>
           </div>
@@ -153,27 +228,48 @@
     </div>
 
 
-    <!-- Dialog Setup Provisioning -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" @click.self="dialogOpen = false">
-      <div class="w-full max-w-sm rounded-2xl bg-white shadow-2xl overflow-hidden animate-fade-in-up border-2 border-white">
-        <div class="p-5 border-b flex justify-between items-center bg-gradient-to-r from-teal-800 to-slate-900 text-white">
-          <div class="text-sm font-black uppercase tracking-widest flex items-center gap-2"><i class="pi pi-send"></i> Issue Portal Invite</div>
-          <button class="text-white hover:text-teal-200" @click="dialogOpen = false">✕</button>
+    <!-- Dialog Provisioning Tool (Universal Centered Style) -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-lg bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-slate-900">
+        <!-- Dialog Header -->
+        <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
+          <div class="relative flex items-center gap-6">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-teal-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
+               <i class="pi pi-send text-3xl font-black"></i>
+            </div>
+            <div>
+              <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase">Integrations <span class="text-teal-600 italic text-2xl">Dispatcher</span></h3>
+              <p class="text-[10px] font-black uppercase tracking-[0.2em] mt-3 px-1 border-l-2 border-teal-500 text-teal-600">Secure B2B Portal Credential Provisioning</p>
+            </div>
+          </div>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="dialogOpen = false" class="relative z-10 hover:bg-slate-50 h-10 w-10" />
         </div>
-        <div class="p-5 space-y-4">
-           <div class="text-sm text-slate-600 leading-relaxed font-medium">
-              Protokol e-Procurement otomatis mengirimkan Security Auth Setup kepada representasi Vendor: <span class="font-black text-slate-800">{{ targetSupplier?.name }}</span>.
-           </div>
-           
-           <div class="space-y-1.5">
-             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Vendor Email Endpoint</label>
-             <input type="email" v-model="inviteEmail" class="w-full border rounded-lg px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-teal-500 shadow-inner" :placeholder="targetSupplier?.email || 'vendor@domain.com'" />
+        
+        <!-- Dialog Body (Workspace) -->
+        <div class="p-10 space-y-8 bg-slate-50/30 flex-1">
+           <div class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm transition-all hover:border-teal-100 space-y-6">
+              <div class="flex items-start gap-4">
+                 <div class="w-8 h-8 rounded-full bg-slate-900 text-teal-400 flex items-center justify-center shrink-0 shadow-lg italic font-black text-xs">!</div>
+                 <div class="text-[12px] font-black text-slate-600 italic leading-relaxed">
+                    Protokol otomatis mengirimkan set-up otentikasi kepada representasi <span class="text-teal-700 font-black">{{ targetSupplier?.name }}</span> untuk membuka akses portal B2B.
+                 </div>
+              </div>
+              
+              <div class="space-y-4">
+                 <label class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] px-1">Endpoint Alamat Email Vendor <span class="text-rose-500 ml-1 font-black">*</span></label>
+                 <InputText type="email" v-model="inviteEmail" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-teal-400 transition-all font-mono tracking-widest" :placeholder="targetSupplier?.email || 'vendor@domain.com'" />
+              </div>
            </div>
         </div>
-        <div class="p-4 bg-slate-50 border-t flex justify-end gap-2">
-          <Button label="Batal" severity="secondary" :disabled="saving" @click="dialogOpen = false" class="bg-white" />
-          <Button label="Dispatch B2B Credentials" :loading="saving" :disabled="!inviteEmail"
-            @click="sendInvite" class="bg-teal-700 border-teal-800 text-white font-bold hover:bg-teal-800" icon="pi pi-chevron-right" iconPos="right" />
+
+        <!-- Dialog Footer Actions -->
+        <div class="p-10 border-t bg-white flex justify-end items-center shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] rounded-b-[2.5rem]">
+          <div class="flex items-center gap-4">
+             <Button label="Batal" severity="secondary" text @click="dialogOpen = false" class="px-8 h-12 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 rounded-xl" />
+             <Button label="Dispatch B2B Credentials" icon="pi pi-chevron-right" iconPos="right" :loading="saving" :disabled="!inviteEmail"
+                @click="sendInvite" class="h-14 px-10 bg-slate-900 border-none text-teal-400 font-black text-[10px] uppercase shadow-2xl shadow-slate-200 hover:scale-105 active:scale-95 transition-all rounded-xl" />
+          </div>
         </div>
       </div>
     </div>
@@ -302,6 +398,46 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.animate-fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.animate-scale-in { 
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.95); } 
+  to { opacity: 1; transform: scale(1); } 
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+  background: #cbd5e1; 
+}
+
+:deep(.p-inputtext) {
+   border-color: #f1f5f9 !important;
+   box-shadow: none !important;
+   background-color: #f8fafc !important;
+   border-radius: 16px !important;
+}
+
+:deep(.p-button-rounded) {
+  border-radius: 9999px !important;
+}
 </style>

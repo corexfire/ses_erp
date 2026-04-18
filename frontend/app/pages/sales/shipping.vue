@@ -1,93 +1,160 @@
 <template>
   <div class="space-y-4">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm border-l-4 border-l-blue-500">
-      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <div>
-          <div class="text-sm font-semibold text-slate-800">Manajemen Pengiriman Ekspedisi (Freight / Shipping / Carrier)</div>
-          <div class="mt-1 text-sm text-slate-600">
-            Pusat navigasi armada ekspedisi. Menggabungkan beberapa Surat Jalan (Delivery Order) ke dalam satu kontainer ekspedisi (*Carrier/3PL*) dan melacak nomor resi.
+    <!-- Header (Premium Logistics Style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-sky-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-sky-100/50"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-sky-400">Transit Core</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-sky-600">Freight & Carrier Management</span>
           </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase">Kargo <span class="text-sky-600 italic text-3xl">& Logistik</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-2xl">Pusat navigasi armada ekspedisi. Menggabungkan beberapa Surat Jalan (DO) ke dalam satu manifest kargo untuk pelacakan efisiensi rute dan realisasi AWB.</p>
         </div>
-        <div class="flex gap-2">
-          <Button label="Kelola Mitra Logistik (Carrier)" severity="secondary" size="small" outlined icon="pi pi-users" @click="dialogCarrier = true" />
-          <Button v-if="canManage" label="+ Buat Manifest Ekspedisi Baru" size="small" bg="bg-blue-600" class="text-white font-bold border-none shrink-0 cursor-pointer" icon="pi pi-box" @click="openCreate" />
+        <div class="flex items-center gap-3">
+          <Button label="Mitra Logistik" size="small" icon="pi pi-users" class="p-button-rounded h-12 px-8 bg-slate-100 border-none text-slate-600 font-black text-[10px] uppercase hover:bg-slate-200 transition-all shadow-sm" @click="dialogCarrier = true" />
+          <Button label="Manifest Baru" size="small" icon="pi pi-box" class="p-button-rounded h-12 px-8 bg-sky-600 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-sky-100 hover:scale-105 active:scale-95 transition-all" v-if="canManage" @click="openCreate" />
         </div>
       </div>
     </div>
 
-    <!-- Data List and Filters -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm">
-      <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2 w-full md:w-auto">
-          <InputText v-model="search" placeholder="Cari Resi JNE / No. Manifest..." class="w-full md:w-80 text-xs" />
-          <select v-model="statusFilter" class="p-2 border rounded-md text-xs bg-white text-slate-700 min-w-40 outline-none focus:border-blue-500">
-            <option value="">Semua Riwayat Pengangkutan</option>
-            <option value="CREATED">Penyusunan Kargo (Created)</option>
-            <option value="SHIPPED">Kargo Berlayar (Shipped)</option>
-            <option value="DELIVERED">Kargo Mendarat (Delivered)</option>
-          </select>
-          <Button label="Pantau Radar" severity="secondary" size="small" :disabled="loading" @click="load" />
+    <!-- Dynamic Freight KPIs (High-Contrast Style) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
+      <div class="p-6 rounded-2xl bg-sky-600 text-white shadow-xl flex flex-col justify-between border border-sky-500 transition-all hover:bg-sky-700 group">
+        <div class="text-[10px] font-black uppercase text-sky-200 tracking-[0.2em] mb-4 opacity-80">Total Manifest Aktif</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ docs.length }}</h3>
+          <div class="p-3 bg-white/20 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
+            <i class="pi pi-globe text-lg animate-spin-slow"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Dalam Perjalanan</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ docs.filter(p => p.status === 'SHIPPED').length }}</h3>
+          <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100"><i class="pi pi-send text-lg"></i></div>
+        </div>
+      </div>
+      
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Berhasil Mendarat</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ docs.filter(p => p.status === 'DELIVERED').length }}</h3>
+          <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100"><i class="pi pi-check-circle text-lg"></i></div>
+        </div>
+      </div>
+
+       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 text-slate-400 opacity-50">
+        <div class="text-[10px] font-black uppercase tracking-[0.2em] mb-4">Efisiensi Rute</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black tracking-tighter leading-none">98%</h3>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100"><i class="pi pi-map text-lg"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manifest Ledger (Premium Grid) -->
+    <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
+      <!-- Controls Bar -->
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-sky-200/20 rounded-full blur-3xl"></div>
+        
+        <div class="relative flex items-center gap-4">
+           <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-sky-400 shadow-xl"><i class="pi pi-globe text-xl animate-spin-slow"></i></div>
+           <div>
+              <h3 class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em] leading-none mb-1">Riwayat Pengangkutan Kargo</h3>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono">Freight Manifest Ledger</p>
+           </div>
+        </div>
+
+        <div class="relative flex items-center gap-3">
+          <div class="flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm p-1">
+            <i class="pi pi-search px-3 text-slate-300 text-xs"></i>
+            <InputText v-model="search" placeholder="Cari Resi / Manifest..." class="border-none bg-transparent text-[11px] h-9 w-64 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" @keyup.enter="load" />
+            <div class="h-6 w-[1px] bg-slate-100 mx-2"></div>
+            <select v-model="statusFilter" class="bg-transparent text-[10px] font-black uppercase tracking-widest text-slate-500 pr-8 outline-none cursor-pointer hover:text-sky-600 transition-colors">
+              <option value="">Semua Status</option>
+              <option value="CREATED">Penyusunan (Transit)</option>
+              <option value="SHIPPED">Berlayar (Shipped)</option>
+              <option value="DELIVERED">Mendarat (Delivered)</option>
+            </select>
+          </div>
+          <Button icon="pi pi-refresh" severity="secondary" rounded text @click="load" :loading="loading" class="h-10 w-10 text-slate-400 hover:text-sky-600 transition-all shadow-sm bg-white" />
         </div>
       </div>
 
       <!-- Shipment Table -->
-      <div class="overflow-x-auto rounded-lg border">
+      <div class="overflow-x-auto custom-scrollbar">
         <table class="w-full text-sm">
-          <thead class="bg-blue-50/50 text-left text-[11px] text-blue-900 border-b border-blue-100 uppercase tracking-wider font-bold">
+          <thead class="bg-white text-left border-b border-slate-50 font-bold">
             <tr>
-              <th class="px-4 py-3 w-1/4">Kode Manifest Muat (Shipment ID)</th>
-              <th class="px-4 py-3 bg-slate-50 border-l text-center">Agen Ekspedisi Darat/Laut/Udara</th>
-              <th class="px-4 py-3 text-center bg-slate-50 border-l w-48" title="Nomor Resi Pihak Ketiga">Lacak Ekspedisi (AWB/Resi)</th>
-              <th class="px-4 py-3 text-center bg-blue-50/50 border-l w-48">Status Trayek</th>
-              <th class="px-4 py-3 text-right font-black border-l w-32 tracking-wider">Navigasi</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Kode Manifest</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center w-52 border-l border-slate-50">Agen Ekspedisi</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center w-52 border-l border-slate-50">Lacak Resi (AWB)</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center w-52 border-l border-slate-50">Trayek Kargo</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-40 border-l border-slate-50">Navigasi</th>
             </tr>
           </thead>
-          <tbody class="divide-y relative text-[12px]">
+          <tbody class="divide-y divide-slate-50">
              <tr v-if="loading">
-              <td colspan="5" class="px-4 py-16 text-center text-sm text-slate-500">
-                <i class="pi pi-spinner pi-spin mr-2 text-blue-500"></i> Membuka gerbang pelabuhan...
+              <td colspan="5" class="py-24 text-center">
+                <i class="pi pi-spinner pi-spin text-4xl text-sky-500 opacity-20"></i>
+                <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-sky-600">Membuka gerbang pelabuhan...</div>
               </td>
             </tr>
-            <!-- Iteration rows -->
-            <tr v-for="doc in filteredDocs" v-else :key="doc.id" class="transition hover:bg-blue-50/20 group">
-              <!-- Dokumen -->
-              <td class="px-4 py-3 align-middle cursor-pointer" @click="openView(doc)">
-                <div class="font-bold text-slate-800 flex items-center gap-2 group-hover:text-blue-700 transition">
-                   <i class="pi pi-inbox text-slate-400"></i> {{ doc.code }}
+            
+            <tr v-for="doc in filteredDocs" v-else :key="doc.id" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent hover:border-l-sky-400" @click="openView(doc)">
+              <td class="px-8 py-6 align-middle">
+                <div>
+                  <div class="font-black text-slate-900 text-[13px] tracking-tight leading-none mb-2 group-hover:text-sky-700 transition-colors uppercase">
+                     {{ doc.code }}
+                  </div>
+                  <div class="flex items-center gap-3">
+                     <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none flex items-center gap-1.5" v-if="doc.shipDate">
+                        <i class="pi pi-calendar-plus text-sky-400"></i> Diserahkan: {{ formatDate(doc.shipDate) }}
+                     </div>
+                     <div class="text-[9px] font-black text-emerald-500 uppercase tracking-widest leading-none flex items-center gap-1.5" v-if="doc.deliveryDate">
+                        <i class="pi pi-verified text-emerald-400"></i> Tiba: {{ formatDate(doc.deliveryDate) }}
+                     </div>
+                  </div>
                 </div>
-                <div class="text-[10px] text-slate-400 mt-1 uppercase" v-if="doc.shipDate">Diserahkan: <span class="font-bold text-slate-600">{{ formatDate(doc.shipDate) }}</span></div>
-                <div class="text-[10px] text-slate-400 mt-0.5 uppercase" v-if="doc.deliveryDate">Tiba: <span class="font-bold text-emerald-600">{{ formatDate(doc.deliveryDate) }}</span></div>
               </td>
               
-               <!-- Carrier -->
-              <td class="px-4 py-3 align-middle text-center bg-slate-50/50 border-l">
-                 <div class="font-bold text-slate-700">{{ doc.carrier?.name || 'Truk Internal' }}</div>
-                 <div class="text-[8px] bg-slate-200 text-slate-500 inline-block px-1 rounded shadow-inner mt-0.5" v-if="doc.carrier?.code">{{ doc.carrier.code }}</div>
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50 bg-slate-50/20 group-hover:bg-slate-100/30 transition-colors">
+                 <div class="flex flex-col items-center gap-1">
+                    <div class="font-black text-slate-700 text-[11px] uppercase tracking-tight">{{ doc.carrier?.name || 'Truk Internal' }}</div>
+                    <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest font-mono">{{ doc.carrier?.code }}</div>
+                 </div>
               </td>
 
-              <!-- AWB Target -->
-              <td class="px-4 py-3 align-middle text-center border-l bg-slate-50 relative group-hover:bg-slate-100 transition-colors">
-                 <div class="font-mono font-bold text-indigo-700 text-sm tracking-tighter cursor-pointer hover:underline">{{ doc.trackingNo || 'Belum Terbit' }}</div>
-                 <div class="text-[8px] uppercase tracking-widest text-slate-400 font-bold mt-1">Waybill Number</div>
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50 bg-indigo-50/5 group-hover:bg-indigo-50/20 transition-colors">
+                 <div class="inline-flex font-mono font-black text-[12px] text-indigo-700 bg-indigo-50 border border-indigo-100 px-3 py-1.5 rounded-xl shadow-sm hover:underline cursor-pointer">
+                    {{ doc.trackingNo || 'BELUM TERBIT' }}
+                 </div>
               </td>
 
-              <!-- Route Status -->
-              <td class="px-4 py-3 align-middle text-center border-l bg-blue-50/20 relative">
-                 <span class="inline-flex rounded px-2 py-1 text-[9px] font-black tracking-widest border w-full flex items-center justify-center shadow-sm" :class="statusBadgeParams(doc.status)">
-                   {{ statusMapper(doc.status) }}
-                 </span>
-                 <div v-show="doc.status === 'SHIPPED'" class="text-[8px] mt-1 text-slate-400/80 font-bold tracking-tight uppercase leading-none truncate max-w-40 mx-auto px-2"><i class="pi pi-send mr-0.5 text-[8px]"></i> Lacak API Ekspedisi...</div>
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50 relative overflow-hidden">
+                 <div class="absolute left-0 bottom-0 w-2 h-full bg-sky-400 opacity-20 transition-all group-hover:w-full"></div>
+                 <div class="relative z-10 space-y-2">
+                    <span class="inline-flex rounded-xl px-4 py-1.5 text-[10px] font-black tracking-[0.2em] border w-40 flex items-center justify-center shadow-sm backdrop-blur-sm" :class="statusBadgeParams(doc.status)">
+                       {{ statusMapper(doc.status) }}
+                    </span>
+                    <div v-show="doc.status === 'SHIPPED'" class="text-[8px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-center gap-1.5"><i class="pi pi-bolt text-yellow-500"></i> Radar GPS Aktif</div>
+                 </div>
               </td>
 
-              <!-- Final Payout -->
-              <td class="px-4 py-3 text-right border-l font-mono tracking-tighter relative group-hover:bg-slate-50 transition-colors">
-                 <Button label="Detil Kargo" size="small" severity="secondary" outlined class="text-[10px] px-3 font-bold py-1.5 text-center transition-colors hover:text-blue-700 hover:bg-blue-50 w-full" @click.stop="openView(doc)" />
+              <td class="px-8 py-6 align-middle text-right border-l border-slate-50">
+                 <Button label="Detil Kargo" size="small" rounded outlined class="text-[10px] px-6 font-black py-2.5 h-10 border-slate-200 text-slate-600 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all uppercase tracking-widest" />
               </td>
             </tr>
             <tr v-if="!loading && filteredDocs.length === 0">
-              <td colspan="5" class="px-4 py-16 text-center text-slate-400 border-t italic">
-                Belum ada aktivitas peti kemas laut/udara.
+              <td colspan="5" class="py-32 text-center">
+                 <i class="pi pi-map text-6xl text-slate-100 mb-4 block"></i>
+                 <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Belum ada aktivitas peti kemas laut/udara.</div>
               </td>
             </tr>
           </tbody>
@@ -96,87 +163,113 @@
     </div>
 
 
-    <!-- Delivery Order Linkage Modal (Shipment Builder) -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-2 sm:p-4 backdrop-blur-sm shadow-xl">
-      <div class="w-full max-w-4xl rounded-xl border bg-slate-50 shadow-2xl flex flex-col max-h-[90vh] animate-fade-in-up">
-        
-        <div class="p-6 border-b bg-blue-900 border-blue-950 relative overflow-hidden flex justify-between items-start shadow-sm">
-          <div class="absolute -left-10 -top-10 opacity-20"><i class="pi pi-globe text-[180px] text-white"></i></div>
-          <div class="z-10 w-full pr-8">
-             <div class="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                 {{ activeDoc?.id ? `Manifest Kargo Ekspedisi Eksternal: ${form.code}` : 'Bungkus Kargo Ekspedisi (Shipment) Baru' }}
-                 <span v-if="activeDoc?.id" class="inline-flex rounded text-[9px] font-black uppercase shadow border px-2 py-0.5" :class="statusBadgeParams(form.status)">
+    <!-- Dialog Logistics Hub (Universal Centered Style) -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-4xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-slate-900">
+        <!-- Dialog Header -->
+        <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-sky-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
+          <div class="relative flex items-center gap-6">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-sky-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
+               <i class="pi pi-globe text-3xl font-black animate-spin-slow"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-3">
+                <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase">Navigasi <span class="text-sky-600 italic">Manifest Kargo</span></h3>
+                <span v-if="activeDoc?.id" class="inline-flex rounded-xl text-[10px] font-black uppercase shadow-sm border px-4 py-1.5 h-8 items-center tracking-widest" :class="statusBadgeParams(form.status)">
                    {{ statusMapper(form.status) }}
-                 </span>
-             </div>
-             <div class="text-xs font-semibold mt-1 text-blue-200/80">Satu Truk Ekspedisi JNE/FedEx bisa mengangkut PULUHAN Surat Jalan *Delivery Order* sekaligus. Ikat semua DO tersebut ke dalam satu tabung pelacakan resi disini.</div>
+                </span>
+              </div>
+              <p class="text-[10px] font-black uppercase tracking-[0.2em] mt-3 px-1 border-l-2 border-sky-500 text-sky-600">Enterprise Cargo Navigation Hub</p>
+            </div>
           </div>
-          <button class="text-white/50 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded text-lg font-bold flex items-center justify-center transition-colors z-20 shrink-0 shadow" @click="dialogOpen = false">✕</button>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="dialogOpen = false" class="relative z-10 hover:bg-slate-50 h-12 w-12" />
+        </div>
+        
+        <!-- Dialog Body (Manifest Builder) -->
+        <div class="p-10 space-y-10 flex-1 overflow-y-auto bg-slate-50/30 custom-scrollbar">
+           <!-- Step 1: Carrier & Route Meta -->
+           <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm space-y-8">
+              <div class="flex items-center gap-4 mb-2">
+                 <div class="w-8 h-8 rounded-lg bg-sky-100 flex items-center justify-center text-sky-600 font-black text-[10px]">01</div>
+                 <div class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Parameter Ekspedisi</div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <div class="space-y-3">
+                    <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] block px-1">Mitra Armada (Carrier / 3PL) <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                       <select :disabled="isReadonly" v-model="form.carrierId" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-100 shadow-inner outline-none focus:ring-2 focus:ring-sky-400 transition-all uppercase appearance-none cursor-pointer hover:bg-slate-200">
+                          <option value="">-- Pilih Ekspedisi Vendor --</option>
+                          <option v-for="c in mockCarriers" :value="c.id">{{ c.code }} - {{ c.name }}</option>
+                       </select>
+                       <i class="pi pi-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                    </div>
+                 </div>
+                 <div class="space-y-3">
+                    <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] block px-1">Nomor Resi / AWB API</label>
+                    <input :disabled="isReadonly" type="text" v-model="form.trackingNo" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-indigo-700 bg-indigo-50 shadow-inner outline-none focus:ring-2 focus:ring-indigo-400 transition-all font-mono tracking-widest uppercase" placeholder="CONTOH: JNE-1234567..." />
+                 </div>
+              </div>
+
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-8">
+                 <div class="space-y-3">
+                    <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] block px-1">Status Trayek</label>
+                    <div class="relative">
+                       <select :disabled="isReadonly && canManage === false" v-model="form.status" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-100 shadow-inner outline-none focus:ring-2 focus:ring-sky-400 transition-all appearance-none cursor-pointer">
+                          <option value="CREATED">Penyusunan Kargo (TRANSIT)</option>
+                          <option value="SHIPPED">Kargo Berlayar (SHIPPED)</option>
+                          <option value="DELIVERED">Kargo Mendarat (DELIVERED)</option>
+                          <option value="CANCELED">Dibatalkan (CANCELED)</option>
+                       </select>
+                       <i class="pi pi-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                    </div>
+                 </div>
+                 <div class="space-y-3">
+                    <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] block px-1">Tgl Penyerahan Brg</label>
+                    <input :disabled="isReadonly" type="date" v-model="form.shipDate" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-100 shadow-inner outline-none focus:ring-2 focus:ring-sky-400 transition-all" />
+                 </div>
+                 <div class="space-y-3">
+                    <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] block px-1">Aktual Tiba</label>
+                    <input :disabled="isReadonly" type="date" v-model="form.deliveryDate" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-100 shadow-inner outline-none focus:ring-2 focus:ring-sky-400 transition-all" />
+                 </div>
+              </div>
+           </div>
+
+           <!-- Step 2: Linked DOs (Manifest Contents) -->
+           <div class="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm space-y-8">
+              <div class="flex items-center justify-between mb-2">
+                 <div class="flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-lg bg-sky-100 flex items-center justify-center text-sky-600 font-black text-[10px]">02</div>
+                    <div class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Surat Jalan Terafiliasi (Linked DO)</div>
+                 </div>
+                 <Button v-if="!isReadonly" label="Ikat DO Belum Terkirim" icon="pi pi-plus" size="small" rounded text class="text-[10px] font-black uppercase tracking-widest text-sky-600 hover:bg-sky-50 px-6 h-10 border border-sky-100" @click="addLinkedDO" />
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div v-for="(doLink, idx) in form.deliveryOrders" :key="idx" class="p-6 rounded-3xl border border-slate-100 bg-slate-50 relative group overflow-hidden transition-all hover:border-sky-200 hover:bg-white hover:shadow-lg">
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-sky-400 h-full opacity-40"></div>
+                    <div class="flex items-center justify-between gap-6 pl-2">
+                       <div class="space-y-1">
+                          <div class="text-[13px] font-black text-slate-900 flex items-center gap-2 font-mono uppercase tracking-widest"><i class="pi pi-truck text-sky-400"></i> {{ doLink.code }}</div>
+                          <div class="text-[9px] font-black text-emerald-600 uppercase tracking-[0.2em] flex items-center gap-1.5"><i class="pi pi-check"></i> DO Ready to Ship</div>
+                       </div>
+                       <Button v-if="!isReadonly" icon="pi pi-times" severity="danger" rounded text @click="removeDO(idx)" class="h-10 w-10 opacity-40 group-hover:opacity-100 transition-opacity bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white" />
+                    </div>
+                 </div>
+                 
+                 <div v-if="form.deliveryOrders.length === 0" class="col-span-2 py-12 text-center border-2 border-dashed border-slate-100 rounded-[2.5rem]">
+                    <i class="pi pi-link text-4xl text-slate-100 mb-3 block"></i>
+                    <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Belum ada Surat Jalan (DO) gudang yang diikat.</div>
+                 </div>
+              </div>
+           </div>
         </div>
 
-        <div class="px-6 py-5 bg-white flex-1 overflow-auto">
-            <div class="space-y-4 max-w-xl mb-6 border border-slate-200 rounded-lg p-4 shadow-inner bg-slate-50">
-               <div>
-                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Mitra Armada (Carrier / 3PL)</label>
-                  <select :disabled="isReadonly" v-model="form.carrierId" class="w-full border-b-[3px] border-slate-200 px-2 py-2 text-sm font-bold text-slate-800 bg-white outline-none focus:border-blue-500 shadow-sm cursor-pointer hover:bg-slate-50 rounded-t">
-                      <option value="">-- Pilih Ekspedisi Vendor Darat/Laut --</option>
-                      <option v-for="c in mockCarriers" :value="c.id">{{ c.code }} - {{ c.name }}</option>
-                  </select>
-               </div>
-               
-               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
-                  <div class="col-span-2">
-                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Nomor Resi / AWB API Tracking</label>
-                     <input :disabled="isReadonly" type="text" v-model="form.trackingNo" class="w-full border rounded px-2 py-2 text-xs font-bold font-mono text-indigo-700 bg-indigo-50/50 border-indigo-200 outline-none focus:border-indigo-500 shadow-inner" placeholder="JNE-1234567..." />
-                  </div>
-                  <div class="col-span-2 md:col-span-1">
-                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Status Kargo</label>
-                     <select :disabled="isReadonly && canManage === false" v-model="form.status" class="w-full border rounded px-2 py-2 text-xs font-bold text-slate-700 bg-white outline-none focus:border-blue-500 shadow-inner cursor-pointer">
-                        <option value="CREATED">Penyusunan Kargo (CREATED)</option>
-                        <option value="SHIPPED">Kargo Berlayar (SHIPPED)</option>
-                        <option value="DELIVERED">Kargo Mendarat (DELIVERED)</option>
-                        <option value="CANCELED">Dibatalkan (CANCELED)</option>
-                     </select>
-                  </div>
-               </div>
-               
-               <div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
-                  <div class="col-span-2">
-                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Tgl Penyerahan Brg</label>
-                     <input :disabled="isReadonly" type="date" v-model="form.shipDate" class="w-full border rounded px-2 py-2 text-xs font-bold text-slate-700 bg-slate-50/50 outline-none focus:border-blue-500 shadow-inner" />
-                  </div>
-                  <div class="col-span-2">
-                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Estimasi / Aktual Tiba</label>
-                     <input :disabled="isReadonly" type="date" v-model="form.deliveryDate" class="w-full border rounded px-2 py-2 text-xs font-bold text-slate-700 bg-slate-50/50 outline-none focus:border-blue-500 shadow-inner" />
-                  </div>
-               </div>
-            </div>
-
-            <!-- Tautan DO (Relation Data) -->
-            <div class="border rounded-lg bg-white overflow-hidden shadow-sm">
-                <div class="bg-slate-100 border-b p-3 flex justify-between items-center">
-                    <span class="text-xs font-black uppercase text-slate-700 tracking-wider"><i class="pi pi-link text-blue-500 mr-1"></i> Surat Jalan Terafiliasi (Linked DO)</span>
-                    <Button v-if="!isReadonly" label="Ikat DO Belum Terkirim" icon="pi pi-plus" size="small" bg="bg-white" class="h-8 shadow-sm text-blue-700 text-[9px] border-slate-200 font-bold focus:shadow-none" @click="addLinkedDO" />
-                </div>
-                <div class="p-4 bg-blue-50/20">
-                     <div v-for="(doLink, idx) in form.deliveryOrders" :key="idx" class="flex items-center justify-between border-b border-dashed border-blue-200 py-2 relative group pl-2 hover:bg-blue-100/50 transition rounded px-2 mb-1">
-                        <div class="font-mono text-sm font-bold text-slate-700 flex items-center gap-2"><i class="pi pi-truck text-slate-400"></i> {{ doLink.code }}</div>
-                        <div class="text-[10px] uppercase font-bold text-emerald-600 bg-emerald-50 px-2 rounded-full border border-emerald-100">DO Ready to Ship</div>
-                        <button v-if="!isReadonly" @click="removeDO(idx)" class="absolute right-2 opacity-0 group-hover:opacity-100 transition-opacity w-6 h-6 rounded bg-rose-100 text-rose-500 flex items-center justify-center font-black hover:bg-rose-500 hover:text-white" title="Lepaskan Ikatan DO">✕</button>
-                     </div>
-                     <div v-if="form.deliveryOrders.length === 0" class="text-center text-[11px] font-bold text-slate-400 italic py-6">
-                        Belum ada Surat Jalan (DO) gudang yang dimasukkan ke dalam boks Kargo Pengiriman ini.
-                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-4 border-t bg-white flex justify-between items-center rounded-b-xl gap-3 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.05)] z-20">
-          <Button label="Keluar Dokumen" severity="secondary" size="small" @click="dialogOpen = false" outlined class="bg-slate-50 border-slate-300 font-bold px-4" />
-          
-           <div class="flex items-center gap-2">
-             <Button v-if="canManage" label="Simpan Perubahan Kargo" severity="info" size="large" :loading="saving" :disabled="saving" @click="saveAction(form.status)" class="bg-blue-600 border-none text-white font-bold tracking-wide hover:bg-blue-700 shadow-sm h-10 px-8 rounded-lg" icon="pi pi-check" />
-          </div>
+        <!-- Dialog Footer Gates -->
+        <div class="p-10 border-t bg-white flex justify-between items-center shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] rounded-b-[2.5rem]">
+          <Button label="Batalkan" severity="secondary" text @click="dialogOpen = false" class="px-8 h-12 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 rounded-xl" />
+          <Button v-if="canManage" label="Simpan Perubahan Kargo" severity="info" :loading="saving" :disabled="saving" @click="saveAction(form.status)" class="p-button-rounded h-14 px-12 bg-sky-600 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-sky-100 hover:scale-105 active:scale-95 transition-all" icon="pi pi-check" />
         </div>
       </div>
     </div>
@@ -233,8 +326,8 @@ const formatDate = (iso: string) => {
 
 const statusMapper = (s: string) => {
     if(s === 'SHIPPED') return 'DI LUAR KENDALI (JNE/pihak ke3)';
-    if(s === 'DELIVERED') return 'KARGO TERKIRIM';
-    if(s === 'CREATED') return 'GUDANG TRANSIT PERUSAHAAN';
+    if(s === 'DELIVERED') return 'KARGO MASUK TUJUAN (DELIVERED)';
+    if(s === 'CREATED') return 'PENYUSUNAN KARGO (TRANSIT)';
     if(s === 'CANCELED') return 'DIBATALKAN';
     return s;
 }
@@ -365,10 +458,54 @@ onMounted(() => {
 </script>
 
 <style scoped>
-select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 2rem; }
-.animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.animate-scale-in { 
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.95) translateY(10px); } 
+  to { opacity: 1; transform: scale(1) translateY(0); } 
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+  background: #cbd5e1; 
+}
+
+:deep(.p-inputtext) {
+   border-color: #f1f5f9 !important;
+   box-shadow: none !important;
+   background-color: #f8fafc !important;
+   border-radius: 16px !important;
+}
+
+:deep(.p-button-rounded) {
+  border-radius: 9999px !important;
 }
 </style>
