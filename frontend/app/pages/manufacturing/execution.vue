@@ -1,549 +1,438 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-orange-50/20 to-rose-50/20 p-6">
+  <div class="space-y-4 font-sans text-slate-900 custom-scrollbar overflow-x-hidden">
 
-    <!-- Header -->
-    <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div class="flex items-center gap-4">
-        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-rose-600 shadow-lg shadow-orange-200">
-          <i class="pi pi-bolt text-xl text-white" />
+    <!-- Header (Premium Shop Floor Operations Style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0 animate-fade-in-up">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-100 font-sans">Shop Floor Center</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-emerald-600">Eksekusi Manufaktur</span>
+          </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Shop Floor <span class="text-emerald-600 not-italic text-3xl">Operations</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-2xl text-emerald-900/60 leading-relaxed mt-3">Pusat kendali eksekusi lantai produksi: Registrasikan pengeluaran bahan baku, penerimaan produk jadi, dan audit kualitas secara real-time untuk transparansi operasional.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="flex flex-wrap items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100 mr-2">
+             <button v-for="t in ['issues', 'receipts', 'qc']" :key="t" @click="activeTab = t"
+               :class="activeTab === t ? 'bg-white text-emerald-700 shadow-md scale-105 border-emerald-100' : 'bg-transparent text-slate-400 border-transparent hover:text-slate-600'"
+               class="px-4 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all border outline-none">
+               {{ t === 'issues' ? 'Bahan' : t === 'receipts' ? 'Produk' : 'QC' }}
+             </button>
+          </div>
+          <Button label="+ Registrasi Operasi" icon="pi pi-plus" class="p-button-rounded h-12 px-8 bg-emerald-600 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-emerald-100 hover:scale-105 active:scale-95 transition-all" @click="openCreate" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Shop Floor Telemetry Dashboard (High-Contrast Style) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
+      <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
+        <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total Pengeluaran Bahan</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ issues.length }}</h3>
+          <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
+            <i class="pi pi-arrow-right-arrow-left text-lg"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Pending Audit Kualitas</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ qcs.filter(x => x.status === 'PENDING').length }}</h3>
+          <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100"><i class="pi pi-search text-lg"></i></div>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+        <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Rasio Lulus (Yield)</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-emerald-700 tracking-tighter leading-none">
+             {{ qcs.length > 0 ? (qcs.filter(q => q.status === 'PASSED').length / qcs.length * 100).toFixed(0) : '0' }}<span class="text-xl ml-1 font-black">%</span>
+          </h3>
+          <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 transition-all hover:rotate-12"><i class="pi pi-verified text-lg"></i></div>
+        </div>
+      </div>
+
+       <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+        <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
+        <div class="text-[10px] font-black uppercase text-emerald-100 tracking-[0.2em] mb-4 opacity-80">Sistem Operasi Aktif</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-xl font-black text-white tracking-tight leading-none uppercase">High <span class="text-emerald-300 italic">Security</span></h3>
+          <div class="p-3 bg-white/10 text-white rounded-xl border border-white/10 group-hover:rotate-12 transition-transform"><i class="pi pi-bolt text-lg"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shop Floor Execution Audit Ledger (Premium Grid Architecture) -->
+    <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
+      
+      <!-- Controls Bar -->
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-200/20 rounded-full blur-3xl"></div>
+        
+        <div class="relative flex items-center gap-4">
+           <div class="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-xl transition-transform hover:rotate-6">
+              <i :class="activeTab === 'issues' ? 'pi pi-arrow-right-arrow-left' : activeTab === 'receipts' ? 'pi pi-inbox' : 'pi pi-check-square'" class="text-xl"></i>
+           </div>
+           <div>
+              <h3 class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em] leading-none mb-1">Audit Ledger {{ tabLabel }}</h3>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono">Operations Tracking Record</p>
+           </div>
+        </div>
+
+        <div class="relative flex items-center gap-3">
+          <div class="flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm p-1">
+            <i class="pi pi-search px-3 text-slate-300 text-xs"></i>
+            <InputText v-model="searchQ" placeholder="Cari Kode Eksekusi..." class="border-none bg-transparent text-[11px] h-9 w-64 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" />
+          </div>
+          <Button icon="pi pi-refresh" severity="secondary" rounded text @click="load" :loading="loading" class="h-10 w-10 text-slate-400 hover:text-emerald-600 transition-all shadow-sm bg-white" />
+        </div>
+      </div>
+
+      <!-- Ledger Table -->
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-sm">
+          
+          <!-- Issues Header -->
+          <thead v-if="activeTab === 'issues'" class="bg-white text-left font-bold border-b border-slate-50 text-slate-900 uppercase">
+            <tr>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[300px]">Identitas Eksekusi</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50">Referensi WO</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center">Waktu & Shift</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center w-40">Status Ledger</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-40 border-l border-slate-50">Aksi</th>
+            </tr>
+          </thead>
+
+          <!-- Receipts Header -->
+          <thead v-else-if="activeTab === 'receipts'" class="bg-white text-left font-bold border-b border-slate-50 text-slate-900 uppercase">
+            <tr>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[300px]">Identitas Eksekusi</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-right">Luaran (Good)</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-right">BS / Reject</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center w-40">Status Ledger</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-40 border-l border-slate-50">Aksi</th>
+            </tr>
+          </thead>
+
+          <!-- QC Header -->
+          <thead v-else class="bg-white text-left font-bold border-b border-slate-50 text-slate-900 uppercase">
+            <tr>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[300px]">Work Order</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-right">Lulus QC</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center">Indikator Mutu</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center w-40">Disposisi Audit</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-40 border-l border-slate-50">Status</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-slate-50">
+            <tr v-if="loading">
+              <td colspan="5" class="py-24 text-center">
+                <i class="pi pi-spinner pi-spin text-4xl text-emerald-500 opacity-20"></i>
+                <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest">Sinkronisasi armada operasional...</div>
+              </td>
+            </tr>
+            
+            <!-- Issues Rows -->
+            <template v-if="activeTab === 'issues' && !loading">
+              <tr v-for="item in filteredIssues" :key="item.id" @click="openDetail(item, 'issue')" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent hover:border-l-emerald-400 cursor-pointer">
+                <td class="px-8 py-6 align-middle">
+                   <div class="flex items-center gap-4">
+                      <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
+                         <i class="pi pi-arrow-right-arrow-left text-lg"></i>
+                      </div>
+                      <div>
+                         <div class="font-mono text-[11px] font-black text-slate-500 tracking-tight group-hover:text-emerald-700 transition-colors uppercase">{{ item.code }}</div>
+                         <div class="mt-1 font-black text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-2">LOGISTIK PRODUKSI</div>
+                      </div>
+                   </div>
+                </td>
+                <td class="px-6 py-6 border-l border-slate-50 align-middle font-mono text-[11px] font-black text-slate-700 uppercase">{{ item.workOrder?.code || '—' }}</td>
+                <td class="px-6 py-6 border-l border-slate-50 align-middle text-center">
+                  <p class="text-[11px] font-black text-slate-800 uppercase">{{ fmtDate(item.issueDate) }}</p>
+                  <span v-if="item.shiftNo" class="text-[8px] font-black bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded uppercase tracking-widest border border-emerald-100 mt-1 inline-block">SHIFT {{ item.shiftNo }}</span>
+                </td>
+                <td class="px-6 py-6 border-l border-slate-50 align-middle text-center bg-slate-50/30 group-hover:bg-slate-100/50">
+                   <span :class="item.status === 'POSTED' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'" 
+                         class="inline-flex rounded-full px-4 py-1.5 text-[9px] font-black tracking-[0.2em] border uppercase shadow-sm group-hover:scale-105 transition-all">
+                       <i :class="item.status === 'POSTED' ? 'pi pi-check-circle animate-pulse' : 'pi pi-clock'" class="text-[7px] mr-2"></i> {{ item.status }}
+                   </span>
+                </td>
+                <td class="px-8 py-6 align-middle text-right border-l border-slate-50">
+                   <Button label="Audit Operasi" severity="secondary" rounded outlined class="h-9 px-6 border-slate-200 text-slate-600 hover:bg-slate-900 hover:text-white transition-all text-[9px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100" />
+                </td>
+              </tr>
+            </template>
+
+            <!-- Receipts Rows -->
+            <template v-else-if="activeTab === 'receipts' && !loading">
+              <tr v-for="r in filteredReceipts" :key="r.id" @click="openDetail(r, 'receipt')" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent hover:border-l-emerald-400 cursor-pointer">
+                <td class="px-8 py-6 align-middle">
+                   <div class="flex items-center gap-4">
+                      <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
+                         <i class="pi pi-inbox text-lg"></i>
+                      </div>
+                      <div>
+                         <div class="font-mono text-[11px] font-black text-slate-500 tracking-tight group-hover:text-emerald-700 transition-colors uppercase">{{ r.code }}</div>
+                         <div class="mt-1 font-black text-[10px] text-slate-400 uppercase tracking-widest">{{ fmtDate(r.receiptDate) }}</div>
+                      </div>
+                   </div>
+                </td>
+                <td class="px-6 py-6 border-l border-slate-50 align-middle text-right font-mono text-xl font-black text-emerald-700">
+                  {{ Number(r.qtyProduced).toLocaleString() }} <span class="text-[9px] text-slate-400">{{ r.uomCode || 'PCS' }}</span>
+                </td>
+                <td class="px-6 py-6 border-l border-slate-50 align-middle text-right font-mono text-lg font-black" :class="Number(r.qtyRejected) > 0 ? 'text-rose-600' : 'text-slate-300'">
+                  {{ Number(r.qtyRejected).toLocaleString() }}
+                </td>
+                <td class="px-6 py-6 border-l border-slate-50 align-middle text-center bg-slate-50/30 group-hover:bg-slate-100/50">
+                   <span :class="r.status === 'POSTED' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'" 
+                         class="inline-flex rounded-full px-4 py-1.5 text-[9px] font-black tracking-[0.2em] border uppercase shadow-sm">
+                       <i :class="r.status === 'POSTED' ? 'pi pi-check-circle animate-pulse' : 'pi pi-clock'" class="text-[7px] mr-2"></i> {{ r.status }}
+                   </span>
+                </td>
+                <td class="px-8 py-6 align-middle text-right border-l border-slate-50">
+                   <Button label="Audit Operasi" severity="secondary" rounded outlined class="h-9 px-6 border-slate-200 text-slate-600 hover:bg-slate-900 hover:text-white transition-all text-[9px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100" />
+                </td>
+              </tr>
+            </template>
+
+            <!-- QC Rows -->
+            <template v-else-if="activeTab === 'qc' && !loading">
+              <tr v-for="qc in qcs" :key="qc.id" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent hover:border-l-emerald-400">
+                <td class="px-8 py-6 align-middle">
+                   <div class="flex items-center gap-4">
+                      <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
+                         <i class="pi pi-check-square text-lg"></i>
+                      </div>
+                      <div>
+                         <div class="font-mono text-[11px] font-black text-slate-500 tracking-tight group-hover:text-emerald-700 transition-colors uppercase">{{ qc.workOrder?.code || '—' }}</div>
+                         <div class="mt-1 font-black text-[10px] text-slate-400 uppercase tracking-widest">{{ fmtDate(qc.qcDate) }}</div>
+                      </div>
+                   </div>
+                </td>
+                <td class="px-6 py-6 border-l border-slate-50 align-middle text-right font-mono text-xl font-black text-emerald-700">
+                  {{ Number(qc.qtyPassed).toLocaleString() }}
+                </td>
+                <td class="px-6 py-6 border-l border-slate-50 align-middle">
+                  <div class="flex items-center gap-3 justify-center">
+                    <div class="h-1 w-24 bg-slate-100 rounded-full overflow-hidden flex">
+                       <div class="h-full shadow-[0_0_8px_rgba(16,185,129,0.5)] transition-all duration-1000" :style="{ width: passRate(qc) + '%' }" :class="passRate(qc) >= 95 ? 'bg-emerald-500' : 'bg-rose-500'"></div>
+                    </div>
+                    <span class="text-[10px] font-black text-slate-500">{{ passRate(qc) }}%</span>
+                  </div>
+                </td>
+                <td class="px-6 py-6 border-l border-slate-50 align-middle text-center">
+                  <span :class="dispositionBadge(qc.disposition)" class="rounded-xl border px-3 py-1 text-[8px] font-black uppercase tracking-widest shadow-sm">{{ qc.disposition || 'PENDING' }}</span>
+                </td>
+                <td class="px-10 py-6 text-right border-l border-slate-50 bg-slate-50/30 group-hover:bg-slate-100/50">
+                  <span :class="qcStatusBadge(qc.status)" class="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-[9px] font-black uppercase tracking-widest shadow-sm">
+                    <span :class="qcStatusDot(qc.status)" class="h-2 w-2 rounded-full animate-pulse" />
+                    {{ qc.status }}
+                  </span>
+                </td>
+              </tr>
+            </template>
+
+            <tr v-if="!loading && (activeTab === 'issues' ? filteredIssues.length === 0 : (activeTab === 'receipts' ? filteredReceipts.length === 0 : qcs.length === 0))">
+              <td colspan="5" class="py-32 text-center text-slate-500">
+                 <div class="text-6xl mb-4 opacity-10">🏭</div>
+                 <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Data eksekusi tidak ditemukan atau belum ada aktivitas operasional.</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Execution Registry (Universal Centered Dialog) Style Alignment -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-7xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
+        
+        <!-- Registry Workspace Header -->
+        <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
+          <div class="relative flex items-center gap-6">
+            <div :class="activeTab === 'issues' ? 'bg-slate-900' : activeTab === 'receipts' ? 'bg-emerald-600' : 'bg-indigo-600'" 
+                 class="w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
+               <i :class="activeTab === 'issues' ? 'pi pi-arrow-right-arrow-left' : activeTab === 'receipts' ? 'pi pi-inbox' : 'pi pi-check-square'" class="text-3xl font-black"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-3">
+                 <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase italic">Registry <span class="text-emerald-600 not-italic text-2xl">Shop Floor</span></h3>
+                 <span class="inline-flex rounded-xl px-4 py-1.5 text-[9px] font-black tracking-[0.2em] border shadow-sm uppercase shadow-sm bg-emerald-50 text-emerald-700 border-emerald-200">
+                    REGISTRASI AKTIF: {{ tabLabel.toUpperCase() }}
+                 </span>
+              </div>
+              <p class="text-[10px] font-black uppercase tracking-[0.2em] mt-3 px-1 border-l-2 border-emerald-500 text-emerald-600">Execution Governance & Operational Audit Registry</p>
+            </div>
+          </div>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="closeDialog" class="relative z-10 hover:bg-emerald-50 h-12 w-12" />
+        </div>
+        
+        <!-- Workspace Body -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 p-10">
+           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
+              <!-- Panel I: Parameter Identitas -->
+              <div class="lg:col-span-4 animate-fade-in-up">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center gap-2">
+                    <i class="pi pi-shield text-emerald-500"></i> I. Identitas Operasional
+                 </div>
+                 <div class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm space-y-6 hover:border-emerald-100 transition-all min-h-[500px]">
+                    <div class="space-y-4">
+                       <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Kode Registrasi Eksekusi</label>
+                       <InputText v-model="form.code" class="w-full h-14 bg-slate-50 border-none rounded-2xl px-6 text-[12px] font-black uppercase tracking-widest text-slate-900 shadow-inner focus:ring-4 focus:ring-emerald-400 font-mono" placeholder="OTOMATIS" />
+                    </div>
+
+                    <div class="space-y-4">
+                       <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 text-emerald-600 italic">Work Order Induk</label>
+                       <select v-model="form.workOrderId" class="w-full h-14 border-none rounded-2xl px-6 text-[11px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-emerald-400 transition-all appearance-none cursor-pointer uppercase tracking-tight">
+                          <option value="">-- PILIH WO --</option>
+                          <option v-for="wo in workOrders" :key="wo.id" :value="wo.id">{{ wo.code }} · {{ wo.finishedGood?.name }}</option>
+                       </select>
+                    </div>
+
+                    <div class="space-y-4 pt-4 border-t border-slate-50">
+                       <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 text-indigo-600">Integrasi Jurnal Operasional</label>
+                       <div class="px-6 py-4 bg-slate-50 rounded-2xl border border-slate-100 text-[9px] font-bold text-slate-400 uppercase leading-relaxed italic">Sistem akan otomatis mencatat biaya standar dan realisasi penggunaan bahan baku ke dalam buku besar produksi secara real-time.</div>
+                    </div>
+                 </div>
+              </div>
+
+              <!-- Panel II: Metrik & Teknis -->
+              <div class="lg:col-span-4 animate-fade-in-up" style="animation-delay: 0.1s">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center gap-2">
+                    <i class="pi pi-cog text-amber-500"></i> II. Metrik Teknis & Output
+                 </div>
+                 <div class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm space-y-8 hover:border-amber-100 transition-all border-b-[8px] border-b-emerald-600 min-h-[500px]">
+                    <div class="space-y-4">
+                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Shift Operasional</label>
+                       <select v-model="form.shiftNo" class="w-full h-14 border-none rounded-2xl px-6 text-[11px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-emerald-400 transition-all appearance-none cursor-pointer uppercase tracking-widest">
+                          <option value="">-- TANPA SHIFT --</option>
+                          <option value="1">SHIFT 1 (PAGI)</option>
+                          <option value="2">SHIFT 2 (SIANG)</option>
+                          <option value="3">SHIFT 3 (MALAM)</option>
+                       </select>
+                    </div>
+
+                    <div class="space-y-4">
+                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tanggal Eksekusi</label>
+                       <InputText v-model="form.date" type="date" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-emerald-400 transition-all uppercase" />
+                    </div>
+
+                    <!-- Contextual Metrik -->
+                    <div v-if="activeTab === 'receipts'" class="grid grid-cols-2 gap-4">
+                       <div class="space-y-4 text-center">
+                           <label class="text-[8px] font-black text-slate-400 uppercase tracking-widest">GOOD QTY</label>
+                           <InputText v-model="form.qtyProduced" type="number" class="w-full h-16 bg-slate-900 text-emerald-400 border-none rounded-2xl px-4 text-2xl font-black font-mono shadow-xl text-center" />
+                       </div>
+                       <div class="space-y-4 text-center">
+                           <label class="text-[8px] font-black text-rose-500 uppercase tracking-widest">REJECT QTY</label>
+                           <InputText v-model="form.qtyRejected" type="number" class="w-full h-16 bg-slate-50 text-rose-700 border-none rounded-2xl px-4 text-2xl font-black font-mono shadow-inner text-center" />
+                       </div>
+                    </div>
+
+                    <div v-if="activeTab === 'qc'" class="bg-slate-900 p-6 rounded-2xl shadow-xl">
+                       <div class="flex items-center gap-2 mb-4">
+                          <span class="text-[8px] font-black text-emerald-500 uppercase tracking-widest italic">Live Quality Audit Meter</span>
+                       </div>
+                       <div class="grid grid-cols-2 gap-3">
+                          <input v-model="form.qtyPassed" type="number" class="bg-white/5 border-none rounded-xl text-2xl font-black text-emerald-400 p-2 text-center font-mono outline-none" placeholder="LULUS" />
+                          <input v-model="form.qtyFailed" type="number" class="bg-white/5 border-none rounded-xl text-2xl font-black text-rose-500 p-2 text-center font-mono outline-none" placeholder="BS" />
+                       </div>
+                    </div>
+                 </div>
+              </div>
+
+              <!-- Panel III: Item Registry / Audit Notes -->
+              <div class="lg:col-span-4 animate-fade-in-up" style="animation-delay: 0.2s">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i :class="activeTab === 'issues' ? 'pi pi-box text-indigo-500' : 'pi pi-info-circle text-amber-500'"></i> III. {{ activeTab === 'issues' ? 'Registry Item' : 'Observasi Audit' }}</span>
+                    <Button v-if="activeTab === 'issues'" label="+ ITEM" @click="addItem" class="px-2 py-1 bg-emerald-100 text-emerald-700 border-none text-[8px] font-black rounded hover:bg-emerald-200" />
+                 </div>
+                 
+                 <!-- Issue Panel -->
+                 <div v-if="activeTab === 'issues'" class="bg-indigo-950 p-0 rounded-[2.5rem] shadow-2xl border-4 border-indigo-900 relative overflow-hidden flex flex-col min-h-[500px]">
+                    <div class="absolute right-[-20px] top-[-20px] w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl opacity-30"></div>
+                    <div class="p-8 pb-4 shrink-0 relative z-10">
+                       <div class="flex items-center justify-between mb-2">
+                          <h4 class="text-xl font-black text-white uppercase tracking-tight italic">Material <span class="text-emerald-500 not-italic">Lines</span></h4>
+                          <span class="px-2 py-0.5 bg-white/10 rounded-lg text-[8px] font-black text-white uppercase tracking-widest">{{ form.items.length }} SKU</span>
+                       </div>
+                    </div>
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-8">
+                       <div class="space-y-4 pb-8">
+                          <div v-for="(it, idx) in form.items" :key="idx" class="bg-white/5 rounded-[1.5rem] p-5 border border-white/10 group/line">
+                             <div class="flex justify-between items-start mb-4">
+                                <select v-model="it.itemId" class="bg-transparent border-none text-[11px] font-black text-emerald-400 uppercase tracking-tight focus:ring-0 appearance-none cursor-pointer w-full">
+                                   <option value="">-- MINTA ITEM --</option>
+                                   <option v-for="opt in items" :key="opt.id" :value="opt.id">{{ opt.code }} · {{ opt.name }}</option>
+                                </select>
+                                <Button icon="pi pi-trash" @click="removeItem(idx)" class="h-6 w-6 bg-rose-500/10 text-rose-400 border-none rounded-full hover:bg-rose-500/20" />
+                             </div>
+                             <div class="flex items-center gap-4 bg-black/30 p-3 rounded-xl border border-white/5 font-mono">
+                                <span class="text-[8px] font-black text-indigo-400 uppercase">VOL:</span>
+                                <input v-model="it.qty" type="number" class="w-full bg-transparent border-none text-xs font-black text-white p-0 focus:ring-0 outline-none" />
+                                <span class="text-[8px] font-black text-indigo-400 uppercase">UNIT:</span>
+                                <input v-model="it.uomCode" class="w-12 bg-transparent border-none text-[10px] font-black text-white p-0 focus:ring-0 outline-none uppercase" placeholder="PCS" />
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+
+                 <!-- Notes Panel for Receipt/QC -->
+                 <div v-else class="bg-amber-50 p-8 rounded-[2.5rem] border-2 border-amber-100 shadow-sm space-y-6 min-h-[500px] flex flex-col">
+                    <div class="flex-1">
+                       <label class="text-[10px] font-black text-amber-700 uppercase tracking-widest px-1">Dokumentasi Observasi Lantai Produksi</label>
+                       <textarea v-model="form.notes" rows="12" class="w-full mt-4 rounded-3xl border-none bg-white p-6 text-[11px] font-medium text-slate-700 outline-none shadow-sm" placeholder="Catat anomali proses, kendala mesin, atau temuan kualitas visual..."></textarea>
+                    </div>
+                    <div class="p-4 bg-white/60 rounded-2xl border border-amber-200">
+                       <p class="text-[9px] font-black text-amber-800 uppercase italic leading-relaxed">Penyimpanan rekaman ini akan mengikat ledger traceability secara permanen dalam sistem.</p>
+                    </div>
+                 </div>
+              </div>
+
+           </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="p-10 border-t bg-white flex justify-between items-center shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] rounded-b-[2.5rem]">
+          <div class="flex items-center gap-4">
+             <div class="px-6 py-3 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-600 text-[9px] font-black uppercase tracking-widest italic flex items-center gap-2 transition-all hover:scale-105">
+                <i class="pi pi-shield-check"></i> Audit Integritas Shop Floor Aktif
+             </div>
+          </div>
+          <div class="flex items-center gap-4">
+             <Button label="Batalkan Sesi" severity="secondary" text @click="closeDialog" class="px-8 h-12 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 rounded-xl" />
+             <Button 
+                label="Simpan Eksekusi Lantai Produksi" 
+                icon="pi pi-save" 
+                size="large" 
+                :loading="saving"
+                :disabled="saving || !form.code || !form.workOrderId"
+                @click="save" 
+                class="h-14 px-12 bg-emerald-600 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-emerald-100 hover:scale-105 active:scale-95 transition-all rounded-xl" 
+             />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Universal Toast -->
+    <transition name="fade">
+      <div v-if="toastMsg" :class="toastType === 'error' ? 'bg-rose-900 border-rose-800' : 'bg-emerald-950 border-emerald-900'" class="fixed bottom-10 right-10 z-[200] flex items-center gap-4 rounded-2xl border-2 px-8 py-5 text-white shadow-2xl">
+        <div :class="toastType === 'error' ? 'bg-rose-500' : 'bg-emerald-500'" class="flex h-10 w-10 items-center justify-center rounded-xl">
+          <i :class="toastType === 'error' ? 'pi-times-circle' : 'pi-check-circle'" class="pi text-lg font-black" />
         </div>
         <div>
-          <h1 class="text-xl font-bold text-slate-800">Production Execution</h1>
-          <p class="text-sm text-slate-500">Issue material, terima produk jadi, dan jalankan QC in-process</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-3">
-        <button
-          :class="activeTab === 'issues' ? 'bg-orange-500 text-white shadow-md shadow-orange-200' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-          class="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all"
-          @click="activeTab = 'issues'"
-        >
-          <i class="pi pi-arrow-right-arrow-left text-xs" />
-          Issues
-          <span class="rounded-full bg-white/30 px-1.5 text-xs font-bold">{{ issues.length }}</span>
-        </button>
-        <button
-          :class="activeTab === 'receipts' ? 'bg-emerald-500 text-white shadow-md shadow-emerald-200' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-          class="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all"
-          @click="activeTab = 'receipts'"
-        >
-          <i class="pi pi-inbox text-xs" />
-          Receipts
-          <span class="rounded-full bg-white/30 px-1.5 text-xs font-bold">{{ receipts.length }}</span>
-        </button>
-        <button
-          :class="activeTab === 'qc' ? 'bg-violet-500 text-white shadow-md shadow-violet-200' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-          class="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all"
-          @click="activeTab = 'qc'"
-        >
-          <i class="pi pi-check-square text-xs" />
-          QC
-          <span class="rounded-full bg-white/30 px-1.5 text-xs font-bold">{{ qcs.length }}</span>
-        </button>
-        <button
-          :class="tabAccentClass"
-          class="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-          :disabled="loading"
-          @click="openCreate"
-        >
-          <i class="pi pi-plus text-xs" />
-          New {{ tabLabel }}
-        </button>
-      </div>
-    </div>
-
-    <!-- Stats Bar -->
-    <div class="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-      <div v-for="stat in stats" :key="stat.label" class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-xs font-medium text-slate-500">{{ stat.label }}</p>
-            <p class="mt-1 text-2xl font-bold text-slate-800">{{ stat.value }}</p>
-          </div>
-          <div :class="`flex h-10 w-10 items-center justify-center rounded-xl ${stat.color}`">
-            <i :class="`pi ${stat.icon} text-sm text-white`" />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Content -->
-    <div class="rounded-2xl border border-slate-100 bg-white shadow-sm overflow-hidden">
-
-      <!-- Issues Tab -->
-      <template v-if="activeTab === 'issues'">
-        <div class="border-b border-slate-100 px-5 py-4 flex items-center justify-between">
-          <div>
-            <h2 class="text-sm font-bold text-slate-800">Production Issues</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Pengeluaran bahan baku dari gudang ke lini produksi</p>
-          </div>
-          <div class="relative">
-            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input v-model="searchQ" class="h-9 w-52 rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100" placeholder="Cari kode issue..." />
-          </div>
-        </div>
-
-        <div v-if="loading" class="flex justify-center py-16">
-          <div class="h-8 w-8 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500" />
-        </div>
-        <div v-else-if="filteredIssues.length === 0" class="flex flex-col items-center py-16 text-slate-400">
-          <i class="pi pi-arrow-right-arrow-left text-4xl" />
-          <p class="mt-3 text-sm font-medium">Belum ada Production Issue</p>
-          <button class="mt-3 rounded-xl bg-orange-500 px-4 py-2 text-xs font-semibold text-white hover:bg-orange-600" @click="openCreate">New Issue</button>
-        </div>
-        <table v-else class="w-full">
-          <thead class="border-b border-slate-100 bg-slate-50/80">
-            <tr>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Issue Code</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Work Order</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Tanggal</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Shift</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Issued By</th>
-              <th class="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">Items</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-              <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Action</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-50">
-            <tr v-for="item in filteredIssues" :key="item.id" class="group cursor-pointer hover:bg-orange-50/30 transition-colors" @click="openDetail(item, 'issue')">
-              <td class="px-5 py-4">
-                <div class="flex items-center gap-2">
-                  <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-100 text-orange-600">
-                    <i class="pi pi-arrow-right text-xs" />
-                  </div>
-                  <span class="font-mono text-sm font-bold text-orange-700">{{ item.code }}</span>
-                </div>
-              </td>
-              <td class="px-5 py-4">
-                <span class="font-medium text-slate-700 text-sm">{{ item.workOrder?.code }}</span>
-              </td>
-              <td class="px-5 py-4 text-sm text-slate-600">{{ fmtDate(item.issueDate) }}</td>
-              <td class="px-5 py-4 text-center">
-                <span v-if="item.shiftNo" class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">Shift {{ item.shiftNo }}</span>
-                <span v-else class="text-slate-400">—</span>
-              </td>
-              <td class="px-5 py-4 text-xs text-slate-500">{{ item.issuedBy || '—' }}</td>
-              <td class="px-5 py-4 text-center">
-                <span class="rounded-full bg-orange-100 px-2.5 py-1 text-xs font-bold text-orange-700">{{ item.items?.length || 0 }}</span>
-              </td>
-              <td class="px-5 py-4">
-                <span :class="item.status === 'POSTED' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'" class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold">
-                  <span :class="item.status === 'POSTED' ? 'bg-emerald-500' : 'bg-slate-400'" class="h-1.5 w-1.5 rounded-full" />
-                  {{ item.status }}
-                </span>
-              </td>
-              <td class="px-5 py-4 text-right">
-                <button class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 opacity-0 group-hover:opacity-100 transition hover:border-orange-300 hover:text-orange-600" @click.stop="openDetail(item, 'issue')">Detail</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </template>
-
-      <!-- Receipts Tab -->
-      <template v-if="activeTab === 'receipts'">
-        <div class="border-b border-slate-100 px-5 py-4 flex items-center justify-between">
-          <div>
-            <h2 class="text-sm font-bold text-slate-800">Production Receipts</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Penerimaan produk jadi dari lini produksi ke gudang</p>
-          </div>
-          <div class="relative">
-            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input v-model="searchQ" class="h-9 w-52 rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" placeholder="Cari kode receipt..." />
-          </div>
-        </div>
-
-        <div v-if="loading" class="flex justify-center py-16">
-          <div class="h-8 w-8 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-500" />
-        </div>
-        <div v-else-if="filteredReceipts.length === 0" class="flex flex-col items-center py-16 text-slate-400">
-          <i class="pi pi-inbox text-4xl" />
-          <p class="mt-3 text-sm font-medium">Belum ada Production Receipt</p>
-          <button class="mt-3 rounded-xl bg-emerald-500 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-600" @click="openCreate">New Receipt</button>
-        </div>
-        <table v-else class="w-full">
-          <thead class="border-b border-slate-100 bg-slate-50/80">
-            <tr>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Receipt Code</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Work Order</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Tanggal</th>
-              <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Qty Produced</th>
-              <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Qty Rejected</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Batch No</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-              <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Action</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-50">
-            <tr v-for="r in filteredReceipts" :key="r.id" class="group cursor-pointer hover:bg-emerald-50/30 transition-colors" @click="openDetail(r, 'receipt')">
-              <td class="px-5 py-4">
-                <div class="flex items-center gap-2">
-                  <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
-                    <i class="pi pi-inbox text-xs" />
-                  </div>
-                  <span class="font-mono text-sm font-bold text-emerald-700">{{ r.code }}</span>
-                </div>
-              </td>
-              <td class="px-5 py-4 text-sm font-medium text-slate-700">{{ r.workOrder?.code }}</td>
-              <td class="px-5 py-4 text-sm text-slate-600">{{ fmtDate(r.receiptDate) }}</td>
-              <td class="px-5 py-4 text-right">
-                <span class="font-mono text-sm font-bold text-slate-800">{{ Number(r.qtyProduced).toLocaleString() }}</span>
-                <span class="ml-1 text-xs text-slate-400">{{ r.uomCode || 'PCS' }}</span>
-              </td>
-              <td class="px-5 py-4 text-right">
-                <span :class="Number(r.qtyRejected) > 0 ? 'text-red-600 font-bold' : 'text-slate-400'" class="font-mono text-sm">{{ Number(r.qtyRejected).toLocaleString() }}</span>
-              </td>
-              <td class="px-5 py-4">
-                <span v-if="r.batchNo" class="rounded-full bg-slate-100 px-2.5 py-1 font-mono text-xs text-slate-700">{{ r.batchNo }}</span>
-                <span v-else class="text-slate-400 text-xs">—</span>
-              </td>
-              <td class="px-5 py-4">
-                <span :class="r.status === 'POSTED' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'" class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold">
-                  <span :class="r.status === 'POSTED' ? 'bg-emerald-500' : 'bg-slate-400'" class="h-1.5 w-1.5 rounded-full" />
-                  {{ r.status }}
-                </span>
-              </td>
-              <td class="px-5 py-4 text-right">
-                <button class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 opacity-0 group-hover:opacity-100 transition hover:border-emerald-300 hover:text-emerald-600" @click.stop="openDetail(r, 'receipt')">Detail</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </template>
-
-      <!-- QC Tab -->
-      <template v-if="activeTab === 'qc'">
-        <div class="border-b border-slate-100 px-5 py-4 flex items-center justify-between">
-          <div>
-            <h2 class="text-sm font-bold text-slate-800">In-Process Quality Control</h2>
-            <p class="text-xs text-slate-500 mt-0.5">Inspeksi kualitas selama proses produksi berlangsung</p>
-          </div>
-        </div>
-
-        <div v-if="loading" class="flex justify-center py-16">
-          <div class="h-8 w-8 animate-spin rounded-full border-4 border-violet-200 border-t-violet-500" />
-        </div>
-        <div v-else-if="qcs.length === 0" class="flex flex-col items-center py-16 text-slate-400">
-          <i class="pi pi-check-square text-4xl" />
-          <p class="mt-3 text-sm font-medium">Belum ada data QC</p>
-          <button class="mt-3 rounded-xl bg-violet-500 px-4 py-2 text-xs font-semibold text-white hover:bg-violet-600" @click="openCreate">New QC</button>
-        </div>
-        <table v-else class="w-full">
-          <thead class="border-b border-slate-100 bg-slate-50/80">
-            <tr>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Work Order</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">QC Date</th>
-              <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Inspected</th>
-              <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Passed</th>
-              <th class="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Failed</th>
-              <th class="px-5 py-3.5 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">Pass Rate</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-              <th class="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Disposition</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-50">
-            <tr v-for="qc in qcs" :key="qc.id" class="group hover:bg-violet-50/30 transition-colors">
-              <td class="px-5 py-4">
-                <div class="flex items-center gap-2">
-                  <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
-                    <i class="pi pi-check text-xs" />
-                  </div>
-                  <div>
-                    <p class="font-mono text-sm font-bold text-violet-700">{{ qc.workOrder?.code }}</p>
-                    <p v-if="qc.inspectedBy" class="text-xs text-slate-400">{{ qc.inspectedBy }}</p>
-                  </div>
-                </div>
-              </td>
-              <td class="px-5 py-4 text-sm text-slate-600">{{ fmtDate(qc.qcDate || qc.createdAt) }}</td>
-              <td class="px-5 py-4 text-right font-mono text-sm font-bold text-slate-700">{{ Number(qc.qtyInspected).toLocaleString() }}</td>
-              <td class="px-5 py-4 text-right font-mono text-sm font-bold text-emerald-600">{{ Number(qc.qtyPassed).toLocaleString() }}</td>
-              <td class="px-5 py-4 text-right font-mono text-sm font-bold" :class="Number(qc.qtyFailed) > 0 ? 'text-red-600' : 'text-slate-400'">{{ Number(qc.qtyFailed).toLocaleString() }}</td>
-              <td class="px-5 py-4 text-center">
-                <div class="flex items-center gap-2 justify-center">
-                  <div class="relative h-2 w-20 overflow-hidden rounded-full bg-slate-100">
-                    <div :style="{ width: passRate(qc) + '%' }" :class="passRate(qc) >= 95 ? 'bg-emerald-500' : passRate(qc) >= 80 ? 'bg-amber-500' : 'bg-red-500'" class="absolute h-full rounded-full" />
-                  </div>
-                  <span class="font-mono text-xs font-bold text-slate-700">{{ passRate(qc) }}%</span>
-                </div>
-              </td>
-              <td class="px-5 py-4">
-                <span :class="qcStatusBadge(qc.status)" class="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold">
-                  <span :class="qcStatusDot(qc.status)" class="h-1.5 w-1.5 rounded-full" />
-                  {{ qc.status }}
-                </span>
-              </td>
-              <td class="px-5 py-4">
-                <span :class="dispositionBadge(qc.disposition)" class="rounded-full px-2.5 py-1 text-xs font-semibold">{{ qc.disposition || 'PENDING' }}</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </template>
-    </div>
-
-    <!-- Toast -->
-    <transition name="fade">
-      <div v-if="toastMsg" :class="toastType === 'error' ? 'bg-red-500' : 'bg-emerald-500'" class="fixed bottom-6 right-6 z-[100] flex items-center gap-3 rounded-xl px-5 py-3.5 text-sm font-medium text-white shadow-xl">
-        <i :class="toastType === 'error' ? 'pi-times-circle' : 'pi-check-circle'" class="pi text-base" />
-        {{ toastMsg }}
-      </div>
-    </transition>
-
-    <!-- Detail Drawer -->
-    <transition name="slide-right">
-      <div v-if="detailOpen" class="fixed inset-y-0 right-0 z-50 flex">
-        <div class="fixed inset-0 bg-black/30 backdrop-blur-sm" @click="detailOpen = false" />
-        <div class="relative ml-auto flex h-full w-full max-w-xl flex-col overflow-y-auto bg-white shadow-2xl">
-          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white/90 px-6 py-4 backdrop-blur">
-            <div class="flex items-center gap-3">
-              <div :class="detailType === 'issue' ? 'from-orange-500 to-rose-500' : 'from-emerald-500 to-teal-500'" class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br">
-                <i :class="detailType === 'issue' ? 'pi-arrow-right' : 'pi-inbox'" class="pi text-sm text-white" />
-              </div>
-              <div>
-                <p class="font-mono text-sm font-bold" :class="detailType === 'issue' ? 'text-orange-700' : 'text-emerald-700'">{{ detailItem?.code }}</p>
-                <p class="text-xs text-slate-500">{{ detailType === 'issue' ? 'Production Issue' : 'Production Receipt' }} · {{ detailItem?.workOrder?.code }}</p>
-              </div>
-            </div>
-            <button class="flex h-8 w-8 items-center justify-center rounded-xl hover:bg-slate-100" @click="detailOpen = false">
-              <i class="pi pi-times text-slate-500" />
-            </button>
-          </div>
-
-          <div class="flex-1 p-6 space-y-4">
-            <div class="grid grid-cols-2 gap-3">
-              <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <p class="text-xs text-slate-500">Tanggal</p>
-                <p class="mt-1 text-sm font-semibold text-slate-800">{{ fmtDate(detailItem?.issueDate || detailItem?.receiptDate) }}</p>
-              </div>
-              <div class="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <p class="text-xs text-slate-500">Status</p>
-                <p class="mt-1 text-sm font-semibold text-slate-800">{{ detailItem?.status }}</p>
-              </div>
-              <div v-if="detailType === 'issue'" class="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <p class="text-xs text-slate-500">Issued By</p>
-                <p class="mt-1 text-sm font-semibold text-slate-800">{{ detailItem?.issuedBy || '—' }}</p>
-              </div>
-              <div v-if="detailType === 'receipt'" class="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <p class="text-xs text-slate-500">Qty Produced</p>
-                <p class="mt-1 text-sm font-bold text-emerald-700">{{ Number(detailItem?.qtyProduced).toLocaleString() }} {{ detailItem?.uomCode }}</p>
-              </div>
-              <div v-if="detailType === 'receipt'" class="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <p class="text-xs text-slate-500">Qty Rejected</p>
-                <p class="mt-1 text-sm font-bold" :class="Number(detailItem?.qtyRejected) > 0 ? 'text-red-600' : 'text-slate-400'">{{ Number(detailItem?.qtyRejected || 0).toLocaleString() }}</p>
-              </div>
-              <div v-if="detailType === 'receipt' && detailItem?.batchNo" class="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <p class="text-xs text-slate-500">Batch No</p>
-                <p class="mt-1 font-mono text-sm font-bold text-slate-800">{{ detailItem.batchNo }}</p>
-              </div>
-              <div v-if="detailItem?.shiftNo" class="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <p class="text-xs text-slate-500">Shift</p>
-                <p class="mt-1 text-sm font-semibold text-slate-800">Shift {{ detailItem.shiftNo }}</p>
-              </div>
-              <div v-if="detailItem?.notes" class="col-span-2 rounded-xl border border-amber-100 bg-amber-50 p-4">
-                <p class="text-xs font-semibold text-amber-700"><i class="pi pi-info-circle mr-1" />Notes</p>
-                <p class="mt-1 text-sm text-amber-800">{{ detailItem.notes }}</p>
-              </div>
-            </div>
-
-            <!-- Issue Items -->
-            <div v-if="detailType === 'issue' && detailItem?.items?.length > 0">
-              <h3 class="text-sm font-bold text-slate-700 mb-3">Items yang Diissue</h3>
-              <div class="space-y-2">
-                <div v-for="(it, idx) in detailItem.items" :key="it.id" class="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-4 py-3">
-                  <div class="flex items-center gap-3">
-                    <span class="flex h-6 w-6 items-center justify-center rounded-full bg-orange-100 text-xs font-bold text-orange-600">{{ idx + 1 }}</span>
-                    <div>
-                      <p class="text-sm font-semibold text-slate-800">{{ it.item?.code }}</p>
-                      <p class="text-xs text-slate-500">{{ it.item?.name }}</p>
-                    </div>
-                  </div>
-                  <div class="text-right">
-                    <p class="font-mono text-sm font-bold text-slate-700">{{ Number(it.qty).toLocaleString() }} {{ it.uomCode }}</p>
-                    <p v-if="it.qtyRequired" class="text-xs text-slate-400">Required: {{ Number(it.qtyRequired).toLocaleString() }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="sticky bottom-0 border-t border-slate-100 bg-white/90 px-6 py-4 backdrop-blur">
-            <button class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50" @click="detailOpen = false">Tutup</button>
-          </div>
-        </div>
-      </div>
-    </transition>
-
-    <!-- Create Modal -->
-    <transition name="modal">
-      <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" @click="closeDialog" />
-        <div class="relative z-10 flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
-          <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-            <div class="flex items-center gap-3">
-              <div :class="activeTab === 'issues' ? 'from-orange-500 to-rose-500' : activeTab === 'receipts' ? 'from-emerald-500 to-teal-500' : 'from-violet-500 to-indigo-500'" class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br">
-                <i :class="activeTab === 'issues' ? 'pi-arrow-right' : activeTab === 'receipts' ? 'pi-inbox' : 'pi-check-square'" class="pi text-sm text-white" />
-              </div>
-              <div>
-                <h2 class="text-base font-bold text-slate-800">New {{ tabLabel }}</h2>
-                <p class="text-xs text-slate-500">Isi informasi {{ tabLabel }} baru</p>
-              </div>
-            </div>
-            <button class="flex h-8 w-8 items-center justify-center rounded-xl hover:bg-slate-100" @click="closeDialog">
-              <i class="pi pi-times text-slate-500" />
-            </button>
-          </div>
-
-          <div class="flex-1 overflow-y-auto p-6 space-y-5">
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div class="space-y-1.5">
-                <label class="text-xs font-semibold text-slate-600">Kode <span class="text-red-500">*</span></label>
-                <input v-model="form.code" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100" :placeholder="activeTab === 'issues' ? 'PI-001' : activeTab === 'receipts' ? 'PR-001' : 'QC-001'" />
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-xs font-semibold text-slate-600">Work Order <span class="text-red-500">*</span></label>
-                <select v-model="form.workOrderId" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100">
-                  <option value="">— Pilih Work Order —</option>
-                  <option v-for="wo in workOrders" :key="wo.id" :value="wo.id">{{ wo.code }} · {{ wo.finishedGood?.name }}</option>
-                </select>
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-xs font-semibold text-slate-600">Tanggal <span class="text-red-500">*</span></label>
-                <input v-model="form.date" type="date" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100" />
-              </div>
-              <div v-if="activeTab !== 'qc'" class="space-y-1.5">
-                <label class="text-xs font-semibold text-slate-600">Shift</label>
-                <select v-model="form.shiftNo" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100">
-                  <option value="">— Pilih Shift —</option>
-                  <option value="1">Shift 1 (06:00 - 14:00)</option>
-                  <option value="2">Shift 2 (14:00 - 22:00)</option>
-                  <option value="3">Shift 3 (22:00 - 06:00)</option>
-                </select>
-              </div>
-
-              <!-- Receipt specific -->
-              <template v-if="activeTab === 'receipts'">
-                <div class="space-y-1.5">
-                  <label class="text-xs font-semibold text-slate-600">Qty Produced <span class="text-red-500">*</span></label>
-                  <input v-model="form.qtyProduced" type="number" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" placeholder="0" />
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-xs font-semibold text-slate-600">Qty Rejected</label>
-                  <input v-model="form.qtyRejected" type="number" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100" placeholder="0" />
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-xs font-semibold text-slate-600">UOM</label>
-                  <input v-model="form.uomCode" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-emerald-400" placeholder="PCS" />
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-xs font-semibold text-slate-600">Batch No</label>
-                  <input v-model="form.batchNo" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-emerald-400" placeholder="BATCH-001" />
-                </div>
-              </template>
-
-              <!-- QC specific -->
-              <template v-if="activeTab === 'qc'">
-                <div class="space-y-1.5">
-                  <label class="text-xs font-semibold text-slate-600">Qty Inspected <span class="text-red-500">*</span></label>
-                  <input v-model="form.qtyInspected" type="number" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100" placeholder="0" />
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-xs font-semibold text-slate-600">Qty Passed</label>
-                  <input v-model="form.qtyPassed" type="number" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-emerald-400" placeholder="0" />
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-xs font-semibold text-slate-600">Qty Failed</label>
-                  <input v-model="form.qtyFailed" type="number" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-red-400" placeholder="0" />
-                </div>
-                <div class="space-y-1.5">
-                  <label class="text-xs font-semibold text-slate-600">Disposition</label>
-                  <select v-model="form.disposition" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-violet-400 focus:ring-2 focus:ring-violet-100">
-                    <option value="PENDING">Pending</option>
-                    <option value="ACCEPTED">Accepted</option>
-                    <option value="REJECTED">Rejected</option>
-                    <option value="REWORK">Rework</option>
-                  </select>
-                </div>
-              </template>
-
-              <div class="space-y-1.5 md:col-span-2">
-                <label class="text-xs font-semibold text-slate-600">Notes</label>
-                <input v-model="form.notes" class="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-orange-400" placeholder="Catatan tambahan..." />
-              </div>
-            </div>
-
-            <!-- Issue items -->
-            <div v-if="activeTab === 'issues'">
-              <div class="mb-3 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                  <div class="h-1.5 w-1.5 rounded-full bg-orange-500" />
-                  <h3 class="text-sm font-bold text-slate-700">Items yang Diissue</h3>
-                  <span class="rounded-full bg-orange-100 px-2 py-0.5 text-xs font-bold text-orange-600">{{ form.items.length }}</span>
-                </div>
-                <button class="flex items-center gap-1.5 rounded-xl border border-orange-200 bg-orange-50 px-3 py-1.5 text-xs font-semibold text-orange-600 hover:bg-orange-100 transition" @click="addItem">
-                  <i class="pi pi-plus text-[10px]" /> Tambah Item
-                </button>
-              </div>
-              <div v-if="form.items.length === 0" class="flex flex-col items-center rounded-xl border border-dashed border-slate-200 py-6 text-slate-400">
-                <i class="pi pi-box text-3xl" />
-                <p class="mt-2 text-sm">Tambah items untuk diissue dari gudang</p>
-              </div>
-              <div v-else class="overflow-hidden rounded-xl border border-slate-100">
-                <table class="w-full">
-                  <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
-                    <tr>
-                      <th class="px-4 py-2.5 text-left">#</th>
-                      <th class="px-4 py-2.5 text-left">Item</th>
-                      <th class="px-4 py-2.5 text-right">Qty</th>
-                      <th class="px-4 py-2.5 text-left">UOM</th>
-                      <th class="px-4 py-2.5"></th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-slate-50">
-                    <tr v-for="(it, idx) in form.items" :key="idx" class="group hover:bg-slate-50">
-                      <td class="px-4 py-2 text-xs font-bold text-slate-400">{{ idx + 1 }}</td>
-                      <td class="px-4 py-2">
-                        <select v-model="it.itemId" class="h-8 w-48 rounded-lg border border-slate-200 bg-white px-2 text-xs outline-none focus:border-orange-400">
-                          <option value="">— Pilih Item —</option>
-                          <option v-for="opt in items" :key="opt.id" :value="opt.id">{{ opt.code }} · {{ opt.name }}</option>
-                        </select>
-                      </td>
-                      <td class="px-4 py-2 text-right">
-                        <input v-model="it.qty" type="number" class="h-8 w-24 rounded-lg border border-slate-200 bg-white px-2 text-right text-xs outline-none focus:border-orange-400" />
-                      </td>
-                      <td class="px-4 py-2">
-                        <input v-model="it.uomCode" class="h-8 w-16 rounded-lg border border-slate-200 bg-white px-2 text-xs outline-none focus:border-orange-400" placeholder="PCS" />
-                      </td>
-                      <td class="px-4 py-2 text-right">
-                        <button class="invisible flex h-7 w-7 items-center justify-center rounded-lg text-red-400 hover:bg-red-50 group-hover:visible" @click="removeItem(idx)">
-                          <i class="pi pi-times text-xs" />
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between border-t border-slate-100 px-6 py-4">
-            <div v-if="dialogError" class="flex items-center gap-2 text-sm text-red-600">
-              <i class="pi pi-exclamation-circle" /> {{ dialogError }}
-            </div>
-            <div v-else />
-            <div class="flex items-center gap-2">
-              <button class="rounded-xl border border-slate-200 px-5 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50" :disabled="saving" @click="closeDialog">Batal</button>
-              <button
-                :class="activeTab === 'issues' ? 'from-orange-500 to-rose-500' : activeTab === 'receipts' ? 'from-emerald-500 to-teal-500' : 'from-violet-500 to-indigo-500'"
-                class="flex items-center gap-2 rounded-xl bg-gradient-to-r px-6 py-2 text-sm font-semibold text-white shadow-md disabled:opacity-60"
-                :disabled="saving || !form.code || !form.workOrderId"
-                @click="save"
-              >
-                <i v-if="saving" class="pi pi-spinner pi-spin text-xs" />
-                <i v-else class="pi pi-check text-xs" />
-                {{ saving ? 'Menyimpan...' : 'Simpan' }}
-              </button>
-            </div>
-          </div>
+          <p class="text-[10px] font-black uppercase tracking-widest opacity-60">Sistem Notifikasi Operasional</p>
+          <p class="text-xs font-black uppercase tracking-tight">{{ toastMsg }}</p>
         </div>
       </div>
     </transition>
@@ -568,9 +457,6 @@ const dialogOpen = ref(false);
 const dialogError = ref<string | null>(null);
 const toastMsg = ref<string | null>(null);
 const toastType = ref<'success' | 'error'>('success');
-const detailOpen = ref(false);
-const detailItem = ref<any>(null);
-const detailType = ref<'issue' | 'receipt'>('issue');
 
 const form = reactive({
   code: '', workOrderId: '', date: new Date().toISOString().slice(0, 10),
@@ -583,13 +469,7 @@ const form = reactive({
 });
 
 // Computed
-const tabLabel = computed(() => activeTab.value === 'issues' ? 'Production Issue' : activeTab.value === 'receipts' ? 'Production Receipt' : 'In-Process QC');
-
-const tabAccentClass = computed(() =>
-  activeTab.value === 'issues' ? 'bg-gradient-to-r from-orange-500 to-rose-600 shadow-orange-200' :
-  activeTab.value === 'receipts' ? 'bg-gradient-to-r from-emerald-500 to-teal-600 shadow-emerald-200' :
-  'bg-gradient-to-r from-violet-500 to-indigo-600 shadow-violet-200'
-);
+const tabLabel = computed(() => activeTab.value === 'issues' ? 'Bahan Produksi' : activeTab.value === 'receipts' ? 'Penerimaan Produk' : 'Hasil Audit Kualitas');
 
 const filteredIssues = computed(() =>
   issues.value.filter(i => !searchQ.value || i.code?.toLowerCase().includes(searchQ.value.toLowerCase()))
@@ -598,34 +478,32 @@ const filteredReceipts = computed(() =>
   receipts.value.filter(r => !searchQ.value || r.code?.toLowerCase().includes(searchQ.value.toLowerCase()))
 );
 
-const stats = computed(() => [
-  { label: 'Total Issues', value: issues.value.length, icon: 'pi-arrow-right-arrow-left', color: 'bg-orange-500' },
-  { label: 'Total Receipts', value: receipts.value.length, icon: 'pi-inbox', color: 'bg-emerald-500' },
-  { label: 'QC Records', value: qcs.value.length, icon: 'pi-check-square', color: 'bg-violet-500' },
-  { label: 'QC Passed', value: qcs.value.filter(q => q.status === 'PASSED').length, icon: 'pi-check-circle', color: 'bg-teal-500' },
-]);
-
 // Helpers
-const fmtDate = (v: any) => v ? new Date(v).toISOString().slice(0, 10) : '—';
+const fmtDate = (v: any) => {
+  if (!v) return '—';
+  const d = new Date(v);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+};
 const passRate = (qc: any) => {
   if (!qc.qtyInspected || Number(qc.qtyInspected) === 0) return 0;
   return Math.round((Number(qc.qtyPassed) / Number(qc.qtyInspected)) * 100);
 };
 const qcStatusBadge = (s: string) => ({
   PENDING: 'bg-slate-100 text-slate-600', IN_PROGRESS: 'bg-amber-100 text-amber-700',
-  PASSED: 'bg-emerald-100 text-emerald-700', FAILED: 'bg-red-100 text-red-700'
+  PASSED: 'bg-emerald-100 text-emerald-700', FAILED: 'bg-rose-100 text-rose-700'
 }[s] || 'bg-slate-100 text-slate-600');
 const qcStatusDot = (s: string) => ({
-  PENDING: 'bg-slate-400', IN_PROGRESS: 'bg-amber-500', PASSED: 'bg-emerald-500', FAILED: 'bg-red-500'
+  PENDING: 'bg-slate-400', IN_PROGRESS: 'bg-amber-500', PASSED: 'bg-emerald-500', FAILED: 'bg-rose-500'
 }[s] || 'bg-slate-400');
 const dispositionBadge = (d: string) => ({
-  PENDING: 'bg-slate-100 text-slate-600', ACCEPTED: 'bg-emerald-100 text-emerald-700',
-  REJECTED: 'bg-red-100 text-red-700', REWORK: 'bg-amber-100 text-amber-700'
-}[d] || 'bg-slate-100 text-slate-600');
+  PENDING: 'bg-slate-50 text-slate-500', ACCEPTED: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+  REJECTED: 'bg-rose-50 text-rose-700 border-rose-100', REWORK: 'bg-amber-50 text-amber-700 border-amber-100'
+}[d] || 'bg-slate-50 text-slate-500');
 
 const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
   toastMsg.value = msg; toastType.value = type;
-  setTimeout(() => { toastMsg.value = null; }, 3500);
+  setTimeout(() => { toastMsg.value = null; }, 4000);
 };
 
 // Load
@@ -641,7 +519,7 @@ const load = async () => {
     receipts.value = rRes.data?.receipts ?? [];
     qcs.value = qRes.data?.qcs ?? [];
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal memuat data', 'error');
+    showToast(e?.response?.data?.message ?? 'Gagal sinkronisasi data audit', 'error');
   } finally {
     loading.value = false;
   }
@@ -672,11 +550,24 @@ const openCreate = async () => {
 const closeDialog = () => { if (!saving.value) dialogOpen.value = false; };
 
 const openDetail = (item: any, type: 'issue' | 'receipt') => {
-  detailItem.value = item; detailType.value = type; detailOpen.value = true;
+   form.code = item.code;
+   form.workOrderId = item.workOrderId;
+   form.date = (item.issueDate || item.receiptDate || item.qcDate)?.split('T')[0] || new Date().toISOString().slice(0, 10);
+   form.shiftNo = item.shiftNo?.toString() || '';
+   form.notes = item.notes || '';
+   form.qtyProduced = item.qtyProduced?.toString() || '';
+   form.qtyRejected = item.qtyRejected?.toString() || '0';
+   form.uomCode = item.uomCode || '';
+   form.batchNo = item.batchNo || '';
+   form.items = item.items?.map((it: any) => ({ itemId: it.itemId, qty: it.qty.toString(), uomCode: it.uomCode })) || [];
+   
+   activeTab.value = (type === 'issue' ? 'issues' : 'receipts');
+   loadMasterData();
+   dialogOpen.value = true;
 };
 
 const save = async () => {
-  saving.value = true; dialogError.value = null;
+  saving.value = true;
   try {
     if (activeTab.value === 'issues') {
       await api.post('/manufacturing/production/issues', {
@@ -687,7 +578,7 @@ const save = async () => {
           itemId: it.itemId, qty: parseFloat(it.qty) || 0, uomCode: it.uomCode || undefined
         })),
       });
-      showToast('Production Issue berhasil dibuat');
+      showToast('Registrasi Pengeluaran Bahan Berhasil');
     } else if (activeTab.value === 'receipts') {
       await api.post('/manufacturing/production/receipts', {
         code: form.code, workOrderId: form.workOrderId,
@@ -698,7 +589,7 @@ const save = async () => {
         batchNo: form.batchNo || undefined,
         shiftNo: form.shiftNo ? parseInt(form.shiftNo) : undefined,
       });
-      showToast('Production Receipt berhasil dibuat');
+      showToast('Registrasi Penerimaan Produk Berhasil');
     } else {
       await api.post('/manufacturing/production/qc', {
         workOrderId: form.workOrderId,
@@ -709,12 +600,12 @@ const save = async () => {
         notes: form.notes || undefined,
         qcDate: form.date,
       });
-      showToast('QC record berhasil dibuat');
+      showToast('Audit Kualitas Berhasil Direkam');
     }
     dialogOpen.value = false;
     await load();
   } catch (e: any) {
-    dialogError.value = e?.response?.data?.message ?? 'Gagal menyimpan';
+    showToast(e?.response?.data?.message ?? 'Gagal memproses registrasi', 'error');
   } finally {
     saving.value = false;
   }
@@ -724,12 +615,48 @@ onMounted(load);
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active { transition: all 0.3s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(10px); }
-.modal-enter-active { transition: all 0.25s ease; }
-.modal-leave-active { transition: all 0.2s ease; }
-.modal-enter-from, .modal-leave-to { opacity: 0; }
-.slide-right-enter-active { transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-.slide-right-leave-active { transition: all 0.25s ease; }
-.slide-right-enter-from, .slide-right-leave-to { opacity: 0; }
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.animate-scale-in { 
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.95); } 
+  to { opacity: 1; transform: scale(1); } 
+}
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+
+:deep(.p-inputtext) {
+   border-color: #f1f5f9 !important;
+   box-shadow: none !important;
+   background-color: #f8fafc !important;
+   border-radius: 16px !important;
+}
+
+:deep(.p-button-rounded) {
+  border-radius: 9999px !important;
+}
+
+select {
+   appearance: none;
+   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+   background-repeat: no-repeat;
+   background-position: right 1rem center;
+   background-size: 1em;
+}
+
+.fade-enter-active, .fade-leave-active { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+.fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(20px); }
 </style>
