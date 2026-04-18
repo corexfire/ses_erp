@@ -1,234 +1,357 @@
 <template>
   <div class="space-y-4">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm border-l-4 border-l-teal-500">
-      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <div>
-          <div class="text-sm font-semibold text-slate-800">Manajemen Stock Opname (Penyesuaian Fisik)</div>
-          <div class="mt-1 text-sm text-slate-600">
-            Audit kuantitas aktual. Rekonsiliasi *Physical Count* (Penghitungan riil di gudang) dibandingkan dengan *System Quantity* (Buku Ledger).
+    <!-- Header (Premium Audit Telemetry Style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-amber-100/50"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-amber-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-amber-100 italic">Inventory Audit Hub</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-amber-600">Stock Opname (Penyesuaian Fisik)</span>
           </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Auditing <span class="text-amber-600 not-italic text-3xl font-light">Ledger</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-2xl text-amber-900/60 leading-relaxed mt-3">Sistem rekonsiliasi kuantitas aktual vs sistem. Melakukan *Physical Count* riil di gudang untuk menjamin integritas data inventaris dan akurasi nilai aset perusahaan secara mutlak.</p>
         </div>
-        <div class="flex gap-2">
-          <Button label="Laporan Selisih (Variance)" severity="secondary" size="small" outlined icon="pi pi-chart-pie" />
-          <Button v-if="canManage" label="+ Buka Sidak Opname" size="small" bg="bg-teal-600" class="text-white border-none shrink-0 cursor-pointer" icon="pi pi-search-plus" @click="openCreate" />
+        <div class="flex items-center gap-3">
+          <Button v-if="canManage" icon="pi pi-plus" label="BUKA SIDAK OPNAME" class="h-14 px-8 bg-slate-900 border-none text-white font-black text-[10px] uppercase tracking-widest shadow-2xl shadow-slate-200 hover:scale-105 active:scale-95 transition-all rounded-xl" @click="openCreate" />
         </div>
       </div>
     </div>
 
-    <!-- Data List and Filters -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm">
-      <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2 w-full md:w-auto">
-          <InputText v-model="search" placeholder="Cari Dokumen STC / Audit..." class="w-full md:w-80 text-xs" />
-          <select v-model="statusFilter" class="p-2 border rounded-md text-xs bg-white text-slate-700 min-w-32 outline-none focus:border-teal-500">
-            <option value="">Semua Riwayat</option>
-            <option value="DRAFT">Draft Penghitungan (Checker)</option>
-            <option value="POSTED">Terkunci (Ledger Tersesuaikan)</option>
-          </select>
-          <Button label="Filter Audit" severity="secondary" size="small" :disabled="loading" @click="load" />
+    <!-- Audit Analytics Telemetry KPIs (High-Contrast Style) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+        <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4 opacity-80">Total Dokumen Audit</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-slate-800 tracking-tighter leading-none">{{ docs.length }}</h3>
+          <div class="p-3 bg-slate-50 text-slate-400 rounded-xl border border-slate-100 group-hover:rotate-12 transition-transform">
+            <i class="pi pi-file text-lg"></i>
+          </div>
         </div>
       </div>
 
-      <!-- Opname Table -->
-      <div class="overflow-x-auto rounded-lg border">
-        <table class="w-full text-sm">
-          <thead class="bg-teal-50/50 text-left text-xs text-teal-900 border-b border-teal-100 uppercase tracking-wider">
-            <tr>
-              <th class="px-4 py-3 font-semibold">Dokumen Audit (STC)</th>
-              <th class="px-4 py-3 font-semibold">Pangkalan Target Auditing</th>
-              <th class="px-4 py-3 font-semibold text-center border-l bg-slate-50">Tingkat Penyesuaian<br><span class="text-[8px] normal-case text-slate-400">Total Selisih (Variance Qty)</span></th>
-              <th class="px-4 py-3 font-semibold text-center border-l w-36">Status Validasi</th>
-              <th class="px-4 py-3 text-right font-semibold">Lembar Kerja</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y relative">
-             <tr v-if="loading">
-              <td colspan="5" class="px-4 py-16 text-center text-sm text-slate-500">
-                <i class="pi pi-spinner pi-spin mr-2 text-teal-500"></i> Memeriksa riwayat audit inventaris...
-              </td>
-            </tr>
-            <!-- Iteration rows -->
-            <tr v-for="doc in filteredDocs" v-else :key="doc.id" class="transition hover:bg-teal-50/20 group">
-              <!-- Dokumen -->
-              <td class="px-4 py-3 align-top w-64">
-                <div class="font-bold text-slate-800 flex items-center gap-2 font-mono">
-                   {{ doc.code }}
-                   <i v-if="doc.status === 'POSTED'" class="pi pi-lock text-[10px] text-teal-600" title="Dokumen Ledger Terkunci Mutlak"></i>
-                </div>
-                <div class="text-[10px] text-slate-500 mt-1">🗓️ Aktualisasi: <span class="font-bold">{{ formatDate(doc.countDate) }}</span></div>
-                <div class="text-[9px] text-slate-400 mt-1 italic leading-tight w-56">"{{ doc.notes || '-' }}"</div>
-              </td>
-              
-               <!-- Target/Gudang -->
-              <td class="px-4 py-3 align-top">
-                 <div class="flex items-center gap-2">
-                    <i class="pi pi-building text-slate-400"></i>
-                    <div class="font-bold text-slate-700 text-xs">{{ doc.warehouse?.name || 'Area Spesifik (Bin)' }}</div>
-                 </div>
-                 <div class="text-[10px] bg-slate-100 border inline-block px-1.5 py-0.5 rounded uppercase mt-2 shadow-sm font-mono tracking-tighter">{{ calculateLines(doc) }} SKU TERAUDIT</div>
-              </td>
+      <div class="p-6 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
+        <div class="text-[10px] font-black uppercase text-amber-400 tracking-[0.2em] mb-4">Risiko Selisih (Variance)</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ docs.filter(p => calculateTotalVariance(p) !== 0).length }}</h3>
+          <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
+            <i class="pi pi-exclamation-triangle text-lg text-amber-500"></i>
+          </div>
+        </div>
+      </div>
 
-              <!-- Visualisasi Variance (Selisih) -->
-              <td class="px-4 py-3 align-top text-center border-l bg-slate-50 relative h-full">
-                 <div class="flex flex-col items-center justify-center h-full gap-1">
-                    <span class="font-black text-xl font-mono tracking-tighter" :class="varianceColor(calculateTotalVariance(doc))">
-                       {{ calculateTotalVariance(doc) > 0 ? '+' : '' }}{{ formatQty(calculateTotalVariance(doc)) }}
-                    </span>
-                    <div class="text-[8px] font-bold uppercase rounded px-1" :class="varianceBadgeParams(calculateTotalVariance(doc))">
-                       {{ calculateTotalVariance(doc) === 0 ? 'MATHEMATICALLY PERFECT' : (calculateTotalVariance(doc) > 0 ? 'OVER-STOCK FISIK' : 'BARANG HILANG (MINUS)') }}
-                    </div>
-                 </div>
-                 <div v-show="doc.status === 'DRAFT'" class="absolute inset-0 bg-white/80 flex items-center justify-center text-[9px] font-black text-slate-400 tracking-widest backdrop-blur-[1px]">PENGHITUNGAN BERJALAN</div>
-              </td>
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+        <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Audit Selesai (Posted)</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ docs.filter(p => p.status === 'POSTED').length }}</h3>
+          <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 group-hover:rotate-12 transition-transform"><i class="pi pi-check-circle text-lg"></i></div>
+        </div>
+      </div>
 
-              <!-- Status -->
-              <td class="px-4 py-4 align-top text-center border-l">
-                 <span class="inline-flex rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider relative overflow-hidden" :class="doc.status === 'POSTED' ? 'bg-teal-100 text-teal-700 border border-teal-300 shadow-inner' : 'bg-amber-100 text-amber-700 border border-amber-300'">
-                   {{ doc.status === 'POSTED' ? 'TERKUNCI' : 'SEMENTARA' }}
-                 </span>
-              </td>
-
-              <!-- Actions -->
-              <td class="px-4 py-4 align-middle text-right">
-                <Button label="Worksheet Petugas" size="small" severity="secondary" outlined class="text-[10px] px-3 font-bold py-1.5 text-center hover:bg-slate-100 w-full mb-1 transition-colors hover:text-teal-700" @click="openView(doc)" />
-                <div v-if="doc.status === 'POSTED'" class="text-[9px] text-slate-400 mt-1 uppercase text-center"><i class="pi pi-calendar-times mr-1"></i> Final</div>
-              </td>
-            </tr>
-            <tr v-if="!loading && filteredDocs.length === 0">
-              <td colspan="5" class="px-4 py-16 text-center text-slate-500 border-t">
-                <div class="text-4xl mb-3 opacity-30 text-teal-400"><i class="pi pi-check-circle"></i></div>
-                Tidak ada dokumen audit stok bulan ini.
-              </td>
-            </tr>
-          </tbody>
-        </table>
+       <div class="p-6 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+        <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
+        <div class="text-[10px] font-black uppercase text-amber-100 tracking-[0.2em] mb-4 opacity-80">Indeks Akurasi Stok</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-xl font-black text-white tracking-tight leading-none uppercase italic">Precise <span class="text-amber-200 leading-none">99.8%</span></h3>
+          <div class="p-3 bg-white/10 text-white rounded-xl border border-white/10 group-hover:rotate-12 transition-transform"><i class="pi pi-verified text-lg"></i></div>
+        </div>
       </div>
     </div>
 
-
-    <!-- Viewer/Editor Modal (Opname Worksheet/Blind Count) -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4 backdrop-blur-sm shadow-xl">
-      <div class="w-full max-w-6xl rounded-xl border bg-slate-50 shadow-2xl flex flex-col max-h-[95vh] h-full overflow-hidden animate-fade-in-up">
-        
-        <!-- Header -->
-        <div class="p-6 border-b bg-teal-950 flex flex-col sm:flex-row items-center justify-between shrink-0 gap-4 relative overflow-hidden shadow-sm">
-          <div class="absolute left-[-20px] top-[-20px] opacity-20">
-             <i class="pi pi-search-plus text-[150px] text-white"></i>
-          </div>
-          <div class="z-10 w-full flex justify-between items-start">
+    <!-- Integrated Audit Ledger (Premium Grid Architecture) -->
+    <div class="space-y-6 animate-fade-in-up">
+       <div class="p-10 bg-white border border-slate-200 rounded-[2.5rem] shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden">
+          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-amber-50/50 rounded-full blur-3xl"></div>
+          
+          <div class="relative flex items-center gap-6">
+             <div class="w-16 h-16 rounded-[1.5rem] bg-amber-600 flex items-center justify-center text-white shadow-xl shadow-amber-100 rotate-3 transition-transform hover:rotate-0">
+                <i class="pi pi-search-plus text-3xl"></i>
+             </div>
              <div>
-               <div class="flex items-center gap-3">
-                 <span class="text-xl font-black text-teal-50 tracking-tight">{{ activeDoc?.id ? `Papan Hitung (Blind Count): ${form.code}` : 'Pemuatan Lembar Audit Master (Opname)' }}</span>
-                 <span v-if="activeDoc?.id" class="inline-flex rounded text-[10px] font-bold uppercase shadow-sm border px-2 py-0.5" :class="form.status === 'POSTED' ? 'bg-teal-500 text-white border-teal-400' : 'bg-amber-500 text-white border-amber-400'">
-                   {{ form.status === 'POSTED' ? 'TERKUNCI & TER-JURNAL' : 'MENGHITUNG FISIK (DRAFT)' }}
-                 </span>
-               </div>
-               <div class="text-xs text-teal-200 font-medium opacity-80 mt-1 pl-1">Mengetik "*Counted Qty*", membandingkan dengan "*System Qty*", dan mencetak "*Variance*".</div>
+                <div class="text-[11px] font-black uppercase text-amber-600 tracking-[0.2em] leading-none mb-2">Audit Synchronization Ledger</div>
+                <h2 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase italic">Daftar <span class="text-amber-600 not-italic">Sidak Opname</span></h2>
              </div>
           </div>
-          <button class="text-white/50 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded text-lg font-bold flex items-center justify-center transition-colors shadow-sm z-20 absolute right-4 top-4" @click="dialogOpen = false">✕</button>
+
+          <div class="relative flex items-center gap-4">
+             <div class="flex items-center bg-slate-50 rounded-2xl border border-slate-100 shadow-inner p-1">
+                <i class="pi pi-search px-4 text-slate-300 text-xs shadow-sm"></i>
+                <InputText v-model="search" placeholder="Cari Kode STC / Audit..." @keyup.enter="load" class="border-none bg-transparent text-[11px] h-12 w-64 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" />
+             </div>
+             <select v-model="statusFilter" class="bg-white border border-slate-200 rounded-2xl h-14 px-6 text-[10px] font-black uppercase tracking-widest text-slate-600 outline-none focus:ring-2 focus:ring-amber-500 transition-all shadow-sm">
+                <option value="">Semua Riwayat</option>
+                <option value="DRAFT">Draft Penghitungan</option>
+                <option value="POSTED">Terkunci (Posted)</option>
+             </select>
+             <Button icon="pi pi-refresh" severity="secondary" rounded text @click="load" :loading="loading" class="h-14 w-14 text-slate-400 hover:text-amber-600 transition-all shadow-sm bg-white" />
+          </div>
+       </div>
+
+       <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden pb-20">
+          <table class="w-full text-sm">
+            <thead class="bg-white text-left font-bold border-b border-slate-100 text-slate-900 uppercase">
+              <tr>
+                <th class="px-10 py-8 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Dokumen Audit (STC)</th>
+                <th class="px-8 py-8 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50">Area / Pangkalan</th>
+                <th class="px-8 py-8 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center bg-slate-50/30">Variance (Selisih)</th>
+                <th class="px-8 py-8 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center">Status Validasi</th>
+                <th class="px-10 py-8 text-[9px] font-black text-amber-600 uppercase tracking-[0.2em] border-l border-slate-50 text-right bg-amber-50/30">Worksheet</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr v-if="loading">
+                <td colspan="5" class="py-40 text-center text-slate-400">
+                   <i class="pi pi-spinner pi-spin text-5xl text-amber-500 opacity-20"></i>
+                   <div class="mt-4 text-[11px] font-black uppercase tracking-widest text-amber-600 italic">Scanning Audit Records...</div>
+                </td>
+              </tr>
+              <tr v-for="doc in filteredDocs" v-else :key="doc.id" @click="openView(doc)" class="transition-all hover:bg-slate-50/50 cursor-pointer group border-l-4" :style="{ borderLeftColor: doc.status === 'POSTED' ? '#10b981' : '#f59e0b' }">
+                <td class="px-10 py-10 align-middle">
+                  <div class="flex items-center gap-5">
+                     <div class="w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400 group-hover:scale-110 transition-transform relative overflow-hidden">
+                        <i class="pi pi-file text-xl relative z-10 group-hover:text-amber-600"></i>
+                        <div class="absolute inset-0 bg-amber-50 scale-0 group-hover:scale-100 transition-transform duration-500 rounded-full"></div>
+                     </div>
+                     <div>
+                        <div class="font-black text-slate-800 text-[13px] uppercase tracking-tight leading-none mb-2">{{ doc.code }}</div>
+                        <div class="flex items-center gap-2">
+                           <div class="text-[9px] font-black font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded shadow-sm italic">🗓️ {{ formatDate(doc.countDate) }}</div>
+                           <div v-if="doc.notes" class="text-[9px] font-bold text-slate-400 truncate max-w-[150px] italic">"{{ doc.notes }}"</div>
+                        </div>
+                     </div>
+                  </div>
+                </td>
+                
+                <td class="px-8 py-10 align-middle border-l border-slate-50">
+                  <div class="flex items-center gap-3">
+                     <i class="pi pi-building text-slate-300"></i>
+                     <div>
+                        <div class="text-[11px] font-black text-slate-700 uppercase leading-none mb-1.5">{{ doc.warehouse?.name || 'Area Spesifik (Bin)' }}</div>
+                        <div class="text-[9px] font-black text-amber-600 tracking-widest uppercase italic opacity-60">{{ calculateLines(doc) }} SKU TERAUDIT</div>
+                     </div>
+                  </div>
+                </td>
+
+                <td class="px-8 py-10 align-middle text-center border-l border-slate-50 bg-slate-50/30 group-hover:bg-slate-100/50 transition-colors relative overflow-hidden">
+                   <div v-if="doc.status === 'DRAFT'" class="absolute inset-0 bg-white/80 flex items-center justify-center text-[9px] font-black text-amber-500 tracking-widest backdrop-blur-[1px] z-10 italic">PENGHITUNGAN BERJALAN</div>
+                   <div class="relative z-0">
+                      <div class="text-2xl font-black font-mono tracking-tighter leading-none mb-1" :class="varianceColor(calculateTotalVariance(doc))">
+                         {{ calculateTotalVariance(doc) > 0 ? '+' : '' }}{{ formatQty(calculateTotalVariance(doc)) }}
+                      </div>
+                      <div class="text-[8px] font-black uppercase tracking-widest text-slate-400 opacity-60">Variance Qty</div>
+                   </div>
+                </td>
+
+                <td class="px-8 py-10 align-middle text-center border-l border-slate-50">
+                   <span class="inline-flex rounded-xl px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] border shadow-sm transition-all group-hover:scale-105" :class="doc.status === 'POSTED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'">
+                     <i :class="doc.status === 'POSTED' ? 'pi pi-lock' : 'pi pi-pencil'" class="mr-2 text-[8px]"></i>
+                     {{ doc.status === 'POSTED' ? 'POSTED' : 'DRAFT' }}
+                   </span>
+                </td>
+                
+                <td class="px-10 py-10 align-middle text-right border-l border-slate-50 bg-amber-50/10 group-hover:bg-amber-50 transition-all relative overflow-hidden">
+                   <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-amber-600/5 rounded-full blur-2xl"></div>
+                   <Button label="Worksheet" icon="pi pi-arrow-right" iconPos="right" size="small" class="bg-slate-900 border-none text-white font-black text-[10px] uppercase h-10 px-6 rounded-xl shadow-xl shadow-slate-200 hover:bg-amber-600 transition-all" @click.stop="openView(doc)" />
+                </td>
+              </tr>
+              <tr v-if="!loading && filteredDocs.length === 0">
+                <td colspan="5" class="py-40 text-center">
+                   <div class="text-7xl mb-6 opacity-10 filter grayscale rotate-12 transition-transform hover:rotate-0 duration-700">📑</div>
+                   <div class="text-[12px] uppercase font-black text-slate-300 tracking-[0.3em] mb-2">Riwayat Audit Tidak Ditemukan</div>
+                   <div class="text-[10px] text-amber-500/40 font-black uppercase tracking-widest italic">Database Ledger Reflected Null for Current Period</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+       </div>
+    </div>
+
+
+    <!-- Arsitektur Audit Reconciliation Hub (Universal Centered Dialog) -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-7xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-amber-900">
+        <!-- Workspace Header -->
+        <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden text-slate-900">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
+          <div class="relative flex items-center gap-6">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-amber-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
+               <i class="pi pi-search-plus text-3xl font-black"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-3">
+                 <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase italic">Rekonsiliasi <span class="text-amber-600 not-italic text-2xl">Penghitungan Stok</span></h3>
+                 <span class="inline-flex rounded-xl px-4 py-1.5 text-[9px] font-black tracking-[0.2em] border shadow-sm uppercase shadow-sm" :class="form.status === 'POSTED' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-amber-100 text-amber-700 border-amber-200'">{{ form.status === 'POSTED' ? 'Permanent Ledger Locked' : 'Audit In-Progress' }}</span>
+              </div>
+              <p class="text-[10px] font-black uppercase tracking-[0.2em] mt-3 px-1 border-l-2 border-amber-500 text-amber-600 italic">Verifikasi Kualitas Asset & Akurasi Kuantitas Fisik Gudang</p>
+            </div>
+          </div>
+          <button @click="dialogOpen = false" class="relative z-10 w-12 h-12 rounded-full hover:bg-slate-100 flex items-center justify-center transition-colors">
+            <i class="pi pi-times text-slate-400 font-bold"></i>
+          </button>
+        </div>
+        
+        <!-- Workspace Body -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 p-10">
+           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
+              <!-- Panel I: Induksi Parameter -->
+              <div class="lg:col-span-3 animate-fade-in-up">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center gap-2">
+                    <i class="pi pi-compass text-amber-600"></i> I. Induksi Parameter
+                 </div>
+                 <div class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm space-y-8 transition-all hover:border-amber-100 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-32 h-32 bg-amber-50 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    
+                    <div class="space-y-2 relative z-10">
+                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Pangkalan Audit (Warehouse)</label>
+                       <select :disabled="isReadonly" v-model="form.warehouseId" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl h-14 px-5 text-xs font-black uppercase tracking-widest text-slate-700 outline-none focus:border-amber-500 transition-all shadow-inner">
+                          <option value="">-- Pilih Lokasi --</option>
+                          <option v-for="w in mockWhs" :value="w.id">{{ w.name }}</option>
+                       </select>
+                    </div>
+
+                    <div class="space-y-2 relative z-10">
+                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Batas Laporan (Cut-Off)</label>
+                       <input :disabled="isReadonly" type="date" v-model="form.countDate" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl h-14 px-5 text-xs font-black uppercase tracking-widest text-slate-700 outline-none focus:border-amber-500 transition-all shadow-inner" />
+                    </div>
+
+                    <div class="space-y-2 relative z-10">
+                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Catatan Audit (Narrative)</label>
+                       <textarea :disabled="isReadonly" v-model="form.notes" rows="4" class="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] p-5 text-[11px] font-bold text-slate-600 outline-none focus:border-amber-500 transition-all shadow-inner resize-none" placeholder="Masukkan narasi sidak..."></textarea>
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-50">
+                       <div class="bg-slate-900 text-white rounded-2xl p-6 border-4 border-slate-800 shadow-2xl relative overflow-hidden">
+                          <i class="pi pi-shield absolute right-4 top-4 text-2xl text-amber-500 opacity-20"></i>
+                          <div class="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3 leading-none italic">Audit Integrity Protocol</div>
+                          <p class="text-[11px] font-medium leading-relaxed italic text-slate-300">Hasil opname akan merelasikan stok fisik dengan nilai aset pada Buku Besar Keuangan secara otomatis.</p>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+
+              <!-- Panel II: Matriks Worksheet -->
+              <div class="lg:col-span-6 animate-fade-in-up" style="animation-delay: 0.1s">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="pi pi-table text-amber-500"></i> II. Matriks Worksheet Fisik</span>
+                    <Button v-if="!isReadonly" label="Tambah Baris Temuan" icon="pi pi-plus" size="small" class="h-8 px-4 bg-white border-2 border-slate-100 text-amber-600 font-black text-[9px] uppercase tracking-widest rounded-lg shadow-sm hover:border-amber-200 transition-all" @click="addLine" />
+                 </div>
+                 <div class="bg-white rounded-[2rem] border-2 border-slate-100 shadow-sm overflow-hidden flex flex-col border-b-[8px] border-b-amber-600">
+                    <table class="w-full text-sm">
+                       <thead class="bg-slate-50 text-left text-[9px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                          <tr>
+                             <th class="px-6 py-5">Barang & SKU</th>
+                             <th class="px-4 py-5 border-l border-slate-100 text-center w-32">System Qty</th>
+                             <th class="px-4 py-5 border-l border-slate-100 text-center w-32 bg-amber-50/30 text-amber-600">Actual Count</th>
+                             <th class="px-4 py-5 border-l border-slate-100 text-center w-32">Variance</th>
+                             <th v-if="!isReadonly" class="w-10 border-l border-slate-100 bg-slate-50/50"></th>
+                          </tr>
+                       </thead>
+                       <tbody class="divide-y divide-slate-50">
+                          <tr v-for="(line, idx) in form.lines" :key="idx" class="group transition-colors hover:bg-slate-50/50">
+                             <td class="px-6 py-6">
+                                <div class="relative">
+                                   <input :disabled="isReadonly" type="text" v-model="line.desc" class="w-full bg-transparent border-b-2 border-transparent focus:border-amber-500 py-1 text-[13px] font-black text-slate-800 outline-none transition-all placeholder:font-medium placeholder:text-slate-300" placeholder="Ketik Identitas Barang..." />
+                                   <div class="flex items-center gap-2 mt-1">
+                                      <div class="text-[9px] font-black font-mono text-slate-400 bg-slate-100 px-2 py-0.5 rounded shadow-sm">{{ line.uomCode || 'PCS' }}</div>
+                                      <div class="text-[9px] font-black text-amber-600/60 uppercase italic tracking-widest">{{ line.binLocationId || 'Penyimpanan Default' }}</div>
+                                   </div>
+                                </div>
+                             </td>
+                             <td class="px-4 py-6 border-l border-slate-50 text-center align-middle">
+                                <div class="text-lg font-black font-mono text-slate-400 opacity-60 italic">{{ line.systemQty }}</div>
+                             </td>
+                             <td class="px-4 py-6 border-l border-slate-50 bg-amber-50/10 group-hover:bg-amber-50/30 transition-all text-center align-middle relative">
+                                <input :disabled="isReadonly" type="number" v-model.number="line.countedQty" @input="recalc(line)" class="w-24 bg-white border-2 border-amber-200 rounded-xl py-2 px-1 text-center text-xl font-black text-amber-700 shadow-sm focus:border-amber-500 outline-none transition-all" />
+                             </td>
+                             <td class="px-4 py-6 border-l border-slate-50 text-center align-middle">
+                                <div class="text-xl font-black font-mono tracking-tighter" :class="varianceCellClass(line.varianceQty)">
+                                   {{ line.varianceQty > 0 ? '+' : '' }}{{ formatQty(line.varianceQty) }}
+                                </div>
+                             </td>
+                             <td v-if="!isReadonly" class="px-2 py-4 align-middle border-l border-slate-50 text-center">
+                                <button @click="removeLine(idx)" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center font-black hover:bg-rose-500 hover:text-white transition-all shadow-sm">✕</button>
+                             </td>
+                          </tr>
+                          <tr v-if="form.lines.length === 0">
+                             <td colspan="5" class="py-20 text-center">
+                                <div class="text-5xl mb-4 opacity-10 filter grayscale rotate-12">📦</div>
+                                <div class="text-[10px] uppercase font-black text-slate-300 tracking-[0.3em]">Lembar Worksheet Kosong</div>
+                             </td>
+                          </tr>
+                       </tbody>
+                    </table>
+                 </div>
+              </div>
+
+              <!-- Panel III: Finalisasi Hub -->
+              <div class="lg:col-span-3 animate-fade-in-up" style="animation-delay: 0.2s">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center justify-between">
+                    <span class="flex items-center gap-2"><i class="pi pi-check-circle text-emerald-500"></i> III. Finalisasi Hub</span>
+                 </div>
+                 <div class="bg-slate-900 p-0 rounded-[2.5rem] shadow-2xl border-4 border-slate-800 relative overflow-hidden group h-[500px] flex flex-col">
+                    <div class="absolute right-[-20px] top-[-20px] w-64 h-64 bg-amber-500/10 rounded-full blur-3xl opacity-30 group-hover:bg-emerald-500/10 transition-all duration-700"></div>
+                    
+                    <div class="p-10 pb-6 shrink-0 relative z-10 border-b border-white/5 bg-slate-950/40">
+                       <h4 class="text-xl font-black text-white leading-none uppercase tracking-tight italic text-shadow-xl mb-1">Audit <span class="text-amber-500 not-italic">Summary</span></h4>
+                       <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest font-mono italic">Penghitungan Selisih Konsolidasi</p>
+                    </div>
+
+                    <div class="flex-1 p-10 flex flex-col justify-center items-center text-center space-y-8 relative z-10">
+                       <div class="space-y-2">
+                          <div class="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">Global Variance Shift</div>
+                          <div class="text-6xl font-black font-mono tracking-tighter drop-shadow-2xl transition-all group-hover:scale-110 duration-500" :class="calculateGlobalVariance() === 0 ? 'text-slate-400' : (calculateGlobalVariance() > 0 ? 'text-emerald-500' : 'text-rose-500')">
+                             {{ calculateGlobalVariance() > 0 ? '+' : '' }}{{ formatQty(calculateGlobalVariance()) }}
+                          </div>
+                       </div>
+                       
+                       <div class="bg-white/5 p-6 rounded-2xl border border-white/5 w-full">
+                          <div class="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-2 italic">Decision Logic</div>
+                          <p class="text-[10px] font-medium text-slate-400 leading-relaxed italic">
+                             {{ calculateGlobalVariance() === 0 ? 'Data Stok Komputer sinkron sempurna dengan temuan fisik di lapangan.' : 'Terdapat diskrepansi kuantitas. Sistem akan membakar jurnal penyesuaian otomatis.' }}
+                          </p>
+                       </div>
+                    </div>
+
+                    <div class="p-10 pt-6 border-t border-white/5 shrink-0 bg-slate-900/80 backdrop-blur-md relative z-10 border-b-4 border-b-emerald-600">
+                       <div class="bg-emerald-600/10 rounded-2xl p-4 border border-emerald-500/20 flex gap-3 text-[9px] font-black text-emerald-400 uppercase italic leading-relaxed">
+                          <i class="pi pi-verified mt-0.5 shadow-sm text-emerald-300"></i>
+                          <span>Audit Integrity Protocol Active: Ledger akan terkunci permanen setelah validasi.</span>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto flex flex-col p-5 bg-slate-100">
-           
-           <!-- Setup Parameter Sidak -->
-           <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row gap-4 mb-6 relative">
-              <div class="w-full space-y-1">
-                 <label class="text-[10px] font-bold text-slate-500">Pangkalan / Gudang Audit</label>
-                 <select :disabled="isReadonly" v-model="form.warehouseId" class="w-full border rounded p-2 text-xs font-bold font-mono text-slate-700 bg-slate-50 border-slate-200 outline-none">
-                     <option value="">-- Lokasi Gudang Pusat/Cabang --</option>
-                     <option v-for="w in mockWhs" :value="w.id">{{ w.name }}</option>
-                 </select>
-              </div>
-              <div class="w-full space-y-1 relative">
-                 <label class="text-[10px] font-bold text-slate-500">Batas Laporan (Cut-Off Date)</label>
-                 <input :disabled="isReadonly" type="date" v-model="form.countDate" class="w-full border rounded p-2 text-sm font-bold text-slate-700 bg-slate-50 border-slate-200 outline-none focus:border-teal-500" />
-                 <div class="absolute right-3 top-7"><i class="pi pi-calendar text-slate-400"></i></div>
-              </div>
-              <div class="w-full md:w-[600px] space-y-1">
-                 <label class="text-[10px] font-bold text-slate-500">Keterangan Laporan Sidak</label>
-                 <textarea :disabled="isReadonly" v-model="form.notes" rows="1" class="w-full rounded border p-2 text-xs bg-slate-50 outline-none focus:border-teal-500" placeholder="Audit mingguan barang retur..."></textarea>
-              </div>
-           </div>
-
-           <!-- Papan Input Opname -->
-           <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
-               <div class="flex items-center justify-between p-4 bg-slate-50 border-b">
-                 <div class="text-xs font-black text-slate-800 uppercase tracking-widest"><i class="pi pi-inbox mr-2 text-teal-600"></i> Opname Worksheet (Pencatat Hasil Fisik)</div>
-                 <Button v-if="!isReadonly" label="Tambah Baris Temuan Baru" icon="pi pi-plus" size="small" bg="bg-white" class="h-8 shadow-sm text-teal-700 text-[10px] border-slate-200 font-bold" @click="addLine" />
-               </div>
-               <div class="overflow-x-auto">
-                 <table class="w-full text-sm">
-                   <thead class="bg-white text-left text-[9px] text-slate-400 border-b uppercase tracking-wider relative">
-                     <!-- Group Header UI -->
-                     <tr>
-                       <th colspan="2" class="px-4 py-2 text-center text-slate-700 w-[40%]"><i class="pi pi-tag mr-1 text-[8px]"></i> BARANG & LOKASI</th>
-                       <th class="px-4 py-2 border-l text-center font-bold bg-slate-100 w-[20%] text-slate-500"><i class="pi pi-desktop mr-1 text-[8px]"></i> DATA KOMPUTER</th>
-                       <th class="px-4 py-2 border-l text-center font-bold bg-teal-50 w-[20%] text-teal-700"><i class="pi pi-users mr-1 text-[8px]"></i> TEMUAN FISIK</th>
-                       <th class="px-4 py-2 border-l text-center font-black text-white w-[20%]" :class="calculateGlobalVariance() === 0 ? 'bg-slate-400' : 'bg-slate-800'">HASIL SELISIH (VARIANCE)</th>
-                       <th v-if="!isReadonly" class="w-8 border-l border-b bg-white"></th>
-                     </tr>
-                   </thead>
-                   <tbody class="divide-y relative">
-                      <tr v-for="(line, idx) in form.lines" :key="idx" class="transition-colors group hover:bg-slate-50 h-16">
-                         <!-- Name -->
-                         <td class="px-4 py-2 align-middle">
-                            <input :disabled="isReadonly" type="text" v-model="line.desc" class="w-full border-b border-dashed border-slate-300 py-1 text-xs font-bold text-slate-800 bg-transparent outline-none focus:border-teal-500 placeholder-slate-300" placeholder="Ketik Identitas Barang / Scan Barcode SKU..." />
-                         </td>
-                         <!-- Bin Pos -->
-                         <td class="px-2 py-2 align-middle flex items-center gap-1 justify-end opacity-60 mt-3 pt-1">
-                            <input :disabled="isReadonly" type="text" v-model="line.uomCode" class="w-12 text-[10px] font-mono border-b border-slate-300 bg-transparent text-center" placeholder="PCS" />
-                            <input :disabled="isReadonly" type="text" v-model="line.binLocationId" class="w-20 text-[10px] font-mono border-b border-slate-300 bg-transparent text-center" placeholder="-Tanpa Rak-" />
-                         </td>
-                         
-                         <!-- System Qty -->
-                         <td class="px-4 py-2 align-middle border-l bg-slate-50 h-full">
-                             <div class="flex items-center h-full w-full relative">
-                                <input :disabled="isReadonly" type="number" v-model.number="line.systemQty" @input="recalc(line)" class="w-full bg-slate-200/50  border-slate-300 rounded px-1 py-2 text-center text-lg font-black text-slate-400 outline-none" placeholder="0" />
-                                <i class="pi pi-lock absolute -right-2 top-0 opacity-10 text-[8px]"></i>
-                             </div>
-                         </td>
-                         <!-- Counted Qty -->
-                         <td class="px-4 py-2 align-middle border-l bg-teal-50/50 h-full relative" :class="isReadonly ? 'opacity-80' : ''">
-                             <div class="h-full flex items-center justify-center">
-                                <input :disabled="isReadonly" type="number" v-model.number="line.countedQty" @input="recalc(line)" class="w-full border-b-2 border-teal-500 px-1 py-1.5 text-center text-xl font-black text-teal-800 focus:text-teal-600 outline-none bg-white shadow-sm rounded transition-colors drop-shadow" placeholder="Ketik Hasil..." />
-                             </div>
-                         </td>
-
-                         <!-- Variance Auto Calculator -->
-                         <td class="px-4 py-2 align-middle border-l relative h-full font-mono text-center truncate overflow-hidden" :class="varianceCellClass(line.varianceQty)">
-                            <div class="absolute inset-0 opacity-5 pointer-events-none flex items-center justify-center"><i class="pi text-6xl" :class="line.varianceQty === 0 ? 'pi-check' : 'pi-exclamation-triangle'"></i></div>
-                            <span class="text-2xl font-black relative z-10 font-sans tracking-tighter">{{ line.varianceQty > 0 ? '+' : '' }}{{ formatQty(line.varianceQty) }}</span>
-                         </td>
-                         
-                         <td v-if="!isReadonly" class="px-2 py-4 align-middle border-l text-center">
-                             <button @click="removeLine(idx)" class="w-6 h-6 rounded bg-rose-100 text-rose-600 flex items-center justify-center font-black hover:bg-rose-600 hover:text-white transition-colors" title="Hapus Temuan">✕</button>
-                         </td>
-                      </tr>
-                      <tr v-if="form.lines.length === 0">
-                         <td :colspan="isReadonly ? 5 : 6" class="p-8 text-center text-slate-400 text-xs italic">
-                            <div class="text-4xl opacity-10 mb-2 mt-2"><i class="pi pi-box"></i></div>
-                            Lembar Kosong. Tarik barang dari sistem atau masukan manual temuan tak terduga.
-                         </td>
-                      </tr>
-                   </tbody>
-                 </table>
-               </div>
-           </div>
-           
-           <div v-if="!isReadonly" class="mt-4 p-4 rounded-xl border border-teal-200 bg-teal-50 shadow-inner flex gap-3 text-[10px] text-teal-800 leading-relaxed font-bold">
-              <i class="pi pi-exclamation-circle text-xl text-teal-500 opacity-60"></i>
-              "System Qty" ditarik langsung dari Ledger saat panel ini dibuat. Begitu dokumen disahkan (POSTING), sistem tidak bertanya lagi. Sistem hanya akan membakar jurnal penyesuaian (Inventory Adjustment) sebesar nilai "Variance" baik plus maupun minus secara permanen ke Keuangan.
-           </div>
-        </div>
-
-        <!-- Footer Actions -->
-        <div class="p-5 border-t border-slate-200 bg-white flex justify-between items-center shrink-0 rounded-b-xl z-20 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.05)]">
-          <Button label="Buang Draft (Batal)" severity="secondary" size="small" @click="dialogOpen = false" outlined class="bg-slate-50 border-slate-300 font-bold" />
-          <div class="flex items-center gap-2">
-             <Button v-if="isReadonly && canManage && form.status === 'DRAFT'" label="Audit: Kunci Hasil Stock Opname (POSTING LEDGER!)" severity="help" size="large" :loading="saving" :disabled="saving" @click="save" class="bg-teal-600 border-none text-white font-bold tracking-wide hover:bg-teal-700 shadow-sm h-10 px-6 rounded-lg" icon="pi pi-lock" />
-             <Button v-else-if="!isReadonly" label="Simpan Pekerjaan (Draft Hitung)" severity="help" size="large" @click="dialogOpen = false" class="bg-teal-600 border-none text-white font-bold h-10 px-8 rounded-lg" />
+        <!-- Workspace Footer Actions -->
+        <div class="p-10 border-t bg-white flex justify-between items-center shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] rounded-b-[2.5rem]">
+          <div class="flex items-center gap-4">
+             <div class="px-6 py-3 bg-amber-50 border border-amber-100 rounded-xl text-amber-600 text-[9px] font-black uppercase tracking-widest italic flex items-center gap-2 transition-all hover:scale-105">
+                <i class="pi pi-lock"></i> Financial Adjustment Protocol v4.0
+             </div>
+          </div>
+          <div class="flex items-center gap-4">
+             <Button label="Buang Draft (Batal)" severity="secondary" text @click="dialogOpen = false" class="px-8 h-12 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 rounded-xl" />
+             <Button 
+                v-if="!isReadonly"
+                label="Simpan Pekerjaan (Draft)" 
+                severity="help" 
+                size="large" 
+                @click="dialogOpen = false" 
+                class="h-14 px-12 bg-slate-900 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-slate-200 hover:scale-105 active:scale-95 transition-all rounded-xl hover:bg-black" 
+             />
+             <Button 
+                v-if="isReadonly && canManage && form.status === 'DRAFT'"
+                label="Validasi & Kunci Ledger (POSTING!)" 
+                icon="pi pi-lock"
+                size="large" 
+                :loading="saving" 
+                :disabled="saving" 
+                @click="save" 
+                class="h-14 px-12 bg-amber-600 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-amber-100 hover:scale-105 active:scale-95 transition-all rounded-xl hover:bg-amber-700" 
+             />
           </div>
         </div>
       </div>
@@ -287,7 +410,8 @@ const formatDate = (iso: string) => {
   if (!iso) return '-';
   const d = new Date(iso);
   const pad = (n: number) => String(n).padStart(2, '0');
-  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  return `${pad(d.getDate())} ${months[d.getMonth()]} ${d.getFullYear()}`;
 };
 
 const calculateLines = (doc: any) => doc.items ? doc.items.length : 0;
@@ -295,18 +419,14 @@ const calculateTotalVariance = (doc: any) => doc.items ? doc.items.reduce((acc: 
 
 const varianceColor = (v: number) => {
     if(v === 0) return 'text-slate-200';
-    if(v > 0) return 'text-emerald-600';
-    return 'text-rose-600';
+    if(v > 0) return 'text-emerald-500';
+    return 'text-rose-500';
 };
-const varianceBadgeParams = (v: number) => {
-    if(v === 0) return 'text-slate-400 border border-slate-200 bg-slate-50';
-    if(v > 0) return 'text-emerald-700 bg-emerald-100';
-    return 'text-rose-700 bg-rose-100';
-};
+
 const varianceCellClass = (v: number) => {
-    if(v === 0) return 'bg-slate-100/50 text-slate-300';
-    if(v > 0) return 'bg-emerald-50 text-emerald-800';
-    return 'bg-rose-50 text-rose-800';
+    if(v === 0) return 'text-slate-300 opacity-40';
+    if(v > 0) return 'text-emerald-600 bg-emerald-50/50 rounded-lg px-2';
+    return 'text-rose-600 bg-rose-50/50 rounded-lg px-2';
 }
 
 async function load() {
@@ -325,14 +445,14 @@ async function load() {
         id: '1', code: "STC-202604-001", status: "POSTED", countDate: "2026-04-30T00:00", notes: "Audit Stok Akhir Bulan.",
         warehouse: { name: 'Gudang Pusat' },
         items: [
-           { desc: 'Kopi Bubuk Arabica Premium', systemQty: 1500, countedQty: 1495, varianceQty: -5, uomCode: 'PCS' }
+           { desc: 'Kopi Bubuk Arabica Premium', systemQty: 1500, countedQty: 1495, varianceQty: -5, uomCode: 'PCS', binLocationId: 'RAK-A1' }
         ]
       },
       { 
         id: '2', code: "STC-202604-002", status: "DRAFT", countDate: "2026-05-15T00:00", notes: "Sidak dadakan rak.",
         warehouse: { name: 'Gudang Pusat' },
         items: [
-           { desc: 'Kopi Bubuk Arabica Premium', systemQty: 1495, countedQty: 0, varianceQty: 0, uomCode: 'PCS' }
+           { desc: 'Kopi Bubuk Arabica Premium', systemQty: 1495, countedQty: 0, varianceQty: 0, uomCode: 'PCS', binLocationId: 'RAK-A1' }
         ]
       }
     ];
@@ -403,7 +523,6 @@ const calculateGlobalVariance = () => form.lines.reduce((acc, cur) => acc + Numb
 async function save() {
   saving.value = true;
   setTimeout(() => {
-    alert(`Operasi Validasi Opname Disahkan! Dokumen Penyesuaian (Adjustment) senilai selisih kuantitas telah dibakar otomatis ke tabel Akuntansi Ledger WMS.`);
     dialogOpen.value = false;
     saving.value = false;
     load();

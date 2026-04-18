@@ -1,109 +1,174 @@
 <template>
   <div class="space-y-4">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm border-l-4 border-l-cyan-500">
-      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <div>
-          <div class="text-sm font-semibold text-slate-800">Manajemen Quality Control (Inspeksi Mutu WMS)</div>
-          <div class="mt-1 text-sm text-slate-600">
-            Laboratorium dan stasiun pengecekan visual. Validasi mutu barang mask (GRN), hasil produksi, maupun uji petik stok fisik gudang (Cycle Count).
+    <!-- Header (Premium Lab & Scientific Audit Style) -->
+    <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-cyan-100/50"></div>
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-3 py-1 bg-cyan-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-cyan-100">Lab & Scientific Audit</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-cyan-600">Manajemen Quality Control (Inspeksi Mutu)</span>
           </div>
+          <h1 class="text-4xl font-black text-slate-900 tracking-tight leading-none uppercase italic">Quali <span class="text-cyan-600 not-italic text-3xl">Ty</span></h1>
+          <p class="text-slate-500 text-sm font-medium max-w-2xl text-cyan-900/60 leading-relaxed mt-3">Laboratorium dan stasiun pengecekan visual. Validasi mutu barang masuk (GRN), hasil produksi, maupun uji petik stok fisik gudang secara presisi.</p>
         </div>
-        <div class="flex gap-2">
-          <Button label="Buku Riwayat Defect" severity="secondary" size="small" outlined icon="pi pi-book" />
-          <Button v-if="canManage" label="+ Generate Dokumen Inspeksi" size="small" bg="bg-cyan-600" class="text-white border-none shrink-0" icon="pi pi-microchip" @click="openCreate" />
+        <div class="flex items-center gap-3">
+          <Button label="Buku Riwayat Defect" size="small" icon="pi pi-book" class="p-button-rounded h-12 px-8 bg-slate-100 border-none text-slate-600 font-black text-[10px] uppercase hover:bg-slate-200 transition-all shadow-sm" />
+          <Button label="+ Generate Dokumen Inspeksi" size="small" icon="pi pi-microchip" class="p-button-rounded h-12 px-8 bg-cyan-600 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-cyan-100 hover:scale-105 active:scale-95 transition-all" v-if="canManage" @click="openCreate" />
         </div>
       </div>
     </div>
 
-    <!-- Data List and Filters -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm">
-      <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2 w-full md:w-auto">
-          <InputText v-model="search" placeholder="Cari Dokumen QC / GRN Ref..." class="w-full md:w-80 text-xs" />
-          <select v-model="statusFilter" class="p-2 border rounded-md text-xs bg-white text-slate-700 min-w-32">
-            <option value="">Semua Dokumen</option>
-            <option value="DRAFT">Proses Pemeriksaan (Lab)</option>
-            <option value="POSTED">Selesai Diverifikasi (Approve)</option>
-          </select>
-          <Button label="Filter" severity="secondary" size="small" :disabled="loading" @click="load" />
+    <!-- Dynamic Lab Telemetry KPIs (High-Contrast Style) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
+      <div class="p-6 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
+        <div class="text-[10px] font-black uppercase text-cyan-400 tracking-[0.2em] mb-4 opacity-80">Antrean Inspeksi</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ docs.length }}</h3>
+          <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
+            <i class="pi pi-flask text-lg"></i>
+          </div>
         </div>
       </div>
 
-      <!-- QC Table -->
-      <div class="overflow-x-auto rounded-lg border">
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+        <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Rasio Lolos Uji</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-emerald-700 tracking-tighter leading-none">94<span class="text-xl ml-1 font-black">%</span></h3>
+          <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 group-hover:rotate-12 transition-transform"><i class="pi pi-shield-check text-lg"></i></div>
+        </div>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+        <div class="text-[10px] font-black uppercase text-cyan-600 tracking-[0.2em] mb-4">Volume Audit (Unit)</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-5xl font-black text-cyan-700 tracking-tighter leading-none">1.2<span class="text-xl ml-1 font-black">K</span></h3>
+          <div class="p-3 bg-cyan-50 text-cyan-600 rounded-xl border border-cyan-100 group-hover:rotate-12 transition-transform"><i class="pi pi-search-plus text-lg"></i></div>
+        </div>
+      </div>
+
+       <div class="p-6 rounded-2xl bg-gradient-to-br from-cyan-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+        <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
+        <div class="text-[10px] font-black uppercase text-cyan-100 tracking-[0.2em] mb-4 opacity-80">Akurasi Lab</div>
+        <div class="flex items-end justify-between">
+          <h3 class="text-xl font-black text-white tracking-tight leading-none uppercase italic">High <span class="text-cyan-300">Precision</span></h3>
+          <div class="p-3 bg-white/10 text-white rounded-xl border border-white/10 group-hover:rotate-12 transition-transform"><i class="pi pi-bolt text-lg"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QC Ledger (Premium Grid Architecture) -->
+    <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
+      <!-- Controls Bar -->
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-200/20 rounded-full blur-3xl"></div>
+        
+        <div class="relative flex items-center gap-4">
+           <div class="w-12 h-12 rounded-2xl bg-cyan-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0"><i class="pi pi-microchip text-xl"></i></div>
+           <div>
+              <h3 class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em] leading-none mb-1">Audit Ledger Inspeksi Mutu & Lab</h3>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono italic">Quality Assurance & Verification Records</p>
+           </div>
+        </div>
+
+        <div class="relative flex items-center gap-3">
+          <div class="flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm p-1">
+            <i class="pi pi-search px-3 text-slate-300 text-xs"></i>
+            <InputText v-model="search" placeholder="Cari Dokumen QC / GRN Ref..." class="border-none bg-transparent text-[11px] h-9 w-64 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" @keyup.enter="load" />
+          </div>
+          <Button icon="pi pi-refresh" severity="secondary" rounded text @click="load" :loading="loading" class="h-10 w-10 text-slate-400 hover:text-cyan-600 transition-all shadow-sm bg-white" />
+        </div>
+      </div>
+
+      <!-- Item Table -->
+      <div class="overflow-x-auto custom-scrollbar">
         <table class="w-full text-sm">
-          <thead class="bg-cyan-50 text-left text-xs text-cyan-900 border-b border-cyan-100 uppercase tracking-wider">
+          <thead class="bg-white text-left font-bold border-b border-slate-50 text-slate-900 uppercase">
             <tr>
-              <th class="px-4 py-3 font-semibold">Dokumen Inspeksi (QCI)</th>
-              <th class="px-4 py-3 font-semibold">Sumber Pemicu Pengecekan</th>
-              <th class="px-4 py-3 font-semibold text-center">Rasio Kualitas (Passed vs Failed)</th>
-              <th class="px-4 py-3 font-semibold text-center w-36">Status Sertifikasi</th>
-              <th class="px-4 py-3 text-right font-semibold">Tindakan Khusus</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[260px]">Dokumen Inspeksi (QCI)</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50">Sumber Pemicu Pengecekan</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center">Rasio Kualitas (Passed/Failed)</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center w-40">Status Sertifikasi</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-40 border-l border-slate-50">Aksi</th>
             </tr>
           </thead>
-          <tbody class="divide-y relative">
+          <tbody class="divide-y divide-slate-50">
              <tr v-if="loading">
-              <td colspan="5" class="px-4 py-16 text-center text-sm text-slate-500">
-                <i class="pi pi-spinner pi-spin mr-2"></i> Merender daftar sampel laboratorium...
+              <td colspan="5" class="py-24 text-center">
+                <i class="pi pi-spinner pi-spin text-4xl text-cyan-500 opacity-20"></i>
+                <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-cyan-600">Merender daftar sampel laboratorium...</div>
               </td>
             </tr>
-            <!-- Iteration rows -->
-            <tr v-for="doc in filteredDocs" v-else :key="doc.id" class="transition hover:bg-cyan-50/40 group">
-              <!-- Dokumen -->
-              <td class="px-4 py-3 align-top w-56">
-                <div class="font-bold text-slate-800 text-xs flex items-center gap-2 font-mono">
-                   {{ doc.code }}
-                   <i v-if="doc.status === 'POSTED'" class="pi pi-check-circle text-[10px] text-emerald-500" title="Verifikasi Selesai"></i>
-                </div>
-                <div class="text-[10px] text-slate-500 mt-1">🗓️ Tanggal Uji: {{ formatDate(doc.inspectionDate) }}</div>
-                <div class="text-[9px] bg-slate-100 inline-block px-1.5 py-0.5 rounded border mt-1">
-                   Auditor: <span class="font-bold text-slate-700">{{ doc.inspectorName || 'Sistem Auto-QC' }}</span>
-                </div>
-              </td>
-              
-              <!-- Referensi (Pemicu) -->
-              <td class="px-4 py-3 align-top">
-                <div class="flex items-center gap-2 mb-1">
-                   <div class="text-[9px] font-bold px-1 rounded shadow-sm border uppercase tracking-wider" :class="doc.grnId ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-500 border-slate-200'">
-                      {{ doc.grnId ? 'Validasi GRN / Inbound' : 'Uji Petik Gudang (Ad-Hoc)' }}
-                   </div>
-                </div>
-                <div class="text-[11px] font-mono font-bold text-slate-700">{{ doc.grn?.code || 'Pemeriksaan Internal / Cycle Count' }}</div>
-                <div class="text-[9px] text-slate-400 mt-0.5 italic">"{{ doc.notes || '-' }}"</div>
-              </td>
-
-              <!-- Kuantitas Total Ratios -->
-              <td class="px-4 py-3 align-top text-center relative">
-                 <div class="flex justify-center flex-col items-center gap-1.5 w-full">
-                    <div class="flex items-center gap-2 text-[10px] font-mono font-bold w-40">
-                       <span class="w-16 text-right text-emerald-600 tracking-wider">PASS: {{ calculatePass(doc) }}</span>
-                       <div class="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden flex">
-                          <div class="h-full bg-emerald-500" :style="{ width: getPassRatio(doc) + '%' }"></div>
-                          <div class="h-full bg-rose-500" :style="{ width: getFailRatio(doc) + '%' }"></div>
-                       </div>
-                       <span class="w-16 text-left text-rose-600 tracking-wider">FAIL: {{ calculateFail(doc) }}</span>
+            
+            <tr v-for="doc in filteredDocs" v-else :key="doc.id" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent" :class="doc.status === 'POSTED' ? (calculateFail(doc) > 0 ? 'hover:border-l-amber-400' : 'hover:border-l-emerald-400') : 'hover:border-l-cyan-400'">
+              <td class="px-8 py-6 align-middle">
+                 <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
+                       <i class="pi pi-flask text-lg"></i>
                     </div>
-                    <div class="text-[8px] text-slate-400 bg-slate-50 px-1 rounded">Total Sampel: {{ calculateSample(doc) }} Unit</div>
+                    <div>
+                       <div class="font-mono text-[11px] font-black text-slate-500 tracking-tight group-hover:text-cyan-700 transition-colors uppercase italic">
+                          {{ doc.code }}
+                       </div>
+                       <div class="mt-1 font-black text-[10px] text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                          <i class="pi pi-calendar text-[8px]"></i> {{ formatDate(doc.inspectionDate) }}
+                       </div>
+                    </div>
                  </div>
               </td>
               
-              <!-- Status -->
-              <td class="px-4 py-3 align-top text-center">
-                 <span class="inline-flex rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider" :class="doc.status === 'POSTED' ? (calculateFail(doc) > 0 ? 'bg-amber-100 text-amber-700 border border-amber-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200') : 'bg-cyan-100 text-cyan-700 border border-cyan-200'">
-                   {{ doc.status === 'POSTED' ? (calculateFail(doc) > 0 ? 'QC APPROVED W/ RECORD' : 'QC PASSED') : 'MENGANALISA' }}
-                 </span>
+              <td class="px-6 py-6 align-middle border-l border-slate-50 bg-slate-50/20">
+                <div class="flex flex-col gap-1.5">
+                   <div class="flex items-center gap-2">
+                      <div class="text-[8px] font-black px-2 py-0.5 rounded shadow-sm border uppercase tracking-wider" :class="doc.grnId ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-500 border-slate-200'">
+                         {{ doc.grnId ? 'Validasi GRN / Inbound' : 'Uji Petik Gudang (Ad-Hoc)' }}
+                      </div>
+                   </div>
+                   <div class="text-[11px] font-mono font-black text-slate-700 uppercase tracking-tight">{{ doc.grn?.code || 'Pemeriksaan Internal' }}</div>
+                   <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 italic">
+                      <i class="pi pi-user text-[7px]"></i> {{ doc.inspectorName || 'Sistem Auto-QC' }}
+                   </div>
+                </div>
               </td>
 
-              <!-- Actions -->
-              <td class="px-4 py-3 align-top text-right">
-                <Button label="Papan Uji Klinis (Worksheet)" size="small" severity="secondary" outlined class="text-[10px] px-3 font-bold py-1 text-center hover:bg-slate-100 w-full" @click="openView(doc)" />
+              <td class="px-6 py-6 align-middle border-l border-slate-50 text-center">
+                 <div class="flex flex-col items-center gap-2">
+                    <div class="flex items-center gap-3 text-[10px] font-black w-48">
+                       <span class="w-16 text-right text-emerald-600 tracking-tighter">P: {{ calculatePass(doc) }}</span>
+                       <div class="h-2 flex-1 bg-slate-100 rounded-full overflow-hidden flex shadow-inner border border-slate-200">
+                          <div class="h-full bg-emerald-500 transition-all duration-700" :style="{ width: getPassRatio(doc) + '%' }"></div>
+                          <div class="h-full bg-rose-500 transition-all duration-700" :style="{ width: getFailRatio(doc) + '%' }"></div>
+                       </div>
+                       <span class="w-16 text-left text-rose-600 tracking-tighter">F: {{ calculateFail(doc) }}</span>
+                    </div>
+                    <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest bg-white border border-slate-100 px-2 rounded-full">Total Sampel: {{ calculateSample(doc) }} UniT</div>
+                 </div>
+              </td>
+
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50 bg-slate-50/30 group-hover:bg-slate-100/50 transition-colors">
+                 <div class="relative flex flex-col items-center gap-1.5">
+                    <span v-if="doc.status === 'POSTED'" class="inline-flex rounded-full px-4 py-1.5 text-[9px] font-black tracking-[0.2em] border uppercase shadow-sm group-hover:scale-105 transition-all" :class="calculateFail(doc) > 0 ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'">
+                       <i class="pi text-[7px] mr-2" :class="calculateFail(doc) > 0 ? 'pi-exclamation-circle text-amber-500' : 'pi-shield-check text-emerald-500'"></i> 
+                       {{ calculateFail(doc) > 0 ? 'QC APPROVED W/ RECORD' : 'QC PASSED' }}
+                    </span>
+                    <span v-else class="inline-flex rounded-full px-4 py-1.5 text-[9px] font-black tracking-[0.2em] bg-cyan-50 text-cyan-700 border border-cyan-200 uppercase shadow-sm">
+                       <i class="pi pi-spin pi-spinner text-[7px] mr-2"></i> MENGANALISA
+                    </span>
+                 </div>
+              </td>
+
+              <td class="px-8 py-6 align-middle text-right border-l border-slate-50">
+                 <div class="flex flex-col gap-2 items-end opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
+                    <Button label="Buka Worksheet" severity="secondary" rounded outlined @click="openView(doc)" class="h-9 px-6 border-slate-200 text-slate-600 hover:bg-slate-900 hover:text-white transition-all text-[9px] font-black uppercase tracking-widest" />
+                 </div>
               </td>
             </tr>
+            
             <tr v-if="!loading && filteredDocs.length === 0">
-              <td colspan="5" class="px-4 py-16 text-center text-slate-500 border-t">
-                <div class="text-4xl mb-3 opacity-50 text-slate-200"><i class="pi pi-check-square"></i></div>
-                Lingkungan aman. Tidak ada antrean inspeksi kualitas saat ini.
+              <td colspan="5" class="py-32 text-center text-slate-500">
+                 <div class="text-6xl mb-4 opacity-10">🧪</div>
+                 <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Lingkungan aman. Tidak ada antrean inspeksi kualitas saat ini.</div>
               </td>
             </tr>
           </tbody>
@@ -111,129 +176,191 @@
       </div>
     </div>
 
-    <!-- Viewer/Editor Modal (QC Worksheet) -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4 backdrop-blur-sm shadow-xl">
-      <div class="w-full max-w-5xl rounded-xl border bg-slate-50 shadow-2xl flex flex-col max-h-[95vh] h-full overflow-hidden animate-fade-in-up">
-        
-        <!-- Header -->
-        <div class="p-6 border-b bg-cyan-950 flex flex-col sm:flex-row items-center justify-between shrink-0 gap-4 relative overflow-hidden shadow-sm">
-          <div class="absolute left-[-20px] top-[-20px] opacity-10">
-             <i class="pi pi-microchip text-[150px] text-white"></i>
+    <!-- Arsitektur QC Worksheet (Universal Centered Dialog) -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="w-[calc(100%-2rem)] max-w-7xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-cyan-900">
+        <!-- Workspace Header -->
+        <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden text-slate-900">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
+          <div class="relative flex items-center gap-6">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-cyan-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
+               <i class="pi pi-microchip text-3xl font-black"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-3">
+                 <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase">{{ activeDoc?.id ? 'Worksheet' : 'Aktivasi' }} <span class="text-cyan-600 italic text-2xl">Inspeksi Mutu Lab</span></h3>
+                 <span v-if="activeDoc?.id" class="inline-flex rounded-xl px-4 py-1.5 text-[9px] font-black tracking-[0.2em] border shadow-sm uppercase shadow-sm" :class="form.status === 'POSTED' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-cyan-100 text-cyan-700 border-cyan-200'">{{ form.status === 'POSTED' ? 'Hasil Sertifikasi Terkunci' : 'Proses Verifikasi (Draft)' }}</span>
+              </div>
+              <p class="text-[10px] font-black uppercase tracking-[0.2em] mt-3 px-1 border-l-2 border-cyan-500 text-cyan-600 italic">Quality Assurance & Scientific Verification Bridge</p>
+            </div>
           </div>
-          <div class="z-10 w-full flex justify-between items-start">
-             <div>
-               <div class="flex items-center gap-3">
-                 <span class="text-xl font-black text-cyan-50 tracking-tight">{{ activeDoc?.id ? `Worksheet Inspeksi (QC): ${form.code}` : 'Aktivasi Papan Inspeksi Baru (QC Mode)' }}</span>
-                 <span v-if="activeDoc?.id" class="inline-flex rounded text-[10px] font-bold uppercase shadow-sm border px-2 py-0.5" :class="form.status === 'POSTED' ? 'bg-emerald-500 text-emerald-50 border-emerald-400' : 'bg-cyan-600 text-cyan-50 border-cyan-400'">
-                   {{ form.status === 'POSTED' ? 'SERTIFIKASI TERKUNCI' : 'PENGUJIAN TERBUKA (DRAFT)' }}
-                 </span>
-               </div>
-               <div class="text-xs text-cyan-200 font-medium opacity-80 mt-1 pl-1">Instruksi staf *Quality Assurance* mencatat rasio barang lolos uji mutu vs barang reject.</div>
+          <button @click="dialogOpen = false" class="relative z-10 w-12 h-12 rounded-full hover:bg-slate-100 flex items-center justify-center transition-colors">
+            <i class="pi pi-times text-slate-400 font-bold"></i>
+          </button>
+        </div>
+        
+        <!-- Workspace Body -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 p-10">
+           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
+              <!-- Panel Left: Parameter Dasar -->
+              <div class="lg:col-span-4 animate-fade-in-up">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center gap-2">
+                    <i class="pi pi-search text-cyan-600"></i> I. Parameter Dasar Pengujian
+                 </div>
+                 <div class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm space-y-6 transition-all hover:border-cyan-100">
+                    <div class="space-y-4">
+                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Pemicu Inspeksi <span class="italic text-[8px] opacity-60">(Source Document)</span></label>
+                       <select :disabled="isReadonly" v-model="form.grnId" class="w-full h-14 border-none rounded-2xl px-6 text-[11px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-cyan-400 transition-all appearance-none cursor-pointer uppercase tracking-widest disabled:opacity-70">
+                          <option value="">-- AUDIT INTERNAL BEBAS --</option>
+                          <option v-for="g in mockGrns" :value="g.id">{{ g.code }} (Bongkar Muat)</option>
+                       </select>
+                    </div>
+
+                    <div class="space-y-4">
+                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Petugas QA <span class="italic text-[8px] opacity-60">(Auditor)</span></label>
+                       <div class="relative">
+                          <i class="pi pi-user absolute left-6 top-1/2 -translate-y-1/2 text-cyan-600/50 text-xs"></i>
+                          <InputText :disabled="isReadonly" v-model="form.inspectorName" class="w-full h-14 border-none rounded-2xl pl-12 pr-6 text-[11px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-cyan-400 transition-all uppercase disabled:opacity-70" placeholder="NAMA PETUGAS LAB..." />
+                       </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-50">
+                       <div class="px-6 py-4 bg-cyan-50 rounded-2xl border border-cyan-100 text-[9px] font-bold text-cyan-400 uppercase leading-relaxed italic">
+                          Instruksi staf *Quality Assurance* diwajibkan mencatat rasio barang lolos uji mutu vs barang defect secara akurat berbasis worksheet ini.
+                       </div>
+                    </div>
+                 </div>
+              </div>
+
+              <!-- Panel Middle: Audit Schedule -->
+              <div class="lg:col-span-3 animate-fade-in-up" style="animation-delay: 0.1s">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center gap-2">
+                    <i class="pi pi-stopwatch text-amber-500"></i> II. Audit Schedule & Notes
+                 </div>
+                 <div class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm space-y-8 transition-all hover:border-amber-100 border-b-[8px] border-b-cyan-600">
+                    <div class="space-y-4 text-slate-900">
+                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Waktu Pengambilan Sampel</label>
+                       <InputText type="date" v-model="form.inspectionDate" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-cyan-400 transition-all uppercase disabled:opacity-70" :disabled="isReadonly" />
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 italic space-y-2">
+                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Arahan / SOP Pengujian (Review)</label>
+                       <textarea v-model="form.notes" :disabled="isReadonly" rows="8" class="w-full rounded-2xl border-none bg-slate-50 p-4 text-[11px] font-medium text-slate-700 outline-none focus:ring-4 focus:ring-cyan-400 transition-all placeholder-slate-300 disabled:opacity-70 shadow-inner" placeholder="Timbang kadar air, cek bungkusan secara visual..."></textarea>
+                    </div>
+                 </div>
+              </div>
+
+              <!-- Panel Right: Lembar Laboratorium Hub (Scientific Assembler) -->
+              <div class="lg:col-span-5 animate-fade-in-up" style="animation-delay: 0.2s">
+                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center justify-between gap-2">
+                    <span class="flex items-center gap-2"><i class="pi pi-flask text-rose-500"></i> III. Lembar Laboratorium Hub</span>
+                    <Button v-if="!isReadonly" label="Tambah Baris Uji" icon="pi pi-plus" size="small" text @click="addLine" class="h-6 text-[9px] font-black text-cyan-600 uppercase border border-cyan-100 bg-cyan-50 rounded-lg px-3" />
+                 </div>
+                 <div class="bg-slate-900 p-0 rounded-[2.5rem] shadow-2xl border-4 border-slate-800 relative overflow-hidden group min-h-[500px] flex flex-col shadow-cyan-900/10">
+                    <div class="absolute right-[-20px] top-[-20px] w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl opacity-30"></div>
+                    
+                    <div class="p-10 pb-6 shrink-0 relative z-10 border-b border-white/5 bg-slate-900/40">
+                       <div class="flex items-center justify-between mb-2">
+                          <h4 class="text-xl font-black text-white leading-none uppercase tracking-tight italic">Quality <span class="text-cyan-400 not-italic">Scientific Work</span></h4>
+                          <span class="px-3 py-1 bg-white/10 rounded-lg text-[9px] font-black text-white uppercase tracking-widest">{{ form.lines.length }} Sampel Terdaftar</span>
+                       </div>
+                       <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed text-cyan-300/60 font-mono italic">Physical Verification -> Compliance Ledger</p>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto custom-scrollbar px-10 pt-6">
+                       <div class="space-y-4 pb-10">
+                          <div v-for="(line, idx) in form.lines" :key="idx" class="bg-white/5 rounded-[1.5rem] p-6 border border-white/10 transition-all hover:bg-white/10 hover:border-white/20 group/line" :class="Number(line.failedQty) > 0 ? 'border-rose-500/30 bg-rose-500/5' : 'border-emerald-500/30 bg-emerald-500/5'">
+                             <div class="flex justify-between items-start mb-6">
+                                <div class="flex flex-1 gap-4">
+                                   <div class="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-mono text-xs">{{ idx + 1 }}</div>
+                                   <div class="flex-1">
+                                      <input :disabled="isReadonly" type="text" v-model="line.desc" class="w-full bg-transparent border-none text-[11px] font-black text-white uppercase tracking-tight group-hover/line:text-cyan-400 transition-colors leading-tight p-0 outline-none" placeholder="Item / SKU Teraudit (Target)..." />
+                                      <div class="flex items-center gap-2 mt-2">
+                                         <div class="relative group/qty px-3 py-1 bg-white/5 rounded-lg border border-white/10">
+                                            <span class="text-[7px] font-black text-slate-500 uppercase tracking-widest absolute -top-2 left-2 bg-slate-900 px-1">Besaran Sampel</span>
+                                            <input :disabled="isReadonly" type="number" v-model.number="line.sampleQty" @input="recalc(line)" class="bg-transparent border-none text-[11px] font-black text-white w-14 p-0 text-center outline-none focus:ring-0" />
+                                         </div>
+                                         <div class="w-1 h-1 rounded-full bg-slate-700"></div>
+                                         <span class="text-[8px] font-black text-slate-500 uppercase tracking-widest px-2 py-1 bg-white/5 rounded-lg italic">Laboratory Subject</span>
+                                      </div>
+                                   </div>
+                                </div>
+                                <button v-if="!isReadonly" @click="removeLine(idx)" class="text-slate-600 hover:text-rose-500 transition-colors p-2"><i class="pi pi-trash text-[10px]"></i></button>
+                             </div>
+
+                             <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-black/30 p-4 rounded-xl border border-white/5 group-hover/line:border-emerald-500/30 transition-all relative overflow-hidden">
+                                   <div class="text-[7px] font-black uppercase tracking-widest italic text-emerald-500 mb-2 leading-none">
+                                      <i class="pi pi-check text-[6px]"></i> Lolos Sertifikasi (Passed)
+                                   </div>
+                                   <input :disabled="isReadonly" type="number" v-model.number="line.passedQty" @input="recalc(line, 'pass')" class="w-full bg-transparent border-none text-[18px] font-mono font-black text-white p-0 focus:ring-0 outline-none leading-none relative z-10 uppercase tracking-tighter" />
+                                </div>
+
+                                <div class="bg-black/30 p-4 rounded-xl border border-white/5 group-hover/line:border-rose-500/30 transition-all relative overflow-hidden">
+                                   <div class="text-[7px] font-black uppercase tracking-widest italic text-rose-500 mb-2 leading-none">
+                                      <i class="pi pi-times text-[6px]"></i> Gagal / Cacat Lab (Failed)
+                                   </div>
+                                   <input :disabled="isReadonly" type="number" v-model.number="line.failedQty" @input="recalc(line, 'fail')" class="w-full bg-transparent border-none text-[18px] font-mono font-black text-white p-0 focus:ring-0 outline-none leading-none relative z-10 uppercase tracking-tighter" />
+                                </div>
+
+                                <div class="col-span-2 bg-black/30 p-4 rounded-xl border border-white/5 group-hover/line:border-white/10 transition-all mt-1">
+                                   <div class="text-[7px] font-black uppercase tracking-widest italic text-slate-500 mb-2 leading-none">
+                                      Diagnosa Defect / Keterangan Reject
+                                   </div>
+                                   <input :disabled="isReadonly" type="text" v-model="line.defectReason" class="w-full bg-transparent border-none text-[11px] font-black text-white/70 p-0 focus:ring-0 outline-none italic placeholder-slate-700" placeholder="Biarkan kosong jika Passed." />
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+
+                    <div class="p-10 pt-6 border-t border-slate-800 shrink-0 bg-slate-900/80 backdrop-blur-md relative z-10 border-b-4 border-b-cyan-700">
+                       <div class="flex items-center justify-between mb-4">
+                          <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Total Laboratory Sample Analysis</div>
+                          <div class="text-xl font-black text-cyan-400 font-mono italic whitespace-nowrap">{{ form.lines.length }} SKU Audited</div>
+                       </div>
+                       <div v-if="!isReadonly && form.status === 'DRAFT'" class="bg-cyan-600/10 rounded-2xl p-4 border border-cyan-500/20 flex gap-3 text-[9px] font-black text-cyan-500 uppercase italic leading-relaxed">
+                          <i class="pi pi-info-circle mt-0.5"></i>
+                          <span>Auto-Math Validation: Sistem akan secara otomatis menyeimbangkan Passed vs Failed Qty berdasarkan Besaran Sampel yang Anda masukkan.</span>
+                       </div>
+                       <div v-else-if="form.status === 'POSTED'" class="bg-emerald-600/10 rounded-2xl p-4 border border-emerald-500/20 flex gap-3 text-[9px] font-black text-emerald-500 uppercase italic leading-relaxed">
+                          <i class="pi pi-shield-check mt-0.5"></i>
+                          <span>SERTIFIKASI TERKUNCI: Data laboratorium ini telah diverifikasi secara permanen dan tidak dapat dimanipulasi kembali.</span>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <!-- Workspace Footer Actions -->
+        <div class="p-10 border-t bg-white flex justify-between items-center shrink-0 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] rounded-b-[2.5rem]">
+          <div class="flex items-center gap-4">
+             <div class="px-6 py-3 bg-cyan-50 border border-cyan-100 rounded-xl text-cyan-600 text-[9px] font-black uppercase tracking-widest italic flex items-center gap-2 transition-all hover:scale-105">
+                <i class="pi pi-verified"></i> Scientific Integrity Linked
              </div>
           </div>
-          <button class="text-white/50 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded text-lg font-bold flex items-center justify-center transition-colors shadow-sm z-20 absolute right-4 top-4" @click="dialogOpen = false">✕</button>
-        </div>
-
-        <div class="flex-1 overflow-y-auto flex flex-col p-5 bg-slate-100">
-           
-           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm col-span-2 relative">
-                 <div class="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-3 flex gap-2"><i class="pi pi-search"></i> Parameter Dasar Pengujian Mutu</div>
-                 
-                 <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-1">
-                      <label class="text-[10px] font-bold text-slate-500">Pemicu Inspeksi (Doc Source)</label>
-                      <select :disabled="isReadonly" v-model="form.grnId" class="w-full border rounded p-2 text-xs font-bold font-mono text-slate-700 bg-emerald-50 border-emerald-200 outline-none">
-                         <option value="">-- Pengujian Audit Internal Bebas --</option>
-                         <option v-for="g in mockGrns" :value="g.id">{{ g.code }} (Bongkar Muat Gudang)</option>
-                      </select>
-                    </div>
-                    <div class="space-y-1">
-                      <label class="text-[10px] font-bold text-slate-500">Petugas QA (Auditor/Inspector)</label>
-                      <div class="w-full border rounded p-2 text-xs font-bold text-cyan-800 bg-cyan-50 border-cyan-200 shadow-inner relative flex items-center">
-                         <i class="pi pi-user text-cyan-600/50 absolute left-2"></i>
-                         <input :disabled="isReadonly" type="text" v-model="form.inspectorName" class="w-full pl-6 bg-transparent outline-none font-sans" placeholder="Nama Petugas Lab/Pemeriksa..." />
-                      </div>
-                    </div>
-                    <div class="col-span-2 space-y-1">
-                      <label class="text-[10px] font-bold text-slate-500">Arahan / Prosedur Standar (SOP)</label>
-                      <textarea :disabled="isReadonly" v-model="form.notes" rows="2" class="w-full rounded border p-2 text-xs bg-slate-50 outline-none focus:border-cyan-500" placeholder="Timbang kadar air, cek bungkusan secara visual..."></textarea>
-                    </div>
-                 </div>
-              </div>
-
-              <!-- Time Status -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center items-center relative overflow-hidden group border-b-4 border-b-cyan-500">
-                 <div class="absolute opacity-5 group-hover:scale-110 transition-transform duration-700">
-                    <i class="pi pi-stopwatch text-9xl text-slate-800"></i>
-                 </div>
-                 <div class="text-[10px] font-black uppercase text-slate-400 tracking-wider mb-2 relative z-10 w-full text-left">Waktu Pengambilan Sampel</div>
-                 <input :disabled="isReadonly" type="date" v-model="form.inspectionDate" class="w-full border-0 border-b-2 font-black text-xl text-center text-slate-800 py-2 outline-none relative z-10 bg-transparent disabled:opacity-100" />
-                 <div class="text-[9px] text-slate-400 mt-3 text-center relative z-10 leading-tight">Digunakan agar *Ledger* Bin ter-update per hari ini.</div>
-              </div>
-           </div>
-
-           <!-- Pengecekan Kualitas -->
-           <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
-               <div class="flex items-center justify-between p-4 bg-slate-50 border-b">
-                 <div class="text-xs font-black text-slate-800 uppercase tracking-widest"><i class="pi pi-flask mr-2 text-cyan-600"></i> Lembar Laboratorium Pencocokan Kuantitas Reject</div>
-                 <Button v-if="!isReadonly" label="Tambah Baris Uji" icon="pi pi-plus" size="small" bg="bg-white" class="h-8 shadow-sm text-cyan-700 text-[10px] border-slate-200" @click="addLine" />
-               </div>
-               <div class="overflow-x-auto">
-                 <table class="w-full text-sm">
-                   <thead class="bg-white text-left text-[9px] text-slate-400 border-b uppercase tracking-wider">
-                     <tr>
-                       <th class="px-3 py-3 font-semibold text-center w-8">No</th>
-                       <th class="px-3 py-3 font-semibold w-56">Item / SKU Teraudit (Target)</th>
-                       <th class="px-3 py-3 font-semibold text-center border-l w-24 bg-slate-50" title="Jumlah Barang yang Diambil Sebagai Subjek Tes">Besaran Sampel<br><span class="text-[8px] normal-case truncate">(Sample Qty)</span></th>
-                       <th class="px-3 py-3 font-semibold border-l w-28 bg-emerald-50/50 text-center" title="Bebas Cacat">Lolos Sertifikasi<br><span class="text-[8px] normal-case align-top truncate">(Passed Qty)</span></th>
-                       <th class="px-3 py-3 font-semibold border-l w-28 bg-rose-50/50 text-center" title="Dimusnahkan/Dikembalikan">Gagal / Cacat Lab<br><span class="text-[8px] normal-case align-top truncate">(Failed Qty)</span></th>
-                       <th class="px-3 py-3 font-semibold border-l bg-slate-50">Keterangan Reject / Diagnosa</th>
-                       <th v-if="!isReadonly" class="w-8"></th>
-                     </tr>
-                   </thead>
-                   <tbody class="divide-y relative">
-                      <tr v-for="(line, idx) in form.lines" :key="idx" class="transition-colors group hover:bg-slate-50" :class="Number(line.failedQty) > 0 ? 'bg-rose-50/20' : ''">
-                         <td class="px-3 py-4 align-top text-center font-mono text-xs text-slate-400 mt-1">{{ idx + 1 }}</td>
-                         <td class="px-3 py-4 align-top">
-                            <input :disabled="isReadonly" type="text" v-model="line.desc" class="w-full border-b border-dashed border-slate-300 py-0.5 text-xs font-bold text-slate-800 bg-transparent outline-none focus:border-cyan-500 placeholder-slate-300" placeholder="Ketik Identifikasi Stok Lab..." />
-                         </td>
-                         <td class="px-3 py-3 align-top text-center border-l bg-slate-50 font-mono">
-                             <input :disabled="isReadonly" type="number" v-model.number="line.sampleQty" @input="recalc(line)" class="w-full border rounded border-slate-300 px-1 py-1 text-center text-sm font-black text-slate-700 outline-none focus:border-cyan-500 shadow-inner" placeholder="0" />
-                         </td>
-                         <td class="px-3 py-3 align-top border-l bg-emerald-50/30 font-mono relative">
-                             <input :disabled="isReadonly" type="number" v-model.number="line.passedQty" @input="recalc(line, 'pass')" class="w-full border-b-2 border-emerald-300 px-1 py-1.5 text-center text-sm font-bold text-emerald-700 outline-none focus:border-emerald-500 bg-white shadow-sm rounded" placeholder="0" />
-                         </td>
-                         <td class="px-3 py-3 align-middle border-l bg-rose-50/30 font-mono relative">
-                            <input :disabled="isReadonly" type="number" v-model.number="line.failedQty" @input="recalc(line, 'fail')" class="w-full border-b-2 border-rose-300 px-1 py-1.5 text-center text-sm font-bold text-rose-700 outline-none focus:border-rose-500 bg-white shadow-sm rounded" placeholder="0" />
-                         </td>
-                         <td class="px-3 py-3 align-middle border-l relative">
-                            <input :disabled="isReadonly" type="text" v-model="line.defectReason" class="w-full border-b border-dashed border-slate-300 py-1 text-xs font-bold text-rose-800 outline-none bg-transparent placeholder-rose-200" placeholder="Biarkan kosong jika Passed." />
-                         </td>
-                         <td v-if="!isReadonly" class="px-2 py-4 align-middle border-l text-center">
-                             <button @click="removeLine(idx)" class="w-5 h-5 rounded bg-slate-200 text-slate-500 flex items-center justify-center font-black hover:bg-rose-500 hover:text-white transition-colors" title="Bongkar Kotak">✕</button>
-                         </td>
-                      </tr>
-                      <tr v-if="form.lines.length === 0">
-                         <td :colspan="isReadonly ? 6 : 7" class="p-6 text-center text-slate-400 text-xs italic">Meja laboratorium kosong. Tambahkan baris pengujian material.</td>
-                      </tr>
-                   </tbody>
-                 </table>
-               </div>
-           </div>
-           
-           <div v-if="!isReadonly" class="mt-4 p-4 rounded-xl border border-cyan-100 bg-cyan-50 shadow-inner flex gap-3 text-[10px] text-cyan-800 leading-relaxed font-bold">
-              <i class="pi pi-info-circle text-xl text-cyan-500 opacity-60"></i>
-              Fungsi Kalkulasi Otomatis (Auto-Math): Jumlah Total "Sample Qty" (Besaran Sampel) akan selalu menyeimbangkan rumus: (Passed Qty + Failed Qty). Jika Anda merubah salah satu nilai, sistem akan menyesuaikan sisanya demi menghindari manipulasi data lab!
-           </div>
-        </div>
-
-        <!-- Footer Actions -->
-        <div class="p-5 border-t border-slate-200 bg-white flex justify-between items-center shrink-0 rounded-b-xl z-20">
-          <Button label="Batalkan Analisa" severity="secondary" size="small" @click="dialogOpen = false" outlined class="bg-slate-50 border-slate-300 font-bold" />
-          <div class="flex items-center gap-2">
-             <Button v-if="isReadonly && canManage && form.status === 'DRAFT'" label="Audit: Kunci Stempel QA / QC (LULUS POSTING)" severity="info" size="large" :loading="saving" :disabled="saving" @click="save" class="bg-cyan-600 border-none text-white font-bold tracking-wide hover:bg-cyan-700 px-8 shadow-sm h-10 rounded-lg" icon="pi pi-check-square" />
-             <Button v-else-if="!isReadonly" label="Kompilasi Hasil (Simpan Draft)" severity="info" size="large" @click="dialogOpen = false" class="bg-cyan-600 border-none text-white font-bold h-10 px-8 rounded-lg" />
+          <div class="flex items-center gap-4">
+             <Button label="Batalkan Analisa (Batal)" severity="secondary" text @click="dialogOpen = false" class="px-8 h-12 font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 rounded-xl" />
+             <Button 
+                v-if="isReadonly && canManage && form.status === 'DRAFT'" 
+                label="Audit: Kunci Stempel QA / QC (LULUS POSTING)" 
+                icon="pi pi-check-square" 
+                size="large" 
+                :loading="saving" 
+                :disabled="saving" 
+                @click="save" 
+                class="h-14 px-12 bg-cyan-600 border-none text-white font-black text-[10px] uppercase shadow-2xl shadow-cyan-100 hover:scale-105 active:scale-95 transition-all rounded-xl" 
+             />
+             <Button 
+                v-else-if="!isReadonly" 
+                label="Kompilasi Hasil (Simpan Draft)" 
+                icon="pi pi-save" 
+                size="large" 
+                @click="dialogOpen = false" 
+                class="h-14 px-12 bg-slate-900 border-none text-white font-black text-[10px] uppercase shadow-2xl transition-all rounded-xl" 
+             />
           </div>
         </div>
       </div>
@@ -457,10 +584,50 @@ onMounted(() => {
 </script>
 
 <style scoped>
-select { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linecap='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 0.5rem center; background-size: 1em; padding-right: 2rem; }
-.animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.animate-fade-in-up { 
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes fadeInUp { 
+  from { opacity: 0; transform: translateY(30px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.animate-scale-in { 
+  animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+}
+
+@keyframes scaleIn { 
+  from { opacity: 0; transform: scale(0.95); } 
+  to { opacity: 1; transform: scale(1); } 
+}
+
+.custom-scrollbar::-webkit-scrollbar { 
+  width: 4px; 
+}
+.custom-scrollbar::-webkit-scrollbar-track { 
+  background: transparent; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+  background: #cbd5e1; 
+}
+
+:deep(.p-inputtext) {
+   border-color: #f1f5f9 !important;
+   box-shadow: none !important;
+   background-color: #f8fafc !important;
+   border-radius: 16px !important;
+}
+
+select { 
+  appearance: none; 
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); 
+  background-repeat: no-repeat; 
+  background-position: right 1rem center; 
+  background-size: 1em; 
 }
 </style>
