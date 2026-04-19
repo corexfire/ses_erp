@@ -16,7 +16,7 @@
         </div>
         <div class="flex items-center gap-3">
           <div class="flex flex-wrap items-center gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100 mr-2">
-             <button v-for="t in ['issues', 'receipts', 'qc']" :key="t" @click="activeTab = t"
+             <button v-for="t in (['issues', 'receipts', 'qc'] as const)" :key="t" @click="activeTab = t"
                :class="activeTab === t ? 'bg-white text-emerald-700 shadow-md scale-105 border-emerald-100' : 'bg-transparent text-slate-400 border-transparent hover:text-slate-600'"
                class="px-4 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all border outline-none">
                {{ t === 'issues' ? 'Bahan' : t === 'receipts' ? 'Produk' : 'QC' }}
@@ -251,7 +251,7 @@
 
     <!-- Execution Registry (Universal Centered Dialog) Style Alignment -->
     <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
-      <div class="w-[calc(100%-2rem)] max-w-7xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
+      <div class="w-[calc(100%-2rem)] max-w-7xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900 shadow-[0_0_50px_rgba(5,150,105,0.2)]">
         
         <!-- Registry Workspace Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
@@ -424,24 +424,12 @@
       </div>
     </div>
 
-    <!-- Universal Toast -->
-    <transition name="fade">
-      <div v-if="toastMsg" :class="toastType === 'error' ? 'bg-rose-900 border-rose-800' : 'bg-emerald-950 border-emerald-900'" class="fixed bottom-10 right-10 z-[200] flex items-center gap-4 rounded-2xl border-2 px-8 py-5 text-white shadow-2xl">
-        <div :class="toastType === 'error' ? 'bg-rose-500' : 'bg-emerald-500'" class="flex h-10 w-10 items-center justify-center rounded-xl">
-          <i :class="toastType === 'error' ? 'pi-times-circle' : 'pi-check-circle'" class="pi text-lg font-black" />
-        </div>
-        <div>
-          <p class="text-[10px] font-black uppercase tracking-widest opacity-60">Sistem Notifikasi Operasional</p>
-          <p class="text-xs font-black uppercase tracking-tight">{{ toastMsg }}</p>
-        </div>
-      </div>
-    </transition>
-
   </div>
 </template>
 
 <script setup lang="ts">
 const api = useApi();
+const { $toast, $swal } = useNuxtApp();
 
 // State
 const loading = ref(false);
@@ -455,8 +443,6 @@ const items = ref<any[]>([]);
 const searchQ = ref('');
 const dialogOpen = ref(false);
 const dialogError = ref<string | null>(null);
-const toastMsg = ref<string | null>(null);
-const toastType = ref<'success' | 'error'>('success');
 
 const form = reactive({
   code: '', workOrderId: '', date: new Date().toISOString().slice(0, 10),
@@ -501,11 +487,6 @@ const dispositionBadge = (d: string) => ({
   REJECTED: 'bg-rose-50 text-rose-700 border-rose-100', REWORK: 'bg-amber-50 text-amber-700 border-amber-100'
 }[d] || 'bg-slate-50 text-slate-500');
 
-const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
-  toastMsg.value = msg; toastType.value = type;
-  setTimeout(() => { toastMsg.value = null; }, 4000);
-};
-
 // Load
 const load = async () => {
   loading.value = true;
@@ -519,7 +500,7 @@ const load = async () => {
     receipts.value = rRes.data?.receipts ?? [];
     qcs.value = qRes.data?.qcs ?? [];
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal sinkronisasi data audit', 'error');
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal sinkronisasi data audit' });
   } finally {
     loading.value = false;
   }
@@ -578,7 +559,7 @@ const save = async () => {
           itemId: it.itemId, qty: parseFloat(it.qty) || 0, uomCode: it.uomCode || undefined
         })),
       });
-      showToast('Registrasi Pengeluaran Bahan Berhasil');
+      $toast.fire({ icon: 'success', title: 'Registrasi Pengeluaran Bahan Berhasil' });
     } else if (activeTab.value === 'receipts') {
       await api.post('/manufacturing/production/receipts', {
         code: form.code, workOrderId: form.workOrderId,
@@ -589,7 +570,7 @@ const save = async () => {
         batchNo: form.batchNo || undefined,
         shiftNo: form.shiftNo ? parseInt(form.shiftNo) : undefined,
       });
-      showToast('Registrasi Penerimaan Produk Berhasil');
+      $toast.fire({ icon: 'success', title: 'Registrasi Penerimaan Produk Berhasil' });
     } else {
       await api.post('/manufacturing/production/qc', {
         workOrderId: form.workOrderId,
@@ -600,12 +581,12 @@ const save = async () => {
         notes: form.notes || undefined,
         qcDate: form.date,
       });
-      showToast('Audit Kualitas Berhasil Direkam');
+      $toast.fire({ icon: 'success', title: 'Audit Kualitas Berhasil Direkam' });
     }
     dialogOpen.value = false;
     await load();
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal memproses registrasi', 'error');
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal memproses registrasi' });
   } finally {
     saving.value = false;
   }

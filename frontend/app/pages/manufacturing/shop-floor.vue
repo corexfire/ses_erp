@@ -33,7 +33,7 @@
       <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Pesanan Aktif (WIP)</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ stats[0].value }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ stats[0]?.value || 0 }}</h3>
           <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
             <i class="pi pi-bolt text-lg text-emerald-400"></i>
           </div>
@@ -43,7 +43,7 @@
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Operasi Dalam Antrean</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ stats[1].value }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ stats[1]?.value || 0 }}</h3>
           <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100 group-hover:rotate-12 transition-transform"><i class="pi pi-clock text-lg"></i></div>
         </div>
       </div>
@@ -51,7 +51,7 @@
       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Total Selesai (Shift)</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ stats[2].value }}</h3>
+          <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ stats[2]?.value || 0 }}</h3>
           <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 group-hover:rotate-12 transition-transform"><i class="pi pi-check-circle text-lg"></i></div>
         </div>
       </div>
@@ -60,7 +60,7 @@
         <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-emerald-100 tracking-[0.2em] mb-4 opacity-80">Rasio Reject</div>
         <div class="flex items-end justify-between">
-          <h3 class="text-xl font-black text-white tracking-tight leading-none uppercase">{{ stats[3].value }} <span class="text-emerald-300 italic text-sm">Low Rate</span></h3>
+          <h3 class="text-xl font-black text-white tracking-tight leading-none uppercase">{{ stats[3]?.value || '0%' }} <span class="text-emerald-300 italic text-sm">Low Rate</span></h3>
           <div class="p-3 bg-white/10 text-white rounded-xl border border-white/10 group-hover:rotate-12 transition-transform"><i class="pi pi-chart-bar text-lg"></i></div>
         </div>
       </div>
@@ -194,12 +194,19 @@
                    <div v-for="day in ganttTimeline" :key="'grid-'+day.id" class="flex-none w-[100px] border-r border-slate-50/50"></div>
                 </div>
 
+                 <!-- Today Line Indicator -->
+                 <div v-if="todayLinePosition >= 0" 
+                      class="absolute top-0 bottom-0 w-px bg-rose-500/50 z-20 pointer-events-none shadow-[0_0_10px_rgba(244,63,94,0.3)]"
+                      :style="{ left: todayLinePosition + 'px' }">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-rose-500 text-white text-[7px] font-black px-1.5 py-0.5 rounded-b-lg uppercase tracking-widest shadow-lg whitespace-nowrap">HARI INI</div>
+                 </div>
+
                 <!-- WO Bars -->
                 <div class="pt-0">
-                   <div v-for="wo in filteredWorkOrders" :key="'bar-'+wo.id" class="h-20 border-b border-slate-100/50 relative flex items-center">
+                   <div v-for="wo in filteredWorkOrders" :key="'bar-'+wo.id" class="h-20 border-b border-slate-100/50 relative flex items-center hover:bg-emerald-50/20 transition-colors">
                       <div @click="openDetails(wo)" 
                            :style="calculateGanttStyles(wo)"
-                           class="absolute h-10 rounded-xl bg-white border-2 border-slate-100 shadow-sm flex items-center px-4 cursor-pointer transition-all hover:border-emerald-500 hover:shadow-xl hover:scale-[1.02] group overflow-hidden">
+                           class="absolute h-10 rounded-xl bg-white border-2 border-slate-100 shadow-sm flex items-center px-4 cursor-pointer transition-all hover:border-emerald-500 hover:shadow-xl hover:scale-[1.02] group overflow-hidden z-20">
                          <div class="absolute inset-0 bg-gradient-to-r from-emerald-600/5 to-teal-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                          
                          <!-- Progress Overlay -->
@@ -268,7 +275,7 @@
               </td>
               <td class="px-6 py-6 border-l border-slate-50">
                 <div class="flex flex-wrap gap-2">
-                  <span v-for="wc in getWcsForWo(wo)" :key="wc" class="rounded-lg bg-emerald-50 px-3 py-1 text-[8px] font-black uppercase text-emerald-600 border border-emerald-100">{{ wc }}</span>
+                  <span v-for="wc in (getWcsForWo(wo) as string[])" :key="wc" class="rounded-lg bg-emerald-50 px-3 py-1 text-[8px] font-black uppercase text-emerald-600 border border-emerald-100">{{ wc }}</span>
                 </div>
               </td>
               <td class="px-6 py-6 border-l border-slate-50 text-center">
@@ -335,7 +342,7 @@
                           <div class="flex items-center justify-between">
                              <div class="flex items-center gap-6">
                                 <div class="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-[13px] font-black text-slate-300 group-hover/op:scale-110 group-hover/op:text-emerald-600 group-hover/op:border-emerald-200 transition-all shadow-sm">
-                                   {{ op.lineNo || (idx + 1) }}
+                                   {{ op.lineNo || (Number(idx) + 1) }}
                                 </div>
                                 <div>
                                    <div class="flex items-center gap-3 mb-1">
@@ -383,7 +390,7 @@
                              </div>
                           </div>
 
-                          <div v-if="idx < selectedWo.operations.length - 1" class="absolute left-10 -bottom-8 z-0 h-8 w-1 bg-emerald-50 group-hover/op:bg-emerald-100 transition-all"></div>
+                          <div v-if="Number(idx) < selectedWo.operations.length - 1" class="absolute left-10 -bottom-8 z-0 h-8 w-1 bg-emerald-50 group-hover/op:bg-emerald-100 transition-all"></div>
                        </div>
                     </div>
                  </div>
@@ -489,20 +496,6 @@
       </div>
     </transition>
 
-    <!-- Global Toast -->
-    <transition name="toast">
-      <div v-if="toastMsg" :class="toastMsg.includes('Berhasil') ? 'bg-emerald-950 border-emerald-900' : 'bg-rose-950 border-rose-900'" 
-           class="fixed bottom-10 left-1/2 z-[200] -translate-x-1/2 overflow-hidden rounded-2xl px-10 py-5 text-white shadow-3xl flex items-center gap-5 border-2 animate-fade-in-up backdrop-blur-md">
-        <div :class="toastMsg.includes('Berhasil') ? 'bg-emerald-500' : 'bg-rose-500'" class="h-10 w-10 flex items-center justify-center rounded-xl shadow-lg">
-           <i :class="toastMsg.includes('Berhasil') ? 'pi-check-circle' : 'pi-info-circle'" class="pi text-lg"></i>
-        </div>
-        <div class="flex flex-col">
-           <span class="text-[10px] font-black uppercase tracking-widest opacity-50">{{ toastMsg.includes('Berhasil') ? 'Sistem Terverifikasi' : 'Notifikasi Sistem' }}</span>
-           <span class="text-xs font-black uppercase tracking-tight">{{ toastMsg }}</span>
-        </div>
-      </div>
-    </transition>
-
   </div>
 </template>
 
@@ -510,13 +503,13 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 
 const api = useApi();
+const { $toast, $swal } = useNuxtApp();
 
 // View State
 const loading = ref(false);
 const viewMode = ref('board'); // board | grid | gantt
 const searchQuery = ref('');
 const filterWorkCenter = ref('');
-const toastMsg = ref('');
 
 // Data
 const workOrders = ref<any[]>([]);
@@ -571,9 +564,17 @@ const ganttTimeline = computed(() => {
   }
   return timeline;
 });
+const todayLinePosition = computed(() => {
+  if (ganttTimeline.value.length === 0 || !ganttTimeline.value[0]) return -1;
+  const now = new Date();
+  const start = ganttTimeline.value[0].date;
+  const diff = (now.getTime() - start.getTime()) / 86400000;
+  if (diff < 0 || diff > ganttTimeline.value.length) return -1;
+  return diff * 100;
+});
 
 const calculateGanttStyles = (wo: any) => {
-  if (ganttTimeline.value.length === 0) return {};
+  if (ganttTimeline.value.length === 0 || !ganttTimeline.value[0]) return {};
   
   const timelineStart = ganttTimeline.value[0].date.getTime();
   const woStart = wo.plannedStartDate ? new Date(wo.plannedStartDate).getTime() : new Date().getTime();
@@ -626,7 +627,7 @@ const load = async () => {
     const res = await api.get('/manufacturing/shop-floor');
     workOrders.value = res.data?.workOrders ?? [];
   } catch (e) {
-    showToast('Gagal memproses sinkronisasi data');
+    $toast.fire({ icon: 'error', title: 'Gagal memproses sinkronisasi data' });
   } finally {
     loading.value = false;
   }
@@ -638,7 +639,7 @@ const openDetails = async (wo: any) => {
     selectedWo.value = res.data?.workOrder;
     detailOpen.value = true;
   } catch (e) {
-    showToast('Gagal memuat registrasi detail');
+    $toast.fire({ icon: 'error', title: 'Gagal memuat registrasi detail' });
   }
 };
 
@@ -659,11 +660,11 @@ const toggleOperation = async (op: any) => {
         workOrderId: selectedWo.value.id,
         operationId: op.id
       });
-      showToast(`Aktivasi Operasi: ${op.description.toUpperCase()} BERHASIL`);
+      $toast.fire({ icon: 'success', title: `Aktivasi Operasi: ${op.description.toUpperCase()} BERHASIL` });
       await openDetails(selectedWo.value);
       await load();
     } catch (e: any) {
-      showToast(e.response?.data?.message || 'Gagal memulai operasi');
+      $toast.fire({ icon: 'error', title: e.response?.data?.message || 'Gagal memulai operasi' });
     }
   }
 };
@@ -707,12 +708,12 @@ const submitReport = async () => {
       });
     }
     
-    showToast('Laporan Progres Operasi Berhasil Direkam');
+    $toast.fire({ icon: 'success', title: 'Laporan Progres Operasi Berhasil Direkam' });
     closeReport();
     await openDetails(selectedWo.value);
     await load();
   } catch (e: any) {
-    showToast(e.response?.data?.message || 'Registrasi laporan gagal');
+    $toast.fire({ icon: 'error', title: e.response?.data?.message || 'Registrasi laporan gagal' });
   }
 };
 
@@ -737,11 +738,6 @@ const isActive = (wo: any) => {
 
 const isActiveOp = (op: any) => {
   return selectedWo.value?.shopFloorTimers?.some((t: any) => t.operationId === op.id);
-};
-
-const showToast = (msg: string) => {
-  toastMsg.value = msg;
-  setTimeout(() => toastMsg.value = '', 4000);
 };
 
 const fmtDate = (v: any) => v ? new Date(v).toLocaleDateString('id-ID', { day:'2-digit', month:'2-digit', year:'numeric' }) : '-';

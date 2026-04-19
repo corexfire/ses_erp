@@ -456,7 +456,7 @@ function openCreate() {
   form.orderCode = '';
   form.receiptId = '';
   form.notes = '';
-  form.costDate = new Date().toISOString().split('T')[0];
+  form.costDate = new Date().toISOString().slice(0, 10);
   form.apportionmentMethod = 'Amount';
   form.lines = [];
   dialogOpen.value = true;

@@ -199,7 +199,7 @@
 
     <!-- Execution Registry (Universal Centered Dialog) Style Alignment -->
     <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
-      <div class="w-[calc(100%-2rem)] max-w-7xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
+      <div class="w-[calc(100%-2rem)] max-w-7xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900 shadow-[0_0_50px_rgba(5,150,105,0.2)]">
         
         <!-- Registry Workspace Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
@@ -468,24 +468,12 @@
       </div>
     </transition>
 
-    <!-- Universal Toast -->
-    <transition name="fade">
-      <div v-if="toastMsg" :class="toastType === 'error' ? 'bg-rose-900 border-rose-800' : 'bg-emerald-950 border-emerald-900'" class="fixed bottom-10 right-10 z-[200] flex items-center gap-4 rounded-2xl border-2 px-8 py-5 text-white shadow-2xl">
-        <div :class="toastType === 'error' ? 'bg-rose-500' : 'bg-emerald-500'" class="flex h-10 w-10 items-center justify-center rounded-xl">
-          <i :class="toastType === 'error' ? 'pi-times-circle' : 'pi-check-circle'" class="pi text-lg font-black" />
-        </div>
-        <div>
-          <p class="text-[10px] font-black uppercase tracking-widest opacity-60">Sistem Notifikasi Operasional</p>
-          <p class="text-xs font-black uppercase tracking-tight">{{ toastMsg }}</p>
-        </div>
-      </div>
-    </transition>
-
   </div>
 </template>
 
 <script setup lang="ts">
 const api = useApi();
+const { $toast, $swal } = useNuxtApp();
 
 // State
 const loading = ref(false);
@@ -497,8 +485,6 @@ const q = ref('');
 const statusFilter = ref('');
 const dialogOpen = ref(false);
 const editingId = ref<string | null>(null);
-const toastMsg = ref<string | null>(null);
-const toastType = ref<'success' | 'error'>('success');
 
 // Complete dialog
 const completeDialogOpen = ref(false);
@@ -566,11 +552,6 @@ const statusDot = (s: string) => ({
   COMPLETED: 'bg-emerald-400', CANCELED: 'bg-rose-500'
 }[s] || 'bg-slate-400');
 
-const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
-  toastMsg.value = msg; toastType.value = type;
-  setTimeout(() => { toastMsg.value = null; }, 4000);
-};
-
 const filterByStatus = (val: string) => { statusFilter.value = val; };
 
 // Data loading
@@ -580,7 +561,7 @@ const load = async () => {
     const res = await api.get('/manufacturing/work-orders');
     workOrders.value = res.data?.workOrders ?? [];
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal sinkronisasi data audit', 'error');
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal sinkronisasi data audit' });
   } finally {
     loading.value = false;
   }
@@ -666,15 +647,15 @@ const save = async () => {
     };
     if (editingId.value) {
       await api.patch(`/manufacturing/work-orders/${editingId.value}`, payload);
-      showToast('Perintah Kerja Berhasil Diperbarui');
+      $toast.fire({ icon: 'success', title: 'Perintah Kerja Berhasil Diperbarui' });
     } else {
       await api.post('/manufacturing/work-orders', payload);
-      showToast('Registrasi Perintah Kerja Baru Berhasil');
+      $toast.fire({ icon: 'success', title: 'Registrasi Perintah Kerja Baru Berhasil' });
     }
     dialogOpen.value = false;
     await load();
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal memproses registrasi', 'error');
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal memproses registrasi' });
   } finally {
     saving.value = false;
   }
@@ -683,10 +664,10 @@ const save = async () => {
 const release = async (wo: any) => {
   try {
     await api.patch(`/manufacturing/work-orders/${wo.id}/release`);
-    showToast(`WO ${wo.code} Berhasil Dirilis ke Produksi`);
+    $toast.fire({ icon: 'success', title: `WO ${wo.code} Berhasil Dirilis ke Produksi` });
     await load();
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal merilis WO', 'error');
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal merilis WO' });
   }
 };
 
@@ -705,11 +686,11 @@ const doComplete = async () => {
     await api.patch(`/manufacturing/work-orders/${completingWo.value.id}/complete`, {
       qtyProduced: parseFloat(completeForm.qtyProduced) || 0,
     });
-    showToast(`Audit Selesai: WO ${completingWo.value.code} Telah Diposting!`);
+    $toast.fire({ icon: 'success', title: `Audit Selesai: WO ${completingWo.value.code} Telah Diposting!` });
     completeDialogOpen.value = false;
     await load();
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal posting penyelesaian', 'error');
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal posting penyelesaian' });
   } finally {
     saving.value = false;
   }

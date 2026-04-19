@@ -1,98 +1,156 @@
 <template>
   <div class="space-y-4">
-    <!-- Header Page -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm border-l-4 border-l-indigo-600">
-      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <div>
-          <div class="text-sm font-black text-slate-800 uppercase tracking-wide">Journal Entries (Buku Jurnal Umum)</div>
-          <div class="mt-1 text-xs text-slate-500">
-            Pencatatan transaksi akuntansi berpasangan (double-entry), penyesuaian, penyusutan, dan akrual.
-          </div>
+    <!-- ═══════════════════════════════════ HEADER (Premium Accounting Engine) ══════════════════════════════════ -->
+    <div v-if="success" class="mx-6 mt-6 bg-emerald-50 text-emerald-700 p-4 rounded-2xl border border-emerald-200 text-sm font-black flex items-center gap-3 animate-fade-in-up">
+      <i class="pi pi-check-circle text-xl"></i> {{ success }}
+    </div>
+    <div v-if="error" class="mx-6 mt-6 bg-rose-50 text-rose-700 p-4 rounded-2xl border border-rose-200 text-sm font-black flex items-center gap-3 animate-fade-in-up">
+      <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100/50"></div>
+      
+      <div class="relative">
+        <div class="flex items-center gap-3 mb-2">
+           <span class="px-3 py-1 bg-indigo-800 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-indigo-100">Inti Akuntansi & Buku Besar</span>
+           <span class="text-slate-300">/</span>
+           <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">General Ledger Journal Matrix</span>
         </div>
-        <div class="flex gap-2">
-           <Button label="+ Penjurnalan Baru" size="small" bg="bg-indigo-600" class="text-white font-bold border-none shrink-0 cursor-pointer shadow-sm hover:bg-indigo-700" icon="pi pi-book" @click="openCreate" />
-        </div>
+        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Buku <span class="text-indigo-600 italic font-medium">Jurnal Umum</span></h1>
+        <p class="text-slate-500 text-sm font-medium max-w-2xl leading-relaxed mt-3 uppercase tracking-tight opacity-70">Pusat dokumentasi transaksi akuntansi berpasangan (*Double-Entry*), penyesuaian fiskal, penyusutan, dan pengakuan akrual periodik.</p>
+      </div>
+
+      <div class="flex items-center gap-3 relative">
+        <Button label="PENJURNALAN BARU" icon="pi pi-book" severity="primary" @click="openCreate"
+          class="h-14 px-8 rounded-[1.25rem] bg-indigo-800 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-indigo-100 hover:scale-[1.05] active:scale-95 transition-all" />
       </div>
     </div>
 
-    <!-- Filter & Table Section -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-4 bg-slate-50 p-2 rounded-lg border border-slate-100">
-        <div class="flex items-center gap-2 w-full md:w-auto">
-          <InputText v-model="search" placeholder="Cari Dokumen / Jurnal..." class="w-full md:w-56 text-xs bg-white" />
-          <select v-model="status" class="h-9 rounded-md border px-3 text-xs bg-white text-slate-700 outline-none focus:border-indigo-500">
+    <!-- Main Double-Entry Matrix (High-Density Grid) -->
+    <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up">
+      
+      <!-- Ledger Control Bar -->
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-200/20 rounded-full blur-3xl"></div>
+        
+        <div class="relative flex items-center gap-4">
+           <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-white shadow-xl transition-transform hover:rotate-6 shadow-slate-200"><i class="pi pi-book text-xl"></i></div>
+           <div>
+              <h3 class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em] leading-none mb-1">Log Jurnal Umum & Mutasi Saldo</h3>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono italic">Central Financial Ledger Record</p>
+           </div>
+        </div>
+
+        <div class="relative flex items-center gap-4">
+          <div class="flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm p-1">
+            <i class="pi pi-search px-3 text-slate-300 text-xs"></i>
+            <InputText v-model="search" placeholder="Cari Dokumen / Jurnal..." class="border-none bg-transparent text-[10px] h-9 w-48 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" @keyup.enter="load" />
+          </div>
+
+          <select v-model="status" class="h-11 rounded-2xl border-slate-200 px-4 text-[9px] font-black uppercase tracking-widest text-slate-600 focus:border-indigo-500 outline-none bg-white shadow-sm transition-all" @change="load">
             <option value="">Semua Status</option>
-            <option value="DRAFT">DRAFT</option>
-            <option value="POSTED">POSTED</option>
+            <option value="DRAFT">DRAFT (Belum Posting)</option>
+            <option value="POSTED">POSTED (Sudah Posting)</option>
           </select>
-          <Button label="Muat Ulang" severity="secondary" size="small" @click="load" class="h-9" icon="pi pi-refresh" />
+
+          <div class="h-11 bg-white rounded-2xl border border-slate-200 p-1 flex items-center shadow-sm">
+             <button @click="setQuickFilter('this-month')" :class="quickFilter === 'this-month' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-indigo-600'" 
+               class="px-4 h-full rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">Bulan Ini</button>
+             <button @click="setQuickFilter('last-month')" :class="quickFilter === 'last-month' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-indigo-600'" 
+               class="px-4 h-full rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">Bulan Lalu</button>
+             <button v-if="quickFilter" @click="setQuickFilter('')" class="px-3 text-rose-500 hover:scale-110 transition-transform"><i class="pi pi-times-circle"></i></button>
+          </div>
+          
+          <Button icon="pi pi-filter" severity="secondary" text rounded class="h-10 w-10 text-slate-400 hover:text-indigo-600 bg-white border shadow-sm" />
         </div>
       </div>
 
-      <div class="overflow-x-auto rounded-lg border border-slate-200">
-        <table class="w-full text-sm">
-          <thead class="bg-indigo-50/50 text-left text-[11px] text-indigo-900 border-b border-indigo-100 uppercase tracking-wider font-bold">
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-sm font-medium">
+          <thead class="bg-white text-left font-bold border-b border-slate-50 text-slate-900 uppercase">
             <tr>
-              <th class="px-4 py-3">No Jurnal / Tipe</th>
-              <th class="px-4 py-3 border-l text-center">Tanggal Dokumen</th>
-              <th class="px-4 py-3 border-l">Keterangan / Referensi</th>
-              <th class="px-4 py-3 text-right bg-slate-50 border-l">Total Debit (IDR)</th>
-              <th class="px-4 py-3 text-right bg-slate-50">Total Kredit (IDR)</th>
-              <th class="px-4 py-3 text-center border-l">Status</th>
-              <th class="px-4 py-3 text-center border-l w-20">Aksi</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[280px]">Nomor Jurnal & Tipe</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center">Tanggal Dokumen</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50">Keterangan / Referensi</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-right bg-slate-50/50">Debit (IDR)</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-right bg-slate-50/50">Kredit (IDR)</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center">Status Jurnal</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-40 border-l border-slate-50">Opsi</th>
             </tr>
           </thead>
-          <tbody class="divide-y relative text-[12px]">
+          <tbody class="divide-y divide-slate-50">
             <tr v-if="loading">
-              <td colspan="7" class="px-4 py-16 text-center text-sm text-slate-500">
-                <i class="pi pi-spinner pi-spin mr-2 text-indigo-500"></i> Memuat Buku Jurnal...
+              <td colspan="7" class="py-24 text-center">
+                <i class="pi pi-spinner pi-spin text-4xl text-indigo-500 opacity-20"></i>
+                <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-indigo-600">Menganalisis buku besar jurnal...</div>
               </td>
             </tr>
-            <tr v-for="e in filteredEntries" v-else :key="e.id" class="transition hover:bg-slate-50 group">
-              <!-- No Jurnal -->
-              <td class="px-4 py-3 align-middle">
-                 <div class="font-mono font-black text-indigo-700 tracking-wider">{{ e.entryNo }}</div>
-                 <div class="mt-1 flex items-center gap-1"><span class="bg-slate-100 text-[9px] px-1.5 py-0.5 rounded font-bold text-slate-500 uppercase">{{ e.journalType || 'GENERAL' }}</span></div>
+            
+            <tr v-for="e in filteredEntries" v-else :key="e.id" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent hover:border-l-indigo-400">
+              <td class="px-8 py-6 align-middle">
+                <div class="flex items-center gap-4">
+                   <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
+                      <i class="pi pi-book text-lg"></i>
+                   </div>
+                   <div>
+                      <div class="font-mono text-[11px] font-black text-indigo-700 tracking-tight group-hover:text-indigo-900 transition-colors uppercase">
+                         {{ e.entryNo }}
+                      </div>
+                      <div class="mt-1 flex items-center gap-2">
+                        <div class="h-1.5 w-1.5 rounded-full bg-indigo-400"></div>
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest truncate max-w-[140px] italic">{{ e.journalType || 'GENERAL' }}</span>
+                      </div>
+                   </div>
+                </div>
               </td>
               
-              <!-- Tanggal -->
-              <td class="px-4 py-3 align-middle text-center border-l font-medium text-slate-700 flex flex-col items-center">
-                 <i class="pi pi-calendar text-[10px] text-slate-400 mb-0.5"></i>
-                 {{ fmtDate(e.entryDate) }}
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50">
+                 <div class="text-[11px] font-black text-slate-700 tracking-tighter">{{ fmtDate(e.entryDate) }}</div>
+                 <div class="text-[8px] font-black text-slate-300 uppercase mt-1 tracking-widest">Post Date</div>
               </td>
 
-              <!-- Keterangan -->
-              <td class="px-4 py-3 align-middle border-l">
-                 <div class="font-black text-slate-700 text-xs line-clamp-2 max-w-sm">{{ e.description ?? '- Tanpa Deskripsi -' }}</div>
-                 <div class="text-[10px] text-slate-400 mt-1 uppercase font-semibold"><i class="pi pi-link text-[9px]"></i> Ref: {{ e.referenceNo || 'N/A' }}</div>
-              </td>
-
-              <!-- Debit -->
-              <td class="px-4 py-3 align-middle border-l text-right bg-slate-50/50">
-                 <div class="font-mono font-black text-slate-800 tracking-tighter">{{ formatRupiah(e.totalDebit) }}</div>
-              </td>
-              
-              <!-- Kredit -->
-              <td class="px-4 py-3 align-middle text-right bg-slate-50/50">
-                 <div class="font-mono font-black text-slate-800 tracking-tighter">{{ formatRupiah(e.totalCredit) }}</div>
-              </td>
-
-              <!-- Status -->
-              <td class="px-4 py-3 align-middle text-center border-l">
-                 <div :class="e.status === 'POSTED' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-amber-100 text-amber-800 border-amber-200'" class="px-2 py-1 rounded-md text-[10px] font-black tracking-widest border inline-block">
-                    <i :class="e.status === 'POSTED' ? 'pi pi-check-circle' : 'pi pi-clock'" class="mr-1 text-[9px]"></i>{{ e.status }}
+              <td class="px-6 py-6 align-middle border-l border-slate-50">
+                 <div class="text-[11px] font-black text-slate-800 uppercase tracking-tight line-clamp-1 group-hover:text-indigo-600 transition-colors">{{ e.description ?? '- Tanpa Deskripsi -' }}</div>
+                 <div class="mt-1.5 flex items-center gap-2">
+                    <i class="pi pi-link text-[9px] text-slate-300"></i>
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">REF: {{ e.referenceNo || 'N/A' }}</span>
                  </div>
               </td>
 
-              <!-- Action -->
-              <td class="px-4 py-3 align-middle text-center border-l">
-                <Button v-if="e.status === 'DRAFT'" icon="pi pi-upload" label="POST" size="small" outlined severity="info" class="text-[10px] bg-white h-7 px-2" @click="post(e)" />
-                <Button v-else icon="pi pi-search" severity="secondary" text rounded aria-label="Lihat Data" />
+              <td class="px-6 py-6 align-middle border-l border-slate-50 text-right bg-slate-50/50 group-hover:bg-slate-100/50 transition-colors">
+                 <div class="font-black text-slate-800 text-sm tabular-nums tracking-tighter">{{ formatRupiah(e.totalDebit) }}</div>
+                 <div class="text-[8px] font-black text-emerald-600/40 font-mono mt-0.5 uppercase tracking-widest">Debit Entry</div>
+              </td>
+
+              <td class="px-6 py-6 align-middle border-l border-slate-50 text-right bg-slate-50/50 group-hover:bg-slate-100/50 transition-colors">
+                 <div class="font-black text-slate-800 text-sm tabular-nums tracking-tighter">{{ formatRupiah(e.totalCredit) }}</div>
+                 <div class="text-[8px] font-black text-rose-600/40 font-mono mt-0.5 uppercase tracking-widest">Credit Entry</div>
+              </td>
+
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50">
+                 <span :class="[
+                   'inline-flex rounded-full px-4 py-1.5 text-[8px] font-black tracking-[0.2em] border shadow-sm uppercase group-hover:scale-105 transition-all outline-none',
+                   e.status === 'POSTED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'
+                 ]">
+                    <i :class="e.status === 'POSTED' ? 'pi pi-check-circle' : 'pi pi-clock'" class="mr-1.5"></i>
+                    {{ e.status }}
+                 </span>
+              </td>
+              
+              <td class="px-8 py-6 align-middle text-right border-l border-slate-50">
+                <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
+                  <Button v-if="e.status === 'DRAFT'" label="POSTING" icon="pi pi-upload" severity="info" size="small" rounded @click="post(e)"
+                    class="h-10 px-4 bg-indigo-600 border-none text-white font-black text-[9px] uppercase shadow-lg shadow-indigo-100" />
+                  <Button v-else icon="pi pi-search" rounded text class="h-10 w-10 text-slate-400 hover:text-indigo-600" />
+                </div>
               </td>
             </tr>
+
             <tr v-if="!loading && filteredEntries.length === 0">
-              <td colspan="7" class="px-4 py-16 text-center text-slate-400 border-t italic">
-                Cakupan Jurnal Akuntansi Tidak Tersedia (Empty Record).
+              <td colspan="7" class="py-32 text-center text-slate-500">
+                 <div class="text-6xl mb-4 opacity-10">📖</div>
+                 <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Buku jurnal masih bersih. Tidak ada transaksi ditemukan.</div>
               </td>
             </tr>
           </tbody>
@@ -100,113 +158,152 @@
       </div>
     </div>
 
-    <!-- Create Dialog Form -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-2 sm:p-4 backdrop-blur-sm shadow-xl">
-      <div class="w-full max-w-5xl rounded-xl border bg-white shadow-2xl flex flex-col max-h-[90vh] animate-fade-in-up">
-        
-        <div class="p-5 border-b bg-indigo-900 border-indigo-950 relative overflow-hidden flex justify-between items-start shadow-sm rounded-t-xl">
-          <div class="absolute -right-5 -top-10 opacity-10"><i class="pi pi-book text-[150px] text-white"></i></div>
-          <div class="z-10 w-full pr-8">
-             <div class="text-lg font-black text-white tracking-tight flex items-center gap-3">
-                 Pembuatan Dokumen Jurnal Penyesuaian / Umum (JV)
-             </div>
+    <!-- ═══════════════════════════════════ CREATE JOURNAL ENTRY DIALOG ══════════════════════════════════ -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="relative w-full max-w-6xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-slate-900">
+        <!-- Header -->
+        <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
+          <div class="relative flex items-center gap-6">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-slate-800 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-slate-200">
+               <i class="pi pi-book text-3xl font-black"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-3">
+                 <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase">Pembuatan <span class="text-indigo-600 italic text-2xl">Jurnal Umum</span></h3>
+                 <span v-if="form.journalType" class="inline-flex rounded-xl px-4 py-1.5 text-[9px] font-black tracking-[0.2em] bg-slate-100 text-slate-700 border border-slate-200 uppercase shadow-sm italic">{{ form.journalType }}</span>
+              </div>
+              <p class="text-[10px] font-black text-slate-400 font-mono uppercase tracking-[0.2em] mt-3 px-1 border-l-2 border-indigo-500 italic">Double-Entry Financial Integrity Protocol</p>
+            </div>
           </div>
-          <button class="text-white/50 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded text-lg font-bold flex items-center justify-center transition-colors z-20 shrink-0 shadow" @click="dialogOpen = false">✕</button>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="dialogOpen = false" class="relative z-10 hover:bg-slate-50 h-12 w-12" />
         </div>
 
-        <div class="px-5 py-4 bg-slate-50 flex-1 overflow-auto space-y-4">
-           <!-- Header Fields -->
-           <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white p-4 rounded-lg border border-slate-200 shadow-sm">
-             <div>
-                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Tipe Jurnal</label>
-                <select v-model="form.journalType" class="w-full border rounded px-3 py-2 text-xs font-bold text-slate-700 bg-slate-50 outline-none focus:border-indigo-500">
-                  <option value="GENERAL">Jurnal Umum (General)</option>
-                  <option value="ADJUSTMENT">Penyesuaian (Adjustment)</option>
-                  <option value="ACCRUAL">Akrual (Accrual)</option>
-                  <option value="DEPRECIATION">Penyusutan Aset (Depreciation)</option>
-                  <option value="RECLASS">Reklasifikasi (Reclass)</option>
-                </select>
-             </div>
-             <div>
-                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Nomor Referensi (Bukti Asli)</label>
-                <input type="text" v-model="form.referenceNo" class="w-full border rounded px-3 py-2 text-xs font-bold font-mono text-slate-800 outline-none focus:border-indigo-500" placeholder="Ex: JV-01-XX" />
-             </div>
-             <div>
-                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Tanggal Bukti (Document Date)</label>
-                <input type="date" v-model="form.entryDate" class="w-full border rounded px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:border-indigo-500 cursor-pointer bg-slate-50" />
-             </div>
-             <div>
-                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Uraian / Deskripsi Jurnal</label>
-                <input type="text" v-model="form.description" class="w-full border rounded px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:border-indigo-500" placeholder="Rincian dokumen..." />
-             </div>
-           </div>
+        <div class="flex-1 overflow-y-auto p-10 space-y-12 custom-scrollbar bg-slate-50/30 pb-32">
+          <!-- Sec 1: Journal Identity -->
+          <div class="space-y-8">
+            <div class="flex items-center gap-4">
+               <div class="w-10 h-10 rounded-2xl bg-slate-800 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-slate-200">1</div>
+               <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-indigo-400">Identitas & Referensi Dokumen</h4>
+            </div>
+            
+            <div class="p-8 bg-white border border-slate-100 rounded-[2.5rem] shadow-sm space-y-8">
+               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tipe Penjurnalan</label>
+                    <select v-model="form.journalType" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-100 text-sm font-black text-slate-800 outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm">
+                       <option value="GENERAL">Jurnal Umum (GENERAL)</option>
+                       <option value="ADJUSTMENT">Penyesuaian (ADJUSTMENT)</option>
+                       <option value="ACCRUAL">Akrual (ACCRUAL)</option>
+                       <option value="DEPRECIATION">Penyusutan Aset (DEPRECIATION)</option>
+                    </select>
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Nomor Referensi (Bukti)</label>
+                    <input type="text" v-model="form.referenceNo" placeholder="No. Dokumen Asli" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-50 text-sm font-black text-slate-800 outline-none focus:border-indigo-500 focus:bg-white transition-all font-mono" />
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tanggal Transaksi</label>
+                    <input type="date" v-model="form.entryDate" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-50 text-sm font-black text-slate-700 outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm" />
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 italic">Uraian Utama Jurnal</label>
+                    <input type="text" v-model="form.description" placeholder="Deskripsi ringkas..." class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-50 text-sm font-black text-slate-800 outline-none focus:border-indigo-500 focus:bg-white transition-all shadow-sm" />
+                  </div>
+               </div>
+            </div>
+          </div>
 
-           <!-- GL Lines (Double Entry Tracker) -->
-           <div class="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-sm">
-             <div class="px-4 py-2 bg-slate-100 border-b flex justify-between items-center">
-                <span class="text-xs font-bold text-slate-600 uppercase tracking-widest flex items-center gap-2"><i class="pi pi-directions"></i> Distrubusi Garis Akun (GL Lines)</span>
-                <Button label="Tambah Akun (Baris)" icon="pi pi-plus" size="small" text outlined class="h-7 text-[10px] bg-white border-slate-300" @click="addLine" />
-             </div>
-             <div class="overflow-x-auto">
-               <table class="w-full text-xs">
-                 <thead class="bg-indigo-50/20 text-slate-500 border-b">
-                   <tr>
-                     <th class="px-3 py-2 text-left font-bold w-40">Account Code</th>
-                     <th class="px-3 py-2 text-left font-bold">Keterangan Baris (Opsional)</th>
-                     <th class="px-3 py-2 text-left font-bold w-48 border-l">Cost Center</th>
-                     <th class="px-3 py-2 text-right font-bold w-36 border-l">Debit (Rp)</th>
-                     <th class="px-3 py-2 text-right font-bold w-36 border-l">Credit (Rp)</th>
-                     <th class="px-3 py-2 w-10 border-l">X</th>
-                   </tr>
-                 </thead>
-                 <tbody class="divide-y text-slate-700 font-medium">
-                   <tr v-for="(l, idx) in form.lines" :key="idx" class="hover:bg-slate-50 transition-colors">
-                     <td class="p-2"><input type="text" v-model="l.accountCode" class="w-full border rounded px-2 py-1.5 focus:border-indigo-500 font-mono tracking-widest text-indigo-700 bg-indigo-50/50" placeholder="Ex: 5110" /></td>
-                     <td class="p-2"><input type="text" v-model="l.description" class="w-full border-b px-2 py-1.5 focus:border-indigo-500 bg-transparent outline-none" placeholder="Uraian garis.." /></td>
-                     <td class="p-2 border-l">
-                         <select v-model="l.costCenterId" class="w-full border rounded px-1 py-1.5 focus:border-indigo-500 outline-none bg-slate-50 text-[10px]">
-                            <option value="">-- Non-CC --</option>
-                            <option v-for="c in costCenters" :key="c.id" :value="c.id" class="text-slate-800">[{{ c.code }}] {{ c.name }}</option>
-                         </select>
-                     </td>
-                     <td class="p-2 border-l bg-emerald-50/30"><input type="number" v-model.number="l.debit"  @input="() => { if(l.debit > 0) l.credit = 0 }" class="w-full border rounded px-2 py-1.5 text-right font-mono font-bold text-slate-800 focus:border-emerald-500 outline-none" min="0" /></td>
-                     <td class="p-2 border-l bg-amber-50/30"> <input type="number" v-model.number="l.credit" @input="() => { if(l.credit > 0) l.debit = 0 }" class="w-full border rounded px-2 py-1.5 text-right font-mono font-bold text-slate-800 focus:border-amber-500 outline-none" min="0" /></td>
-                     <td class="p-2 text-center border-l"><Button icon="pi pi-trash" severity="danger" size="small" text class="h-6 w-6 p-0 text-[10px]" @click="removeLine(idx)" /></td>
-                   </tr>
-                 </tbody>
-               </table>
-             </div>
-           </div>
-        </div>
-
-        <!-- Balance Indicator & Footer -->
-        <div class="px-5 py-4 border-t bg-white rounded-b-xl flex justify-between items-center z-20">
-            <div class="flex items-center gap-6">
-                <!-- Check Balance -->
-                 <div class="px-4 py-2 rounded border bg-slate-50 flex items-center gap-3">
-                     <span class="text-[10px] font-bold uppercase text-slate-400">Neraca Percobaan</span>
-                     <div class="h-8 border-l border-slate-300"></div>
-                     <div class="text-right">
-                         <div class="text-[9px] text-slate-400 font-bold uppercase">Total Debit</div>
-                         <div class="font-mono font-black text-sm text-slate-700 tracking-tighter">{{ formatRupiah(totalDebit) }}</div>
-                     </div>
-                     <div class="text-right">
-                         <div class="text-[9px] text-slate-400 font-bold uppercase">Total Kredit</div>
-                         <div class="font-mono font-black text-sm text-slate-700 tracking-tighter">{{ formatRupiah(totalCredit) }}</div>
-                     </div>
-                     <div class="ml-2 pl-3 border-l border-slate-200">
-                        <span v-if="isValidBalance" class="text-xs font-black text-emerald-600 uppercase flex items-center gap-1"><i class="pi pi-check"></i> Balanced</span>
-                        <span v-else class="text-xs font-black text-red-500 uppercase flex items-center gap-1"><i class="pi pi-times"></i> Unbalanced</span>
-                     </div>
-                 </div>
+          <!-- Sec 2: Double-Entry Tracker (GL Lines) -->
+          <div class="space-y-8">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                 <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-100">2</div>
+                 <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-indigo-400">Distribusi Garis Akun (Double-Entry Matrix)</h4>
+              </div>
+              <Button label="TAMBAH GARIS (AKUN)" icon="pi pi-plus" size="small" rounded outlined @click="addLine" class="text-[9px] font-black px-4 border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-600 transition-all bg-white" />
             </div>
 
-          <div class="flex gap-2 items-stretch">
-            <Button label="Batalkan" severity="secondary" class="font-bold text-xs" outlined @click="dialogOpen = false" />
-            <Button label="Simpan Draf Jurnal" :loading="saving" :disabled="!isValidBalance || form.lines.length < 2" @click="save" class="bg-indigo-600 border-none text-white font-bold tracking-wide hover:bg-indigo-700 text-xs px-6" icon="pi pi-save" />
+            <div class="bg-white border border-slate-100 rounded-[2.5rem] shadow-sm overflow-hidden min-h-[400px]">
+               <table class="w-full text-sm">
+                  <thead class="bg-slate-50 border-b border-slate-100">
+                     <tr>
+                        <th class="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-left w-48">Kode Perkiraan (COA)</th>
+                        <th class="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-left">Deskripsi Baris / Memo</th>
+                        <th class="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-left w-48 border-l border-slate-100">Pusat Biaya (CC)</th>
+                        <th class="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right w-44 border-l border-slate-100 bg-emerald-50/20">Debit (IDR)</th>
+                        <th class="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right w-44 border-l border-slate-100 bg-rose-50/20">Kredit (IDR)</th>
+                        <th class="px-8 py-4 w-20 border-l border-slate-100"></th>
+                     </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-50">
+                     <tr v-for="(l, idx) in form.lines" :key="idx" class="group transition-all hover:bg-slate-50/50">
+                        <td class="px-8 py-5 align-middle">
+                           <input type="text" v-model="l.accountCode" placeholder="Ex: 1100" class="w-full h-12 px-4 rounded-xl bg-slate-50 border-2 border-slate-50 text-[11px] font-black text-indigo-700 font-mono outline-none focus:border-indigo-300 focus:bg-white transition-all uppercase" />
+                        </td>
+                        <td class="px-6 py-5 align-middle">
+                           <input type="text" v-model="l.description" placeholder="Uraian memo baris..." class="w-full h-12 bg-transparent border-none text-[11px] font-medium text-slate-800 outline-none focus:ring-0" />
+                        </td>
+                        <td class="px-6 py-5 align-middle border-l border-slate-100">
+                           <select v-model="l.costCenterId" class="w-full h-12 px-3 rounded-xl bg-slate-50 border-2 border-slate-50 text-[10px] font-black text-slate-600 outline-none focus:border-indigo-300 transition-all">
+                              <option value="">-- Non CC --</option>
+                              <option v-for="c in costCenters" :key="c.id" :value="c.id">[{{ c.code }}] {{ c.name }}</option>
+                           </select>
+                        </td>
+                        <td class="px-6 py-5 align-middle border-l border-slate-100 bg-emerald-50/20">
+                           <input type="number" v-model.number="l.debit" @input="() => { if(l.debit > 0) l.credit = 0 }" class="w-full h-12 px-4 rounded-xl bg-white border-2 border-emerald-100 text-xs font-black text-emerald-800 text-right tabular-nums outline-none focus:border-emerald-500 shadow-sm" />
+                        </td>
+                        <td class="px-6 py-5 align-middle border-l border-slate-100 bg-rose-50/20">
+                           <input type="number" v-model.number="l.credit" @input="() => { if(l.credit > 0) l.debit = 0 }" class="w-full h-12 px-4 rounded-xl bg-white border-2 border-rose-100 text-xs font-black text-rose-800 text-right tabular-nums outline-none focus:border-rose-500 shadow-sm" />
+                        </td>
+                        <td class="px-8 py-5 align-middle border-l border-slate-100 text-center">
+                           <div class="flex items-center justify-center gap-1">
+                              <Button icon="pi pi-copy" severity="secondary" rounded text @click="duplicateLine(idx)" class="h-10 w-10 text-slate-300 hover:text-indigo-600 group-hover:scale-110 transition-transform" />
+                              <Button icon="pi pi-trash" severity="danger" rounded text @click="removeLine(idx)" class="h-10 w-10 text-slate-300 hover:text-rose-600 group-hover:scale-110 transition-transform" />
+                           </div>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
           </div>
         </div>
 
+        <!-- Sticky Balance Indicator & Footer -->
+        <div class="p-8 border-t border-slate-100 bg-white shadow-[0_-20px_40px_rgba(0,0,0,0.02)] flex flex-wrap items-center justify-between gap-6 relative z-30">
+           <!-- Balance Protocol -->
+           <div class="flex items-center gap-6 p-4 bg-slate-900 rounded-[1.5rem] shadow-2xl relative overflow-hidden group min-w-[450px]">
+              <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:rotate-12 transition-transform">
+                 <i class="pi pi-directions text-4xl text-white"></i>
+              </div>
+              <div class="relative z-10 flex items-center gap-6">
+                 <div>
+                    <div class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Debit</div>
+                    <div class="text-xl font-black text-white tabular-nums tracking-tighter">{{ formatRupiah(totalDebit) }}</div>
+                 </div>
+                 <div class="h-10 w-px bg-slate-700"></div>
+                 <div>
+                    <div class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Kredit</div>
+                    <div class="text-xl font-black text-white tabular-nums tracking-tighter">{{ formatRupiah(totalCredit) }}</div>
+                 </div>
+                 <div class="ml-4 pl-6 border-l border-slate-700 flex flex-col items-center">
+                    <span v-if="isValidBalance" class="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] flex items-center gap-2 animate-pulse">
+                       <i class="pi pi-check-circle"></i> BALANCED
+                    </span>
+                    <span v-else class="text-[10px] font-black text-rose-500 uppercase tracking-[0.2em] flex items-center gap-2 italic">
+                       <i class="pi pi-exclamation-triangle"></i> UNBALANCED
+                    </span>
+                 </div>
+              </div>
+           </div>
+
+           <!-- Actions -->
+           <div class="flex items-center gap-3">
+              <Button label="Batalkan" severity="secondary" text @click="dialogOpen = false" class="h-14 px-8 font-black text-[10px] uppercase tracking-widest text-slate-400 hover:text-slate-600" />
+              <Button label="Simpan Jurnal Baru" icon="pi pi-save" :loading="saving" :disabled="!isValidBalance || form.lines.length < 2" @click="save"
+                class="h-14 px-10 rounded-[1.25rem] bg-indigo-800 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-indigo-100 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100" />
+           </div>
+        </div>
       </div>
     </div>
   </div>
@@ -215,8 +312,13 @@
 <script setup lang="ts">
 const api = useApi();
 
+const success = ref('');
+const error = ref('');
+const showMsg = (refVar: any, msg: string) => { refVar.value = msg; setTimeout(() => { refVar.value = null; }, 3000); };
+
 const search = ref('');
 const status = ref('');
+const quickFilter = ref('');
 const entries = ref<any[]>([]);
 const costCenters = ref<any[]>([]);
 
@@ -260,6 +362,8 @@ const load = async () => {
 
 const filteredEntries = computed(() => {
   let arr = entries.value;
+
+  // Search Filter
   if(search.value) {
     const q = search.value.toLowerCase();
     arr = arr.filter(x => 
@@ -268,8 +372,34 @@ const filteredEntries = computed(() => {
        x.description?.toLowerCase().includes(q)
     );
   }
+
+  // Quick Date Filter
+  if(quickFilter.value) {
+     const now = new Date();
+     const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+     const endMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+     if(quickFilter.value === 'this-month') {
+        arr = arr.filter(x => {
+           const d = new Date(x.entryDate);
+           return d >= startMonth && d <= endMonth;
+        });
+     } else if(quickFilter.value === 'last-month') {
+        const startLast = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const endLast = new Date(now.getFullYear(), now.getMonth(), 0);
+        arr = arr.filter(x => {
+           const d = new Date(x.entryDate);
+           return d >= startLast && d <= endLast;
+        });
+     }
+  }
+
   return arr;
 });
+
+const setQuickFilter = (val: string) => {
+   quickFilter.value = val;
+};
 
 const fmtDate = (d: string) => d?.slice(0, 10) ?? '-';
 
@@ -300,18 +430,26 @@ const openCreate = () => {
 };
 
 const addLine = () => form.value.lines.push({ accountCode: '', description: '', costCenterId: '', debit: 0, credit: 0 });
+const duplicateLine = (idx: number) => {
+   const original = form.value.lines[idx];
+   if (!original) return;
+   form.value.lines.splice(idx + 1, 0, {
+      accountCode: original.accountCode,
+      description: original.description,
+      costCenterId: original.costCenterId,
+      debit: original.debit,
+      credit: original.credit
+   });
+};
 const removeLine = (idx: number) => form.value.lines.splice(idx, 1);
 
 const save = async () => {
   if (!isValidBalance.value) {
-     alert("Jurnal Unbalanced! Total Debit dan Akredit wajib sama.");
+     showMsg(error, "Jurnal Unbalanced! Total Debit dan Kredit wajib sama.");
      return;
   }
   saving.value = true;
   try {
-    // We send extra payload, nestJs backend typically allows it unless whitelisted restricted strictly
-    // Or we proxy through direct post. Let's send normal POST. 
-    // The previous implementation mapped api.post('/finance/journal', form.value);
     await api.post('/finance/journal', {
         ...form.value,
         lines: form.value.lines.map(l => ({
@@ -321,21 +459,23 @@ const save = async () => {
            costCenterId: l.costCenterId === '' ? undefined : l.costCenterId
         }))
     });
+    showMsg(success, 'Dokumen Jurnal Umum berhasil direkam ke sistem!');
     dialogOpen.value = false;
     await load();
   } catch(e) {
-     alert('Gagal merekam jurnal. Harap cek kembali kelengkapan field (e.g. Account Code ada/tidak).');
+     showMsg(error, 'Gagal merekam jurnal. Harap cek kembali integritas baris akun (COA).');
   } finally {
     saving.value = false;
   }
 };
 
 const post = async (row: any) => {
-  if(!confirm(`Anda yakin memposting Buku Jurnal ${row.entryNo}? Sekali dipos, mutasi saldo mengikat permanen ke buku besar.`)) return;
+  if(!confirm(`Konfirmasi Posting: Anda yakin memposting Buku Jurnal ${row.entryNo}? Sekali diposting, mutasi saldo akan mengikat secara permanen ke Buku Besar (General Ledger).`)) return;
   try {
     await api.post(`/finance/journal/${row.id}/post`);
+    showMsg(success, `Jurnal ${row.entryNo} berhasil diposting ke Buku Besar!`);
   } catch(e) {
-    alert('Terjadi kesalahan memposting jurnal. Parameter / Referensi Idx salah?');
+    showMsg(error, 'Terjadi kesalahan saat memposting jurnal ke buku besar.');
   }
   await load();
 };
@@ -344,9 +484,14 @@ onMounted(async () => { await load(); });
 </script>
 
 <style scoped>
-.animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.animate-scale-in { animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 </style>

@@ -316,7 +316,7 @@
         <!-- Non-dismissible backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xl transition-all duration-700"></div>
         
-        <div class="relative z-10 w-full max-w-2xl bg-white rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col border border-white/20 animate-scale-in">
+        <div class="relative z-10 w-full max-w-2xl bg-white rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col border border-white/20 animate-scale-in border-b-[12px] border-b-indigo-900 shadow-[0_0_50px_rgba(49,46,129,0.2)]">
           <!-- Dialog Header -->
           <div class="px-10 py-8 flex justify-between items-center border-b border-slate-100 bg-slate-50/50">
             <div class="flex items-center gap-6">
@@ -405,19 +405,12 @@
       </div>
     </transition>
 
-    <!-- Toast Notifications -->
-    <transition name="fade">
-      <div v-if="toastMsg" :class="toastType === 'error' ? 'bg-rose-500' : 'bg-indigo-600'" class="fixed bottom-10 right-10 z-[200] flex items-center gap-4 rounded-2.5xl px-8 py-5 text-[10px] font-black uppercase tracking-widest text-white shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] animate-fade-in-right">
-        <i :class="toastType === 'error' ? 'pi-times-circle' : 'pi-check-circle'" class="pi text-lg" />
-        {{ toastMsg }}
-      </div>
-    </transition>
-
   </div>
 </template>
 
 <script setup lang="ts">
 const api = useApi();
+const { $toast, $swal } = useNuxtApp();
 
 // State
 const loading = ref(false);
@@ -430,8 +423,6 @@ const selectedRun = ref<any | null>(null);
 const suggestionFilter = ref('');
 const statusFilter = ref('');
 const runDialogOpen = ref(false);
-const toastMsg = ref<string | null>(null);
-const toastType = ref<'success' | 'error'>('success');
 
 const runForm = reactive({
   demandSource: 'SALES_ORDER',
@@ -504,12 +495,6 @@ const statusBadge = (status: string) => {
   return map[status] || map.OPEN;
 };
 
-const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
-  toastMsg.value = msg;
-  toastType.value = type;
-  setTimeout(() => { toastMsg.value = null; }, 3500);
-};
-
 // Methods
 const load = async () => {
   loading.value = true;
@@ -520,7 +505,7 @@ const load = async () => {
       await selectRun(runs.value[0]);
     }
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal memuat log sinkronisasi', 'error');
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal memuat log sinkronisasi' });
   } finally {
     loading.value = false;
   }
@@ -536,7 +521,7 @@ const selectRun = async (r: any) => {
     const res = await api.get(`/manufacturing/planning/runs/${r.id}`);
     suggestions.value = res.data?.run?.suggestions ?? [];
   } catch (e: any) {
-    showToast('Gagal memproses matrix perencanaan', 'error');
+    $toast.fire({ icon: 'error', title: 'Gagal memproses matrix perencanaan' });
   } finally {
     loadingSuggestions.value = false;
   }
@@ -567,29 +552,29 @@ const runMrp = async () => {
       includeForecast: runForm.includeForecast,
       includeMinStock: runForm.includeMinStock,
     });
-    showToast('Sinkronisasi MRP Berhasil Dieksekusi!');
+    $toast.fire({ icon: 'success', title: 'Sinkronisasi MRP Berhasil Dieksekusi!' });
     runDialogOpen.value = false;
     selectedRunId.value = null;
     selectedRun.value = null;
     suggestions.value = [];
     await load();
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal mengeksekusi protokol MRP', 'error');
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal mengeksekusi protokol MRP' });
   } finally {
     running.value = false;
   }
 };
 
 const convertToPO = async (s: any) => {
-  showToast(`Matrix ${s.item?.code} Sedang Dikonversi ke Purchase Order`, 'success');
+  $toast.fire({ icon: 'success', title: `Matrix ${s.item?.code} Sedang Dikonversi ke Purchase Order` });
 };
 
 const convertToWO = async (s: any) => {
-  showToast(`Matrix ${s.item?.code} Sedang Dikonversi ke Work Order`, 'success');
+  $toast.fire({ icon: 'success', title: `Matrix ${s.item?.code} Sedang Dikonversi ke Work Order` });
 };
 
 const closeSuggestion = async (s: any) => {
-  showToast(`Log Matrix ${s.item?.code} Ditutup`);
+  $toast.fire({ icon: 'success', title: `Log Matrix ${s.item?.code} Ditutup` });
 };
 
 onMounted(load);

@@ -176,7 +176,7 @@
       <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xl" @click="closeDialog"></div>
         
-        <div class="relative z-10 w-full max-w-2xl bg-slate-50 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col border border-white/20 animate-scale-in">
+        <div class="relative z-10 w-full max-w-2xl bg-slate-50 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col border border-white/20 animate-scale-in border-b-[12px] border-b-emerald-900 shadow-[0_0_50px_rgba(5,150,105,0.2)]">
           <!-- Hub Header -->
           <div class="bg-white px-10 py-8 flex justify-between items-center border-b border-slate-100 shrink-0">
             <div class="flex items-center gap-6">
@@ -257,25 +257,13 @@
       </div>
     </transition>
 
-    <!-- Success/Error Feedback (Premium Toast) -->
-    <transition name="fade">
-      <div v-if="toastMsg" class="fixed bottom-12 right-12 z-[200] flex items-center gap-6 p-8 rounded-[2rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] animate-fade-in-right border-l-8" :class="toastType === 'error' ? 'bg-slate-950 text-white border-rose-500' : 'bg-white text-slate-900 border-emerald-500'">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-lg" :class="toastType === 'error' ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'">
-          <i :class="toastType === 'error' ? 'pi-times-circle' : 'pi-check-circle'" class="pi" />
-        </div>
-        <div>
-          <div class="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none">{{ toastType === 'error' ? 'Operation Failure' : 'Mission Successful' }}</div>
-          <p class="text-[13px] font-black tracking-tight leading-none uppercase italic">{{ toastMsg }}</p>
-        </div>
-      </div>
-    </transition>
-
   </div>
 </template>
 
 <script setup lang="ts">
 const api = useApi();
 const auth = useAuthStore();
+const { $toast, $swal } = useNuxtApp();
 
 // Permissions
 const canRead = computed(() => auth.hasPermission('manufacturing.quality.read'));
@@ -288,8 +276,6 @@ const inspections = ref<any[]>([]);
 const workOrders = ref<any[]>([]);
 const loading = ref(false);
 const saving = ref(false);
-const toastMsg = ref<string | null>(null);
-const toastType = ref<'success' | 'error'>('success');
 
 // Telemetry Stats
 const totalInspected = computed(() => inspections.value.reduce((s, i) => s + (i.qtyInspected || 0), 0));
@@ -310,12 +296,6 @@ const form = reactive({
 });
 
 // Helpers
-const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
-  toastMsg.value = msg;
-  toastType.value = type;
-  setTimeout(() => { toastMsg.value = null; }, 3500);
-};
-
 const statusColor = (st: string) => {
   if (st === 'PASSED') return '#10b981';
   if (st === 'FAILED') return '#f43f5e';
@@ -345,7 +325,7 @@ const load = async () => {
     const res = await api.get('/manufacturing/quality', { params });
     inspections.value = res.data?.inspections ?? [];
   } catch (e) {
-    showToast('Gagal Memuat Protokol Kualitas', 'error');
+    $toast.fire({ icon: 'error', title: 'Gagal Memuat Protokol Kualitas' });
   } finally {
     loading.value = false;
   }
@@ -385,7 +365,9 @@ const closeDialog = () => {
 };
 
 const save = async () => {
-  if (!form.workOrderId && !editingId.value) return showToast('Pilih Work Order Terlebih Dahulu', 'error');
+  if (!form.workOrderId && !editingId.value) {
+    return $toast.fire({ icon: 'error', title: 'Pilih Work Order Terlebih Dahulu' });
+  }
   
   saving.value = true;
   try {
@@ -394,7 +376,7 @@ const save = async () => {
         status: form.status,
         notes: form.notes || undefined,
       });
-      showToast('Verdict Kualitas Berhasil Diperbarui');
+      $toast.fire({ icon: 'success', title: 'Verdict Kualitas Berhasil Diperbarui' });
     } else {
       await api.post('/manufacturing/quality', {
         workOrderId: form.workOrderId,
@@ -403,12 +385,12 @@ const save = async () => {
         qtyFailed: parseFloat(form.qtyFailed) || 0,
         notes: form.notes || undefined,
       });
-      showToast('Data Inspeksi Berhasil Diinduksi');
+      $toast.fire({ icon: 'success', title: 'Data Inspeksi Berhasil Diinduksi' });
     }
     dialogOpen.value = false;
     await load();
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal Menyinkronkan Data QA', 'error');
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal Menyinkronkan Data QA' });
   } finally {
     saving.value = false;
   }

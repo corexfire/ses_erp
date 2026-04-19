@@ -180,22 +180,12 @@
        </table>
     </div>
 
-    <!-- Error / Success feedback -->
-    <transition name="fade">
-      <div v-if="toastMsg" :class="toastType === 'error' ? 'bg-red-500' : 'bg-emerald-500'" class="fixed bottom-6 right-6 z-[100] flex items-center gap-3 rounded-xl px-5 py-3.5 text-sm font-medium text-white shadow-xl">
-        <i :class="toastType === 'error' ? 'pi-times-circle' : 'pi-check-circle'" class="pi text-base" />
-        {{ toastMsg }}
-      </div>
-    </transition>
-
     <!-- ============ BOM ENGINEERING HUB (3-PANEL DIALOG) ============ -->
     <transition name="modal">
       <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
-        <!-- Non-dismissible backdrop: No @click handler -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xl transition-all duration-700"></div>
         
-        <div class="relative z-10 w-full max-w-[1400px] h-[90vh] bg-slate-50 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col border border-white/20 animate-scale-in">
-          <!-- Hub Header (Technical Style) -->
+        <div class="relative z-10 w-full max-w-[1400px] h-[90vh] bg-slate-50 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col border border-white/20 animate-scale-in border-b-[12px] border-b-indigo-950 shadow-[0_0_60px_rgba(49,46,129,0.3)]">
           <div class="bg-white px-12 py-10 flex justify-between items-center border-b border-slate-100 shrink-0">
             <div class="flex items-center gap-8">
               <div class="w-16 h-16 rounded-[1.5rem] bg-indigo-600 flex items-center justify-center text-white shadow-2xl rotate-3 shadow-indigo-200">
@@ -221,10 +211,7 @@
             </div>
           </div>
 
-          <!-- Technical Hub Content (3-Panel Architecture) -->
           <div class="flex-1 overflow-hidden flex flex-col lg:flex-row p-12 gap-10">
-             
-             <!-- PANEL I: Induksi Parameter (Setup) -->
              <div class="flex-1 flex flex-col min-w-0">
                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center justify-between">
                    <span class="flex items-center gap-2"><i class="pi pi-cog text-indigo-600"></i> I. Induksi Parameter</span>
@@ -305,7 +292,6 @@
                 </div>
              </div>
 
-             <!-- PANEL II: Struktur Komponen (Materials) -->
              <div class="flex-1 flex flex-col min-w-0">
                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center justify-between">
                    <span class="flex items-center gap-2"><i class="pi pi-box text-amber-500"></i> II. Struktur Komponen</span>
@@ -367,7 +353,6 @@
                 </div>
              </div>
 
-             <!-- PANEL III: Matriks Routing (Operations) -->
              <div class="flex-1 flex flex-col min-w-0">
                 <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center justify-between">
                    <span class="flex items-center gap-2"><i class="pi pi-bolt text-violet-500"></i> III. Matriks Routing</span>
@@ -422,7 +407,6 @@
                       </div>
                    </div>
 
-                   <!-- Bottom Confirmation (Inside Panel) -->
                    <div class="p-8 shrink-0 relative z-10 border-t border-white/5 bg-slate-950/40 mt-auto">
                       <button @click="save" :disabled="saving || !form.code || !form.name || !form.itemId" class="w-full h-16 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl font-black text-[12px] uppercase tracking-[0.3em] shadow-2xl shadow-emerald-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4 disabled:opacity-30 disabled:grayscale transition-all">
                          <i :class="saving ? 'pi pi-spinner pi-spin' : 'pi pi-check-circle'" class="text-xl"></i>
@@ -432,65 +416,10 @@
                    </div>
                 </div>
              </div>
-
           </div>
         </div>
       </div>
     </transition>
-
-    <!-- Delete Confirmation (Consistent Premium Style) -->
-    <transition name="modal">
-      <div v-if="deleteConfirmOpen" class="fixed inset-0 z-[120] flex items-center justify-center p-6">
-        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-md"></div>
-        <div class="relative z-10 w-full max-w-[500px] bg-white rounded-[3rem] p-12 shadow-2xl text-center border border-slate-100 overflow-hidden animate-scale-in">
-           <div class="absolute right-0 top-0 w-32 h-32 bg-rose-50 rounded-full blur-3xl -mr-16 -mt-16"></div>
-           <div class="w-24 h-24 bg-rose-100 rounded-[2rem] flex items-center justify-center text-rose-500 mx-auto mb-8 shadow-xl shadow-rose-100 rotate-6 border-4 border-white">
-              <i class="pi pi-trash text-4xl"></i>
-           </div>
-           <div class="text-[11px] font-black uppercase text-rose-500 tracking-[0.3em] mb-4">Eliminasi Data Permanen</div>
-           <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase mb-4 italic">Hapus <span class="text-rose-500 not-italic">Struktur BOM?</span></h3>
-           <p class="text-slate-500 text-sm font-medium mb-10 px-4 leading-relaxed italic">Protokol enkripsi akan menghapus struktur <strong>{{ deletingBom?.code }}</strong> secara permanen dari basis data manufaktur.</p>
-           <div class="flex gap-4">
-              <button @click="deleteConfirmOpen = false" class="flex-1 h-16 bg-slate-50 text-slate-400 rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-slate-100 transition-all cursor-pointer">Batal</button>
-              <button @click="doDelete" class="flex-1 h-16 bg-slate-950 text-white rounded-2xl font-black text-[11px] uppercase tracking-widest shadow-xl shadow-slate-200 hover:scale-105 active:scale-95 transition-all cursor-pointer">Ya, Hapus Struktur</button>
-           </div>
-        </div>
-      </div>
-    </transition>
-
-    <!-- Success/Error Feedback (Premium Toast) -->
-    <transition name="fade">
-      <div v-if="toastMsg" class="fixed bottom-12 right-12 z-[200] flex items-center gap-6 p-8 rounded-[2rem] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] animate-fade-in-right border-l-8" :class="toastType === 'error' ? 'bg-slate-950 text-white border-rose-500' : 'bg-white text-slate-900 border-emerald-500'">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-lg" :class="toastType === 'error' ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'">
-          <i :class="toastType === 'error' ? 'pi-times-circle' : 'pi-check-circle'" class="pi" />
-        </div>
-        <div>
-          <div class="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1 leading-none">{{ toastType === 'error' ? 'Operation Failure' : 'Mission Successful' }}</div>
-          <p class="text-[13px] font-black tracking-tight leading-none uppercase italic">{{ toastMsg }}</p>
-        </div>
-      </div>
-    </transition>
-
-    <!-- Delete Confirmation -->
-    <transition name="modal">
-      <div v-if="deleteConfirmOpen" class="fixed inset-0 z-[60] flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="deleteConfirmOpen = false" />
-        <div class="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
-          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 mx-auto">
-            <i class="pi pi-trash text-xl text-red-500" />
-          </div>
-          <h3 class="mt-4 text-center text-base font-bold text-slate-800">Hapus BOM?</h3>
-          <p class="mt-2 text-center text-sm text-slate-500">
-            BOM <strong>{{ deletingBom?.code }}</strong> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.
-          </p>
-          <div class="mt-5 flex gap-3">
-            <button class="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-50" @click="deleteConfirmOpen = false">Batal</button>
-            <button class="flex-1 rounded-xl bg-red-500 py-2.5 text-sm font-semibold text-white hover:bg-red-600" @click="doDelete">Hapus</button>
-          </div>
-        </div>
-      </div>
-    </transition>
-
   </div>
 </template>
 
@@ -530,6 +459,7 @@ type BomOperationForm = {
 };
 
 const api = useApi();
+const { $toast, $swal } = useNuxtApp();
 
 // State
 const q = ref('');
@@ -540,8 +470,6 @@ const saving = ref(false);
 const boms = ref<BomRow[]>([]);
 const items = ref<any[]>([]);
 const dialogError = ref<string | null>(null);
-const toastMsg = ref<string | null>(null);
-const toastType = ref<'success' | 'error'>('success');
 
 // Detail Drawer
 const detailOpen = ref(false);
@@ -563,8 +491,8 @@ const form = reactive({
   itemId: '',
   bomType: 'MANUFACTURING',
   costingMethod: 'STANDARD',
-  baseQty: '1',
-  version: '1',
+  baseQty: 1,
+  version: 1,
   isMain: false,
   isActive: true,
   items: [] as BomItemForm[],
@@ -572,7 +500,6 @@ const form = reactive({
 });
 
 // Delete
-const deleteConfirmOpen = ref(false);
 const deletingBom = ref<BomRow | null>(null);
 
 // Stats
@@ -593,12 +520,6 @@ const bomTypeBadge = (type: string) => {
   return map[type] || map.MANUFACTURING;
 };
 
-const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
-  toastMsg.value = msg;
-  toastType.value = type;
-  setTimeout(() => { toastMsg.value = null; }, 3000);
-};
-
 const load = async () => {
   loading.value = true;
   try {
@@ -609,7 +530,7 @@ const load = async () => {
     const res = await api.get('/manufacturing/bom', { params });
     boms.value = res.data?.boms ?? [];
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal memuat data BOM', 'error');
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal memuat data BOM' });
   } finally {
     loading.value = false;
   }
@@ -628,8 +549,8 @@ const resetForm = () => {
   form.itemId = '';
   form.bomType = 'MANUFACTURING';
   form.costingMethod = 'STANDARD';
-  form.baseQty = '1';
-  form.version = '1';
+  form.baseQty = 1;
+  form.version = 1;
   form.isMain = false;
   form.isActive = true;
   form.items = [];
@@ -652,8 +573,8 @@ const openEdit = async (b: BomRow) => {
   form.itemId = b.item?.id ?? '';
   form.bomType = b.bomType || 'MANUFACTURING';
   form.costingMethod = b.costingMethod || 'STANDARD';
-  form.baseQty = String(b.baseQty || 1);
-  form.version = String(b.version || 1);
+  form.baseQty = b.baseQty || 1;
+  form.version = b.version || 1;
   form.isMain = b.isMain;
   form.isActive = b.isActive;
   form.items = (b.items || []).map((it) => ({
@@ -705,8 +626,8 @@ const save = async () => {
       itemId: form.itemId || undefined,
       bomType: form.bomType,
       costingMethod: form.costingMethod,
-      baseQty: parseFloat(form.baseQty) || 1,
-      version: parseInt(form.version) || 1,
+      baseQty: form.baseQty,
+      version: form.version,
       isMain: form.isMain,
       isActive: form.isActive,
       items: form.items.map((it, idx) => ({
@@ -729,20 +650,20 @@ const save = async () => {
       })).filter(op => op.description),
     };
 
-    if (editingId.value) {
-      await api.patch(`/manufacturing/bom/${editingId.value}`, payload);
-      showToast('Struktur BOM Berhasil Diperbarui');
-    } else {
-      await api.post('/manufacturing/bom', payload);
-      showToast('Struktur BOM Berhasil Diinduksi');
+      if (editingId.value) {
+        await api.patch(`/manufacturing/bom/${editingId.value}`, payload);
+        $toast.fire({ icon: 'success', title: 'Struktur BOM Berhasil Diperbarui' });
+      } else {
+        await api.post('/manufacturing/bom', payload);
+        $toast.fire({ icon: 'success', title: 'Struktur BOM Berhasil Diinduksi' });
+      }
+      dialogOpen.value = false;
+      await load();
+    } catch (e: any) {
+      dialogError.value = e?.response?.data?.message ?? 'Gagal Menyinkronkan Data BOM';
+    } finally {
+      saving.value = false;
     }
-    dialogOpen.value = false;
-    await load();
-  } catch (e: any) {
-    dialogError.value = e?.response?.data?.message ?? 'Gagal Menyinkronkan Data BOM';
-  } finally {
-    saving.value = false;
-  }
 };
 
 const openDetail = (b: BomRow) => {
@@ -752,20 +673,29 @@ const openDetail = (b: BomRow) => {
 
 const confirmDelete = (b: BomRow) => {
   deletingBom.value = b;
-  deleteConfirmOpen.value = true;
+  $swal.fire({
+    title: 'Hapus Struktur BOM?',
+    text: `Protokol enkripsi akan menghapus struktur ${b.code} secara permanen.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, Hapus Struktur',
+    cancelButtonText: 'Batal',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      doDelete();
+    }
+  });
 };
 
 const doDelete = async () => {
   if (!deletingBom.value) return;
   try {
     await api.delete(`/manufacturing/bom/${deletingBom.value.id}`);
-    showToast(`BOM ${deletingBom.value.code} Berhasil Dieliminasi`);
-    deleteConfirmOpen.value = false;
+    $toast.fire({ icon: 'success', title: `BOM ${deletingBom.value.code} Berhasil Dieliminasi` });
     deletingBom.value = null;
     await load();
   } catch (e: any) {
-    showToast(e?.response?.data?.message ?? 'Gagal Mengeliminasi BOM', 'error');
-    deleteConfirmOpen.value = false;
+    $toast.fire({ icon: 'error', title: e?.response?.data?.message ?? 'Gagal Mengeliminasi BOM' });
   }
 };
 

@@ -46,8 +46,8 @@
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Reliabilitas Peralatan</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
-            <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ stats[0].value }}</h3>
-            <span class="text-[10px] font-bold text-emerald-400 mt-2 uppercase tracking-widest">{{ stats[0].trend }} vs Bulan Lalu</span>
+             <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ stats?.[0]?.value }}</h3>
+            <span class="text-[10px] font-bold text-emerald-400 mt-2 uppercase tracking-widest">{{ stats?.[0]?.trend }} vs Bulan Lalu</span>
           </div>
           <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
             <i class="pi pi-check-circle text-lg text-emerald-400"></i>
@@ -59,7 +59,7 @@
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Kerusakan Aktif (Breakdown)</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
-             <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-rose-700 tracking-tighter leading-none">{{ stats[1].value }}</h3>
+             <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-rose-700 tracking-tighter leading-none">{{ stats?.[1]?.value }}</h3>
              <span class="text-[10px] font-bold text-rose-400 mt-2 uppercase tracking-widest">Memerlukan Audit Teknis</span>
           </div>
           <div class="p-3 bg-rose-50 text-rose-600 rounded-xl border border-rose-100 group-hover:rotate-12 transition-transform"><i class="pi pi-exclamation-triangle text-lg"></i></div>
@@ -70,7 +70,7 @@
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Urutan Antrean Preventif</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
-             <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ stats[2].value }}</h3>
+             <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ stats?.[2]?.value }}</h3>
              <span class="text-[10px] font-bold text-emerald-400 mt-2 uppercase tracking-widest">Sesi Terjadwal</span>
           </div>
           <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 group-hover:rotate-12 transition-transform"><i class="pi pi-calendar text-lg"></i></div>
@@ -296,7 +296,7 @@
     <!-- Master Registry Hubs -->
     <!-- 1. Equipment Registry -->
     <div v-if="equipmentDialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
-      <div class="w-[calc(100%-2rem)] max-w-2xl bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
+      <div class="w-[calc(100%-2rem)] max-w-2xl bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900 shadow-[0_0_50px_rgba(5,150,105,0.2)]">
         
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
@@ -366,7 +366,7 @@
 
     <!-- 2. Request Registry -->
     <div v-if="requestDialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
-      <div class="w-[calc(100%-2rem)] max-w-xl bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
+      <div class="w-[calc(100%-2rem)] max-w-xl bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-amber-900 shadow-[0_0_50px_rgba(217,119,6,0.2)]">
         
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
@@ -432,7 +432,7 @@
 
     <!-- 3. Work Order Execution Registry (Premium) -->
     <div v-if="logDialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
-      <div class="w-[calc(100%-2rem)] max-w-4xl bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
+      <div class="w-[calc(100%-2rem)] max-w-4xl bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900 shadow-[0_0_50px_rgba(5,150,105,0.2)]">
         
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
@@ -557,19 +557,6 @@
       </div>
     </div>
 
-    <!-- Final Toast Notification System -->
-    <transition name="toast">
-      <div v-if="toastActive" class="fixed bottom-10 left-1/2 z-[200] -translate-x-1/2 overflow-hidden rounded-2xl bg-emerald-950 border-emerald-900 border-2 px-10 py-5 text-white shadow-3xl flex items-center gap-5 animate-fade-in-up backdrop-blur-md">
-        <div class="bg-emerald-500 h-10 w-10 flex items-center justify-center rounded-xl shadow-lg shadow-emerald-500/20">
-           <i class="pi pi-check-circle text-lg font-black"></i>
-        </div>
-        <div class="flex flex-col">
-           <span class="text-[10px] font-black uppercase tracking-widest opacity-50">Sistem CMMS Terverifikasi</span>
-           <span class="text-xs font-black uppercase tracking-tight">{{ toastMsg }}</span>
-        </div>
-      </div>
-    </transition>
-
   </div>
 </template>
 
@@ -577,6 +564,7 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 
 const api = useApi();
+const { $toast, $swal } = useNuxtApp();
 
 const activeTab = ref('assets');
 const tabs = [
@@ -601,14 +589,6 @@ const stats = ref([
   { label: 'Preventive Pending', value: '0', icon: 'pi-calendar' },
   { label: 'Critical Assets', value: '5', icon: 'pi-server' },
 ]);
-
-// Final Toast State
-const toastActive = ref(false);
-const toastMsg = ref('');
-const showToast = (msg: string) => {
-  toastMsg.value = msg; toastActive.value = true;
-  setTimeout(() => { toastActive.value = false; }, 4000);
-};
 
 // Aesthetics & Badges
 const statusColors: any = { 
@@ -661,9 +641,9 @@ const load = async () => {
       cost: i.stockBalances?.[0]?.unitCost || 50000 
     }));
     
-    stats.value[1].value = String(requests.value.filter(r => r.status === 'OPEN').length);
-    stats.value[2].value = String(schedules.value.length);
-  } catch (e) { showToast('Gagal memuat audit data teknis'); }
+    if (stats.value[1]) stats.value[1].value = String(requests.value.filter(r => r.status === 'OPEN').length);
+    if (stats.value[2]) stats.value[2].value = String(schedules.value.length);
+  } catch (e) { $toast.fire({ icon: 'error', title: 'Gagal memuat audit data teknis' }); }
 };
 
 const openEquipmentCreate = () => {
@@ -682,13 +662,13 @@ const saveEquipment = async () => {
   try {
     if (equipmentEditingId.value) {
       await api.patch(`/manufacturing/maintenance/equipment/${equipmentEditingId.value}`, equipmentForm);
-      showToast('Data Aset Berhasil Diperbarui');
+      $toast.fire({ icon: 'success', title: 'Data Aset Berhasil Diperbarui' });
     } else {
       await api.post('/manufacturing/maintenance/equipment', equipmentForm);
-      showToast('Registrasi Aset Baru Berhasil');
+      $toast.fire({ icon: 'success', title: 'Registrasi Aset Baru Berhasil' });
     }
     equipmentDialogOpen.value = false; await load();
-  } catch (e: any) { showToast('Terjadi kesalahan pada registrasi aset'); }
+  } catch (e: any) { $toast.fire({ icon: 'error', title: 'Terjadi kesalahan pada registrasi aset' }); }
 };
 
 const openRequestCreate = () => {
@@ -708,13 +688,13 @@ const saveRequest = async () => {
   try {
     if (requestEditingId.value) {
       await api.patch(`/manufacturing/maintenance/requests/${requestEditingId.value}`, requestForm);
-      showToast('Status Perbaikan Berhasil Diperbarui');
+      $toast.fire({ icon: 'success', title: 'Status Perbaikan Berhasil Diperbarui' });
     } else {
       await api.post('/manufacturing/maintenance/requests', { ...requestForm, requestDate: new Date() });
-      showToast('Laporan Kerusakan Baru Telah Diposting');
+      $toast.fire({ icon: 'success', title: 'Laporan Kerusakan Baru Telah Diposting' });
     }
     requestDialogOpen.value = false; await load();
-  } catch (e) { showToast('Gagal memproses laporan kerusakan'); }
+  } catch (e) { $toast.fire({ icon: 'error', title: 'Gagal memproses laporan kerusakan' }); }
 };
 
 const openLogCreate = (request: any) => {
@@ -746,9 +726,9 @@ const saveLog = async () => {
   try {
     await api.post('/manufacturing/maintenance/logs', logForm);
     logDialogOpen.value = false;
-    showToast('Log Pekerjaan Selesai & Terverifikasi');
+    $toast.fire({ icon: 'success', title: 'Log Pekerjaan Selesai & Terverifikasi' });
     await load();
-  } catch (e) { showToast('Gagal memproses posting audit pekerjaan'); }
+  } catch (e) { $toast.fire({ icon: 'error', title: 'Gagal memproses posting audit pekerjaan' }); }
 };
 
 onMounted(load);

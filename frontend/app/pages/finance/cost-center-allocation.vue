@@ -1,92 +1,138 @@
 <template>
   <div class="space-y-4">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm border-l-4 border-l-emerald-500">
-      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
-        <div>
-          <div class="text-sm font-semibold text-slate-800">Manajemen Alokasi Cost Center (Pusat Biaya)</div>
-          <div class="mt-1 text-sm text-slate-600">
-            Pendistribusian biaya overhead & operasional (BOP) pabrik ke masing-masing lini produksi dan departemen.
-          </div>
+    <!-- ═══════════════════════════════════ HEADER (Premium Costing Engine) ══════════════════════════════════ -->
+    <div v-if="success" class="mx-6 mt-6 bg-emerald-50 text-emerald-700 p-4 rounded-2xl border border-emerald-200 text-sm font-black flex items-center gap-3 animate-fade-in-up">
+      <i class="pi pi-check-circle text-xl"></i> {{ success }}
+    </div>
+    <div v-if="error" class="mx-6 mt-6 bg-rose-50 text-rose-700 p-4 rounded-2xl border border-rose-200 text-sm font-black flex items-center gap-3 animate-fade-in-up">
+      <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
+      
+      <div class="relative">
+        <div class="flex items-center gap-3 mb-2">
+           <span class="px-3 py-1 bg-emerald-800 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-100">Optimasi Pusat Biaya & BOP</span>
+           <span class="text-slate-300">/</span>
+           <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Cost Center Allocation Matrix</span>
         </div>
-        <div class="flex gap-2">
-           <Button v-if="canManage" label="+ Buat Alokasi Jurnal Baru" size="small" bg="bg-emerald-600" class="text-white font-bold border-none shrink-0 cursor-pointer shadow-sm hover:bg-emerald-700" icon="pi pi-plus" @click="openCreate" />
+        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Alokasi <span class="text-emerald-600 italic font-medium">Beban Biaya</span></h1>
+        <p class="text-slate-500 text-sm font-medium max-w-2xl leading-relaxed mt-3 uppercase tracking-tight opacity-70">Pendistribusian Biaya Overhead Pabrik (BOP) & biaya operasional ke departemen pusat biaya produksi maupun jasa.</p>
+      </div>
+
+      <div class="flex items-center gap-3 relative">
+        <div class="text-right mr-4 hidden lg:block">
+           <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Terdistribusi</div>
+           <div class="text-2xl font-black text-emerald-700 tabular-nums tracking-tighter">{{ formatRupiah(totalAllocated) }}</div>
         </div>
+        <Button v-if="canManage" label="BUAT ALOKASI BARU" icon="pi pi-plus" severity="success" @click="openCreate"
+          class="h-14 px-8 rounded-[1.25rem] bg-emerald-800 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-emerald-100 hover:scale-[1.05] active:scale-95 transition-all" />
       </div>
     </div>
 
-    <!-- Data List and Filters -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm">
-      <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2 w-full md:w-auto">
-          <InputText v-model="search" placeholder="Cari No. Referensi / Deskripsi..." class="w-full md:w-64 text-xs" />
-          <select v-model="filterPeriod" class="p-2 border rounded-md text-xs bg-white text-slate-700 min-w-40 outline-none focus:border-emerald-500">
+    <!-- Main Allocation Matrix (High-Density Grid) -->
+    <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up">
+      
+      <!-- Ledger Control Bar -->
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-200/20 rounded-full blur-3xl"></div>
+        
+        <div class="relative flex items-center gap-4">
+           <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-white shadow-xl transition-transform hover:rotate-6 shadow-slate-200"><i class="pi pi-calculator text-xl"></i></div>
+           <div>
+              <h3 class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em] leading-none mb-1">Log Jurnal Alokasi & Distribusi</h3>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono italic">Operational Overhead Ledger</p>
+           </div>
+        </div>
+
+        <div class="relative flex items-center gap-4">
+          <div class="flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm p-1">
+            <i class="pi pi-search px-3 text-slate-300 text-xs"></i>
+            <InputText v-model="search" placeholder="Cari No. Referensi / Deskripsi..." class="border-none bg-transparent text-[10px] h-9 w-48 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" @keyup.enter="load" />
+          </div>
+
+          <select v-model="filterPeriod" class="h-11 rounded-2xl border-slate-200 px-4 text-[9px] font-black uppercase tracking-widest text-slate-600 focus:border-emerald-500 outline-none bg-white shadow-sm transition-all" @change="load">
             <option value="">Semua Periode Fiskal</option>
             <option v-for="p in periods" :key="p.id" :value="p.id">Periode {{ p.periodNo }} / {{ p.fiscalYear?.year || new Date().getFullYear() }}</option>
           </select>
-          <Button label="Filter Data" severity="secondary" size="small" :disabled="loading" @click="load" icon="pi pi-filter" />
-        </div>
-        <div class="text-xs font-bold text-slate-500 bg-slate-50 px-3 py-1.5 rounded-full border">
-           Total Terdistribusi: <span class="text-emerald-700">{{ formatRupiah(totalAllocated) }}</span>
+
+          <select v-model="filterType" class="h-11 rounded-2xl border-slate-200 px-4 text-[9px] font-black uppercase tracking-widest text-slate-600 focus:border-emerald-500 outline-none bg-white shadow-sm transition-all">
+            <option value="">Semua Tipe</option>
+            <option value="PRODUCTION">Departemen Produksi</option>
+            <option value="SERVICE">Departemen Jasa/Umum</option>
+          </select>
+          
+          <Button icon="pi pi-filter" severity="secondary" text rounded class="h-10 w-10 text-slate-400 hover:text-emerald-600 bg-white border shadow-sm" />
         </div>
       </div>
 
-      <!-- Table Section -->
-      <div class="overflow-x-auto rounded-lg border">
-        <table class="w-full text-sm">
-          <thead class="bg-emerald-50/50 text-left text-[11px] text-emerald-900 border-b border-emerald-100 uppercase tracking-wider font-bold">
+      <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-sm font-medium">
+          <thead class="bg-white text-left font-bold border-b border-slate-50 text-slate-900 uppercase">
             <tr>
-              <th class="px-4 py-3 w-48">No. Ref Jurnal (JV)</th>
-              <th class="px-4 py-3 bg-slate-50 border-l">Pusat Biaya (Cost Center) & Deskripsi</th>
-              <th class="px-4 py-3 text-center bg-slate-50 border-l w-32" title="Chart of Account">Kode Akun (COA)</th>
-              <th class="px-4 py-3 text-right bg-emerald-50/50 border-l w-40">Nilai Alokasi (IDR)</th>
-               <th class="px-4 py-3 text-center border-l w-24">Aksi</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[260px]">No. Ref Jurnal (JV)</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50">Analisa Pusat Biaya (Cost Center)</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center">Rekening (COA)</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-right bg-slate-50/50">Nilai Alokasi (IDR)</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-32 border-l border-slate-50">Opsi</th>
             </tr>
           </thead>
-          <tbody class="divide-y relative text-[12px]">
-             <tr v-if="loading">
-              <td colspan="5" class="px-4 py-16 text-center text-sm text-slate-500">
-                <i class="pi pi-spinner pi-spin mr-2 text-emerald-500"></i> Memuat buku besar pusat biaya...
+          <tbody class="divide-y divide-slate-50">
+            <tr v-if="loading">
+              <td colspan="5" class="py-24 text-center">
+                <i class="pi pi-spinner pi-spin text-4xl text-emerald-500 opacity-20"></i>
+                <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-emerald-600">Menganalisis distribusi pusat biaya...</div>
               </td>
             </tr>
-            <tr v-for="doc in filteredData" v-else :key="doc.id" class="transition hover:bg-emerald-50/20 group">
-              
-              <!-- Referensi -->
-              <td class="px-4 py-3 align-middle">
-                 <div class="font-mono font-bold text-slate-800 flex items-center gap-2 group-hover:text-emerald-700 transition">
-                   <i class="pi pi-file-invoice text-slate-400"></i> {{ doc.referenceNo || 'UNREF' }}
-                 </div>
-                 <div class="text-[10px] text-slate-400 mt-1 uppercase">Period: <span class="font-bold text-slate-600">{{ getPeriodLabel(doc.periodId) }}</span></div>
+            
+            <tr v-for="doc in filteredData" v-else :key="doc.id" class="transition-all hover:bg-emerald-50/20 group border-l-4 border-l-transparent hover:border-l-emerald-400">
+              <td class="px-8 py-6 align-middle">
+                <div class="flex items-center gap-4">
+                   <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
+                      <i class="pi pi-file-invoice text-lg"></i>
+                   </div>
+                   <div>
+                      <div class="font-mono text-[11px] font-black text-emerald-900 tracking-tight group-hover:text-emerald-600 transition-colors uppercase">
+                         {{ doc.referenceNo || 'UNREF' }}
+                      </div>
+                      <div class="mt-1 flex items-center gap-2">
+                        <div class="h-1.5 w-1.5 rounded-full bg-emerald-400"></div>
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic truncate max-w-[140px]">{{ getPeriodLabel(doc.periodId) }}</span>
+                      </div>
+                   </div>
+                </div>
               </td>
               
-               <!-- Detail & Cost Center -->
-              <td class="px-4 py-3 align-middle bg-slate-50/50 border-l">
-                 <div class="flex items-center gap-2">
-                     <span class="text-[9px] bg-slate-800 text-white inline-block px-1.5 py-0.5 rounded shadow-inner uppercase tracking-wider">{{ doc.costCenter?.code || 'CC-???' }}</span>
-                     <span class="font-bold text-slate-700 text-[12px]">{{ doc.costCenter?.name || '- Tidak Diketahui -' }}</span>
+              <td class="px-6 py-6 align-middle border-l border-slate-50">
+                 <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 bg-slate-900 text-white text-[9px] font-black rounded-lg uppercase tracking-widest shadow-lg">{{ doc.costCenter?.code || 'CC-???' }}</span>
+                    <span class="text-[11px] font-black text-slate-800 uppercase tracking-tight group-hover:text-emerald-700 transition-colors uppercase">{{ doc.costCenter?.name || '- Tidak Diketahui -' }}</span>
                  </div>
-                 <div class="text-[10px] text-slate-500 mt-1.5 line-clamp-2 leading-relaxed max-w-sm"><i class="pi pi-align-left text-[9px] mr-0.5 text-slate-400"></i> {{ doc.description || 'Tidak ada deskripsi distribusi biaya.' }}</div>
+                 <div class="text-[9px] text-slate-400 font-medium mt-1.5 line-clamp-1 max-w-sm italic tracking-tight">{{ doc.description || 'Tidak ada deskripsi distribusi biaya.' }}</div>
               </td>
 
-              <!-- COA -->
-              <td class="px-4 py-3 align-middle text-center border-l bg-slate-50">
-                 <div class="font-mono font-bold text-indigo-700 tracking-wider bg-indigo-50 inline-flex px-2 py-1 rounded border border-indigo-100">{{ doc.accountCode }}</div>
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50">
+                 <div class="inline-flex px-3 py-1 bg-indigo-50 text-indigo-700 rounded-xl border border-indigo-100 font-mono text-[10px] font-black shadow-sm">{{ doc.accountCode }}</div>
               </td>
 
-              <!-- Amount -->
-              <td class="px-4 py-3 align-middle text-right border-l font-mono tracking-tighter bg-emerald-50/10">
-                 <div class="font-black text-sm text-slate-800">{{ formatRupiah(doc.allocatedAmount) }}</div>
-                 <div class="text-[8px] text-slate-400 font-bold mt-0.5 uppercase tracking-widest">Base Curr</div>
+              <td class="px-6 py-6 align-middle border-l border-slate-50 text-right bg-slate-50/5 group-hover:bg-slate-100 transition-colors">
+                 <div class="font-black text-slate-800 text-sm tabular-nums tracking-tighter">{{ formatRupiah(doc.allocatedAmount) }}</div>
+                 <div class="mt-1 flex items-center justify-end gap-2">
+                    <span class="text-[8px] font-black text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded shadow-sm border border-emerald-100">{{ ((Number(doc.allocatedAmount) / totalAllocated) * 100).toFixed(1) }}% Ratio</span>
+                    <span class="text-[8px] font-black text-slate-400 font-mono uppercase tracking-widest">Base Allocation</span>
+                 </div>
               </td>
 
-              <!-- Action -->
-              <td class="px-4 py-3 text-center border-l">
-                 <Button icon="pi pi-search" severity="secondary" text rounded aria-label="Lihat" @click="viewAlloc(doc)" />
+              <td class="px-8 py-6 align-middle text-right border-l border-slate-50">
+                <Button icon="pi pi-search" rounded text @click="viewAlloc(doc)" class="h-10 w-10 text-slate-300 hover:text-emerald-600 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100" />
               </td>
             </tr>
+
             <tr v-if="!loading && filteredData.length === 0">
-              <td colspan="5" class="px-4 py-16 text-center text-slate-400 border-t italic">
-                Belum ada transaksi alokasi pembebanan / distribusi jurnal yang terekam.
+              <td colspan="5" class="py-32 text-center text-slate-500">
+                 <div class="text-6xl mb-4 opacity-10">📂</div>
+                 <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Buku alokasi masih bersih. Tidak ada transaksi ditemukan.</div>
               </td>
             </tr>
           </tbody>
@@ -94,78 +140,80 @@
       </div>
     </div>
 
-    <!-- Allocation Form Dialog -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-2 sm:p-4 backdrop-blur-sm shadow-xl">
-      <div class="w-full max-w-2xl rounded-xl border bg-slate-50 shadow-2xl flex flex-col max-h-[90vh] animate-fade-in-up md:w-[600px]">
-        
-        <div class="p-6 border-b bg-emerald-900 border-emerald-950 relative overflow-hidden flex justify-between items-start shadow-sm rounded-t-xl">
-          <div class="absolute -left-5 -top-10 opacity-10"><i class="pi pi-calculator text-[150px] text-white"></i></div>
-          <div class="z-10 w-full pr-8">
-             <div class="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                 {{ isReadonly ? 'Rincian Jurnal Alokasi Biaya' : 'Buat Jurnal Distribusi Pembebanan' }}
-             </div>
-             <div class="text-xs font-semibold mt-1 text-emerald-200/80">
-                 Proses pemindahan/alokasi saldo akun overhead sementara (misal: listrik, air, penyusutan) 
-                 ke departemen pusat biaya (cost centers) terkait.
-             </div>
+    <!-- ═══════════════════════════════════ ALLOCATION FORM DIALOG ══════════════════════════════════ -->
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+      <div class="relative w-full max-w-2xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
+        <!-- Header -->
+        <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
+          <div class="relative flex items-center gap-6">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-800 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-emerald-200">
+               <i class="pi pi-calculator text-3xl font-black"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-3">
+                 <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase">Alokasi <span class="text-emerald-600 italic text-2xl">Pusat Biaya</span></h3>
+              </div>
+              <p class="text-[10px] font-black text-slate-400 font-mono uppercase tracking-[0.2em] mt-3 px-1 border-l-2 border-emerald-500 italic">Service Department Cost Distribution Protocol</p>
+            </div>
           </div>
-          <button class="text-white/50 hover:text-white bg-white/10 hover:bg-white/20 w-8 h-8 rounded text-lg font-bold flex items-center justify-center transition-colors z-20 shrink-0 shadow" @click="dialogOpen = false">✕</button>
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="dialogOpen = false" class="relative z-10 hover:bg-emerald-50 h-12 w-12" />
         </div>
 
-        <div class="px-6 py-5 bg-white flex-1 overflow-auto space-y-5">
-           
-           <!-- Grid 1 -->
-           <div class="grid grid-cols-2 gap-4">
-              <div>
-                 <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Periode Pelaporan Lapkel</label>
-                 <select :disabled="isReadonly" v-model="form.periodId" class="w-full border rounded px-3 py-2 text-sm font-bold text-slate-700 bg-slate-50/50 outline-none focus:border-emerald-500 shadow-inner cursor-pointer">
-                    <option value="" disabled>-- Pilih Periode --</option>
-                    <option v-for="p in periods" :key="p.id" :value="p.id">Periode {{ p.periodNo }} / {{ p.fiscalYear?.year || new Date().getFullYear() }}</option>
-                 </select>
+        <div class="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar bg-slate-50/30 pb-32">
+           <!-- Form Section -->
+           <div class="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm space-y-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Periode Pelaporan Lapkel</label>
+                    <select :disabled="isReadonly" v-model="form.periodId" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-100 text-sm font-black text-slate-800 outline-none focus:border-emerald-500 focus:bg-white transition-all shadow-sm cursor-pointer">
+                       <option value="" disabled>-- Pilih Periode --</option>
+                       <option v-for="p in periods" :key="p.id" :value="p.id">Periode {{ p.periodNo }} / {{ p.fiscalYear?.year || new Date().getFullYear() }}</option>
+                    </select>
+                 </div>
+                 <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Departemen / Cost Center Terbebani</label>
+                    <select :disabled="isReadonly" v-model="form.costCenterId" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-100 text-sm font-black text-slate-800 outline-none focus:border-emerald-500 focus:bg-white transition-all shadow-sm cursor-pointer">
+                       <option value="" disabled>-- Pilih Pusat Biaya --</option>
+                       <option v-for="c in costCenters" :key="c.id" :value="c.id">[{{ c.code }}] {{ c.name }}</option>
+                    </select>
+                 </div>
               </div>
-              <div>
-                 <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Departemen / Cost Center Terbebani</label>
-                 <select :disabled="isReadonly" v-model="form.costCenterId" class="w-full border rounded px-3 py-2 text-sm font-bold text-slate-700 bg-slate-50/50 outline-none focus:border-emerald-500 shadow-inner cursor-pointer">
-                    <option value="" disabled>-- Pilih Pusat Biaya --</option>
-                    <option v-for="c in costCenters" :key="c.id" :value="c.id">[{{ c.code }}] {{ c.name }}</option>
-                 </select>
-              </div>
-           </div>
 
-           <!-- Grid 2 -->
-           <div class="grid grid-cols-2 gap-4">
-              <div>
-                 <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Nomor Referensi (Bukti Memorial / JV)</label>
-                 <input :disabled="isReadonly" type="text" v-model="form.referenceNo" class="w-full border rounded px-3 py-2 text-sm font-bold font-mono text-slate-800 bg-white outline-none focus:border-emerald-500 shadow-inner" placeholder="Contoh: JV-2026-088" />
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Nomor Referensi (Bukti JV)</label>
+                    <input :disabled="isReadonly" type="text" v-model="form.referenceNo" placeholder="No. Dokumen Asli" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-50 text-sm font-black text-slate-800 outline-none focus:border-emerald-500 focus:bg-white transition-all font-mono shadow-sm" />
+                 </div>
+                 <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Chart of Account (Rekening)</label>
+                    <select :disabled="isReadonly" v-model="form.accountCode" class="w-full h-14 px-5 rounded-2xl bg-indigo-50 border-2 border-indigo-100 text-[11px] font-black text-indigo-700 outline-none focus:border-indigo-500 focus:bg-white transition-all font-mono shadow-sm cursor-pointer">
+                       <option value="" disabled>-- Pilih Akun COA --</option>
+                       <option v-for="c in coaAccounts" :key="c.id" :value="c.code">{{ c.code }} - {{ c.name }}</option>
+                    </select>
+                 </div>
               </div>
-<div>
-                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Kode Chart of Account (Rekening)</label>
-                  <select :disabled="isReadonly" v-model="form.accountCode" class="w-full border rounded px-3 py-2 text-sm font-bold font-mono text-indigo-700 bg-indigo-50/30 border-indigo-200 outline-none focus:border-indigo-500 shadow-inner cursor-pointer">
-                     <option value="" disabled>-- Pilih Akun COA --</option>
-                     <option v-for="c in coaAccounts" :key="c.id" :value="c.code">{{ c.code }} - {{ c.name }}</option>
-                  </select>
-               </div>
-           </div>
 
-           <!-- Amount -->
-           <div>
-              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Total Nilai Alokasi Terdistribusi (Rp)</label>
-              <div class="relative">
-                 <div class="absolute left-3 top-2.5 font-black text-slate-400">Rp</div>
-                 <input :disabled="isReadonly" type="number" v-model.number="form.allocatedAmount" class="w-full border rounded pl-10 pr-3 py-2 text-xl font-black font-mono text-emerald-800 bg-emerald-50/30 border-emerald-200 outline-none focus:border-emerald-500 shadow-inner" placeholder="0" />
+              <div class="space-y-2">
+                 <label class="text-[10px] font-black text-emerald-600 uppercase tracking-widest px-1 italic">Total Nilai Alokasi Terdistribusi (IDR)</label>
+                 <div class="relative">
+                    <span class="absolute left-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300">RP</span>
+                    <input :disabled="isReadonly" type="number" v-model.number="form.allocatedAmount" placeholder="0" class="w-full h-24 pl-16 pr-6 rounded-[1.5rem] bg-emerald-50/50 border-2 border-emerald-100 text-4xl font-black text-emerald-800 outline-none focus:border-emerald-500 focus:bg-white transition-all shadow-xl font-mono tabular-nums" />
+                 </div>
               </div>
-           </div>
 
-           <!-- Notes -->
-           <div>
-              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Rincian Narasi / Deskripsi Analisa</label>
-              <textarea :disabled="isReadonly" v-model="form.description" rows="3" class="w-full border rounded px-3 py-2 text-sm text-slate-700 bg-white outline-none focus:border-emerald-500 shadow-inner leading-relaxed" placeholder="Rincian lengkap perhitungan BOP dan rasio yang digunakan..."></textarea>
+              <div class="space-y-2">
+                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 italic">Rincian Narasi / Deskripsi Analisa Alokasi</label>
+                 <textarea :disabled="isReadonly" v-model="form.description" rows="4" placeholder="Rincian lengkap perhitungan BOP..." class="w-full p-8 rounded-[2rem] bg-slate-50 border-2 border-slate-50 text-sm font-medium text-slate-700 outline-none focus:border-emerald-500 focus:bg-white transition-all shadow-sm leading-relaxed"></textarea>
+              </div>
            </div>
         </div>
 
-        <div class="p-4 border-t bg-white flex justify-end items-center rounded-b-xl gap-3 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.05)] z-20">
-          <Button label="Tutup Dialog" severity="secondary" size="small" @click="dialogOpen = false" outlined class="bg-slate-50 border-slate-300 font-bold px-4" />
-          <Button v-if="!isReadonly && canManage" label="Post Jurnal Distribusi" severity="info" size="large" :loading="saving" :disabled="saving || !form.costCenterId || !form.periodId || form.allocatedAmount <= 0" @click="save" class="bg-emerald-600 border-none text-white font-bold tracking-wide hover:bg-emerald-700 shadow-sm h-10 px-8 rounded-lg" icon="pi pi-check" />
+        <!-- Footer Actions -->
+        <div class="p-8 border-t border-slate-100 bg-white shadow-[0_-20px_40px_rgba(0,0,0,0.02)] flex justify-end gap-3 relative z-20">
+           <Button label="Batalkan" severity="secondary" text @click="dialogOpen = false" class="h-14 px-8 font-black text-[10px] uppercase tracking-widest text-slate-400 hover:text-slate-600" />
+           <Button v-if="!isReadonly && canManage" label="Post Jurnal Distribusi" icon="pi pi-check" :loading="saving" :disabled="saving || !form.costCenterId || !form.periodId || form.allocatedAmount <= 0" @click="save"
+             class="h-14 px-10 rounded-[1.25rem] bg-emerald-800 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-emerald-100 hover:scale-[1.02] active:scale-95 transition-all" />
         </div>
       </div>
     </div>
@@ -177,6 +225,10 @@
 const api = useApi();
 const auth = useAuthStore();
 
+const success = ref('');
+const error = ref('');
+const showMsg = (refVar: any, msg: string) => { refVar.value = msg; setTimeout(() => { refVar.value = null; }, 3000); };
+
 const canManage = computed(() => auth.hasPermission('finance.cost-center.manage') || true);
 
 const data = ref<any[]>([]);
@@ -186,6 +238,7 @@ const coaAccounts = ref<any[]>([]);
 
 const search = ref('');
 const filterPeriod = ref('');
+const filterType = ref('');
 const loading = ref(false);
 const saving = ref(false);
 
@@ -248,6 +301,9 @@ const filteredData = computed(() => {
        x.costCenter?.name?.toLowerCase().includes(q)
     );
   }
+  if (filterType.value) {
+    list = list.filter(x => x.costCenter?.type === filterType.value);
+  }
   return list;
 });
 
@@ -305,11 +361,11 @@ async function save() {
          referenceNo: form.referenceNo,
          description: form.description
      });
-     alert('Alokasi Biaya berhasil didistribusikan ke jurnal pusat!');
+     showMsg(success, 'Alokasi Biaya berhasil didistribusikan ke jurnal pusat!');
      dialogOpen.value = false;
-     load();
+     await load();
   } catch(e) {
-     alert('Gagal memproses alokasi. Harap perhatikan input form.');
+     showMsg(error, 'Gagal memproses alokasi. Harap perhatikan input form.');
   } finally {
      saving.value = false;
   }
@@ -321,9 +377,14 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.animate-scale-in { animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 </style>

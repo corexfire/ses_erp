@@ -3,12 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   srcDir: 'app',
   devtools: { enabled: true },
-  app: {
-    warnHandler: (msg, _instance, _trace) => {
-      if (msg.includes('Slot "default" invoked outside')) return;
-      console.warn(msg);
-    }
-  },
+  app: {},
   modules: ['@pinia/nuxt', '@nuxtjs/tailwindcss'],
   css: [
     'primeicons/primeicons.css',
@@ -16,6 +11,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
+      // @ts-ignore
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL ?? 'http://localhost:4123',
     },
   },

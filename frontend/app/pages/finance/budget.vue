@@ -1,139 +1,184 @@
 <template>
-  <div class="space-y-6">
-    <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-fuchsia-600 relative overflow-hidden">
-      <div class="absolute right-[-20px] top-[-20px] opacity-10 pointer-events-none">
-        <i class="pi pi-briefcase text-[150px] text-fuchsia-900"></i>
-      </div>
+  <div class="space-y-4">
+    <!-- ═══════════════════════════════════ HEADER (Premium Budget Engine) ══════════════════════════════════ -->
+    <div v-if="success" class="mx-6 mt-6 bg-emerald-50 text-emerald-700 p-4 rounded-2xl border border-emerald-200 text-sm font-black flex items-center gap-3 animate-fade-in-up">
+      <i class="pi pi-check-circle text-xl"></i> {{ success }}
+    </div>
+    <div v-if="error" class="mx-6 mt-6 bg-rose-50 text-rose-700 p-4 rounded-2xl border border-rose-200 text-sm font-black flex items-center gap-3 animate-fade-in-up">
+      <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-fuchsia-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-fuchsia-100/50"></div>
       
-      <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 relative z-10">
-        <div>
-          <div class="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-             <i class="pi pi-calculator text-fuchsia-600"></i> Corporate Budgeting (Anggaran F&B)
-          </div>
-          <div class="mt-1 text-sm text-slate-600 font-medium">
-             Perencanaan pos pembelanjaan cabang (Cost Center) tahunan dan realisasi limit biaya (Variance Analysis).
-          </div>
+      <div class="relative">
+        <div class="flex items-center gap-3 mb-2">
+           <span class="px-3 py-1 bg-fuchsia-800 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-fuchsia-100">Fiscal Planning</span>
+           <span class="text-slate-300">/</span>
+           <span class="text-[10px] font-bold text-fuchsia-600 uppercase tracking-widest tracking-tighter">Manajemen Pagu Anggaran</span>
         </div>
-        <div class="flex gap-2">
-           <Button v-if="canManage" label="+ Rencana Anggaran" size="small" bg="bg-fuchsia-600" class="text-white font-bold border-none shrink-0 cursor-pointer shadow-sm hover:bg-fuchsia-700" icon="pi pi-plus" @click="showDialog = true" />
+        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Budgeting <span class="text-fuchsia-600 italic font-medium">Strategis</span></h1>
+        <p class="text-slate-500 text-sm font-medium max-w-2xl leading-relaxed mt-3 uppercase tracking-tight opacity-70 border-l-2 border-fuchsia-500 pl-4">Perencanaan limit biaya departemen dan analisis varians realisasi pembelanjaan cabang guna menjaga integritas kas perusahaan.</p>
+      </div>
+
+      <div class="flex items-center gap-3 relative">
+        <div class="text-right mr-4 hidden lg:block">
+           <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Pagu (Global Limit)</div>
+           <div class="text-2xl font-black text-fuchsia-700 tabular-nums tracking-tighter">{{ formatRupiah(totalBudget) }}</div>
         </div>
+        <Button v-if="canManage" label="+ PROPOSAL ANGGARAN" icon="pi pi-plus" severity="help" @click="showDialog = true"
+          class="h-14 px-8 rounded-[1.25rem] bg-fuchsia-700 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-fuchsia-100 hover:scale-[1.05] active:scale-95 transition-all text-fuchsia-100 shadow-none border-none" />
       </div>
     </div>
 
-    <!-- Quick Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white border rounded-lg p-4 shadow-sm relative overflow-hidden">
-           <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 relative z-10">Total Anggaran Sistem</div>
-           <div class="text-xl font-black font-mono text-slate-800 relative z-10">{{ budgets.length }} Pos Induk</div>
+    <!-- Variance Analytics Board (KPI Cards) -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mx-6">
+        <div class="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50 text-slate-900 shadow-none border-none">
+           <div class="flex justify-between items-center text-slate-900 border-none">
+              <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">Budget Pos Induk</div>
+              <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shadow-sm"><i class="pi pi-briefcase"></i></div>
+           </div>
+           <div class="mt-4 text-2xl font-black text-slate-800 tabular-nums tracking-tighter">{{ budgets.length }} Active Lines</div>
         </div>
-        <div class="bg-fuchsia-50 border border-fuchsia-200 rounded-lg p-4 shadow-sm">
-           <div class="text-[10px] font-bold text-fuchsia-700 uppercase tracking-widest mb-1">Total Pagu (Limit Cost)</div>
-           <div class="text-xl font-black font-mono text-fuchsia-800">{{ formatRupiah(totalBudget) }}</div>
+
+        <div class="bg-slate-900 rounded-[2rem] p-6 shadow-xl relative overflow-hidden group transition-all hover:translate-y-[-5px] text-slate-900 shadow-none border-none">
+           <div class="absolute right-[-20px] top-[-20px] opacity-10 group-hover:scale-125 transition-transform duration-700 text-fuchsia-500"><i class="pi pi-calculator text-[120px]"></i></div>
+           <div class="text-[9px] font-black text-fuchsia-400 uppercase tracking-widest mb-1 relative z-10 italic">Total Pagu Disetujui</div>
+           <div class="text-xl font-black text-white tabular-nums tracking-tighter relative z-10">{{ formatRupiah(totalBudget) }}</div>
         </div>
-        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 shadow-sm">
-           <div class="text-[10px] font-bold text-indigo-700 uppercase tracking-widest mb-1">Realisasi (Terpakai)</div>
-           <div class="text-xl font-black font-mono text-indigo-800 flex items-center gap-2">
-               {{ formatRupiah(totalSpent) }}
+
+        <div class="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50 text-slate-900 shadow-none border-none">
+           <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Realisasi (Spent)</div>
+           <div class="text-xl font-black text-indigo-600 tabular-nums tracking-tighter">{{ formatRupiah(totalSpent) }}</div>
+           <div class="mt-3 flex items-center gap-2">
+              <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                 <div class="h-full transition-all duration-700" :class="getBarColorGlobal" :style="{ width: (totalSpent / totalBudget * 100) + '%' }"></div>
+              </div>
+              <span class="text-[8px] font-black text-slate-400 opacity-60">{{ Math.round(totalSpent / totalBudget * 100) }}%</span>
            </div>
         </div>
-        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 shadow-sm">
-           <div class="text-[10px] font-bold text-emerald-700 uppercase tracking-widest mb-1">Total Tersisa (Variance)</div>
-           <div class="text-xl font-black font-mono text-emerald-800">{{ formatRupiah(totalBudget - totalSpent) }}</div>
+
+        <div class="bg-emerald-50 border border-emerald-100 rounded-[2rem] p-6 shadow-sm flex flex-col justify-between group transition-all hover:bg-emerald-100 text-slate-900 shadow-none border-none">
+           <div class="text-[9px] font-black text-emerald-700 uppercase tracking-widest mb-1 italic">Total Variance Sisa</div>
+           <div class="text-xl font-black text-emerald-800 tabular-nums tracking-tighter">{{ formatRupiah(totalBudget - totalSpent) }}</div>
+           <p class="text-[8px] font-bold text-emerald-600 uppercase mt-2 opacity-60">Balance Available To Use</p>
         </div>
     </div>
 
-    <!-- Master Budget List -->
-    <div class="rounded-xl border bg-white p-5 shadow-sm">
-      <div class="mb-5 flex flex-wrap items-center justify-between gap-3 bg-slate-50 border p-3 rounded-lg">
-        <div class="flex items-center gap-3 w-full md:w-auto">
-          <InputText v-model="search" placeholder="Cari Kode Beban..." class="w-full md:w-64 text-sm font-mono border-slate-300" />
-          <select v-model="filterYear" class="p-2 border border-slate-300 rounded-lg text-sm bg-white text-slate-700 w-32 outline-none focus:border-fuchsia-500 font-semibold" @change="load">
+    <!-- Budget Flux Grid (Master List) -->
+    <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up uppercase tracking-tighter border-none shadow-none text-slate-900">
+      
+      <!-- Ledger Control Bar -->
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden text-slate-900">
+        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-fuchsia-200/10 rounded-full blur-3xl"></div>
+        
+        <div class="relative flex items-center gap-4">
+           <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-xl transition-transform hover:rotate-6 shadow-slate-200"><i class="pi pi-database text-xl"></i></div>
+           <div>
+              <h3 class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em] leading-none mb-1">Log Pagu Anggaran FY</h3>
+              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono italic">Budgetary Matrix Flux</p>
+           </div>
+        </div>
+
+        <div class="relative flex flex-wrap items-center gap-3">
+          <div class="flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm p-1">
+            <i class="pi pi-search px-3 text-slate-300 text-xs text-slate-900"></i>
+            <InputText v-model="search" placeholder="Cari Kode Beban / Pos..." class="border-none bg-transparent text-[10px] h-9 w-64 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none text-slate-900" />
+          </div>
+
+          <select v-model="filterYear" class="h-11 rounded-2xl border-slate-200 px-4 text-[9px] font-black uppercase tracking-widest text-slate-600 focus:border-fuchsia-500 outline-none bg-white shadow-sm transition-all text-slate-900" @change="load">
             <option value="">Semua Tahun</option>
-            <option value="2024">2024</option>
-            <option value="2025">2025</option>
-            <option value="2026">2026</option>
-            <option value="2027">2027</option>
+            <option value="2024">FY 2024</option>
+            <option value="2025">FY 2025</option>
+            <option value="2026">FY 2026</option>
+            <option value="2027">FY 2027</option>
           </select>
-          <Button label="Sinkron Realisasi" severity="secondary" size="small" :disabled="loading" @click="load" icon="pi pi-refresh" />
+          
+          <Button icon="pi pi-refresh" severity="secondary" text rounded @click="load" :loading="loading" class="h-10 w-10 text-slate-400 hover:text-fuchsia-600 bg-white border shadow-sm text-slate-900 border-none shadow-none" />
         </div>
       </div>
 
-      <div class="overflow-x-auto rounded-lg border">
-        <table class="w-full text-sm">
-          <thead class="bg-slate-100 text-left text-[11px] text-slate-600 border-b border-slate-200 uppercase tracking-widest font-bold">
+      <div class="overflow-x-auto custom-scrollbar text-slate-900 border-none shadow-none">
+        <table class="w-full text-sm font-medium border-none shadow-none">
+          <thead class="bg-white text-left font-bold border-b border-slate-50 text-slate-900 uppercase">
             <tr>
-              <th class="px-4 py-3 min-w-[150px]">Ref Anggaran (ID)</th>
-              <th class="px-3 py-3 border-l text-center">Tahun (FY)</th>
-              <th class="px-3 py-3 border-l text-center">COA Pembebanan</th>
-              <th class="px-4 py-3 bg-fuchsia-50/50 border-l text-right w-36">Batas Pagu (Amount)</th>
-              <th class="px-4 py-3 bg-indigo-50/50 border-l text-right w-36">Sudah Terpakai (Spent)</th>
-              <th class="px-4 py-3 border-l text-center w-48">Analisis Sisa (Variance)</th>
-              <th class="px-4 py-3 text-center border-l w-28">Status</th>
-              <th class="px-3 py-3 text-center border-l w-24">Aksi</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[220px]">Referensi Pagu / FY</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center w-32 bg-slate-50/50">Account COA</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-right w-44">Limit Anggaran</th>
+              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-right bg-slate-50/50 w-44">Realisasi Real</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50">Analisis Varians (Sisa)</th>
+              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-24 border-l border-slate-50">Opsi</th>
             </tr>
           </thead>
-          <tbody class="divide-y relative text-[12px]">
-             <tr v-if="loading">
-              <td colspan="8" class="px-4 py-16 text-center text-sm text-slate-500">
-                <i class="pi pi-spinner pi-spin mr-2 text-fuchsia-500"></i> Membaca tabel Pagu Pabrik...
+          <tbody class="divide-y divide-slate-50 text-slate-900 border-none shadow-none">
+            <tr v-if="loading">
+              <td colspan="6" class="py-24 text-center">
+                <i class="pi pi-spinner pi-spin text-4xl text-fuchsia-500 opacity-20 text-slate-900"></i>
+                <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-fuchsia-600">Sinkronisasi limit pagu pabrik...</div>
               </td>
             </tr>
-            <tr v-for="b in filteredBudgets" v-else :key="b.id" class="transition hover:bg-slate-50">
-              <td class="px-4 py-3 align-middle">
-                 <div class="font-black text-slate-800 font-mono">{{ b.budgetNo }}</div>
-                 <div class="text-[10px] font-bold text-slate-500 mt-0.5 truncate max-w-[120px]" :title="b.costCenter?.name || 'Kantor Pusat'">
-                    {{ b.costCenter?.name || '- Kantor Pusat -' }}
-                 </div>
+            
+            <tr v-for="b in filteredBudgets" v-else :key="b.id" class="transition-all hover:bg-fuchsia-50/20 group border-l-4 border-l-transparent hover:border-l-fuchsia-400 text-slate-900 border-none shadow-none">
+              <td class="px-8 py-6 align-middle border-none shadow-none text-slate-900">
+                <div class="flex items-center gap-4 text-slate-900">
+                   <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
+                      <i class="pi pi-calculator text-lg"></i>
+                   </div>
+                   <div>
+                      <div class="font-black text-[11px] text-slate-800 tracking-tight group-hover:text-fuchsia-700 transition-colors italic uppercase">{{ b.budgetNo }}</div>
+                      <div class="flex items-center gap-2 mt-1">
+                         <span class="font-mono text-[9px] font-black text-slate-400 uppercase tracking-widest italic leading-none border-none shadow-none bg-transparent">FY {{ b.fiscalYear }}</span>
+                         <span class="px-1.5 py-0.5 bg-slate-100 text-slate-500 text-[6px] font-black uppercase tracking-widest rounded leading-none border border-slate-200">{{ b.costCenter?.name || 'Kantor Pusat' }}</span>
+                      </div>
+                   </div>
+                </div>
               </td>
-              <td class="px-3 py-3 align-middle text-center border-l font-bold text-slate-600">{{ b.fiscalYear }}</td>
-              
-              <!-- Account -->
-              <td class="px-4 py-3 align-middle text-center border-l">
-                 <span class="bg-slate-100 border text-slate-600 px-1 py-0.5 rounded text-[10px] font-black tracking-widest inline-block">{{ b.accountCode }}</span>
+
+              <td class="px-6 py-6 align-middle text-center border-l border-slate-50 font-black text-slate-500 text-[10px] bg-slate-50/5 group-hover:bg-slate-50 transition-colors uppercase italic border-none shadow-none">
+                 <span class="px-2 py-1 bg-white border border-slate-200 rounded-lg shadow-sm text-slate-900">#{{ b.accountCode }}</span>
               </td>
               
-              <!-- Amount -->
-              <td class="px-4 py-3 align-middle text-right bg-fuchsia-50/30 border-l font-mono font-bold text-fuchsia-800">{{ formatRupiah(b.amount) }}</td>
+              <td class="px-6 py-6 align-middle border-l border-slate-50 text-right group-hover:bg-fuchsia-50/10 transition-colors border-none shadow-none text-slate-900">
+                 <div class="font-black text-fuchsia-800 text-sm tabular-nums tracking-tighter">{{ formatRupiah(b.amount) }}</div>
+                 <div class="text-[8px] font-black text-slate-300 font-mono mt-0.5 uppercase tracking-widest italic">Budget Limit</div>
+              </td>
 
-              <!-- Spent -->
-              <td class="px-4 py-3 align-middle text-right bg-indigo-50/30 border-l font-mono font-bold text-indigo-700">{{ formatRupiah(b.spentAmount) }}</td>
+              <td class="px-6 py-6 align-middle border-l border-slate-50 text-right bg-slate-50/5 group-hover:bg-slate-50 transition-colors border-none shadow-none text-slate-900">
+                 <div class="font-black text-slate-600 text-sm tabular-nums tracking-tighter">{{ formatRupiah(b.spentAmount) }}</div>
+                 <div class="text-[8px] font-black text-slate-300 font-mono mt-0.5 uppercase tracking-widest italic">Total Realized Cost</div>
+              </td>
 
-              <!-- Variance Bar -->
-              <td class="px-4 py-3 align-middle border-l">
-                  <div class="flex flex-col gap-1 w-full relative">
-                      <div class="flex justify-between text-[9px] font-bold">
-                          <span :class="{'text-rose-600': isOverBudget(b), 'text-emerald-600': !isOverBudget(b)}">
-                              Sisa: {{ formatRupiah(Number(b.amount) - Number(b.spentAmount)) }}
+              <td class="px-8 py-6 align-middle border-l border-slate-50 border-none shadow-none text-slate-900">
+                 <div class="space-y-2 text-slate-900 border-none shadow-none">
+                    <div class="flex justify-between items-center text-slate-900 border-none shadow-none">
+                       <div class="flex items-center gap-2 text-slate-900">
+                          <span class="text-[9px] font-black uppercase transition-colors" :class="isOverBudget(b) ? 'text-rose-600' : 'text-slate-400'">
+                             Sisa: {{ formatRupiah(Number(b.amount) - Number(b.spentAmount)) }}
                           </span>
-                          <span class="text-slate-500">{{ getPercentage(b) }}%</span>
-                      </div>
-                      <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                          <div class="h-full rounded-full transition-all duration-500" 
-                               :class="getBarColor(b)" :style="`width: ${Math.min(100, getPercentage(b))}%`"></div>
-                      </div>
-                  </div>
-              </td>
-
-              <!-- Status -->
-              <td class="px-4 py-3 align-middle text-center border-l">
-                 <div :class="{
-                    'bg-slate-100 text-slate-600 border-slate-200': b.status === 'DRAFT',
-                    'bg-emerald-100 text-emerald-800 border-emerald-200': b.status === 'APPROVED'
-                 }" class="px-2 py-0.5 rounded text-[9px] font-black tracking-widest border inline-block uppercase shadow-sm">
-                    {{ b.status }}
+                          <i v-if="getPercentage(b) >= 90" class="pi pi-exclamation-circle text-rose-500 text-xs animate-pulse" title="Peringatan: Penggunaan > 90%"></i>
+                       </div>
+                       <span class="text-[9px] font-black" :class="getBarColorText(b)">{{ getPercentage(b) }}%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-50 shadow-inner text-slate-900 border-none shadow-none">
+                       <div class="h-full rounded-full transition-all duration-1000" :class="getBarColor(b)" :style="`width: ${Math.min(100, getPercentage(b))}%`"></div>
+                    </div>
                  </div>
               </td>
-              
-              <!-- Action -->
-              <td class="px-3 py-3 text-center border-l">
-                <Button v-if="b.status === 'DRAFT'" label="Setujui" size="small" bg="bg-emerald-600" class="text-white text-[10px] border-none px-2 py-1.5 w-full font-bold hover:bg-emerald-700 shadow-sm" icon="pi pi-check" @click="approve(b)" />
-                <div v-else class="text-[10px] text-slate-400 font-bold"><i class="pi pi-lock"></i> Aktif</div>
+
+              <td class="px-8 py-6 align-middle text-right border-l border-slate-50 border-none shadow-none text-slate-900">
+                 <div class="flex items-center justify-end gap-2 text-slate-900 border-none shadow-none">
+                    <div v-if="b.status === 'APPROVED'" class="text-[9px] font-black text-emerald-500 uppercase tracking-widest opacity-60 italic"><i class="pi pi-lock-open mr-1"></i> Terkunci</div>
+                    <div v-else class="opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100 text-slate-900 border-none shadow-none">
+                       <Button icon="pi pi-check" rounded text severity="success" class="h-10 w-10 hover:bg-emerald-50 text-slate-900" @click="approve(b)" />
+                    </div>
+                 </div>
               </td>
             </tr>
+
             <tr v-if="!loading && filteredBudgets.length === 0">
-              <td colspan="8" class="px-4 py-16 text-center text-slate-400 border-t italic">
-                Belum ada perancangan anggaran F&B yang diseminasi pada tahun yang dipilih.
+              <td colspan="6" class="py-32 text-center text-slate-500 block text-slate-900 border-none shadow-none">
+                 <div class="text-6xl mb-4 opacity-10">💼</div>
+                 <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Pabrik Anda tidak memiliki rencana anggaran aktif.</div>
               </td>
             </tr>
           </tbody>
@@ -141,56 +186,64 @@
       </div>
     </div>
 
-    <!-- Create Budget Dialog -->
-    <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div class="w-full max-w-lg rounded-2xl border bg-white shadow-2xl flex flex-col max-h-[90vh] animate-fade-in-up">
-        <div class="p-5 border-b bg-slate-50 flex justify-between items-center rounded-t-2xl">
-          <div>
-             <div class="text-lg font-black text-slate-800">Proposal Anggaran (Budget Pagu)</div>
-             <div class="text-xs text-slate-500 mt-1">Buat persetujuan limit biaya baru untuk Divisi atau Cabang tertentu.</div>
-          </div>
-          <button class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full font-bold transition-colors shadow-inner" @click="showDialog = false">✕</button>
-        </div>
-
-        <div class="p-6 overflow-auto flex-1 space-y-4 bg-white">
-          
-           <div class="space-y-1">
-              <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Nomor Master Anggaran</label>
-              <input v-model="form.budgetNo" class="w-full border rounded-lg px-3 py-2 text-sm font-black font-mono text-slate-800 outline-none focus:border-fuchsia-500 shadow-inner" placeholder="BUD-2026-..." />
-           </div>
-           
-           <div class="grid grid-cols-2 gap-4">
-               <div class="space-y-1">
-                  <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Tahun Fiskal</label>
-                  <input type="number" v-model.number="form.fiscalYear" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-fuchsia-500 shadow-inner bg-slate-50" min="2020" max="2100" />
-               </div>
-               <div class="space-y-1">
-                  <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Akun COA Biaya</label>
-                  <input type="number" v-model.number="form.accountCode" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-fuchsia-500 shadow-inner" placeholder="Misal: 6100" />
-               </div>
-           </div>
-
-           <div class="space-y-1 border border-fuchsia-200 bg-fuchsia-50/50 p-4 rounded-xl shadow-inner mt-2">
-              <label class="text-[11px] font-bold text-fuchsia-800 uppercase tracking-widest"><i class="pi pi-database"></i> Batas Maksimal (Limit Anggaran)</label>
-              <div class="relative mt-2">
-                 <div class="absolute left-3 top-3.5 font-black text-fuchsia-600">Rp</div>
-                 <input type="number" v-model.number="form.amount" class="w-full border-2 border-fuchsia-300 rounded-lg pl-10 pr-3 py-3 text-lg font-black font-mono text-fuchsia-800 outline-none focus:border-fuchsia-500 shadow-inner bg-white" placeholder="0" />
+    <!-- ═══════════════════════════════════ CREATE BUDGET DIALOG (Non-Dismissible) ══════════════════════════════════ -->
+    <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
+      <div class="relative w-full max-w-lg bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white border-b-[12px] border-b-fuchsia-900">
+        <!-- Header -->
+        <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-64 h-64 bg-fuchsia-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
+          <div class="relative flex items-center gap-6 text-slate-900 border-none shadow-none">
+            <div class="w-16 h-16 rounded-[1.5rem] bg-fuchsia-700 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-fuchsia-200">
+               <i class="pi pi-calculator text-3xl font-black"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-3 text-slate-900">
+                 <h3 class="text-3xl font-black text-slate-800 tracking-tight leading-none uppercase italic">Proposal <span class="text-fuchsia-600 italic text-2xl">Anggaran</span></h3>
               </div>
-              <div class="text-[10px] text-fuchsia-700 mt-2 font-medium">Ini adalah wewenang maksimal yang boleh terpakai (spent) oleh akun ini.</div>
-           </div>
-           
-           <div class="bg-blue-50/50 p-3 rounded-lg border border-blue-100 flex items-start gap-3 mt-4">
-             <i class="pi pi-check-square text-blue-600 mt-0.5"></i>
-             <div class="text-[11px] text-blue-800 font-medium">
-                Setelah tersimpan, Anggaran akan berstatus <b>DRAFT</b> dan memerlukan tombol "Setujui" agar di kunci dalam laporan Realisasi Pabrik.
-             </div>
+              <p class="text-[10px] font-black text-slate-400 font-mono uppercase tracking-[0.2em] mt-3 px-1 border-l-2 border-fuchsia-500 italic">Strategic Fiscal On-boarding</p>
+            </div>
           </div>
-
+          <Button icon="pi pi-times" severity="secondary" rounded text @click="showDialog = false" class="relative z-10 hover:bg-fuchsia-50 h-14 w-14" />
         </div>
 
-        <div class="p-4 border-t bg-slate-50 flex justify-end gap-3 rounded-b-2xl z-20 shadow-[0_-5px_15px_-5px_rgba(0,0,0,0.05)]">
-           <Button label="Batal" severity="secondary" @click="showDialog = false" class="bg-white text-slate-700 font-bold px-6 shadow-sm border border-slate-300" />
-           <Button label="Buat Pagu Anggaran" :loading="saving" @click="save" bg="bg-fuchsia-600" class="text-white font-bold px-6 border-none shadow-sm hover:bg-fuchsia-700" icon="pi pi-check" />
+        <div class="flex-1 overflow-y-auto p-10 space-y-8 custom-scrollbar bg-slate-50/30 text-slate-900 border-none">
+           <!-- Form Context -->
+           <div class="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm space-y-8 text-slate-900 border-none">
+              <div class="space-y-4 text-slate-900 border-none">
+                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Nomor Identitas Anggaran (Ref No)</label>
+                 <input v-model="form.budgetNo" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-50 text-[11px] font-black text-slate-800 outline-none focus:border-fuchsia-500 shadow-sm uppercase font-mono italic" placeholder="BUD-2026-XXXX" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-8 text-slate-900 border-none">
+                 <div class="space-y-4 text-slate-900 border-none">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tahun Anggaran (Fiscal)</label>
+                    <input type="number" v-model.number="form.fiscalYear" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-50 text-sm font-black text-slate-800 outline-none focus:border-fuchsia-500 shadow-sm font-mono" />
+                 </div>
+                 <div class="space-y-4 text-slate-900 border-none">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Kode Akun COA (Debet)</label>
+                    <input v-model="form.accountCode" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-50 text-sm font-black text-slate-800 outline-none focus:border-fuchsia-500 shadow-sm font-mono italic" placeholder="E.g 6100" />
+                 </div>
+              </div>
+
+              <!-- Limit Input -->
+              <div class="p-8 bg-fuchsia-50/50 rounded-[2.5rem] border border-fuchsia-100 space-y-6 text-slate-900 border-none">
+                 <div class="space-y-4 text-slate-900 border-none">
+                    <label class="text-[11px] font-black text-fuchsia-700 uppercase tracking-widest block text-center italic">Ambang Batas Maksimal (Budget Limit)</label>
+                    <div class="relative text-slate-900 border-none">
+                       <span class="absolute left-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-fuchsia-300">RP</span>
+                       <input type="number" v-model.number="form.amount" placeholder="0" class="w-full h-24 pl-16 pr-6 rounded-[2rem] bg-white border-2 border-fuchsia-100 text-4xl font-black text-fuchsia-900 outline-none focus:border-fuchsia-500 transition-all shadow-xl font-mono tabular-nums" />
+                    </div>
+                    <p class="text-[8px] font-bold text-fuchsia-400 text-center uppercase tracking-widest italic leading-relaxed">Limit ini akan dikunci dalam sistem realisasi dan tidak dapat dilampaui tanpa otorisasi tambahan.</p>
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="p-8 border-t border-slate-100 bg-white shadow-[0_-20px_40px_rgba(0,0,0,0.02)] flex justify-end gap-3 relative z-20 text-slate-900 border-none">
+           <Button label="Batalkan" severity="secondary" text @click="showDialog = false" class="h-14 px-8 font-black text-[10px] uppercase tracking-widest text-slate-400 hover:text-slate-600 border-none shadow-none text-slate-900" />
+           <Button label="Daftarkan Pagu Anggaran" icon="pi pi-check-circle" :loading="saving" :disabled="saving" @click="save"
+             class="h-14 px-10 rounded-[1.25rem] bg-fuchsia-700 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-fuchsia-100 hover:scale-[1.02] active:scale-95 transition-all text-fuchsia-100 border-none shadow-none" />
         </div>
       </div>
     </div>
@@ -200,6 +253,10 @@
 <script setup lang="ts">
 const api = useApi();
 const auth = useAuthStore();
+
+const success = ref('');
+const error = ref('');
+const showMsg = (refVar: any, msg: string) => { refVar.value = msg; setTimeout(() => { refVar.value = null; }, 3000); };
 
 const canManage = computed(() => auth.hasPermission('finance.budget.create') || true);
 
@@ -240,10 +297,24 @@ const getPercentage = (b: any) => {
 
 const getBarColor = (b: any) => {
     const pct = getPercentage(b);
-    if(pct >= 95) return 'bg-rose-600';
-    if(pct >= 75) return 'bg-amber-500';
-    return 'bg-emerald-500';
+    if(pct >= 90) return 'bg-rose-600 shadow-[0_0_12px_rgba(225,29,72,0.4)] animate-pulse';
+    if(pct >= 75) return 'bg-amber-500 shadow-sm';
+    return 'bg-emerald-500 shadow-sm';
 };
+
+const getBarColorText = (b: any) => {
+    const pct = getPercentage(b);
+    if(pct >= 90) return 'text-rose-700 italic';
+    if(pct >= 75) return 'text-amber-600';
+    return 'text-emerald-700';
+};
+
+const getBarColorGlobal = computed(() => {
+    const pct = (totalSpent.value / totalBudget.value) * 100;
+    if(pct >= 90) return 'bg-rose-500';
+    if(pct >= 75) return 'bg-amber-400';
+    return 'bg-emerald-400';
+});
 
 const isOverBudget = (b: any) => {
     return Number(b.amount) - Number(b.spentAmount) < 0;
@@ -267,38 +338,43 @@ const load = async () => {
     const params = filterYear.value ? `?fiscalYear=${filterYear.value}` : '';
     const res = await api.get(`/finance/budget${params}`);
     
-    if (res.data?.budgets) budgets.value = res.data.budgets;
-    else if (res.budgets) budgets.value = res.budgets;
+    // Safe Extraction
+    const payload: any = res.data || res;
+    budgets.value = payload?.budgets || [];
 
   } catch (e) {
-    console.warn(e);
+    console.warn('Failed loading budget plans', e);
   } finally {
     loading.value = false;
   }
 };
 
 const save = async () => {
-  if(!form.budgetNo || !form.accountCode || form.amount <= 0) return alert('Mohon lengkapi seluruh form pendataan Anggaran secara valid.');
+  if(!form.budgetNo || !form.accountCode || form.amount <= 0) {
+      return showMsg(error, 'Mohon lengkapi seluruh form pendataan Anggaran secara valid.');
+  }
   saving.value = true;
   try {
     await api.post('/finance/budget', form);
+    showMsg(success, 'Proposal pagu anggaran masuk berhasil didaftarkan ke draf audit.');
     showDialog.value = false;
-    Object.assign(form, { budgetNo: '', accountCode: '', amount: 0 });
+    Object.assign(form, { budgetNo: '', accountCode: '', amount: 0, fiscalYear: new Date().getFullYear() });
     await load();
   } catch(e) {
-     alert('Gagal merekam proposal anggaran masuk ke arsip ERP.');
+     showMsg(error, 'Gagal merekam proposal anggaran. Periksa koneksi data.');
   } finally { 
      saving.value = false; 
   }
 };
 
 const approve = async (b: any) => {
-    if(!confirm(`Peringatan: Persetujuan untuk Pagu Anggaran ${b.budgetNo} senilai ${formatRupiah(b.amount)} akan didistribusikan ke cabang. Lanjutkan?`)) return;
+    if(!confirm(`Otorisasi Pagu: Apakah Anda yakin ingin mengunci Anggaran ${b.budgetNo} senilai ${formatRupiah(b.amount)} untuk Tahun ${b.fiscalYear}?`)) return;
     try {
         await api.post(`/finance/budget/${b.id}/approve`);
+        showMsg(success, `Pagu Anggaran ${b.budgetNo} telah diaktifkan secara global.`);
         await load();
     } catch(e) {
-        alert('Gagal menyetujui Pagu Anggaran!');
+        showMsg(error, 'Gagal mengeksekusi otorisasi anggaran!');
     }
 }
 
@@ -306,9 +382,14 @@ onMounted(() => { load(); });
 </script>
 
 <style scoped>
-.animate-fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+.animate-fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.animate-scale-in { animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+.custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 </style>

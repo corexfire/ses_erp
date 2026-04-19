@@ -217,7 +217,7 @@
     <!-- Master Registry Hubs -->
     <!-- 1. Costing Calculation Hub -->
     <div v-if="calcDialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
-      <div class="w-[calc(100%-2rem)] max-w-xl bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
+      <div class="w-[calc(100%-2rem)] max-w-2xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900 shadow-[0_0_50px_rgba(5,150,105,0.2)]">
         
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
@@ -284,7 +284,7 @@
 
     <!-- 2. Cost Breakdown Registry Hub -->
     <div v-if="detailDialogOpen && selectedCost" class="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
-      <div class="w-[calc(100%-2rem)] max-w-4xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
+      <div class="w-[calc(100%-2rem)] max-w-4xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900 shadow-[0_0_50px_rgba(5,150,105,0.2)]">
         
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
@@ -360,19 +360,6 @@
       </div>
     </div>
 
-    <!-- Final Toast Notification System -->
-    <transition name="toast">
-      <div v-if="toastActive" class="fixed bottom-10 left-1/2 z-[200] -translate-x-1/2 overflow-hidden rounded-2xl bg-emerald-950 border-emerald-900 border-2 px-10 py-5 text-white shadow-3xl flex items-center gap-5 animate-fade-in-up backdrop-blur-md">
-        <div class="bg-emerald-500 h-10 w-10 flex items-center justify-center rounded-xl shadow-lg shadow-emerald-500/20">
-           <i class="pi pi-check-circle text-lg font-black"></i>
-        </div>
-        <div class="flex flex-col">
-           <span class="text-[10px] font-black uppercase tracking-widest opacity-50">Sistem Costing Terverifikasi</span>
-           <span class="text-xs font-black uppercase tracking-tight">{{ toastMsg }}</span>
-        </div>
-      </div>
-    </transition>
-
   </div>
 </template>
 
@@ -380,27 +367,20 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 
 const api = useApi();
+const { $toast, $swal } = useNuxtApp();
 
-const costs = ref([]);
-const workOrders = ref([]);
+const costs = ref<any[]>([]);
+const workOrders = ref<any[]>([]);
 const selectedPeriod = ref('2026-04');
 const calcDialogOpen = ref(false);
 const detailDialogOpen = ref(false);
-const selectedCost = ref(null);
+const selectedCost = ref<any>(null);
 
 const calcForm = reactive({
   workOrderId: '',
   period: '2026-04',
   type: 'FINAL_BATCH'
 });
-
-// Final Toast State
-const toastActive = ref(false);
-const toastMsg = ref('');
-const showToast = (msg: string) => {
-  toastMsg.value = msg; toastActive.value = true;
-  setTimeout(() => { toastActive.value = false; }, 4000);
-};
 
 // Computed Stats (Dashboard Telemetry)
 const totalCogm = computed(() => costs.value.reduce((s: number, c: any) => s + Number(c.totalCost), 0));
@@ -420,7 +400,7 @@ const load = async () => {
       label: `${wo.code} - ${wo.finishedGood?.name}`,
       id: wo.id
     }));
-  } catch (e) { showToast('Gagal memuat sinkronisasi audit biaya'); }
+  } catch (e) { $toast.fire({ icon: 'error', title: 'Gagal memuat sinkronisasi audit biaya' }); }
 };
 
 const openCostingDialog = () => {
@@ -430,10 +410,10 @@ const openCostingDialog = () => {
 const runCalculation = async () => {
   try {
     await api.post('/manufacturing/costing/calculate', calcForm);
-    showToast('Kalkulasi COGM Batch Selesai & Terakumulasi');
+    $toast.fire({ icon: 'success', title: 'Kalkulasi COGM Batch Selesai & Terakumulasi' });
     calcDialogOpen.value = false;
     await load();
-  } catch (e: any) { showToast(e.response?.data?.message || 'Gagal mengeksekusi kalkulasi biaya'); }
+  } catch (e: any) { $toast.fire({ icon: 'error', title: e.response?.data?.message || 'Gagal mengeksekusi kalkulasi biaya' }); }
 };
 
 const viewDetail = (cost: any) => {
@@ -444,9 +424,9 @@ const viewDetail = (cost: any) => {
 const finalizeCost = async (cost: any) => {
   try {
     await api.post('/manufacturing/costing/finalize', { costId: cost.id });
-    showToast('Periode Settlement Berhasil Diposting ke GL');
+    $toast.fire({ icon: 'success', title: 'Periode Settlement Berhasil Diposting ke GL' });
     await load();
-  } catch (e: any) { showToast(e.response?.data?.message || 'Terjadi kesalahan pada settlement biaya'); }
+  } catch (e: any) { $toast.fire({ icon: 'error', title: e.response?.data?.message || 'Terjadi kesalahan pada settlement biaya' }); }
 };
 
 const getCategoryIcon = (cat: string) => {
