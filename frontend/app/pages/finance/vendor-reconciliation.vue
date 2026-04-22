@@ -1,55 +1,53 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { 
-  ArrowRightLeft, 
-  CheckCircle2, 
-  XCircle, 
-  AlertCircle, 
-  Search, 
-  FileCheck, 
-  Truck, 
-  Receipt,
-  FileText,
-  Filter,
-  ArrowRight
-} from 'lucide-vue-next'
+const api = useApi();
+const reconciliations = ref<any[]>([]);
+const loading = ref(false);
 
-const reconciliations = ref([
-  {
-    id: 'REC-001',
-    vendor: 'PT Teknologi Digital Indonesia',
-    po: 'PO-2024-001',
-    grn: 'GRN-2024-001',
-    invoice: 'PINV-2024-001',
-    amount: 83250000,
-    status: 'Matched',
-    variance: 0
-  },
-  {
-    id: 'REC-002',
-    vendor: 'Global Logistics Corp',
-    po: 'PO-2024-045',
-    grn: 'GRN-2024-088',
-    invoice: 'INV-GLC-99',
-    amount: 15200000,
-    status: 'Qty Mismatch',
-    variance: -1500000
-  },
-  {
-    id: 'REC-003',
-    vendor: 'Indo Hardware Supply',
-    po: 'PO-2024-012',
-    grn: 'Pending',
-    invoice: 'INV-IHS-55',
-    amount: 4200000,
-    status: 'Missing GRN',
-    variance: 0
+const selectedMatch = ref<any>(null);
+const showDetail = ref(false);
+const detailLoading = ref(false);
+
+const formatCurrency = (val: number | string) => {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(Number(val));
+};
+
+const loadMatches = async () => {
+  loading.value = true;
+  try {
+    const res = await api.get('/finance/vendor-reconciliation');
+    reconciliations.value = res.matches || res.data?.matches || [];
+  } catch (e) {
+    console.error('Failed to load reconciliations:', e);
+  } finally {
+    loading.value = false;
   }
-])
+};
 
-const formatCurrency = (val: number) => {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val)
-}
+const openDetail = async (id: string) => {
+  detailLoading.value = true;
+  showDetail.value = true;
+  try {
+    const res = await api.get(`/finance/vendor-reconciliation/${id}`);
+    selectedMatch.value = res.match || res.data?.match;
+  } catch (e) {
+    console.error('Failed to load match detail:', e);
+  } finally {
+    detailLoading.value = false;
+  }
+};
+
+const getStatusClass = (status: string) => {
+  switch (status) {
+    case 'MATCHED': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+    case 'QTY_MISMATCH': return 'bg-amber-100 text-amber-700 border-amber-200';
+    case 'PRICE_MISMATCH': return 'bg-rose-100 text-rose-700 border-rose-200';
+    default: return 'bg-slate-100 text-slate-700 border-slate-200';
+  }
+};
+
+onMounted(() => {
+  loadMatches();
+});
 </script>
 
 <template>
@@ -57,7 +55,7 @@ const formatCurrency = (val: number) => {
     <!-- Header -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-indigo-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Finance</span>
@@ -68,59 +66,29 @@ const formatCurrency = (val: number) => {
           <p class="text-slate-500 text-sm font-medium max-w-xl">Validasi PO, GRN, dan Invoice untuk akurasi Accounts Payable dengan 3-Way Match.</p>
         </div>
         <div class="flex gap-3">
-          <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-100">
-            <FileCheck class="w-4 h-4" />
-            Run Auto-Match
+          <button @click="loadMatches" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-indigo-100">
+            <i class="pi pi-refresh" />
+            Muat Data
           </button>
         </div>
       </div>
     </div>
 
     <!-- Overview Banners -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4 transition-all hover:shadow-xl hover:-translate-y-1">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4 transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="p-4 bg-indigo-100 rounded-3xl text-indigo-600 text-xl border shadow-inner"><i class="pi pi-file-edit"></i></div>
         <div>
           <div class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">3-Way Match Validation</div>
           <p class="text-xs text-slate-600 leading-relaxed font-medium">Validasi otomatis Purchase Order, Goods Receipt, dan Invoice untuk mendeteksi variance.</p>
         </div>
       </div>
-      <div class="p-6 rounded-xl bg-indigo-900 text-white shadow-xl flex items-start gap-4 border border-indigo-800 transition-all hover:bg-indigo-950">
+      <div class="p-4 rounded-xl bg-indigo-900 text-white shadow-xl flex items-start gap-4 border border-indigo-800 transition-all hover:bg-indigo-950">
         <div class="p-4 bg-indigo-600 rounded-3xl text-white text-xl shadow-lg animate-pulse"><i class="pi pi-check-circle"></i></div>
         <div>
           <div class="text-[10px] font-black uppercase text-indigo-300 tracking-widest mb-1">AP Accuracy Assurance</div>
           <p class="text-xs text-indigo-100/80 leading-relaxed font-medium">Pastikan setiap pembayaran sudah sesuai dengan barang yang diterima dan pesanan yang dipesan.</p>
         </div>
-      </div>
-    </div>
-
-    <!-- Stats Matrix -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-        <div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
-          <CheckCircle2 class="w-32 h-32 text-emerald-500" />
-        </div>
-        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Perfect Matches</p>
-        <h3 class="text-4xl font-black text-emerald-600 leading-none">142</h3>
-        <p class="text-xs text-slate-500 mt-2 font-medium italic">88% of total volume</p>
-      </div>
-
-      <div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-        <div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
-          <AlertCircle class="w-32 h-32 text-amber-500" />
-        </div>
-        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Pending Exceptions</p>
-        <h3 class="text-4xl font-black text-amber-600 leading-none">18</h3>
-        <p class="text-xs text-slate-500 mt-2 font-medium italic">Require manual review</p>
-      </div>
-
-      <div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-        <div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
-          <Receipt class="w-32 h-32 text-indigo-500" />
-        </div>
-        <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Uninvoiced Goods</p>
-        <h3 class="text-4xl font-black text-indigo-600 leading-none">Rp 215M</h3>
-        <p class="text-xs text-slate-500 mt-2 font-medium italic">Accrual estimate</p>
       </div>
     </div>
 
@@ -131,98 +99,161 @@ const formatCurrency = (val: number) => {
           <i class="pi pi-list text-indigo-500 bg-indigo-50 p-1.5 rounded"></i>
           Active Reconciliation Queue
         </h3>
-        <div class="flex items-center gap-2">
-          <div class="relative">
-            <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-            <input type="text" placeholder="Cari PO / Vendor..." class="bg-slate-50 border border-slate-200 text-xs rounded-xl pl-9 pr-4 py-2 w-48 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-300 font-medium" />
-          </div>
-          <button class="p-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-500 hover:text-indigo-600 hover:border-indigo-300 transition-colors">
-            <Filter class="w-4 h-4" />
-          </button>
-        </div>
       </div>
 
-      <div class="p-6 space-y-4">
-        <div v-for="rec in reconciliations" :key="rec.id" class="p-5 bg-slate-50/50 border border-slate-200 rounded-2xl hover:bg-white hover:shadow-lg transition-all group">
-          <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-6 flex-1 min-w-0">
-              <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center border border-slate-200 shadow-sm">
-                <FileText :class="[rec.status === 'Matched' ? 'text-emerald-500' : 'text-amber-500']" class="w-6 h-6" />
+      <div class="p-4 space-y-4">
+        <div v-if="loading" class="py-20 text-center text-slate-400 font-bold italic">
+          <i class="pi pi-spin pi-spinner mr-2"></i> Memuat data rekonsiliasi...
+        </div>
+        
+        <div v-else-if="reconciliations.length === 0" class="py-20 text-center text-slate-400 font-bold italic">
+          Belum ada data rekonsiliasi vendor.
+        </div>
+
+        <div v-for="rec in reconciliations" :key="rec.id" v-else class="p-5 bg-slate-50/50 border border-slate-200 rounded-2xl hover:bg-white hover:shadow-lg transition-all group">
+          <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-4 flex-1 min-w-0">
+              <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center border border-slate-200 shadow-sm font-black text-indigo-600 text-xs">
+                3WM
               </div>
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-3">
-                  <h4 class="font-bold text-slate-800 truncate group-hover:text-indigo-600 transition-colors">{{ rec.vendor }}</h4>
+                  <h4 class="font-bold text-slate-800 truncate group-hover:text-indigo-600 transition-colors uppercase">{{ rec.order?.supplier?.name }}</h4>
                   <span 
-                    :class="[rec.status === 'Matched' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-rose-100 text-rose-700 border-rose-200']"
+                    :class="getStatusClass(rec.status)"
                     class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest border"
                   >
                     {{ rec.status }}
                   </span>
                 </div>
-                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ rec.id }} • Main Branch</p>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ rec.code }}</p>
               </div>
             </div>
 
             <div class="flex items-center gap-4 lg:gap-8 flex-1 justify-center py-4 lg:py-0 border-y lg:border-none border-slate-200/50 w-full lg:w-auto">
               <div class="text-center">
                 <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">PO</p>
-                <p class="text-xs font-black text-slate-700 px-3 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm">{{ rec.po }}</p>
+                <p class="text-xs font-black text-slate-700 px-3 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm">{{ rec.order?.code }}</p>
               </div>
-              <ArrowRight class="w-4 h-4 text-slate-400 hidden lg:block" />
+              <i class="pi pi-arrow-right text-slate-300 hidden lg:block" />
               <div class="text-center">
                 <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">GRN</p>
-                <p :class="[rec.grn === 'Pending' ? 'text-rose-600 italic' : 'text-slate-700']" class="text-xs font-black px-3 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm">
-                  {{ rec.grn }}
-                </p>
+                <p class="text-xs font-black text-slate-700 px-3 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm">{{ rec.receipt?.code }}</p>
               </div>
-              <ArrowRight class="w-4 h-4 text-slate-400 hidden lg:block" />
+              <i class="pi pi-arrow-right text-slate-300 hidden lg:block" />
               <div class="text-center">
                 <p class="text-[10px] text-slate-500 font-bold uppercase mb-1">Invoice</p>
-                <p class="text-xs font-black text-slate-700 px-3 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm">{{ rec.invoice }}</p>
+                <p class="text-xs font-black text-slate-700 px-3 py-1.5 bg-white rounded-lg border border-slate-200 shadow-sm">{{ rec.invoice?.code }}</p>
               </div>
             </div>
 
             <div class="text-right shrink-0">
-              <p class="text-sm font-black text-slate-800 mb-1">{{ formatCurrency(rec.amount) }}</p>
-              <p v-if="rec.variance !== 0" class="text-[10px] font-bold text-rose-600 uppercase tracking-widest">
-                Variance: {{ formatCurrency(rec.variance) }}
+              <p class="text-sm font-black text-slate-800 mb-1">{{ formatCurrency(rec.invoice?.grandTotal || 0) }}</p>
+              <p v-if="Number(rec.varianceAmount) !== 0" class="text-[10px] font-bold text-rose-600 uppercase tracking-widest">
+                Variance: {{ formatCurrency(rec.varianceAmount) }}
               </p>
-              <button class="mt-2 text-xs font-black text-indigo-600 hover:text-indigo-800 transition-colors uppercase tracking-widest flex items-center gap-1 ml-auto">
-                Details <ArrowRight class="w-3 h-3" />
+              <button @click="openDetail(rec.id)" class="mt-2 text-xs font-black text-indigo-600 hover:text-indigo-800 transition-colors uppercase tracking-widest flex items-center gap-1 ml-auto">
+                Details <i class="pi pi-arrow-right text-[10px]" />
               </button>
             </div>
           </div>
         </div>
       </div>
-
-      <div class="p-5 border-t border-slate-100 bg-slate-50/30 flex justify-between items-center text-xs text-slate-500">
-        <span>Displaying matching candidates for last 30 days</span>
-        <button class="flex items-center gap-2 hover:text-indigo-600 transition-colors uppercase font-black text-[10px] tracking-widest">
-          Download Match Report <FileText class="w-3 h-3" />
-        </button>
-      </div>
     </div>
+
+    <!-- Detail Dialog -->
+    <Dialog v-model:visible="showDetail" modal header="Match Analysis Details" :style="{ width: '70vw' }" class="p-fluid">
+      <template #header>
+          <div class="flex items-center gap-3">
+              <div class="p-2 bg-indigo-50 rounded-lg"><i class="pi pi-search-plus text-indigo-600"></i></div>
+              <div>
+                  <div class="text-lg font-black text-slate-800 leading-none">Analysis Detail 3-Way Match</div>
+                  <div class="text-[10px] font-bold uppercase text-slate-400 tracking-widest mt-1">Audit Trail & Line Comparison</div>
+              </div>
+          </div>
+      </template>
+
+      <div v-if="detailLoading" class="py-20 text-center">
+          <i class="pi pi-spin pi-spinner text-4xl text-indigo-500"></i>
+          <p class="mt-4 text-slate-500 font-bold uppercase tracking-widest text-xs">Menganalisis Dokumen...</p>
+      </div>
+
+      <div v-else-if="selectedMatch" class="space-y-6 pt-4">
+          <!-- Summary Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div class="p-4 bg-slate-50 border rounded-xl">
+                  <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Vendor</div>
+                  <div class="font-bold text-slate-800">{{ selectedMatch.order?.supplier?.name }}</div>
+              </div>
+              <div class="p-4 bg-slate-50 border rounded-xl">
+                  <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">PO Total</div>
+                  <div class="font-bold text-slate-800">{{ formatCurrency(selectedMatch.order?.grandTotal || 0) }}</div>
+              </div>
+              <div class="p-4 bg-slate-50 border rounded-xl">
+                  <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Invoice Total</div>
+                  <div class="font-bold text-emerald-700">{{ formatCurrency(selectedMatch.invoice?.grandTotal || 0) }}</div>
+              </div>
+              <div class="p-4 border rounded-xl" :class="selectedMatch.status === 'MATCHED' ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'">
+                  <div class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Status</div>
+                  <div class="font-black" :class="selectedMatch.status === 'MATCHED' ? 'text-emerald-700' : 'text-rose-700'">{{ selectedMatch.status }}</div>
+              </div>
+          </div>
+
+          <!-- Comparison Table -->
+          <div class="border rounded-xl overflow-hidden">
+              <table class="w-full text-xs">
+                  <thead class="bg-slate-100 text-slate-600 font-black uppercase tracking-widest text-[10px] border-b">
+                      <tr>
+                          <th class="px-4 py-3 text-left">Item Description / SKU</th>
+                          <th class="px-4 py-3 text-center border-l bg-blue-50/50">PO Qty</th>
+                          <th class="px-4 py-3 text-center border-l bg-amber-50/50">GRN Qty</th>
+                          <th class="px-4 py-3 text-center border-l bg-emerald-50/50">INV Qty</th>
+                          <th class="px-4 py-3 text-right border-l">Variance Notes</th>
+                      </tr>
+                  </thead>
+                  <tbody class="divide-y relative">
+                      <!-- We assume items correlate by description/item for this simple view -->
+                      <tr v-for="(item, idx) in selectedMatch.order?.items" :key="idx" class="hover:bg-slate-50/50 transition-colors">
+                          <td class="px-4 py-4 font-bold text-slate-700">{{ item.description }}</td>
+                          <td class="px-4 py-4 text-center border-l bg-blue-50/20 font-mono font-bold">{{ item.qty }}</td>
+                          <td class="px-4 py-4 text-center border-l bg-amber-50/20 font-mono font-bold">
+                              {{ selectedMatch.receipt?.items?.find(it => it.description === item.description)?.qty || 0 }}
+                          </td>
+                          <td class="px-4 py-4 text-center border-l bg-emerald-50/20 font-mono font-bold">
+                              {{ selectedMatch.invoice?.items?.find(it => it.description === item.description)?.qty || 0 }}
+                          </td>
+                          <td class="px-4 py-4 text-right border-l italic text-slate-400">
+                               <span v-if="item.qty != (selectedMatch.receipt?.items?.find(it => it.description === item.description)?.qty || 0)" class="text-rose-600 font-bold">
+                                   Mismatch detected
+                               </span>
+                               <span v-else class="text-emerald-600">Verified OK</span>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+
+          <div v-if="selectedMatch.discrepancyNotes" class="p-4 bg-amber-50 border border-amber-100 rounded-xl flex gap-3 text-amber-800">
+              <i class="pi pi-exclamation-triangle mt-1"></i>
+              <div>
+                  <div class="text-[10px] font-black uppercase tracking-widest mb-1">Catatan Ketidaksesuaian</div>
+                  <p class="text-xs font-semibold">{{ selectedMatch.discrepancyNotes }}</p>
+              </div>
+          </div>
+      </div>
+      
+      <div v-else class="py-10 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">
+          Match record not found.
+      </div>
+    </Dialog>
   </div>
 </template>
 
 <style scoped>
-:deep(.p-datatable-thead > tr > th) {
-  background: transparent !important;
-  font-size: 10px !important;
-  font-weight: 900 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.1em !important;
-  color: #94a3b8 !important;
-  border-bottom: 2px solid #f1f5f9 !important;
-  padding: 1.25rem 1rem !important;
+:deep(.p-dialog-content) {
+    padding: 0 1.5rem 1.5rem 1.5rem !important;
 }
-
-:deep(.p-datatable-tbody > tr) {
-  background: transparent !important;
-  transition: all 0.2s ease;
-}
-
-:deep(.p-datatable-tbody > tr:hover) {
-  background: rgba(241, 245, 249, 0.5) !important;
+:deep(.p-dialog-header) {
+    border-bottom: 1px solid #f1f5f9;
 }
 </style>

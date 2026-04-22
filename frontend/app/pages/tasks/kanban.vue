@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900 overflow-hidden relative">
     <!-- Header / Navigation Bar -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-6 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-4 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       
       <div class="relative flex items-center gap-4">
@@ -36,7 +36,7 @@
     <main class="mx-6 p-2 h-[calc(100vh-200px)] overflow-hidden">
       
       <!-- 1. KANBAN VIEW -->
-      <div v-if="activeView === 'kanban'" class="h-full flex gap-6 overflow-x-auto pb-4 custom-scrollbar">
+      <div v-if="activeView === 'kanban'" class="h-full flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
         <div v-for="column in columns" :key="column.status" class="flex-shrink-0 w-80 flex flex-col gap-4">
           <div class="flex items-center justify-between px-2">
             <div class="flex items-center gap-3">
@@ -51,7 +51,7 @@
             group="tasks"
             item-key="id"
             class="flex-1 space-y-4 p-2 bg-slate-100/50 rounded-xl border border-dashed border-slate-200 min-h-[200px] overflow-y-auto custom-scrollbar"
-            @change="(e) => onDragChange(e, column.status)"
+            @change="onDragChange($event, column.status)"
           >
             <template #item="{ element: task }">
               <div @click="editTask(task)" class="group bg-white p-5 rounded-xl border border-slate-200 hover:border-indigo-400 hover:shadow-xl hover:shadow-indigo-100/50 hover:-translate-y-1 transition-all cursor-grab active:cursor-grabbing relative overflow-hidden">
@@ -101,7 +101,7 @@
 
       <!-- 2. GANTT VIEW -->
       <div v-else-if="activeView === 'gantt'" class="h-full bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col shadow-sm">
-        <div class="flex items-center gap-8 p-6 border-b border-slate-100 bg-slate-50/50">
+        <div class="flex items-center gap-8 p-4 border-b border-slate-100 bg-slate-50/50">
            <div class="flex items-center gap-3">
               <i class="pi pi-calendar-times text-indigo-600"></i>
               <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Linimasa Proyek</span>
@@ -118,7 +118,7 @@
            </div>
         </div>
 
-        <div class="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar p-6">
+        <div class="flex-1 overflow-x-auto overflow-y-auto custom-scrollbar p-4">
           <div class="min-w-[1200px]">
             <!-- Timeline Header -->
             <div class="grid grid-cols-[250px_1fr] border-b border-slate-200 pb-4">
@@ -274,8 +274,7 @@
 import { ref, reactive, onMounted, computed } from 'vue';
 import { useApi } from '@/composables/useApi';
 import { useToast } from 'primevue/usetoast';
-import { format, differenceInDays, startOfMonth, addMonths } from 'date-fns';
-import isSameDay from 'date-fns/isSameDay';
+import { format, differenceInDays, startOfMonth, addMonths, isSameDay } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import draggable from 'vuedraggable';
 
@@ -529,7 +528,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .custom-scrollbar::-webkit-scrollbar {
   height: 6px;
   width: 4px;

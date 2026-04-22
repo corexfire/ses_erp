@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -23,8 +23,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -88,46 +88,42 @@
        </DataTable>
     </div>
 
-    <!-- P&L Reconciliation Drawer -->
-    <Drawer v-model:visible="showDrawer" header="Rincian Koreksi Fiskal" position="right" class="w-[600px]">
+    <!-- P&L Reconciliation Dialog -->
+    <Dialog v-model:visible="showDrawer" header="Rincian Koreksi Fiskal" modal class="w-full max-w-2xl overflow-hidden !rounded-xl" :pt="{
+       header: { class: 'p-8 border-b border-slate-100' },
+       content: { class: '!p-0 max-h-[70vh] overflow-y-auto bg-slate-50' },
+       footer: { class: 'p-4 border-t border-slate-100 bg-white' }
+    }">
        <div class="flex flex-col h-full bg-slate-50 overflow-hidden" v-if="report">
-          <!-- Document Controls -->
-          <div class="p-6 bg-white border-b border-slate-100 flex justify-between items-center shrink-0">
-             <div>
-                <h3 class="font-black text-[13px] uppercase tracking-widest text-slate-900">Periode: {{ report.period }}</h3>
-                <p class="text-[10px] text-slate-500 font-bold">Dihasilkan dari basis rekonsiliasi Buku Besar.</p>
-             </div>
-             <Button icon="pi pi-print" severity="secondary" rounded outlined />
-          </div>
-
           <!-- Document Content -->
-          <div class="flex-1 overflow-y-auto p-8 pt-4">
+          <div class="flex-1 p-8">
              <div class="space-y-8">
                 <!-- Summary Section -->
                 <div class="grid grid-cols-2 gap-4">
-                   <div class="p-6 rounded-xl bg-white border border-slate-100 shadow-sm">
+                   <div class="p-4 rounded-2xl bg-white border border-slate-100 shadow-sm">
                       <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Laba Komersial</p>
-                      <h4 class="text-xl font-black text-slate-900">{{ fmtNumber(report.bookIncome) }}</h4>
+                      <h4 class="text-2xl font-black text-slate-900 tracking-tighter">{{ fmtNumber(report.bookIncome) }}</h4>
                    </div>
-                   <div class="p-6 rounded-xl bg-amber-900 text-white shadow-xl">
+                   <div class="p-4 rounded-2xl bg-amber-900 text-white shadow-xl">
                       <p class="text-[10px] font-black text-amber-200/50 uppercase tracking-widest mb-1">Laba Fiskal</p>
-                      <h4 class="text-xl font-black">{{ fmtNumber(report.fiscalIncome) }}</h4>
+                      <h4 class="text-2xl font-black tracking-tighter">{{ fmtNumber(report.fiscalIncome) }}</h4>
                    </div>
                 </div>
 
                 <!-- Detail Corrections -->
-                <div class="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-                   <div class="p-6 bg-slate-50/50 border-b border-slate-100">
+                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                   <div class="p-4 border-b border-slate-100 flex items-center justify-between">
                       <h5 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Perincian Koreksi</h5>
+                      <span class="px-3 py-1 rounded-full bg-slate-100 text-[9px] font-black text-slate-500">{{ report.adjustments?.length || 0 }} Item</span>
                    </div>
                    <div class="divide-y divide-slate-50">
-                      <div v-for="(adj, i) in report.adjustments" :key="i" class="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                      <div v-for="(adj, i) in report.adjustments" :key="i" class="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                          <div class="flex gap-4 items-center">
                             <div :class="['w-8 h-8 rounded-full flex items-center justify-center text-xs', adj.type === 'POSITIVE' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-600']">
                                <i :class="adj.type === 'POSITIVE' ? 'pi pi-plus' : 'pi pi-minus'"></i>
                             </div>
                             <div class="flex flex-col">
-                               <span class="text-[11px] font-black text-slate-800 uppercase">{{ adj.item }}</span>
+                               <span class="text-[11px] font-black text-slate-800 uppercase tracking-tight">{{ adj.item }}</span>
                                <span class="text-[9px] font-bold text-slate-400 uppercase">PENYESUAIAN {{ adj.type === 'POSITIVE' ? 'POSITIF' : 'NEGATIF' }}</span>
                             </div>
                          </div>
@@ -136,23 +132,29 @@
                          </span>
                       </div>
                    </div>
-                   <div class="p-6 bg-slate-900 text-white flex justify-between items-center">
+                   <div class="p-4 bg-slate-900 text-white flex justify-between items-center">
                       <span class="text-[10px] font-black uppercase tracking-widest">Koreksi Fiskal Bersih</span>
-                      <span class="text-lg font-black">{{ fmtNumber(report.difference) }}</span>
+                      <span class="text-xl font-black tracking-tighter">{{ fmtNumber(report.difference) }}</span>
                    </div>
                 </div>
 
-                <div class="p-6 rounded-xl bg-indigo-50 border border-indigo-100 flex items-start gap-4">
+                <div class="p-4 rounded-[2rem] bg-indigo-50 border border-indigo-100 flex items-start gap-4">
                    <i class="pi pi-info-circle text-indigo-600 mt-1"></i>
                    <div class="space-y-1">
-                      <p class="text-[11px] font-black text-indigo-900 uppercase">Kecerdasan Sistem</p>
+                      <p class="text-[11px] font-black text-indigo-900 uppercase tracking-widest">Kecerdasan Sistem</p>
                       <p class="text-[10px] text-indigo-700 leading-relaxed font-medium">Rekonsiliasi mencakup analisis dari {{ report.journalSummary }} entri jurnal pada periode berjalan. Semua biaya representasi dan kenikmatan telah disesuaikan secara otomatis sesuai undang-undang perpajakan.</p>
                    </div>
                 </div>
              </div>
           </div>
        </div>
-    </Drawer>
+       <template #footer>
+          <div class="flex gap-3 justify-end w-full">
+             <Button label="Tutup Report" severity="secondary" text @click="showDrawer = false" class="text-[10px] font-black uppercase" />
+             <Button label="Cetak Report" icon="pi pi-print" class="p-button-rounded font-black text-[10px] uppercase shadow-lg px-8" />
+          </div>
+       </template>
+    </Dialog>
 
   </div>
 </template>

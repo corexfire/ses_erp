@@ -16,7 +16,7 @@ export class ApController {
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
     const invoices = await this.prisma.supplierInvoice.findMany({
       where: { tenantId: req.user.tenantId!, ...(status ? { status } : {}) },
-      include: { payments: true, lines: true },
+      include: { supplier: true, payments: true, lines: true },
       orderBy: [{ invoiceDate: 'desc' }],
       take: 200,
     });
@@ -28,21 +28,21 @@ export class ApController {
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const invoice = await this.prisma.supplierInvoice.findFirst({
       where: { id, tenantId: req.user.tenantId! },
-      include: { payments: true, lines: { orderBy: [{ lineNo: 'asc' }] } },
+      include: { supplier: true, payments: true, lines: { orderBy: [{ lineNo: 'asc' }] } },
     });
     return { invoice };
   }
 
   @Post()
   @RequirePermissions('finance.ap.create')
-  async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { invoiceNo: string; supplierCode: string; invoiceDate: string; dueDate?: string; description?: string; lines: { description: string; qty: number; unitPrice: number; taxCode?: string; amount: number }[] }) {
+  async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { invoiceNo: string; supplierId: string; invoiceDate: string; dueDate?: string; description?: string; lines: { description: string; qty: number; unitPrice: number; taxCode?: string; amount: number }[] }) {
     const totalAmount = body.lines.reduce((sum, l) => sum + (l.amount || 0), 0);
 
     const invoice = await this.prisma.supplierInvoice.create({
       data: {
         tenantId: req.user.tenantId!,
         invoiceNo: body.invoiceNo,
-        supplierCode: body.supplierCode,
+        supplierId: body.supplierId,
         invoiceDate: new Date(body.invoiceDate),
         dueDate: body.dueDate ? new Date(body.dueDate) : null,
         description: body.description,
@@ -98,11 +98,11 @@ export class ApController {
   @RequirePermissions('finance.ap.read')
   async vendorReconciliation(@Req() req: FastifyRequest & { user: AuthUser }, @Query('supplierCode') supplierCode?: string) {
     const where: any = { tenantId: req.user.tenantId!, status: { in: ['OPEN', 'OVERDUE'] } };
-    if (supplierCode) where.supplierCode = supplierCode;
+    if (supplierCode) where.supplier = { code: supplierCode }; // Using relation filter
 
     const invoices = await this.prisma.supplierInvoice.findMany({
       where,
-      include: { payments: true },
+      include: { supplier: true, payments: true },
     });
 
     const reconciliationBySupplier = new Map();
@@ -111,16 +111,17 @@ export class ApController {
       const outstanding = Number(inv.totalAmount) - Number(inv.paidAmount);
       if (outstanding <= 0) continue;
 
-      if (!reconciliationBySupplier.has(inv.supplierCode)) {
-        reconciliationBySupplier.set(inv.supplierCode, {
-          supplierCode: inv.supplierCode,
+      const sCode = (inv as any).supplier?.code || 'N/A';
+      if (!reconciliationBySupplier.has(sCode)) {
+        reconciliationBySupplier.set(sCode, {
+          supplierCode: sCode,
           invoices: [],
           totalInvoices: 0,
           totalOutstanding: 0,
         });
       }
 
-      const entry = reconciliationBySupplier.get(inv.supplierCode);
+      const entry = reconciliationBySupplier.get(sCode);
       entry.invoices.push({
         invoiceNo: inv.invoiceNo,
         invoiceDate: inv.invoiceDate,

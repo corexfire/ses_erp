@@ -15,6 +15,11 @@ const attendance_controller_1 = require("./attendance.controller");
 const payroll_controller_1 = require("./payroll.controller");
 const kpi_expense_controller_1 = require("./kpi-expense.controller");
 const lms_controller_1 = require("./lms/lms.controller");
+const workflow_controller_1 = require("./workflow.controller");
+const financial_controller_1 = require("./financial.controller");
+const productivity_controller_1 = require("./productivity.controller");
+const analytics_controller_1 = require("./analytics.controller");
+const succession_controller_1 = require("./succession.controller");
 let HrisModule = class HrisModule {
 };
 exports.HrisModule = HrisModule;
@@ -33,6 +38,11 @@ exports.HrisModule = HrisModule = __decorate([
             kpi_expense_controller_1.KpiController,
             kpi_expense_controller_1.ExpenseController,
             lms_controller_1.HrisLmsController,
+            workflow_controller_1.HrisWorkflowController,
+            financial_controller_1.HrisFinancialController,
+            productivity_controller_1.HrisProductivityController,
+            analytics_controller_1.HrisAnalyticsController,
+            succession_controller_1.SuccessionController,
         ],
     })
 ], HrisModule);

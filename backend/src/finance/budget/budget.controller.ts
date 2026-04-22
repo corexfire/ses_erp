@@ -19,7 +19,11 @@ export class BudgetController {
   @RequirePermissions('finance.budget.read')
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('fiscalYear') fiscalYear?: number) {
     const where: any = { tenantId: req.user.tenantId! };
-    if (fiscalYear) where.fiscalYear = fiscalYear;
+    if (fiscalYear) {
+      where.fiscalYear = Number(fiscalYear);
+    }
+
+    console.log('Budget List Debug:', { tenantId: where.tenantId, fiscalYear: where.fiscalYear, rawFiscalYear: fiscalYear });
 
     const budgets = await this.prisma.budget.findMany({
       where,

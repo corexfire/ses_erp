@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header Educational Premium -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-indigo-600 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-indigo-600 relative overflow-hidden">
       <div class="absolute right-[0px] top-[-20px] opacity-[0.03] pointer-events-none">
         <i class="pi pi-book text-[170px] text-indigo-900"></i>
       </div>
@@ -158,7 +158,7 @@
           <div class="text-lg font-black text-slate-800 flex items-center gap-2"><i class="pi pi-book text-indigo-600"></i> New Course Module</div>
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="diagCourse = false">✕</button>
         </div>
-        <div class="p-6 flex-1 flex flex-col gap-4">
+        <div class="p-4 flex-1 flex flex-col gap-4">
           <div class="space-y-1.5">
              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Course Curriculum Title</label>
              <input type="text" v-model="formCourse.title" class="w-full border rounded-lg px-3 py-2 text-sm font-bold text-slate-700 outline-none focus:border-indigo-500 shadow-inner" placeholder="E.g. Safety K3 2026" />
@@ -204,7 +204,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="diagEnroll = false">✕</button>
         </div>
         
-        <div class="p-6 flex-1 flex flex-col gap-5">
+        <div class="p-4 flex-1 flex flex-col gap-5">
            
            <!-- Enrollment Context Alert -->
            <div class="bg-indigo-900 border border-indigo-700 p-4 rounded-xl shadow-md text-white">

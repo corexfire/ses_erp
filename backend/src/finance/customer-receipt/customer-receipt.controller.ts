@@ -23,6 +23,10 @@ export class CustomerReceiptController {
 
     const receipts = await this.prisma.customerReceipt.findMany({
       where,
+      include: {
+        customer: true,
+        invoice: true
+      },
       orderBy: { receiptDate: 'desc' },
     });
     return { receipts };
@@ -39,13 +43,18 @@ export class CustomerReceiptController {
 
   @Post()
   @RequirePermissions('finance.customerReceipt.create')
-  async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { receiptNo: string; receiptDate: string; customerCode: string; amount: number; paymentMethod: string; reference?: string; notes?: string }) {
+  async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { receiptNo: string; receiptDate: string; customerId: string; amount: number; paymentMethod: string; reference?: string; notes?: string; invoiceId?: string }) {
+    // Fetch customer to get the code for descriptions
+    const customer = await this.prisma.customer.findFirst({ where: { id: body.customerId, tenantId: req.user.tenantId! } });
+    const customerCode = customer?.code || 'N/A';
+
     const receipt = await this.prisma.customerReceipt.create({
       data: {
         tenantId: req.user.tenantId!,
         receiptNo: body.receiptNo,
         receiptDate: new Date(body.receiptDate),
-        customerCode: body.customerCode,
+        customerId: body.customerId,
+        invoiceId: body.invoiceId,
         amount: body.amount,
         paymentMethod: body.paymentMethod,
         reference: body.reference,
@@ -64,7 +73,7 @@ export class CustomerReceiptController {
             cashAccountId: cashAccounts[0].id,
             transDate: new Date(body.receiptDate),
             transType: 'CREDIT',
-            description: `Receipt from ${body.customerCode}`,
+            description: `Receipt from ${customerCode}`,
             amount: body.amount,
             reference: body.receiptNo,
             status: 'POSTED',
@@ -84,7 +93,7 @@ export class CustomerReceiptController {
             bankAccountId: bankAccounts[0].id,
             transDate: new Date(body.receiptDate),
             transType: 'CREDIT',
-            description: `Receipt from ${body.customerCode}`,
+            description: `Receipt from ${customerCode}`,
             amount: body.amount,
             reference: body.receiptNo,
             status: 'POSTED',
@@ -162,7 +171,7 @@ export class CustomerReceiptController {
         tenantId: user.tenantId!,
         entryNo,
         entryDate: new Date(body.receiptDate),
-        description: `Customer Receipt - ${body.customerCode}`,
+        description: `Customer Receipt - ${customerCode}`,
         referenceNo: body.receiptNo,
         journalType: 'CUSTOMER_RECEIPT',
         totalDebit: amount,
@@ -183,7 +192,7 @@ export class CustomerReceiptController {
               tenantId: user.tenantId!,
               lineNo: 2,
               accountCode: arAccountCode,
-              description: `Piutang ${body.customerCode}`,
+              description: `Piutang ${customerCode}`,
               debit: 0,
               credit: amount,
               referenceId: receipt.id

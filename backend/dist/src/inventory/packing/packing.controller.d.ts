@@ -50,9 +50,9 @@ export declare class PackingController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
+            salesOrderId: string | null;
             warehouseId: string;
             packingDate: Date;
-            salesOrderId: string | null;
         })[];
     }>;
     get(req: FastifyRequest & {
@@ -121,14 +121,14 @@ export declare class PackingController {
                 tenantId: string;
                 description: string;
                 lineNo: number;
+                width: import("@prisma/client-runtime-utils").Decimal | null;
+                height: import("@prisma/client-runtime-utils").Decimal | null;
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 uomCode: string | null;
                 itemId: string | null;
                 boxNo: string | null;
-                height: import("@prisma/client-runtime-utils").Decimal | null;
                 trackingId: string | null;
                 weight: import("@prisma/client-runtime-utils").Decimal | null;
-                width: import("@prisma/client-runtime-utils").Decimal | null;
                 packingId: string;
             })[];
         } & {
@@ -139,9 +139,9 @@ export declare class PackingController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
+            salesOrderId: string | null;
             warehouseId: string;
             packingDate: Date;
-            salesOrderId: string | null;
         };
     }>;
     create(req: FastifyRequest & {
@@ -210,14 +210,14 @@ export declare class PackingController {
                 tenantId: string;
                 description: string;
                 lineNo: number;
+                width: import("@prisma/client-runtime-utils").Decimal | null;
+                height: import("@prisma/client-runtime-utils").Decimal | null;
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 uomCode: string | null;
                 itemId: string | null;
                 boxNo: string | null;
-                height: import("@prisma/client-runtime-utils").Decimal | null;
                 trackingId: string | null;
                 weight: import("@prisma/client-runtime-utils").Decimal | null;
-                width: import("@prisma/client-runtime-utils").Decimal | null;
                 packingId: string;
             })[];
         } & {
@@ -228,9 +228,9 @@ export declare class PackingController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
+            salesOrderId: string | null;
             warehouseId: string;
             packingDate: Date;
-            salesOrderId: string | null;
         };
     }>;
     update(req: FastifyRequest & {
@@ -285,14 +285,14 @@ export declare class PackingController {
                 tenantId: string;
                 description: string;
                 lineNo: number;
+                width: import("@prisma/client-runtime-utils").Decimal | null;
+                height: import("@prisma/client-runtime-utils").Decimal | null;
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 uomCode: string | null;
                 itemId: string | null;
                 boxNo: string | null;
-                height: import("@prisma/client-runtime-utils").Decimal | null;
                 trackingId: string | null;
                 weight: import("@prisma/client-runtime-utils").Decimal | null;
-                width: import("@prisma/client-runtime-utils").Decimal | null;
                 packingId: string;
             })[];
         } & {
@@ -303,9 +303,9 @@ export declare class PackingController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
+            salesOrderId: string | null;
             warehouseId: string;
             packingDate: Date;
-            salesOrderId: string | null;
         };
     }>;
     delete(req: FastifyRequest & {
@@ -365,14 +365,14 @@ export declare class PackingController {
                 tenantId: string;
                 description: string;
                 lineNo: number;
+                width: import("@prisma/client-runtime-utils").Decimal | null;
+                height: import("@prisma/client-runtime-utils").Decimal | null;
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 uomCode: string | null;
                 itemId: string | null;
                 boxNo: string | null;
-                height: import("@prisma/client-runtime-utils").Decimal | null;
                 trackingId: string | null;
                 weight: import("@prisma/client-runtime-utils").Decimal | null;
-                width: import("@prisma/client-runtime-utils").Decimal | null;
                 packingId: string;
             })[];
         } & {
@@ -383,9 +383,9 @@ export declare class PackingController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
+            salesOrderId: string | null;
             warehouseId: string;
             packingDate: Date;
-            salesOrderId: string | null;
         };
     }>;
 }

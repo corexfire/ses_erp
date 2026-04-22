@@ -3,7 +3,7 @@
     <!-- Header (Premium Procurement Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-indigo-400">Governance Core</span>
@@ -21,8 +21,8 @@
     </div>
 
     <!-- Dynamic Procurement KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-indigo-600 text-white shadow-xl flex flex-col justify-between border border-indigo-500 transition-all hover:bg-indigo-700 group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-indigo-600 text-white shadow-xl flex flex-col justify-between border border-indigo-500 transition-all hover:bg-indigo-700 group">
         <div class="text-[10px] font-black uppercase text-indigo-200 tracking-[0.2em] mb-4 opacity-80">Total PO Aktif</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ pos.length }}</h3>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Nilai Pengadaan (Q2)</div>
         <div class="flex flex-col items-start">
            <div class="flex items-center gap-1">
@@ -42,7 +42,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Menunggu Persetujuan</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ pos.filter(p => p.status === 'PENDING_APPROVAL').length }}</h3>
@@ -50,7 +50,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Efisiensi Budget</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-indigo-700 tracking-tighter leading-none">94.2%</h3>
@@ -62,7 +62,7 @@
     <!-- Procurement Ledger (Premium Grid) -->
     <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
       <!-- Controls Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -165,7 +165,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-indigo-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-file-check text-3xl font-black"></i>
             </div>
@@ -183,8 +183,8 @@
         </div>
         
         <!-- Dialog Body (Workspace) -->
-        <div class="flex-1 overflow-y-hidden bg-slate-50/30 flex flex-col lg:row">
-           <div class="flex-1 overflow-y-auto custom-scrollbar p-10 flex flex-col gap-10">
+        <div class="flex-1 min-h-0 bg-slate-50/30 flex flex-col">
+          <div class="flex-1 overflow-y-auto custom-scrollbar p-10 flex flex-col gap-10">
               
               <!-- Document Paper Standard -->
               <div class="w-full max-w-5xl mx-auto bg-white border border-slate-200 shadow-2xl rounded-[2.5rem] p-12 flex flex-col gap-12 relative overflow-hidden">
@@ -247,7 +247,7 @@
                           <div class="text-[11px] font-black uppercase text-slate-400 tracking-[0.2em]">Logistics & Payments</div>
                        </div>
 
-                       <div class="grid grid-cols-2 gap-6 p-8 rounded-[2rem] border-2 border-slate-100 bg-slate-50 shadow-inner transition-all hover:bg-slate-50/80">
+                       <div class="grid grid-cols-2 gap-4 p-8 rounded-[2rem] border-2 border-slate-100 bg-slate-50 shadow-inner transition-all hover:bg-slate-50/80">
                           <div class="space-y-3">
                              <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block px-1">Tgl Order</label>
                              <input v-if="!isReadonly" type="date" v-model="form.orderDate" class="w-full h-12 border-none rounded-xl px-4 text-[12px] font-black text-slate-900 bg-white shadow-lg outline-none" />
@@ -288,7 +288,7 @@
                     </div>
                     <div class="p-8 rounded-[2rem] border-2 border-teal-100 bg-teal-50/20 shadow-sm relative overflow-hidden group/ship">
                        <div class="absolute -right-12 -bottom-12 opacity-[0.05] group-hover/ship:scale-110 transition-transform"><i class="pi pi-truck text-[140px]"></i></div>
-                       <textarea v-if="!isReadonly" v-model="form.shippingAddress" rows="2" class="w-full border-none rounded-2xl p-6 text-[13px] font-black text-slate-900 bg-white shadow-xl outline-none focus:ring-4 focus:ring-teal-400 resize-none transition-all" placeholder="Lokasi Gudang Penerima / Proyek..."></textarea>
+                       <textarea v-if="!isReadonly" v-model="form.shippingAddress" rows="2" class="w-full border-none rounded-2xl p-4 text-[13px] font-black text-slate-900 bg-white shadow-xl outline-none focus:ring-4 focus:ring-teal-400 resize-none transition-all" placeholder="Lokasi Gudang Penerima / Proyek..."></textarea>
                        <div v-else class="relative z-10 font-black text-slate-700 leading-relaxed uppercase italic text-sm tracking-tight"><i class="pi pi-map-marker mr-2 text-teal-500"></i> {{ activePO?.shippingAddress || 'Head Office (Gudang Utama)' }}</div>
                     </div>
                  </div>
@@ -358,11 +358,11 @@
                                 </td>
                                 <td class="p-0 border-l border-slate-800" colspan="2">
                                    <div class="flex flex-col divide-y divide-slate-800">
-                                      <div class="flex justify-between items-center p-6 bg-slate-800/20">
+                                      <div class="flex justify-between items-center p-4 bg-slate-800/20">
                                          <span class="text-[10px] font-black text-slate-500 tracking-[0.2em]">Total DPP</span>
                                          <span class="text-lg font-black tracking-tighter text-slate-300">Rp {{ formatCurrency(calculatedSubtotal) }}</span>
                                       </div>
-                                      <div class="flex justify-between items-center p-6 bg-amber-900/10">
+                                      <div class="flex justify-between items-center p-4 bg-amber-900/10">
                                          <span class="text-[10px] font-black text-amber-500 tracking-[0.2em]">VAT/PPN (11%)</span>
                                          <span class="text-lg font-black tracking-tighter text-amber-400">Rp {{ formatCurrency(calculatedTax) }}</span>
                                       </div>
@@ -380,7 +380,7 @@
 
                  <!-- Footer Gate -->
                  <div class="flex justify-between items-center pt-8 border-t border-slate-100 relative z-10 print:hidden">
-                    <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-4">
                        <div class="flex flex-col">
                           <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Digital Auth Center</span>
                           <span class="text-[10px] font-black text-slate-800 uppercase italic">Verified by Enterprise Core</span>

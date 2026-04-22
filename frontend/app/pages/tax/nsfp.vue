@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 left-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -ml-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">

@@ -13,8 +13,8 @@ exports.PrismaService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const adapter_pg_1 = require("@prisma/adapter-pg");
-const client_1 = require("../../prisma/generated/client");
-let PrismaService = class PrismaService extends client_1.PrismaClient {
+const generated_1 = require("../../prisma/generated");
+let PrismaService = class PrismaService extends generated_1.PrismaClient {
     constructor(configService) {
         const connectionString = configService.get('DATABASE_URL');
         if (!connectionString) {

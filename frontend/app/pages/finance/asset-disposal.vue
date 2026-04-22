@@ -8,7 +8,7 @@
       <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-purple-100/50"></div>
       
       <div class="relative">
@@ -32,7 +32,7 @@
     </div>
 
     <!-- Performance Insight Board (KPI Cards) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mx-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mx-6">
         <div class="bg-white rounded-[2rem] border border-slate-200 p-8 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50">
            <div class="flex justify-between items-center">
               <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Transaksi</div>
@@ -59,7 +59,7 @@
     <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up uppercase tracking-tighter">
       
       <!-- Ledger Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-purple-200/10 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -167,12 +167,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ CREATE DISPOSAL DIALOG ══════════════════════════════════ -->
-    <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all border-none text-slate-900">
+    <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all border-none text-slate-900">
       <div class="relative w-full max-w-2xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white border-b-[12px] border-b-purple-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6 text-slate-900 border-none shadow-none">
+          <div class="relative flex items-center gap-4 text-slate-900 border-none shadow-none">
             <div class="w-16 h-16 rounded-[1.5rem] bg-purple-700 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-purple-200">
                <i class="pi pi-eject text-3xl font-black"></i>
             </div>
@@ -188,7 +188,7 @@
 
         <div class="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar bg-slate-50/30 pb-32">
            <!-- Alert Context -->
-           <div class="p-6 bg-amber-50 border border-amber-200 rounded-[2.5rem] flex items-start gap-5 group">
+           <div class="p-4 bg-amber-50 border border-amber-200 rounded-[2.5rem] flex items-start gap-5 group">
               <div class="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-xl group-hover:rotate-12 transition-transform shadow-amber-100"><i class="pi pi-exclamation-triangle text-xl"></i></div>
               <div class="flex-1 text-slate-900 border-none">
                  <h4 class="text-[11px] font-black text-amber-800 uppercase tracking-widest mb-1">Peringatan Audit Akuntansi</h4>
@@ -223,11 +223,11 @@
               <div class="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 space-y-5">
                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 block text-center italic opacity-60">Metode Terminasi / Pelepasan Aset</label>
                  <div class="grid grid-cols-2 gap-4">
-                    <div @click="form.method = 'SALE'" :class="form.method === 'SALE' ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-100 border-emerald-600' : 'bg-white text-slate-400 border-slate-100'" class="p-6 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-3 group">
+                    <div @click="form.method = 'SALE'" :class="form.method === 'SALE' ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-100 border-emerald-600' : 'bg-white text-slate-400 border-slate-100'" class="p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-3 group">
                        <i class="pi pi-money-bill text-2xl group-hover:scale-110 transition-transform"></i>
                        <span class="text-[9px] font-black uppercase tracking-widest">DIJUAL (SALE)</span>
                     </div>
-                    <div @click="form.method = 'SCRAP'" :class="form.method === 'SCRAP' ? 'bg-rose-600 text-white shadow-xl shadow-rose-100 border-rose-600' : 'bg-white text-slate-400 border-slate-100'" class="p-6 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-3 group">
+                    <div @click="form.method = 'SCRAP'" :class="form.method === 'SCRAP' ? 'bg-rose-600 text-white shadow-xl shadow-rose-100 border-rose-600' : 'bg-white text-slate-400 border-slate-100'" class="p-4 rounded-2xl border-2 cursor-pointer transition-all flex flex-col items-center gap-3 group">
                        <i class="pi pi-trash text-2xl group-hover:scale-110 transition-transform"></i>
                        <span class="text-[9px] font-black uppercase tracking-widest">DIBUANG (SCRAP)</span>
                     </div>
@@ -245,7 +245,7 @@
 
               <div class="space-y-4 text-slate-900">
                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 italic">Uraian Alasan Pelepasan Secara Detail</label>
-                 <textarea v-model="form.notes" rows="3" placeholder="Contoh: Unit mesin sudah mencapai batas umur teknis, dijual ke vendor pengepul..." class="w-full p-6 rounded-[2rem] bg-slate-50 border-2 border-slate-50 text-[11px] font-medium text-slate-700 outline-none focus:border-purple-500 focus:bg-white transition-all shadow-inner leading-relaxed"></textarea>
+                 <textarea v-model="form.notes" rows="3" placeholder="Contoh: Unit mesin sudah mencapai batas umur teknis, dijual ke vendor pengepul..." class="w-full p-4 rounded-[2rem] bg-slate-50 border-2 border-slate-50 text-[11px] font-medium text-slate-700 outline-none focus:border-purple-500 focus:bg-white transition-all shadow-inner leading-relaxed"></textarea>
               </div>
            </div>
         </div>
@@ -260,7 +260,7 @@
     </div>
 
     <!-- ═══════════════════════════════════ APPROVAL REASON DIALOG ══════════════════════════════════ -->
-    <div v-if="approveDialog" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
+    <div v-if="approveDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
       <div class="relative w-full max-w-md bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white border-b-[12px] border-b-emerald-900">
         <!-- Header -->
         <div class="p-8 border-b border-slate-100 bg-emerald-50 flex justify-between items-center relative overflow-hidden">
@@ -278,7 +278,7 @@
         </div>
 
         <div class="p-10 space-y-8 bg-white text-slate-900 border-none">
-           <div class="p-6 bg-slate-900 text-white rounded-[2rem] relative overflow-hidden group">
+           <div class="p-4 bg-slate-900 text-white rounded-[2rem] relative overflow-hidden group">
               <div class="absolute right-[-10px] top-[-10px] opacity-10 group-hover:scale-110 transition-transform"><i class="pi pi-eject text-5xl"></i></div>
               <div class="text-[8px] font-black text-emerald-400 uppercase tracking-widest mb-2 leading-none">Dokumen Terpilih</div>
               <div class="text-[11px] font-black uppercase tracking-tight line-clamp-1 group-hover:text-emerald-300 transition-colors italic">{{ activeDoc?.asset?.name }}</div>

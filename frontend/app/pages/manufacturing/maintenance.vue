@@ -4,7 +4,7 @@
     <!-- Header (Premium Maintenance Operations Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0 animate-fade-in-up">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-100 font-sans">Maintenance Hub</span>
@@ -41,8 +41,8 @@
     </div>
 
     <!-- Maintenance Telemetry Dashboard (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Reliabilitas Peralatan</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Kerusakan Aktif (Breakdown)</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
@@ -66,7 +66,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Urutan Antrean Preventif</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
@@ -77,7 +77,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-emerald-100 tracking-[0.2em] mb-4 opacity-80">Inventori Suku Cadang</div>
         <div class="flex items-end justify-between">
@@ -107,7 +107,7 @@
     <div class="space-y-6 mt-4 pb-20">
       
       <!-- 1. Assets / Peralatan -->
-      <div v-if="activeTab === 'assets'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
+      <div v-if="activeTab === 'assets'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up">
         <div v-for="eq in filteredEquipment" :key="eq.id" 
           class="group relative flex flex-col rounded-[2.5rem] bg-white p-10 border-2 border-slate-50 shadow-sm transition-all hover:shadow-2xl hover:border-emerald-100 hover:-translate-y-2 overflow-hidden">
           
@@ -127,7 +127,7 @@
             <p class="text-[10px] font-black text-slate-400 uppercase leading-relaxed font-mono mt-1 italic tracking-widest">{{ eq.code }} • {{ eq.type }}</p>
           </div>
 
-          <div class="mb-8 grid grid-cols-2 gap-6 rounded-3xl bg-slate-50 p-6 z-10">
+          <div class="mb-8 grid grid-cols-2 gap-4 rounded-3xl bg-slate-50 p-4 z-10">
             <div class="border-l-2 border-emerald-400 pl-4">
               <p class="text-[9px] font-black uppercase text-slate-400 tracking-widest leading-none mb-1">Kekritisan</p>
               <p :class="['text-[11px] font-black', criticalityColors[eq.criticality]]">{{ eq.criticality }}</p>
@@ -210,7 +210,7 @@
       </div>
 
       <!-- 3. Jadwal Perawatan Preventif -->
-      <div v-if="activeTab === 'schedules'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
+      <div v-if="activeTab === 'schedules'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-fade-in-up">
         <div v-for="sch in schedules" :key="sch.id" class="rounded-[2.5rem] bg-white p-10 border-2 border-slate-50 shadow-sm transition-all hover:shadow-2xl hover:border-emerald-100 hover:-translate-y-2 relative overflow-hidden group">
           <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-all"></div>
           
@@ -226,7 +226,7 @@
           <h4 class="text-sm font-black text-slate-800 uppercase tracking-tight group-hover:text-emerald-700 transition-colors">{{ sch.name }}</h4>
           <p class="text-[10px] font-black text-slate-400 uppercase italic tracking-widest mt-1">{{ sch.equipment?.name }}</p>
           
-          <div class="mt-8 space-y-3 bg-slate-50/50 p-6 rounded-3xl border border-slate-50">
+          <div class="mt-8 space-y-3 bg-slate-50/50 p-4 rounded-3xl border border-slate-50">
             <p class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Daftar Cek Teknis</p>
             <div v-for="task in sch.maintenanceTasks" :key="task.id" class="flex items-start gap-3 group-hover:translate-x-1 transition-transform">
               <i class="pi pi-check-square mt-0.5 text-[11px] text-emerald-500"></i>
@@ -300,7 +300,7 @@
         
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-600 flex items-center justify-center text-white shadow-xl rotate-3">
                <i class="pi pi-server text-3xl font-black"></i>
             </div>
@@ -314,7 +314,7 @@
 
         <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 p-10">
           <div class="space-y-8 bg-white p-10 rounded-[2rem] border-2 border-slate-100 shadow-sm relative overflow-hidden transition-all hover:border-emerald-100">
-            <div class="grid grid-cols-2 gap-6">
+            <div class="grid grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Kode Aset *</label>
                 <InputText v-model="equipmentForm.code" :disabled="Boolean(equipmentEditingId)" class="w-full h-14 bg-slate-50 border-none rounded-2xl px-6 text-[12px] font-black uppercase tracking-widest text-slate-900 shadow-inner focus:ring-4 focus:ring-emerald-400 font-mono" placeholder="EQP-XXX" />
@@ -324,7 +324,7 @@
                 <InputText v-model="equipmentForm.name" class="w-full h-14 bg-slate-50 border-none rounded-2xl px-6 text-[12px] font-black uppercase tracking-widest text-slate-900 shadow-inner focus:ring-4 focus:ring-emerald-400" />
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-6">
+            <div class="grid grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Serial Number</label>
                 <InputText v-model="equipmentForm.serialNumber" class="w-full h-14 bg-slate-50 border-none rounded-2xl px-6 text-[12px] font-black uppercase tracking-widest text-slate-900 shadow-inner" />
@@ -336,7 +336,7 @@
                 </select>
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-6">
+            <div class="grid grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 text-emerald-600">Pabrikan (Manufacturer)</label>
                 <InputText v-model="equipmentForm.manufacturer" class="w-full h-14 bg-emerald-50 border-emerald-100 border rounded-2xl px-6 text-[12px] font-black uppercase tracking-widest text-emerald-900 shadow-inner" />
@@ -352,7 +352,7 @@
             </div>
             <div class="space-y-2">
               <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Catatan Teknis Registry</label>
-              <textarea v-model="equipmentForm.notes" rows="3" class="w-full rounded-2xl border-none bg-slate-50 p-6 text-[11px] font-medium text-slate-700 outline-none shadow-inner focus:bg-white focus:ring-4 focus:ring-emerald-400 transition-all placeholder-slate-300" placeholder="Informasi tambahan terkait pemeliharaan khusus..."></textarea>
+              <textarea v-model="equipmentForm.notes" rows="3" class="w-full rounded-2xl border-none bg-slate-50 p-4 text-[11px] font-medium text-slate-700 outline-none shadow-inner focus:bg-white focus:ring-4 focus:ring-emerald-400 transition-all placeholder-slate-300" placeholder="Informasi tambahan terkait pemeliharaan khusus..."></textarea>
             </div>
           </div>
         </div>
@@ -370,7 +370,7 @@
         
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-amber-600 flex items-center justify-center text-white shadow-xl rotate-3">
                <i class="pi pi-bolt text-3xl font-black"></i>
             </div>
@@ -398,7 +398,7 @@
                </div>
                <div class="space-y-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Deskripsi Kerusakan / Problem</label>
-                  <textarea v-model="requestForm.problem" rows="4" class="w-full rounded-2xl border-none bg-slate-50 p-6 text-[11px] font-medium text-slate-700 outline-none shadow-inner focus:bg-white focus:ring-4 focus:ring-amber-400 transition-all placeholder-slate-300" placeholder="Jelaskan secara detail kegagalan operasional yang terjadi..."></textarea>
+                  <textarea v-model="requestForm.problem" rows="4" class="w-full rounded-2xl border-none bg-slate-50 p-4 text-[11px] font-medium text-slate-700 outline-none shadow-inner focus:bg-white focus:ring-4 focus:ring-amber-400 transition-all placeholder-slate-300" placeholder="Jelaskan secara detail kegagalan operasional yang terjadi..."></textarea>
                </div>
                <div class="space-y-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tingkat Urgensi (Priority)</label>
@@ -417,7 +417,7 @@
                 </div>
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 text-emerald-600">Catatan Audit Respon</label>
-                  <textarea v-model="requestForm.notes" rows="4" class="w-full mt-3 rounded-2xl border-none bg-emerald-50/50 p-6 text-[11px] font-medium text-emerald-900 outline-none focus:ring-4 focus:ring-emerald-400 transition-all placeholder-slate-300" placeholder="Tindak lanjut atau keputusan penanganan..."></textarea>
+                  <textarea v-model="requestForm.notes" rows="4" class="w-full mt-3 rounded-2xl border-none bg-emerald-50/50 p-4 text-[11px] font-medium text-emerald-900 outline-none focus:ring-4 focus:ring-emerald-400 transition-all placeholder-slate-300" placeholder="Tindak lanjut atau keputusan penanganan..."></textarea>
                 </div>
              </div>
           </div>
@@ -436,7 +436,7 @@
         
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-950 flex items-center justify-center text-white shadow-xl rotate-3">
                <i class="pi pi-briefcase text-3xl font-black"></i>
             </div>
@@ -485,7 +485,7 @@
 
                      <div class="space-y-2">
                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Deskripsi & Solusi Penanganan</label>
-                        <textarea v-model="logForm.description" rows="4" class="w-full rounded-2xl border-none bg-slate-50 p-6 text-[11px] font-medium text-slate-700 outline-none shadow-inner focus:bg-white focus:ring-4 focus:ring-emerald-400 transition-all placeholder-slate-300" placeholder="Jelaskan tindakan perbaikan yang telah dilakukan secara teknis..."></textarea>
+                        <textarea v-model="logForm.description" rows="4" class="w-full rounded-2xl border-none bg-slate-50 p-4 text-[11px] font-medium text-slate-700 outline-none shadow-inner focus:bg-white focus:ring-4 focus:ring-emerald-400 transition-all placeholder-slate-300" placeholder="Jelaskan tindakan perbaikan yang telah dilakukan secara teknis..."></textarea>
                      </div>
                  </div>
               </div>
@@ -509,7 +509,7 @@
                                    <option v-for="o in partOptions" :key="o.value" :value="o.value" class="bg-slate-900">{{ o.label }}</option>
                                 </select>
                              </div>
-                             <div class="col-span-8 flex items-center gap-6 mt-2">
+                             <div class="col-span-8 flex items-center gap-4 mt-2">
                                 <div class="flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-lg border border-white/5">
                                    <span class="text-[8px] text-emerald-100/40 font-black uppercase">QTY:</span>
                                    <input v-model="p.qtyUsed" type="number" class="w-16 bg-transparent border-none text-xs font-black text-emerald-400 p-0 focus:ring-0 outline-none text-center font-mono" />

@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section (Premium Style) -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -20,8 +20,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -162,7 +162,7 @@
             <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs">1</div>
             <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Deskripsi & Akar Masalah</h4>
           </div>
-          <div class="grid grid-cols-1 gap-6">
+          <div class="grid grid-cols-1 gap-4">
              <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase">Deskripsi Temuan</label>
                 <Textarea v-model="form.description" rows="2" class="w-full rounded-2xl text-xs font-bold border-slate-200 outline-none p-4" placeholder="Jelaskan masalah yang ditemukan..." />
@@ -180,8 +180,8 @@
             <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs">2</div>
             <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Corrective & Preventive Actions</h4>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-             <div class="p-6 rounded-3xl border border-blue-100 bg-blue-50/30 space-y-3">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div class="p-4 rounded-3xl border border-blue-100 bg-blue-50/30 space-y-3">
                 <div class="flex items-center gap-2">
                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
                    <span class="text-[10px] font-black uppercase text-blue-600 tracking-widest">Corrective Action</span>
@@ -189,7 +189,7 @@
                 <Textarea v-model="form.correctiveAction" rows="3" class="w-full bg-transparent border-none text-xs font-bold outline-none" placeholder="Tindakan langsung untuk membereskan masalah..." />
              </div>
              
-             <div class="p-6 rounded-3xl border border-emerald-100 bg-emerald-50/30 space-y-3">
+             <div class="p-4 rounded-3xl border border-emerald-100 bg-emerald-50/30 space-y-3">
                 <div class="flex items-center gap-2">
                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
                    <span class="text-[10px] font-black uppercase text-emerald-600 tracking-widest">Preventive Action</span>
@@ -205,7 +205,7 @@
             <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs">3</div>
             <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Penugasan & Target</h4>
           </div>
-          <div class="grid grid-cols-2 gap-6">
+          <div class="grid grid-cols-2 gap-4">
              <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase">Person In Charge (PIC)</label>
                 <Select v-model="form.assignedToId" :options="users" optionLabel="name" optionValue="id" placeholder="Pilih Penanggung Jawab..." class="w-full text-xs font-bold rounded-xl" filter />

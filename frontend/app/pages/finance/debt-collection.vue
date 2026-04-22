@@ -73,7 +73,7 @@ const formatCurrency = (val: number) => {
     <!-- Header -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-rose-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-rose-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Finance</span>
@@ -93,15 +93,15 @@ const formatCurrency = (val: number) => {
     </div>
 
     <!-- Overview Banners -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4 transition-all hover:shadow-xl hover:-translate-y-1">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4 transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="p-4 bg-rose-100 rounded-3xl text-rose-600 text-xl border shadow-inner"><i class="pi pi-exclamation-triangle"></i></div>
         <div>
           <div class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Collection Intelligence</div>
           <p class="text-xs text-slate-600 leading-relaxed font-medium">Pantau piutang bermasalah dan prioritas penagihan untuk menjaga arus kas perusahaan.</p>
         </div>
       </div>
-      <div class="p-6 rounded-xl bg-emerald-900 text-white shadow-xl flex items-start gap-4 border border-emerald-800 transition-all hover:bg-emerald-950">
+      <div class="p-4 rounded-xl bg-emerald-900 text-white shadow-xl flex items-start gap-4 border border-emerald-800 transition-all hover:bg-emerald-950">
         <div class="p-4 bg-emerald-600 rounded-3xl text-white text-xl shadow-lg animate-pulse"><i class="pi pi-check-circle"></i></div>
         <div>
           <div class="text-[10px] font-black uppercase text-emerald-300 tracking-widest mb-1">Recovery Velocity</div>
@@ -150,10 +150,10 @@ const formatCurrency = (val: number) => {
     </div>
 
     <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <!-- Left: Aging Analytics -->
       <div class="lg:col-span-1 space-y-6">
-        <div class="rounded-xl bg-white border border-slate-200 shadow-sm p-6">
+        <div class="rounded-xl bg-white border border-slate-200 shadow-sm p-4">
           <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2 border-b border-slate-100 pb-3">
             <i class="pi pi-chart-bar text-rose-500 bg-rose-50 p-1.5 rounded"></i>
             AR Aging Distribution
@@ -272,7 +272,7 @@ const formatCurrency = (val: number) => {
         </div>
 
         <!-- Recent Actions -->
-        <div class="rounded-xl bg-white border border-slate-200 shadow-sm p-6">
+        <div class="rounded-xl bg-white border border-slate-200 shadow-sm p-4">
           <h3 class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2 border-b border-slate-100 pb-3">
             <i class="pi pi-history text-amber-500 bg-amber-50 p-1.5 rounded"></i>
             Collection Activity Feed

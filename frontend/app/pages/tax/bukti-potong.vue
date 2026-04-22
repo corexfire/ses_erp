@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -23,8 +23,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -91,7 +91,7 @@
     <Dialog v-model:visible="showDocument" modal class="w-full max-w-4xl !p-0 !bg-slate-800 !rounded-none min-h-screen" :showHeader="false">
        <div class="flex flex-col h-full bg-slate-100 overflow-hidden">
           <!-- Document Header (Control Bar) -->
-          <div class="bg-indigo-950 p-6 flex justify-between items-center text-white shrink-0">
+          <div class="bg-indigo-950 p-4 flex justify-between items-center text-white shrink-0">
              <div class="flex items-center gap-4">
                 <Button icon="pi pi-arrow-left" severity="secondary" rounded @click="showDocument = false" />
                 <div>

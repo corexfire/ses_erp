@@ -10,8 +10,8 @@
     </transition>
 
     <!-- Header (Responsive "Logistics Bridge" Extension) -->
-    <header class="fixed left-0 right-0 top-0 z-40 border-b bg-white/80 backdrop-blur-md">
-      <div class="flex items-center justify-between px-6 py-3">
+    <header class="fixed left-0 right-0 top-0 z-50 border-b bg-white/80 backdrop-blur-md h-16">
+      <div class="flex items-center justify-between px-6 h-full">
         <div class="flex items-center gap-6">
           <!-- Toggle Button -->
           <button @click="isSidebarOpen = !isSidebarOpen" 
@@ -107,19 +107,19 @@
     <!-- Sidebar Container -->
     <AppSidebar 
       :class="[
-        'fixed bottom-0 top-[65px] z-40 w-[280px] transition-all duration-300 ease-in-out border-r shadow-xl lg:shadow-none',
-        isSidebarOpen ? 'left-0' : '-left-[280px]'
+        'fixed bottom-0 top-16 z-40 w-[250px] transition-all duration-300 ease-in-out shadow-xl lg:shadow-none',
+        isSidebarOpen ? 'left-0' : '-left-[250px]'
       ]"
     />
 
     <!-- Main Content Shell -->
     <main 
       :class="[
-        'mt-[65px] h-[calc(100vh-65px)] overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out bg-slate-50/50',
-        (isSidebarOpen && !isMobile) ? 'ml-[280px]' : 'ml-0'
+        'mt-16 h-[calc(100vh-64px)] overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out bg-slate-50/50',
+        (isSidebarOpen && !isMobile) ? 'ml-[250px]' : 'ml-0'
       ]"
     >
-      <div class="max-w-[1600px] mx-auto p-4 lg:p-8">
+      <div class="max-w-[1600px] mx-auto p-1 lg:p-2">
         <slot />
       </div>
     </main>

@@ -8,6 +8,28 @@ export declare class ApController {
         user: AuthUser;
     }, status?: string): Promise<{
         invoices: ({
+            supplier: {
+                bankAccount: string | null;
+                id: string;
+                email: string | null;
+                tenantId: string;
+                name: string;
+                isActive: boolean;
+                createdAt: Date;
+                npwp: string | null;
+                phone: string | null;
+                address1: string | null;
+                address2: string | null;
+                city: string | null;
+                province: string | null;
+                postalCode: string | null;
+                countryCode: string | null;
+                updatedAt: Date;
+                code: string;
+                bankName: string | null;
+                paymentTerms: string | null;
+                vendorGroup: string | null;
+            };
             lines: {
                 taxCode: string | null;
                 id: string;
@@ -37,10 +59,10 @@ export declare class ApController {
             updatedAt: Date;
             status: string;
             invoiceDate: Date;
+            supplierId: string;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             taxAmount: import("@prisma/client-runtime-utils").Decimal;
             dueDate: Date | null;
-            supplierCode: string;
             invoiceNo: string;
             paidAmount: import("@prisma/client-runtime-utils").Decimal;
         })[];
@@ -49,6 +71,28 @@ export declare class ApController {
         user: AuthUser;
     }, id: string): Promise<{
         invoice: ({
+            supplier: {
+                bankAccount: string | null;
+                id: string;
+                email: string | null;
+                tenantId: string;
+                name: string;
+                isActive: boolean;
+                createdAt: Date;
+                npwp: string | null;
+                phone: string | null;
+                address1: string | null;
+                address2: string | null;
+                city: string | null;
+                province: string | null;
+                postalCode: string | null;
+                countryCode: string | null;
+                updatedAt: Date;
+                code: string;
+                bankName: string | null;
+                paymentTerms: string | null;
+                vendorGroup: string | null;
+            };
             lines: {
                 taxCode: string | null;
                 id: string;
@@ -78,10 +122,10 @@ export declare class ApController {
             updatedAt: Date;
             status: string;
             invoiceDate: Date;
+            supplierId: string;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             taxAmount: import("@prisma/client-runtime-utils").Decimal;
             dueDate: Date | null;
-            supplierCode: string;
             invoiceNo: string;
             paidAmount: import("@prisma/client-runtime-utils").Decimal;
         }) | null;
@@ -90,7 +134,7 @@ export declare class ApController {
         user: AuthUser;
     }, body: {
         invoiceNo: string;
-        supplierCode: string;
+        supplierId: string;
         invoiceDate: string;
         dueDate?: string;
         description?: string;
@@ -122,10 +166,10 @@ export declare class ApController {
             updatedAt: Date;
             status: string;
             invoiceDate: Date;
+            supplierId: string;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             taxAmount: import("@prisma/client-runtime-utils").Decimal;
             dueDate: Date | null;
-            supplierCode: string;
             invoiceNo: string;
             paidAmount: import("@prisma/client-runtime-utils").Decimal;
         };
@@ -146,10 +190,10 @@ export declare class ApController {
             updatedAt: Date;
             status: string;
             invoiceDate: Date;
+            supplierId: string;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             taxAmount: import("@prisma/client-runtime-utils").Decimal;
             dueDate: Date | null;
-            supplierCode: string;
             invoiceNo: string;
             paidAmount: import("@prisma/client-runtime-utils").Decimal;
         };

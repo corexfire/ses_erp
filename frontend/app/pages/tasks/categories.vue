@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen font-sans">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen font-sans">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-100/30 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -27,8 +27,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -130,7 +130,7 @@
         </div>
 
         <!-- Section: Visuals -->
-        <div class="space-y-4 p-6 rounded-xl bg-slate-50 border border-slate-100">
+        <div class="space-y-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
            <div class="flex items-center gap-3 mb-4">
               <div class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white text-[10px] font-black">2</div>
               <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Identitas Visual</h4>
@@ -167,7 +167,7 @@
            </div>
         </div>
 
-        <div class="fixed bottom-0 left-0 w-full bg-white p-6 border-t flex justify-end gap-3 rounded-t-[2.5rem] shadow-2xl z-20">
+        <div class="fixed bottom-0 left-0 w-full bg-white p-4 border-t flex justify-end gap-3 rounded-t-[2.5rem] shadow-2xl z-20">
            <Button label="Batalkan" severity="secondary" text @click="drawerVisible = false" class="font-black text-[10px] uppercase" />
            <Button label="Simpan Kategori" icon="pi pi-save" class="p-button-rounded font-black text-[10px] uppercase px-8" @click="saveCategory" :loading="submitting" />
         </div>
@@ -296,7 +296,7 @@ const confirmDelete = (event, category) => {
 onMounted(fetchCategories);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 :deep(.p-datatable-thead > tr > th) {
   background: transparent !important;
   font-size: 10px !important;

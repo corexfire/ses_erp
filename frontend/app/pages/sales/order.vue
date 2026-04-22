@@ -3,7 +3,7 @@
     <!-- Header (Premium Order Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Execution Core</span>
@@ -19,9 +19,9 @@
       </div>
     </div>
     <!-- High-Contrast KPI Banners (Premium style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
        <!-- Primary engagement banner -->
-      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+      <div class="p-4 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
         <div class="text-[10px] font-black uppercase text-indigo-400 tracking-[0.2em] mb-4 opacity-80">Order Velocity</div>
         <div class="flex items-end justify-between">
           <h3 class="text-2xl font-black text-white tracking-tighter leading-none">Rp {{ formatCurrency(docs.reduce((a,c) => a + calculateGrandTotal(c), 0)) }}</h3>
@@ -31,7 +31,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Pending Review</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-amber-600 tracking-tighter leading-none">{{ docs.filter(x => x.status === 'DRAFT').length }}</h3>
@@ -39,7 +39,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Active Orders</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-indigo-700 tracking-tighter leading-none">{{ docs.filter(x => x.status === 'APPROVED').length }}</h3>
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Fulfilled Deals</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-400 tracking-tighter group-hover:text-slate-600 transition-colors leading-none">{{ docs.filter(x => x.status === 'CLOSED').length }}</h3>
@@ -157,7 +157,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b bg-white flex justify-between items-center shrink-0 relative overflow-hidden" :class="form.status === 'APPROVED' ? 'border-b-indigo-100' : 'border-b-slate-100'">
           <div class="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700" :class="form.status === 'APPROVED' ? 'bg-indigo-50' : 'bg-slate-50'"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-slate-900 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-file-check text-3xl animate-pulse" :class="form.status === 'APPROVED' ? 'text-indigo-400' : 'text-slate-400'"></i>
             </div>
@@ -441,7 +441,7 @@ function openCreate() {
   form.id = '';
   form.code = 'SO-NEW';
   form.customerId = mockCustomers.value[0]?.id || '';
-  form.orderDate = new Date().toISOString().split('T')[0];
+  form.orderDate = (new Date().toISOString().split('T')[0]) || '';
   form.notes = '';
   form.status = 'DRAFT';
   form.lines = [{ desc: "Item Terjual 1", qty: 1, unitPrice: 150000, uomCode: 'PCS' }];
@@ -455,7 +455,7 @@ function openView(r: any) {
   
   form.id = r.id;
   form.code = r.code;
-  form.customerId = r.customerId || mockCustomers.value[0]?.id;
+  form.customerId = r.customerId || mockCustomers.value[0]?.id || '';
   form.orderDate = r.orderDate?.split('T')[0] || '';
   form.notes = r.notes || '';
   form.status = r.status;
@@ -519,7 +519,7 @@ const statusBadgeClasses = (s: string) => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .animate-fade-in-up { 
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
 }

@@ -172,7 +172,7 @@ const stats = computed(() => [
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900 font-sans">
     <!-- Header Section (Work Order Style) -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       
       <div class="relative flex items-center gap-5">
@@ -206,7 +206,7 @@ const stats = computed(() => [
     <!-- Stats Section -->
     <div class="mx-8 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
        <div v-for="s in stats" :key="s.label" class="group p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-          <div :class="['absolute top-0 right-0 p-6 opacity-10 transition-opacity translate-x-4 -translate-y-4', `text-${s.color}-600`]">
+          <div :class="['absolute top-0 right-0 p-4 opacity-10 transition-opacity translate-x-4 -translate-y-4', `text-${s.color}-600`]">
              <i :class="[s.icon, 'text-8xl']"></i>
           </div>
           <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ s.label }}</p>
@@ -236,7 +236,7 @@ const stats = computed(() => [
           <div class="flex-grow space-y-4 max-h-[calc(100vh-450px)] overflow-y-auto pr-2 custom-scrollbar p-2">
             <div v-for="task in list" :key="task.id" 
               @click="editTask(task)"
-              class="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-xl transition-all cursor-pointer relative overflow-hidden">
+              class="group bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 hover:shadow-xl transition-all cursor-pointer relative overflow-hidden">
               <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-full blur-2xl opacity-0 group-hover:opacity-50 transition-opacity"></div>
               
               <div class="relative">
@@ -339,7 +339,7 @@ const stats = computed(() => [
 
       <!-- GANTT VIEW (Rich Implementation) -->
       <div v-else-if="viewMode === 'GANTT'" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-420px)]">
-         <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/10">
+         <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/10">
             <div>
                <h2 class="text-[13px] font-black text-slate-900 uppercase tracking-widest">Chronological Timeline</h2>
                <p class="text-xs text-slate-500 font-medium">Monitoring durasi dan sekuens pekerjaan.</p>
@@ -421,7 +421,7 @@ const stats = computed(() => [
                 <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-900">Core Assignment Context</h4>
              </div>
              
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-8 bg-slate-50/50 border border-slate-100 rounded-xl">
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-8 bg-slate-50/50 border border-slate-100 rounded-xl">
                <div class="flex flex-col gap-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Parent Project <span class="text-rose-500">*</span></label>
                   <Select v-model="form.projectId" :options="projects" optionLabel="name" optionValue="id" placeholder="Pilih Proyek..." class="w-full rounded-2xl border-slate-200" />
@@ -444,7 +444,7 @@ const stats = computed(() => [
                 <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-900">Timeline & Monitoring</h4>
              </div>
              
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-8 bg-indigo-50/20 border border-indigo-100/30 rounded-xl">
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-8 bg-indigo-50/20 border border-indigo-100/30 rounded-xl">
                 <div class="flex flex-col gap-2 relative">
                    <label class="text-[10px] font-black text-indigo-400 uppercase tracking-widest pl-1">Start Date</label>
                    <InputText v-model="form.startDate" type="date" class="w-full rounded-2xl border-indigo-100 bg-white shadow-sm font-bold" />
@@ -467,7 +467,7 @@ const stats = computed(() => [
                 <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-900">Workforce & Ownership</h4>
              </div>
              
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-8 bg-slate-50 border border-slate-100 rounded-xl">
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-8 bg-slate-50 border border-slate-100 rounded-xl">
                <div class="flex flex-col gap-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Assignee Persona</label>
                   <Select v-model="form.assigneeId" :options="users" optionLabel="name" optionValue="id" filter placeholder="Cari User..." class="w-full rounded-2xl" />
@@ -494,7 +494,7 @@ const stats = computed(() => [
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
   height: 4px;

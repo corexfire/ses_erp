@@ -4,7 +4,7 @@
     <!-- Header (Premium Shop Floor Operations Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0 animate-fade-in-up">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-100 font-sans">Shop Floor Center</span>
@@ -28,8 +28,8 @@
     </div>
 
     <!-- Shop Floor Telemetry Dashboard (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total Pengeluaran Bahan</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ issues.length }}</h3>
@@ -39,7 +39,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Pending Audit Kualitas</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ qcs.filter(x => x.status === 'PENDING').length }}</h3>
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Rasio Lulus (Yield)</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">
@@ -57,7 +57,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-emerald-100 tracking-[0.2em] mb-4 opacity-80">Sistem Operasi Aktif</div>
         <div class="flex items-end justify-between">
@@ -71,7 +71,7 @@
     <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
       
       <!-- Controls Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -256,7 +256,7 @@
         <!-- Registry Workspace Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div :class="activeTab === 'issues' ? 'bg-slate-900' : activeTab === 'receipts' ? 'bg-emerald-600' : 'bg-indigo-600'" 
                  class="w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i :class="activeTab === 'issues' ? 'pi pi-arrow-right-arrow-left' : activeTab === 'receipts' ? 'pi pi-inbox' : 'pi pi-check-square'" class="text-3xl font-black"></i>
@@ -337,7 +337,7 @@
                        </div>
                     </div>
 
-                    <div v-if="activeTab === 'qc'" class="bg-slate-900 p-6 rounded-2xl shadow-xl">
+                    <div v-if="activeTab === 'qc'" class="bg-slate-900 p-4 rounded-2xl shadow-xl">
                        <div class="flex items-center gap-2 mb-4">
                           <span class="text-[8px] font-black text-emerald-500 uppercase tracking-widest italic">Live Quality Audit Meter</span>
                        </div>
@@ -390,7 +390,7 @@
                  <div v-else class="bg-amber-50 p-8 rounded-[2.5rem] border-2 border-amber-100 shadow-sm space-y-6 min-h-[500px] flex flex-col">
                     <div class="flex-1">
                        <label class="text-[10px] font-black text-amber-700 uppercase tracking-widest px-1">Dokumentasi Observasi Lantai Produksi</label>
-                       <textarea v-model="form.notes" rows="12" class="w-full mt-4 rounded-3xl border-none bg-white p-6 text-[11px] font-medium text-slate-700 outline-none shadow-sm" placeholder="Catat anomali proses, kendala mesin, atau temuan kualitas visual..."></textarea>
+                       <textarea v-model="form.notes" rows="12" class="w-full mt-4 rounded-3xl border-none bg-white p-4 text-[11px] font-medium text-slate-700 outline-none shadow-sm" placeholder="Catat anomali proses, kendala mesin, atau temuan kualitas visual..."></textarea>
                     </div>
                     <div class="p-4 bg-white/60 rounded-2xl border border-amber-200">
                        <p class="text-[9px] font-black text-amber-800 uppercase italic leading-relaxed">Penyimpanan rekaman ini akan mengikat ledger traceability secara permanen dalam sistem.</p>

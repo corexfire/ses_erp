@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -20,8 +20,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -89,61 +89,67 @@
        </DataTable>
     </div>
 
-    <!-- New Billing Drawer -->
-    <Drawer v-model:visible="drawerOpen" header="Daftarkan ID Billing Baru" position="right" class="w-[500px]">
-       <div class="space-y-8 pt-4 px-4 overflow-y-auto pb-20">
-          <div class="p-6 rounded-3xl bg-indigo-50 border border-indigo-100 flex items-start gap-4">
+    <!-- New Billing Dialog -->
+    <Dialog v-model:visible="drawerOpen" header="Daftarkan ID Billing Baru" modal class="w-full max-w-2xl overflow-hidden !rounded-xl" :pt="{
+       header: { class: 'p-8 border-b border-slate-100' },
+       content: { class: 'p-8 pb-10 max-h-[70vh] overflow-y-auto' },
+       footer: { class: 'p-8 border-t border-slate-100 bg-slate-50/50' }
+    }">
+       <div class="space-y-8">
+          <div class="p-4 rounded-[2rem] bg-indigo-50 border border-indigo-100 flex items-start gap-4">
              <i class="pi pi-shield-check text-indigo-600 mt-1"></i>
              <div class="space-y-1">
-                <p class="text-[11px] font-black text-indigo-900 uppercase">Pembuatan Billing</p>
-                <p class="text-[10px] text-indigo-700 leading-relaxed font-medium text-justify">Masukkan 15 digit kode billing yang dihasilkan dari sistem SSE DJP. Kode ini akan digunakan untuk melacak pelunasan setoran di ERP.</p>
+                <p class="text-[11px] font-black text-indigo-900 uppercase tracking-widest">Pembuatan Billing</p>
+                <p class="text-[10px] text-indigo-700 leading-relaxed font-medium">Masukkan 15 digit kode billing yang dihasilkan dari sistem SSE DJP. Kode ini akan digunakan untuk melacak pelunasan setoran di ERP.</p>
              </div>
           </div>
 
           <div class="space-y-4">
              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs">1</div>
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs font-black">1</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Spesifikasi Billing</h4>
              </div>
              <div class="space-y-1">
-                <label class="text-[10px] font-black text-slate-400 uppercase pl-2">15 Digit Kode Billing</label>
-                <InputText v-model="form.billingNo" class="w-full !rounded-2xl !p-4 font-mono text-lg tracking-widest text-indigo-700 bg-slate-50" placeholder="000000000000000" maxlength="15" />
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">15 Digit Kode Billing</label>
+                <InputText v-model="form.billingNo" class="w-full !rounded-2xl !p-4 font-mono text-xl tracking-[0.2em] text-indigo-700 bg-slate-50 border-slate-200 text-center" placeholder="000000000000000" maxlength="15" />
              </div>
              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase pl-2">Kategori Pajak</label>
-                   <Select v-model="form.taxType" :options="['PPN', 'PPh 21', 'PPh 22', 'PPh 23', 'PPh 4(2)']" class="w-full !rounded-2xl" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Kategori Pajak</label>
+                   <Select v-model="form.taxType" :options="['PPN', 'PPh 21', 'PPh 22', 'PPh 23', 'PPh 4(2)']" class="w-full !rounded-2xl !border-slate-200" pt:root:class="!p-1" />
                 </div>
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase pl-2">Masa Pajak</label>
-                   <InputText v-model="form.period" class="w-full !rounded-2xl" placeholder="YYYY-MM" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Masa Pajak</label>
+                   <InputText v-model="form.period" class="w-full !rounded-2xl !p-3 border-slate-200" placeholder="YYYY-MM" />
                 </div>
              </div>
           </div>
 
-          <div class="space-y-4 p-6 rounded-xl bg-slate-50 border border-slate-100">
+          <div class="space-y-4 p-4 rounded-[2rem] bg-slate-50 border border-slate-100">
              <div class="flex items-center gap-3 mb-2">
-                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs">2</div>
+                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-black">2</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Total & Batas Waktu</h4>
              </div>
              <div class="space-y-4">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-500 uppercase pl-2 font-bold">Nilai Setoran</label>
-                   <InputNumber v-model="form.amount" mode="currency" currency="IDR" locale="id-ID" class="w-full !p-inputtext-lg" />
+                   <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-2 font-bold">Nilai Setoran</label>
+                   <InputNumber v-model="form.amount" mode="currency" currency="IDR" locale="id-ID" class="w-full" pt:input:class="!rounded-2xl !p-4 border-slate-200 font-black text-xl" />
                 </div>
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-500 uppercase pl-2 font-bold">Tanggal Kadaluarsa</label>
-                   <InputText v-model="form.dueDate" type="date" class="w-full !rounded-2xl" />
+                   <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-2 font-bold">Tanggal Kadaluarsa</label>
+                   <InputText v-model="form.dueDate" type="date" class="w-full !rounded-2xl !p-3 border-slate-200" />
                 </div>
              </div>
           </div>
-
-          <div class="fixed bottom-0 left-0 w-full bg-white p-6 border-t flex justify-end gap-3 rounded-t-[2.5rem] shadow-2xl">
-             <Button label="Batal" severity="secondary" text @click="drawerOpen = false" class="font-black text-[10px] uppercase" />
-             <Button label="Daftarkan Billing" icon="pi pi-check" class="p-button-rounded font-black text-[10px] uppercase px-8" @click="save" :loading="saving" />
-          </div>
        </div>
-    </Drawer>
+
+       <template #footer>
+          <div class="flex gap-3 justify-end w-full">
+             <Button label="Batalkan" severity="secondary" text @click="drawerOpen = false" class="text-[10px] font-black uppercase" />
+             <Button label="Daftarkan Billing" icon="pi pi-check-circle" class="p-button-rounded font-black text-[10px] uppercase shadow-lg shadow-indigo-100 px-8" @click="save" :loading="saving" />
+          </div>
+       </template>
+    </Dialog>
 
   </div>
 </template>

@@ -10,6 +10,13 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import type { AuthUser } from '../../auth/auth.types';
@@ -24,19 +31,52 @@ const isTripCostStatus = (value?: string): value is TripCostStatus =>
   Boolean(value) && tripCostStatusSet.has(value as TripCostStatus);
 
 export class CreateTripCostDto {
+  @IsString()
+  @IsNotEmpty()
   tripPlanId!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsEnum(['FUEL', 'TOLL', 'PARKING', 'MEAL', 'REPAIR', 'OTHER'])
   costType!: TripCostType;
+
+  @IsString()
+  @IsOptional()
   description?: string;
+
+  @IsNumber()
+  @IsNotEmpty()
   amount!: number;
+
+  @IsString()
+  @IsOptional()
   currencyCode?: string;
+
+  @IsString()
+  @IsOptional()
   supplierId?: string;
+
+  @IsString()
+  @IsOptional()
   notes?: string;
 }
 
 export class UpdateTripCostDto {
+  @IsString()
+  @IsOptional()
+  @IsEnum(['FUEL', 'TOLL', 'PARKING', 'MEAL', 'REPAIR', 'OTHER'])
   costType?: TripCostType;
+
+  @IsString()
+  @IsOptional()
   description?: string;
+
+  @IsNumber()
+  @IsOptional()
   amount?: number;
+
+  @IsString()
+  @IsOptional()
   notes?: string;
 }
 

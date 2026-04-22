@@ -1,0 +1,30 @@
+export declare class UpsertPrintFormatDto {
+    name: string;
+    docType: string;
+    module: string;
+    paperSize?: string;
+    orientation?: string;
+    fontFamily?: string;
+    margin?: string;
+    accentColor?: string;
+    secondaryColor?: string;
+    footerText?: string;
+    status?: string;
+    isDefault?: boolean;
+    showLogo?: boolean;
+    showShippingAddress?: boolean;
+    showTax?: boolean;
+    showDiscount?: boolean;
+    showNotes?: boolean;
+    showSignature?: boolean;
+    showBankInfo?: boolean;
+    showQrCode?: boolean;
+    usageCount?: number;
+    formatType?: string;
+    width?: number;
+    height?: number;
+    barcodeType?: string;
+    showBarcode?: boolean;
+    showPrice?: boolean;
+    showItemCode?: boolean;
+}

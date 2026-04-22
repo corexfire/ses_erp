@@ -32,6 +32,10 @@ let VendorPaymentController = class VendorPaymentController {
             where.status = status;
         const payments = await this.prisma.vendorPayment.findMany({
             where,
+            include: {
+                supplier: true,
+                invoice: true
+            },
             orderBy: { paymentDate: 'desc' },
         });
         return { payments };
@@ -43,12 +47,15 @@ let VendorPaymentController = class VendorPaymentController {
         return { payment };
     }
     async create(req, body) {
+        const supplier = await this.prisma.supplier.findFirst({ where: { id: body.supplierId, tenantId: req.user.tenantId } });
+        const supplierCode = supplier?.code || 'N/A';
         const payment = await this.prisma.vendorPayment.create({
             data: {
                 tenantId: req.user.tenantId,
                 paymentNo: body.paymentNo,
                 paymentDate: new Date(body.paymentDate),
-                supplierCode: body.supplierCode,
+                supplierId: body.supplierId,
+                invoiceId: body.invoiceId,
                 amount: body.amount,
                 paymentMethod: body.paymentMethod,
                 reference: body.reference,
@@ -65,7 +72,7 @@ let VendorPaymentController = class VendorPaymentController {
                         cashAccountId: cashAccounts[0].id,
                         transDate: new Date(body.paymentDate),
                         transType: 'DEBIT',
-                        description: `Payment to ${body.supplierCode}`,
+                        description: `Payment to ${supplierCode}`,
                         amount: body.amount,
                         reference: body.paymentNo,
                         status: 'POSTED',
@@ -86,7 +93,7 @@ let VendorPaymentController = class VendorPaymentController {
                         bankAccountId: bankAccounts[0].id,
                         transDate: new Date(body.paymentDate),
                         transType: 'DEBIT',
-                        description: `Payment to ${body.supplierCode}`,
+                        description: `Payment to ${supplierCode}`,
                         amount: body.amount,
                         reference: body.paymentNo,
                         status: 'POSTED',
@@ -138,7 +145,7 @@ let VendorPaymentController = class VendorPaymentController {
                 tenantId: user.tenantId,
                 entryNo,
                 entryDate: new Date(body.paymentDate),
-                description: `Vendor Payment - ${body.supplierCode}`,
+                description: `Vendor Payment - ${supplierCode}`,
                 referenceNo: body.paymentNo,
                 journalType: 'VENDOR_PAYMENT',
                 totalDebit: amount,
@@ -150,7 +157,7 @@ let VendorPaymentController = class VendorPaymentController {
                             tenantId: user.tenantId,
                             lineNo: 1,
                             accountCode: apAccountCode,
-                            description: `Hutang ${body.supplierCode}`,
+                            description: `Hutang ${supplierCode}`,
                             debit: amount,
                             credit: 0,
                             referenceId: payment.id

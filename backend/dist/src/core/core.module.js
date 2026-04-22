@@ -24,6 +24,8 @@ const roles_controller_1 = require("./roles/roles.controller");
 const permissions_controller_1 = require("./permissions/permissions.controller");
 const workflows_controller_1 = require("./workflows/workflows.controller");
 const analytics_controller_1 = require("./analytics/analytics.controller");
+const system_configs_controller_1 = require("./system-config/system-configs.controller");
+const print_formats_controller_1 = require("./print-format/print-formats.controller");
 const query_controller_1 = require("./query.controller");
 let CoreModule = class CoreModule {
 };
@@ -47,6 +49,8 @@ exports.CoreModule = CoreModule = __decorate([
             permissions_controller_1.PermissionsController,
             workflows_controller_1.WorkflowsController,
             analytics_controller_1.AnalyticsController,
+            system_configs_controller_1.SystemConfigsController,
+            print_formats_controller_1.PrintFormatsController,
             query_controller_1.QueryController,
         ],
     })

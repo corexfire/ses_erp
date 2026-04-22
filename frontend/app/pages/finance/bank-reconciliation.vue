@@ -8,7 +8,7 @@
       <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-teal-100/50"></div>
       
       <div class="relative">
@@ -35,7 +35,7 @@
     <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up">
       
       <!-- Ledger Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-teal-200/10 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -145,12 +145,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ RECONCILIATION FORM DIALOG ══════════════════════════════════ -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-2xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-teal-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-teal-700 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-teal-200">
                <i class="pi pi-chart-pie text-3xl font-black"></i>
             </div>
@@ -188,7 +188,7 @@
 
               <!-- Comparison Block -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-4">
-                 <div class="p-6 bg-slate-900 text-white rounded-3xl shadow-xl relative overflow-hidden group">
+                 <div class="p-4 bg-slate-900 text-white rounded-3xl shadow-xl relative overflow-hidden group">
                     <div class="absolute right-[-20px] top-[-20px] opacity-10 group-hover:scale-110 transition-transform"><i class="pi pi-database text-8xl"></i></div>
                     <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Saldo Buku ERP (Current)</label>
                     <div class="flex items-center gap-2">
@@ -198,7 +198,7 @@
                     <p class="text-[8px] font-bold text-slate-500 mt-2 uppercase italic tracking-widest leading-none">*Locked based on system ledger</p>
                  </div>
 
-                 <div class="p-6 bg-teal-600 text-white rounded-3xl shadow-xl relative overflow-hidden group">
+                 <div class="p-4 bg-teal-600 text-white rounded-3xl shadow-xl relative overflow-hidden group">
                     <div class="absolute right-[-20px] top-[-20px] opacity-10 group-hover:scale-110 transition-transform"><i class="pi pi-building text-8xl"></i></div>
                     <label class="text-[9px] font-black text-teal-200 uppercase tracking-widest mb-4 block">Saldo Rekening Koran Bank</label>
                     <div class="flex items-center gap-2">

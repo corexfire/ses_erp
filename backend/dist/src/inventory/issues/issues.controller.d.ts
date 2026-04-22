@@ -38,8 +38,8 @@ export declare class IssuesController {
             referenceId: string | null;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            issueDate: Date;
             warehouseId: string;
+            issueDate: Date;
         })[];
     }>;
     get(req: FastifyRequest & {
@@ -108,8 +108,8 @@ export declare class IssuesController {
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 uomCode: string | null;
                 itemId: string | null;
-                serialNo: string | null;
                 warehouseId: string;
+                serialNo: string | null;
                 binLocationId: string | null;
                 batchCode: string | null;
                 issueId: string;
@@ -124,8 +124,8 @@ export declare class IssuesController {
             referenceId: string | null;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            issueDate: Date;
             warehouseId: string;
+            issueDate: Date;
         };
     }>;
     create(req: FastifyRequest & {
@@ -182,8 +182,8 @@ export declare class IssuesController {
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 uomCode: string | null;
                 itemId: string | null;
-                serialNo: string | null;
                 warehouseId: string;
+                serialNo: string | null;
                 binLocationId: string | null;
                 batchCode: string | null;
                 issueId: string;
@@ -198,8 +198,8 @@ export declare class IssuesController {
             referenceId: string | null;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            issueDate: Date;
             warehouseId: string;
+            issueDate: Date;
         };
     }>;
     update(req: FastifyRequest & {
@@ -256,8 +256,8 @@ export declare class IssuesController {
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 uomCode: string | null;
                 itemId: string | null;
-                serialNo: string | null;
                 warehouseId: string;
+                serialNo: string | null;
                 binLocationId: string | null;
                 batchCode: string | null;
                 issueId: string;
@@ -272,8 +272,8 @@ export declare class IssuesController {
             referenceId: string | null;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            issueDate: Date;
             warehouseId: string;
+            issueDate: Date;
         };
     }>;
     delete(req: FastifyRequest & {
@@ -335,8 +335,8 @@ export declare class IssuesController {
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 uomCode: string | null;
                 itemId: string | null;
-                serialNo: string | null;
                 warehouseId: string;
+                serialNo: string | null;
                 binLocationId: string | null;
                 batchCode: string | null;
                 issueId: string;
@@ -351,8 +351,8 @@ export declare class IssuesController {
             referenceId: string | null;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            issueDate: Date;
             warehouseId: string;
+            issueDate: Date;
         };
     }>;
     void(req: FastifyRequest & {
@@ -409,8 +409,8 @@ export declare class IssuesController {
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 uomCode: string | null;
                 itemId: string | null;
-                serialNo: string | null;
                 warehouseId: string;
+                serialNo: string | null;
                 binLocationId: string | null;
                 batchCode: string | null;
                 issueId: string;
@@ -425,8 +425,8 @@ export declare class IssuesController {
             referenceId: string | null;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            issueDate: Date;
             warehouseId: string;
+            issueDate: Date;
         };
     }>;
 }

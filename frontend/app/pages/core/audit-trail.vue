@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-900/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -20,8 +20,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
               <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -94,8 +94,8 @@
     <Dialog v-model:visible="inspectorOpen" header="Audit Log Details" :modal="true" :dismissableMask="true" class="w-[600px] border-none shadow-2xl glass-dialog">
        <div class="space-y-6 pt-4 px-2 pb-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
           <!-- Context Card -->
-          <div class="p-6 rounded-3xl bg-slate-900 text-white relative overflow-hidden shadow-xl">
-             <div class="absolute top-0 right-0 p-6 opacity-10">
+          <div class="p-4 rounded-3xl bg-slate-900 text-white relative overflow-hidden shadow-xl">
+             <div class="absolute top-0 right-0 p-4 opacity-10">
                 <i class="pi pi-shield text-8xl"></i>
              </div>
              <p class="text-[9px] font-black text-indigo-400 uppercase tracking-[0.2em] mb-4">Event Context</p>
@@ -212,7 +212,7 @@ function fmtFull(d: string) { return d ? new Date(d).toLocaleString('id-ID', { d
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 :deep(.p-datatable-thead > tr > th) {
   background: transparent !important;
   font-size: 10px !important;

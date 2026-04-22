@@ -1,120 +1,138 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
-      <div class="relative">
-        <div class="flex items-center gap-3 mb-2">
-           <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Responsibility Accounting</span>
-           <span class="text-slate-300">/</span>
-           <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-slate-600">Unit Organisasi</span>
+    <DashboardHero
+      title="Responsibility Centers"
+      subtitle="Manajemen pusat biaya (Cost) dan pusat laba (Profit) untuk akuntabilitas finansial."
+      category="Responsibility Accounting"
+      category-sub="Unit Organisasi"
+      color="cyan"
+    >
+      <template #actions>
+        <div class="flex items-center gap-3">
+          <Button 
+            :label="activeTab === 'cost' ? 'Registrasi Pusat Biaya' : 'Registrasi Pusat Laba'" 
+            :icon="activeTab === 'cost' ? 'pi pi-calculator' : 'pi pi-chart-line'" 
+            class="p-button-sm font-black text-xs px-6 bg-white/20 hover:bg-white/30 text-white border-white/20" 
+            @click="openNew" 
+          />
         </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Responsibility <span class="text-slate-500">Centers</span></h1>
-        <p class="text-slate-500 text-sm font-medium uppercase italic tracking-tight italic">Manajemen pusat biaya (Cost) dan pusat laba (Profit) untuk akuntabilitas finansial.</p>
-      </div>
-
-      <div class="flex items-center gap-3 relative">
-        <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="loadAll" :loading="loading" />
-        <Button :label="activeTab === 'cost' ? 'Registrasi Pusat Biaya' : 'Registrasi Pusat Laba'" :icon="activeTab === 'cost' ? 'pi pi-calculator' : 'pi pi-chart-line'" class="p-button-rounded p-button-secondary font-black text-xs shadow-lg shadow-slate-100 px-6" @click="openNew" />
-      </div>
-    </div>
+      </template>
+    </DashboardHero>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-          <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-             <i :class="[s.icon, 'text-6xl']"></i>
-          </div>
-          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ s.label }}</p>
-          <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ s.value }}</h3>
-          <div class="flex items-center gap-2 mt-2">
-             <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-full', s.color]">{{ s.sub }}</span>
-          </div>
-       </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <MiniStatsCard
+          v-for="s in stats"
+          :key="s.label"
+          :label="s.label"
+          :value="s.value"
+          :icon="s.icon"
+          :sub="s.sub"
+          :sub-color="s.theme"
+          :icon-color="s.theme"
+       />
     </div>
 
-    <!-- Main Content Tabs -->
-    <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:border-slate-300 transition-all duration-500">
-       <Tabs v-model:value="activeTab">
-          <TabList class="px-8 pt-4 border-b border-slate-100">
-             <Tab value="cost" class="flex items-center gap-2 group/tab">
-                <i class="pi pi-calculator group-aria-selected/tab:text-slate-900 text-slate-400"></i>
-                <span class="text-[11px] font-black uppercase tracking-widest group-aria-selected/tab:text-slate-900 text-slate-400">Pusat Biaya (Cost Center)</span>
-             </Tab>
-             <Tab value="profit" class="flex items-center gap-2 group/tab">
-                <i class="pi pi-chart-line group-aria-selected/tab:text-slate-900 text-slate-400"></i>
-                <span class="text-[11px] font-black uppercase tracking-widest group-aria-selected/tab:text-slate-900 text-slate-400">Pusat Laba (Profit Center)</span>
-             </Tab>
-          </TabList>
+    <!-- Main Content: Unit List -->
+    <PanelCard
+      title="Unit Organisasi & Akuntabilitas"
+      subtitle="Dataset pusat biaya (Cost) dan pusat laba (Profit) untuk alokasi transaksi."
+      icon="pi pi-briefcase"
+      theme="cyan"
+      :show-search="false"
+      :show-refresh="false"
+      flat-controls
+    >
+       <template #filters>
+          <SelectButton 
+            v-model="activeTab" 
+            :options="tabOptions" 
+            optionLabel="label" 
+            optionValue="value" 
+            :allowEmpty="false" 
+            :pt="{
+               root: { class: 'bg-slate-100/80 p-1 rounded-2xl border border-slate-200/50 flex gap-1 shadow-inner' },
+               pcbutton: ({ context }: any) => ({
+                 root: {
+                   class: [
+                     '!border-none !rounded-xl transition-all duration-300 px-4 py-2',
+                     context.active ? '!bg-white !text-cyan-600 shadow-sm' : '!bg-transparent !text-slate-500 hover:!bg-white/50'
+                   ]
+                 }
+               })
+            }"
+          >
+            <template #option="slotProps">
+               <div class="flex items-center gap-2">
+                  <i :class="[slotProps.option.icon, 'text-[10px]']"></i>
+                  <span class="text-[9px] font-black uppercase tracking-[0.2em]">{{ slotProps.option.label }}</span>
+               </div>
+            </template>
+          </SelectButton>
+       </template>
 
-          <TabPanels>
-             <!-- Tab: Cost Centers -->
-             <TabPanel value="cost">
-                <DataTable :value="costCenters" dataKey="id" class="p-datatable-sm w-full" :loading="loading">
-                   <Column field="code" header="KODE CENTER" class="pl-8">
-                      <template #body="{ data }">
-                         <span class="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 font-mono italic uppercase">
-                            {{ data.code }}
-                         </span>
-                      </template>
-                   </Column>
-                   <Column field="name" header="NAMA UNIT / DEPARTEMEN">
-                      <template #body="{ data }">
-                         <span class="text-[12px] font-black text-slate-800 uppercase tracking-tight">{{ data.name }}</span>
-                      </template>
-                   </Column>
-                   <Column header="STATUS">
-                      <template #body="{ data }">
-                         <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', data.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100']">
-                            {{ data.isActive ? 'Active' : 'Deactivated' }}
-                         </span>
-                      </template>
-                   </Column>
-                   <Column class="text-right pr-8">
-                      <template #body="{ data }">
-                         <Button icon="pi pi-ban" severity="danger" text rounded size="small" v-if="data.isActive" @click="deactivateCenter(data, 'cost')" v-tooltip.top="'Deactivate Center'" />
-                      </template>
-                   </Column>
-                </DataTable>
-             </TabPanel>
+       <template #table>
+          <PanelTable
+            v-if="activeTab === 'cost'"
+            :items="costCenters"
+            :columns="costColumns"
+            :loading="loading"
+            hover-border-color="border-l-cyan-400"
+          >
+            <template #col-code="{ item }">
+               <span class="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 font-mono italic uppercase">
+                  {{ item.code }}
+               </span>
+            </template>
+            <template #col-name="{ item }">
+               <span class="text-[12px] font-black text-slate-800 uppercase tracking-tight">{{ item.name }}</span>
+            </template>
+            <template #col-status="{ item }">
+               <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', item.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100']">
+                  {{ item.isActive ? 'Active' : 'Deactivated' }}
+               </span>
+            </template>
+            <template #col-actions="{ item }">
+               <div class="flex gap-2 justify-end">
+                  <Button icon="pi pi-ban" severity="danger" text rounded size="small" v-if="item.isActive" @click="deactivateCenter(item, 'cost')" v-tooltip.top="'Deactivate Center'" />
+               </div>
+            </template>
+          </PanelTable>
 
-             <!-- Tab: Profit Centers -->
-             <TabPanel value="profit">
-                <DataTable :value="profitCenters" dataKey="id" class="p-datatable-sm w-full" :loading="loading">
-                   <Column field="code" header="KODE PROFIT" class="pl-8">
-                      <template #body="{ data }">
-                         <span class="text-[11px] font-black text-indigo-900 bg-indigo-50 px-2 py-1 rounded-lg border border-indigo-100 font-mono italic uppercase">
-                            {{ data.code }}
-                         </span>
-                      </template>
-                   </Column>
-                   <Column field="name" header="NAMA PUSAT LABA / REGIONAL">
-                      <template #body="{ data }">
-                         <span class="text-[12px] font-black text-slate-800 uppercase tracking-tight">{{ data.name }}</span>
-                      </template>
-                   </Column>
-                   <Column header="STATUS">
-                      <template #body="{ data }">
-                         <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', data.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100']">
-                            {{ data.isActive ? 'Active' : 'Deactivated' }}
-                         </span>
-                      </template>
-                   </Column>
-                   <Column class="text-right pr-8">
-                      <template #body="{ data }">
-                         <Button icon="pi pi-ban" severity="danger" text rounded size="small" v-if="data.isActive" @click="deactivateCenter(data, 'profit')" v-tooltip.top="'Deactivate Center'" />
-                      </template>
-                   </Column>
-                </DataTable>
-             </TabPanel>
-          </TabPanels>
-       </Tabs>
-    </div>
+          <PanelTable
+            v-else
+            :items="profitCenters"
+            :columns="profitColumns"
+            :loading="loading"
+            hover-border-color="border-l-indigo-400"
+          >
+            <template #col-code="{ item }">
+               <span class="text-[11px] font-black text-indigo-900 bg-indigo-50 px-2 py-1 rounded-lg border border-indigo-100 font-mono italic uppercase">
+                  {{ item.code }}
+               </span>
+            </template>
+            <template #col-name="{ item }">
+               <span class="text-[12px] font-black text-slate-800 uppercase tracking-tight">{{ item.name }}</span>
+            </template>
+            <template #col-status="{ item }">
+               <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', item.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100']">
+                  {{ item.isActive ? 'Active' : 'Deactivated' }}
+               </span>
+            </template>
+            <template #col-actions="{ item }">
+               <div class="flex gap-2 justify-end">
+                  <Button icon="pi pi-ban" severity="danger" text rounded size="small" v-if="item.isActive" @click="deactivateCenter(item, 'profit')" v-tooltip.top="'Deactivate Center'" />
+               </div>
+            </template>
+          </PanelTable>
+       </template>
+    </PanelCard>
 
     <!-- Management Dialog (Glass) -->
     <Dialog v-model:visible="dialogOpen" :header="activeTab === 'cost' ? 'Registrasi Pusat Biaya Baru' : 'Registrasi Pusat Laba Baru'" :modal="true" :dismissableMask="false" class="w-[500px] border-none shadow-2xl overflow-hidden glass-dialog">
        <div class="space-y-8 pt-4 px-2 pb-12 custom-scrollbar">
-          <div :class="['p-6 rounded-3xl flex items-center gap-4 border', activeTab === 'cost' ? 'bg-slate-50 border-slate-200' : 'bg-indigo-50 border-indigo-100']">
+          <div :class="['p-4 rounded-3xl flex items-center gap-4 border', activeTab === 'cost' ? 'bg-slate-50 border-slate-200' : 'bg-indigo-50 border-indigo-100']">
              <div :class="['w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-sm border', activeTab === 'cost' ? 'text-slate-600 border-slate-200' : 'text-indigo-600 border-indigo-100']">
                 <i :class="[activeTab === 'cost' ? 'pi pi-calculator' : 'pi pi-chart-line', 'text-xl']"></i>
              </div>
@@ -171,12 +189,31 @@ const stats = computed(() => {
   const activeProfit = profitCenters.value.filter(c => c.isActive).length;
 
   return [
-    { label: 'Total Pusat Biaya', value: totalCost, sub: 'Cost Centers', icon: 'pi pi-calculator', color: 'bg-slate-50 text-slate-600' },
-    { label: 'Total Pusat Laba', value: totalProfit, sub: 'Profit Centers', icon: 'pi pi-chart-line', color: 'bg-indigo-50 text-indigo-600' },
-    { label: 'Akuntabilitas Aktif', value: activeCost + activeProfit, sub: 'Total Responsibility Units', icon: 'pi pi-check-circle', color: 'bg-emerald-50 text-emerald-600' },
-    { label: 'Branch Coverage', value: '100%', sub: 'Regional Distribution', icon: 'pi pi-map-marker', color: 'bg-blue-50 text-blue-600' }
+    { label: 'Total Pusat Biaya', value: totalCost, sub: 'Cost Centers', icon: 'pi pi-calculator', theme: 'cyan' as const },
+    { label: 'Total Pusat Laba', value: totalProfit, sub: 'Profit Centers', icon: 'pi pi-chart-line', theme: 'indigo' as const },
+    { label: 'Akuntabilitas Aktif', value: activeCost + activeProfit, sub: 'Total Responsibility Units', icon: 'pi pi-check-circle', theme: 'emerald' as const },
+    { label: 'Branch Coverage', value: '100%', sub: 'Regional Distribution', icon: 'pi pi-map-marker', theme: 'blue' as const }
   ];
 });
+
+const costColumns = [
+  { key: 'code', header: 'KODE CENTER', width: 'w-48' },
+  { key: 'name', header: 'NAMA UNIT / DEPARTEMEN' },
+  { key: 'status', header: 'STATUS', width: 'w-48', borderLeft: true },
+  { key: 'actions', header: 'AKSI', align: 'right' as const, width: 'w-24', borderLeft: true }
+];
+
+const profitColumns = [
+  { key: 'code', header: 'KODE PROFIT', width: 'w-48' },
+  { key: 'name', header: 'NAMA PUSAT LABA / REGIONAL' },
+  { key: 'status', header: 'STATUS', width: 'w-48', borderLeft: true },
+  { key: 'actions', header: 'AKSI', align: 'right' as const, width: 'w-24', borderLeft: true }
+];
+
+const tabOptions = [
+  { label: 'Pusat Biaya (Cost Center)', value: 'cost', icon: 'pi pi-calculator' },
+  { label: 'Pusat Laba (Profit Center)', value: 'profit', icon: 'pi pi-chart-line' }
+];
 
 async function loadAll() {
   loading.value = true;
@@ -185,8 +222,8 @@ async function loadAll() {
       api.get('/core/cost-centers'),
       api.get('/core/profit-centers')
     ]);
-    costCenters.value = costRes.costCenters || costRes.data?.costCenters || [];
-    profitCenters.value = profitRes.profitCenters || profitRes.data?.profitCenters || [];
+    costCenters.value = costRes.data?.costCenters || costRes.data || [];
+    profitCenters.value = profitRes.data?.profitCenters || profitRes.data || [];
   } catch (e: any) {
     toast.add({ severity: 'error', summary: 'Load Failed', detail: e.message });
   } finally {
@@ -228,7 +265,7 @@ function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('id-ID',
 onMounted(loadAll);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 :deep(.p-datatable-thead > tr > th) {
   background: transparent !important;
   font-size: 10px !important;

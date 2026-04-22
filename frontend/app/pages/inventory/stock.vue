@@ -3,7 +3,7 @@
     <!-- Header (Premium Inventory Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-blue-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
            <div class="flex items-center gap-2 mb-1">
               <span class="px-3 py-1 bg-blue-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Warehouse Management</span>
@@ -21,15 +21,15 @@
     </div>
 
     <!-- Overview Banners -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-       <div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4 transition-all hover:shadow-xl hover:-translate-y-1">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+       <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4 transition-all hover:shadow-xl hover:-translate-y-1">
           <div class="p-4 bg-slate-100 rounded-3xl text-slate-500 text-xl border shadow-inner"><i class="pi pi-building"></i></div>
           <div>
              <div class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Audit Fisik & Opname</div>
              <p class="text-xs text-slate-600 leading-relaxed font-medium">Lakukan verifikasi berkala antara pencatatan sistem dengan kondisi fisik rak untuk menjaga integritas data aset.</p>
           </div>
        </div>
-       <div class="p-6 rounded-xl bg-emerald-900 text-white shadow-xl flex items-start gap-4 border border-emerald-800 transition-all hover:bg-emerald-950">
+       <div class="p-4 rounded-xl bg-emerald-900 text-white shadow-xl flex items-start gap-4 border border-emerald-800 transition-all hover:bg-emerald-950">
           <div class="p-4 bg-emerald-600 rounded-3xl text-white text-xl shadow-lg animate-pulse"><i class="pi pi-bolt"></i></div>
           <div>
              <div class="text-[10px] font-black uppercase text-emerald-300 tracking-widest mb-1">Real-time Stock Integrity</div>
@@ -142,12 +142,12 @@
                    </div>
                 </div>
                 
-                <div class="space-y-3 p-6 rounded-3xl bg-white border border-slate-100 shadow-sm transition-all hover:border-blue-200">
+                <div class="space-y-3 p-4 rounded-3xl bg-white border border-slate-100 shadow-sm transition-all hover:border-blue-200">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Gudang Asal (Source)</label>
                    <Select v-model="mutationForm.fromWarehouseId" :options="warehouses" optionLabel="name" optionValue="id" placeholder="Pilih Lokasi Asal" @change="onWarehouseChange('from')" class="w-full text-sm font-bold border-none bg-slate-50 rounded-2xl h-12 flex items-center" />
                 </div>
 
-                <div class="space-y-3 p-6 rounded-3xl bg-white border border-slate-100 shadow-sm transition-all hover:border-emerald-200">
+                <div class="space-y-3 p-4 rounded-3xl bg-white border border-slate-100 shadow-sm transition-all hover:border-emerald-200">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Gudang Tujuan (Target)</label>
                    <Select v-model="mutationForm.toWarehouseId" :options="warehouses" optionLabel="name" optionValue="id" placeholder="Pilih Lokasi Tujuan" @change="onWarehouseChange('to')" class="w-full text-sm font-bold border-none bg-slate-50 rounded-2xl h-12 flex items-center" />
                 </div>
@@ -227,7 +227,7 @@
                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-blue-400/80 mt-1 block">Inventory Bin Card System</span>
                 </div>
              </div>
-             <div class="flex gap-6 mt-4 ml-1 pl-15">
+             <div class="flex gap-4 mt-4 ml-1 pl-15">
                   <div class="flex flex-col">
                      <span class="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Reference Item</span>
                      <span class="text-xs font-bold text-white tracking-wide">{{ activeBal?.item?.code }} — {{ activeBal?.item?.name }}</span>
@@ -238,13 +238,13 @@
                   </div>
              </div>
           </div>
-          <Button icon="pi pi-times" severity="secondary" rounded outlined class="text-white border-white/20 w-10 h-10 absolute right-6 top-6 z-20" @click="ledgerOpen = false" />
+          <Button icon="pi pi-times" severity="secondary" rounded outlined class="text-white border-white/20 w-10 h-10 absolute right-6 top-4 z-20" @click="ledgerOpen = false" />
         </div>
 
         <div class="p-10 space-y-8 bg-slate-50/50">
            <!-- Metric Row -->
-           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="group p-6 rounded-xl bg-white border border-slate-100 shadow-sm transition-all hover:scale-105 hover:shadow-xl">
+           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="group p-4 rounded-xl bg-white border border-slate-100 shadow-sm transition-all hover:scale-105 hover:shadow-xl">
                  <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-rose-500 uppercase tracking-widest">Inflow Aggregation</span>
                     <i class="pi pi-arrow-down-left text-emerald-500 text-xs"></i>
@@ -252,7 +252,7 @@
                  <div class="text-3xl font-black font-mono text-slate-800 tracking-tighter">{{ formatQty(ledgerStats.totalIn) }} <span class="text-xs text-slate-400 uppercase font-sans">{{ activeBal?.uomCode }}</span></div>
               </div>
 
-              <div class="group p-6 rounded-xl bg-white border border-slate-100 shadow-sm transition-all hover:scale-105 hover:shadow-xl">
+              <div class="group p-4 rounded-xl bg-white border border-slate-100 shadow-sm transition-all hover:scale-105 hover:shadow-xl">
                  <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Outflow Aggregation</span>
                     <i class="pi pi-arrow-up-right text-rose-500 text-xs"></i>
@@ -260,7 +260,7 @@
                  <div class="text-3xl font-black font-mono text-slate-800 tracking-tighter">{{ formatQty(ledgerStats.totalOut) }} <span class="text-xs text-slate-400 uppercase font-sans">{{ activeBal?.uomCode }}</span></div>
               </div>
 
-              <div class="p-6 rounded-xl bg-blue-900 border border-blue-800 shadow-2xl shadow-blue-200">
+              <div class="p-4 rounded-xl bg-blue-900 border border-blue-800 shadow-2xl shadow-blue-200">
                  <div class="flex items-center justify-between mb-3">
                     <span class="text-[9px] font-black text-blue-300 uppercase tracking-widest">Current Balance</span>
                     <i class="pi pi-database text-blue-300 text-xs shadow-inner"></i>

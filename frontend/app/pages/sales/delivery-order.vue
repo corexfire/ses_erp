@@ -3,7 +3,7 @@
     <!-- Header (Premium Logistics Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-cyan-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Transit Core</span>
@@ -14,14 +14,15 @@
           <p class="text-slate-500 text-sm font-medium max-w-2xl">Jembatan menuju Klien — mencetak Surat Jalan Ekspedisi, melacak muatan truk transit, dan mengurangi fisik stok secara resmi dari WMS (Issue Out).</p>
         </div>
         <div class="flex items-center gap-3">
+          <Button label="Generate DO" icon="pi pi-bolt" severity="secondary" class="p-button-rounded h-12 px-8 font-black text-[10px] shadow-sm uppercase" @click="openGenerate" v-if="canManage" />
           <Button label="Dispatch Manifest" size="small" icon="pi pi-truck" class="p-button-rounded h-12 px-8 bg-cyan-600 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-cyan-100 hover:scale-105 active:scale-95 transition-all" v-if="canManage" @click="openCreate" />
         </div>
       </div>
     </div>
     <!-- High-Contrast KPI Banners (Premium style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
        <!-- Primary engagement banner -->
-      <div class="p-6 rounded-2xl bg-cyan-950 text-white shadow-xl flex flex-col justify-between border border-cyan-800 transition-all hover:bg-cyan-900 group">
+      <div class="p-4 rounded-2xl bg-cyan-950 text-white shadow-xl flex flex-col justify-between border border-cyan-800 transition-all hover:bg-cyan-900 group">
         <div class="text-[10px] font-black uppercase text-cyan-400 tracking-[0.2em] mb-4 opacity-80">Transit Velocity</div>
         <div class="flex items-end justify-between">
           <h3 class="text-2xl font-black text-white tracking-tighter leading-none">{{ docs.length }} ACTIVE MANIFESTS</h3>
@@ -31,7 +32,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Pending Load</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-300 tracking-tighter leading-none">{{ docs.filter(x => x.status === 'DRAFT').length }}</h3>
@@ -39,7 +40,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">In Transit</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-amber-600 tracking-tighter leading-none">{{ docs.filter(x => x.status === 'IN_TRANSIT').length }}</h3>
@@ -47,7 +48,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Delivered (POD)</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-emerald-600 tracking-tighter leading-none">{{ docs.filter(x => x.status === 'DELIVERED').length }}</h3>
@@ -158,7 +159,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b bg-white flex justify-between items-center shrink-0 relative overflow-hidden" :class="form.status === 'IN_TRANSIT' ? 'border-b-amber-100' : 'border-b-cyan-100'">
           <div class="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700" :class="form.status === 'IN_TRANSIT' ? 'bg-amber-50' : 'bg-cyan-50'"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-slate-900 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-truck text-3xl animate-pulse" :class="form.status === 'IN_TRANSIT' ? 'text-amber-400' : 'text-cyan-400'"></i>
             </div>
@@ -311,12 +312,51 @@
         </div>
       </div>
     </div>
+    <!-- Generate Dialog -->
+    <Dialog v-model:visible="generateDialogOpen" header="Generate Delivery Orders" :modal="true" class="w-[500px] border-none shadow-2xl overflow-hidden rounded-xl">
+       <template #header>
+          <div class="flex items-center gap-3 font-sans">
+             <i class="pi pi-bolt text-cyan-500 text-xl animate-pulse"></i>
+             <div>
+                <h3 class="font-black text-slate-900 text-sm uppercase tracking-widest leading-none">Auto-Generate DO</h3>
+                <p class="text-[10px] text-slate-500 font-medium mt-1">Buat dokumen pengiriman massal dari Shipment.</p>
+             </div>
+          </div>
+       </template>
+       <div class="space-y-5 pt-4 font-sans">
+          <div class="space-y-1">
+             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Gudang Pengambil (Warehouse)</label>
+             <Select v-model="generateForm.warehouseId" :options="warehouses" optionLabel="name" optionValue="id" placeholder="Pilih Gudang" class="w-full rounded-xl" />
+          </div>
+          <div class="space-y-1">
+             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Jadwal Pengiriman</label>
+             <InputText v-model="generateForm.plannedShipDate" type="date" class="w-full rounded-xl border-slate-200" />
+          </div>
+          <div class="space-y-1">
+             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Shipment ID / Kode Manifest</label>
+             <Textarea v-model="generateForm.shipmentIds" rows="3" class="w-full rounded-xl border-slate-200 text-xs" placeholder="SHP-001, SHP-005, ..." />
+             <p class="text-[8px] text-slate-400 italic">Masukkan kode manifest dari menu Shipping Integration, pisahkan dengan koma.</p>
+          </div>
+          <div class="space-y-1">
+             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Prioritas Default</label>
+             <Select v-model="generateForm.priority" :options="priorityOptions" optionLabel="label" optionValue="value" class="w-full rounded-xl" />
+          </div>
+       </div>
+       <template #footer>
+          <div class="flex items-center justify-end gap-3 pb-2 pt-4 font-sans">
+             <Button label="Batalkan" severity="secondary" text @click="generateDialogOpen = false" class="font-black text-[10px] uppercase" />
+             <Button label="Mulai Generate" icon="pi pi-cog" class="p-button-rounded font-black text-[10px] uppercase px-8 bg-cyan-600 border-none text-white shadow-xl" @click="generate" :loading="saving" />
+          </div>
+       </template>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useToast } from 'primevue/usetoast';
 const api = useApi();
 const auth = useAuthStore();
+const toast = useToast();
 
 const canManage = computed(() => auth.hasPermission('sales.delivery.manage') || true); 
 
@@ -327,8 +367,24 @@ const loading = ref(false);
 const saving = ref(false);
 
 const dialogOpen = ref(false);
+const generateDialogOpen = ref(false);
 const isReadonly = ref(true);
 const activeDoc = ref<any>(null);
+const warehouses = ref<any[]>([]);
+
+const generateForm = reactive({
+  warehouseId: '',
+  plannedShipDate: new Date().toISOString().slice(0, 10),
+  shipmentIds: '',
+  priority: 'NORMAL',
+});
+
+const priorityOptions = [
+  { label: 'Low', value: 'LOW' },
+  { label: 'Normal', value: 'NORMAL' },
+  { label: 'High', value: 'HIGH' },
+  { label: 'Urgent', value: 'URGENT' },
+];
 
 const form = reactive({
   id: '',
@@ -425,7 +481,7 @@ function openCreate() {
   form.id = '';
   form.code = 'DO-NEW';
   form.customerId = mockCustomers.value[0]?.id || '';
-  form.actualShipDate = new Date().toISOString().split('T')[0];
+  form.actualShipDate = (new Date().toISOString().split('T')[0]) || '';
   form.deliveryAddress1 = '';
   form.deliveryCity = '';
   form.status = 'DRAFT';
@@ -440,7 +496,7 @@ function openView(r: any) {
   
   form.id = r.id;
   form.code = r.code;
-  form.customerId = r.customerId || mockCustomers.value[0]?.id;
+  form.customerId = r.customerId || mockCustomers.value[0]?.id || '';
   form.actualShipDate = r.actualShipDate?.split('T')[0] || r.plannedShipDate?.split('T')[0] || '';
   form.deliveryAddress1 = r.deliveryAddress1 || '';
   form.deliveryCity = r.deliveryCity || '';
@@ -459,8 +515,16 @@ function openView(r: any) {
   dialogOpen.value = true;
 }
 
-function gotoInvoice(doc: any) {
-   alert(`Integrasi Modul Keuangan: POD (Proof of Delivery) untuk ${doc.code} Disetujui! Membuka portal Pembuatan Tagihan Penjualan (Sales Invoice) kepada akun Piutang Klien...`);
+async function gotoInvoice(doc: any) {
+   if (confirm(`Validasi POD (Bukti Penerimaan) untuk ${doc.code}? Status akan berubah menjadi DELIVERED dan siap ditagih.`)) {
+      try {
+         await api.post(`/logistics/delivery-orders/${doc.id}/delivered`);
+         toast.add({ severity: 'success', summary: 'POD Validated', detail: `${doc.code} as been marked as DELIVERED.` });
+         load();
+      } catch (e: any) {
+         toast.add({ severity: 'error', summary: 'Gagal Validasi', detail: e.message });
+      }
+   }
 }
 
 function addLine() {
@@ -486,6 +550,36 @@ async function saveAction(targetStatus: string) {
   }, 1000);
 }
 
+async function openGenerate() {
+  try {
+    const res = await api.get('/inventory/warehouses');
+    warehouses.value = res.data?.warehouses || res.data?.data || [];
+    generateDialogOpen.value = true;
+  } catch (e: any) {
+    toast.add({ severity: 'error', summary: 'Gagal', detail: 'Could not load warehouses' });
+  }
+}
+
+async function generate() {
+  if (!generateForm.warehouseId || !generateForm.shipmentIds) {
+    toast.add({ severity: 'warn', summary: 'Gagal', detail: 'Isi Gudang dan Kode Manifest Terlebih Dahulu.' });
+    return;
+  }
+  
+  saving.value = true;
+  try {
+    const ids = generateForm.shipmentIds.split(',').map(s => s.trim()).filter(Boolean);
+    await api.post('/logistics/delivery-orders/generate', { ...generateForm, shipmentIds: ids });
+    toast.add({ severity: 'success', summary: 'DO Berhasil Dibuat', detail: 'Dokumen pengiriman massal telah diproses.' });
+    generateDialogOpen.value = false;
+    load();
+  } catch (e: any) {
+    toast.add({ severity: 'error', summary: 'Gagal Generate', detail: e.message });
+  } finally {
+    saving.value = false;
+  }
+}
+
 onMounted(() => {
   load();
 });
@@ -505,7 +599,7 @@ const statusBadgeClasses = (s: string) => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .animate-fade-in-up { 
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
 }

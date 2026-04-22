@@ -13,6 +13,7 @@ import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
 import ProgressBar from 'primevue/progressbar';
+import Slider from 'primevue/slider';
 
 import Button from 'primevue/button';
 import Card from 'primevue/card';
@@ -91,4 +92,5 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component('AccordionHeader', AccordionHeader);
   nuxtApp.vueApp.component('AccordionContent', AccordionContent);
   nuxtApp.vueApp.component('ProgressBar', ProgressBar);
+  nuxtApp.vueApp.component('Slider', Slider);
 });

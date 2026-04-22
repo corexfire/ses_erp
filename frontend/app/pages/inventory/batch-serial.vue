@@ -3,7 +3,7 @@
     <!-- Header (Premium Supply Chain Traceability Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-pink-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-pink-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-pink-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-pink-100">Supply Chain Traceability</span>
@@ -21,8 +21,8 @@
     </div>
 
     <!-- Dynamic Traceability Telemetry KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-pink-400 tracking-[0.2em] mb-4 opacity-80">Total Batch Aktif</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ batches.length }}</h3>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Aset Expired</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-rose-700 tracking-tighter leading-none">{{ batches.filter(x => isExpired(x.expiryDate)).length }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Populasi Serial</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-indigo-700 tracking-tighter leading-none">{{ serials.length }}</h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-gradient-to-br from-pink-600 to-rose-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-gradient-to-br from-pink-600 to-rose-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-pink-100 tracking-[0.2em] mb-4 opacity-80">Indeks Keterlacakan</div>
         <div class="flex items-end justify-between">
@@ -61,10 +61,10 @@
     <!-- Tabbed Ledger Architecture (Premium Grid) -->
     <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
       <!-- Controls Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-pink-200/20 rounded-full blur-3xl"></div>
         
-        <div class="relative flex items-center gap-6">
+        <div class="relative flex items-center gap-4">
            <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex font-black text-[10px] uppercase tracking-widest">
               <button class="py-2 px-6 rounded-xl text-center transition-all" :class="activeTab === 'BATCH' ? 'bg-pink-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-50'" @click="activeTab = 'BATCH'">
                  <i class="pi pi-tags mr-2"></i> Data Lot / Batches
@@ -221,7 +221,7 @@
         <!-- Workspace Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden text-slate-900">
           <div class="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700" :class="form.type === 'BATCH' ? 'bg-pink-50' : 'bg-indigo-50'"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0" :class="form.type === 'BATCH' ? 'bg-pink-600' : 'bg-indigo-600'">
                <i class="pi text-3xl font-black" :class="form.type === 'BATCH' ? 'pi-tags' : 'pi-barcode'"></i>
             </div>

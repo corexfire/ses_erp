@@ -3,7 +3,7 @@
     <!-- Header (Premium Activity Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-amber-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Engagement Hub</span>
@@ -28,9 +28,9 @@
     </div>
 
     <!-- High-Contrast KPI Banners (Premium style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in-up">
       <!-- Primary volume banner -->
-      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+      <div class="p-4 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
         <div class="text-[10px] font-black uppercase text-amber-400 tracking-[0.2em] mb-4 opacity-80">Total Sched.</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter">{{ activities.length }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-purple-500 tracking-[0.2em] mb-4">Meeting</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-purple-600 tracking-tighter">{{ countType('MEETING') }}</h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-sky-500 tracking-[0.2em] mb-4">Phone Call</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-sky-600 tracking-tighter">{{ countType('CALL') }}</h3>
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-indigo-500 tracking-[0.2em] mb-4">Email Sent</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-indigo-600 tracking-tighter">{{ countType('EMAIL') }}</h3>
@@ -64,7 +64,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-4">To-Do Task</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-800 tracking-tighter">{{ countType('TASK') }}</h3>
@@ -257,7 +257,7 @@
           <div class="space-y-8 pt-8 border-t border-slate-100">
              <div class="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] text-center bg-white py-1.5 px-6 rounded-full border border-slate-100 shadow-sm mx-auto w-fit">Entity Linkage Mapping</div>
              
-             <div class="grid grid-cols-1 gap-6">
+             <div class="grid grid-cols-1 gap-4">
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-indigo-400 uppercase tracking-widest flex items-center gap-2 block ml-1"><i class="pi pi-building text-[10px]"></i> Bind to Customer Master</label>
                   <select v-model="form.customerId" class="w-full h-14 rounded-2xl border-none bg-indigo-50/30 px-6 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-100 outline-none transition-all appearance-none shadow-sm cursor-pointer" :disabled="editingId ? !canUpdate : !canCreate">
@@ -287,7 +287,7 @@
           <!-- Notes -->
           <div class="space-y-2 pt-8 border-t border-slate-100">
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block ml-1">Detail Perkembangan (Transaction Notes)</label>
-            <textarea v-model="form.notes" rows="4" class="w-full rounded-2xl border-none bg-white shadow-inner p-6 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-amber-100 outline-none transition-all resize-none placeholder:italic" placeholder="Tulis catatan interaksi di sini..."></textarea>
+            <textarea v-model="form.notes" rows="4" class="w-full rounded-2xl border-none bg-white shadow-inner p-4 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-amber-100 outline-none transition-all resize-none placeholder:italic" placeholder="Tulis catatan interaksi di sini..."></textarea>
           </div>
 
           <div v-if="dialogError" class="rounded-2xl bg-rose-50 px-6 py-4 text-xs text-rose-600 border border-rose-100 font-bold shadow-sm animate-fade-in-up">{{ dialogError }}</div>

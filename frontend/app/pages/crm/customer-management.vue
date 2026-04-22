@@ -3,7 +3,7 @@
     <!-- Header (Premium Customer style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-indigo-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">CRM Management</span>
@@ -28,9 +28,9 @@
     </div>
 
     <!-- KPI Stats Banners (Premium Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
        <!-- Total Customers Banner - High Contrast -->
-      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+      <div class="p-4 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
         <div class="text-[10px] font-black uppercase text-indigo-300 tracking-[0.2em] mb-4 opacity-80">Total Registered Klien</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter">{{ customers.length }}</h3>
@@ -41,7 +41,7 @@
       </div>
 
       <!-- Active Banners -->
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-500 tracking-[0.2em] mb-4">Active Accounts</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-emerald-600 tracking-tighter">{{ countStatus(true) }}</h3>
@@ -50,7 +50,7 @@
       </div>
       
       <!-- Inactive Banners -->
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-rose-500 tracking-[0.2em] mb-4">Suspended / Inactive</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-rose-600 tracking-tighter">{{ countStatus(false) }}</h3>
@@ -217,7 +217,7 @@
               <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-[10px] font-black shadow-lg">02</div>
               <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-indigo-900">Communication & Point of Contact</h4>
             </div>
-            <div class="pl-11 grid grid-cols-2 gap-6">
+            <div class="pl-11 grid grid-cols-2 gap-4">
               <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Primary Billing Email</label>
                 <input type="email" v-model="form.email" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300" placeholder="finance@klien.com" />
@@ -238,9 +238,9 @@
             <div class="pl-11 space-y-8">
               <div class="space-y-2">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Primary Business Address</label>
-                <textarea v-model="form.address1" rows="3" class="w-full rounded-2xl border-none bg-white shadow-inner p-6 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-indigo-100 resize-none placeholder:italic" placeholder="Full street address, building info..."></textarea>
+                <textarea v-model="form.address1" rows="3" class="w-full rounded-2xl border-none bg-white shadow-inner p-4 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-indigo-100 resize-none placeholder:italic" placeholder="Full street address, building info..."></textarea>
               </div>
-              <div class="grid grid-cols-2 gap-6">
+              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">City / Kabupaten Location</label>
                    <input type="text" v-model="form.city" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300" />

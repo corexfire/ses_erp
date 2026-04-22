@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-green-600 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-green-600 relative overflow-hidden">
       <div class="absolute right-[-12px] top-[-12px] opacity-5 pointer-events-none">
         <i class="pi pi-money-bill text-[150px] text-green-900"></i>
       </div>
@@ -149,7 +149,7 @@
     <div v-if="slipRun" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
       <div class="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up">
         <!-- Slip Header -->
-        <div class="bg-green-900 text-white p-6 text-center relative">
+        <div class="bg-green-900 text-white p-4 text-center relative">
           <div class="font-black text-lg tracking-wide">PT SUMBER ENERGI SNACK</div>
           <div class="text-green-300 text-xs font-bold mt-0.5">SLIP GAJI KARYAWAN</div>
           <div class="text-green-200 text-xs mt-0.5">Periode: {{ slipRun.period }} | {{ statusLabelFull(slipRun.status) }}</div>
@@ -248,7 +248,7 @@
           </div>
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="bulkDialog = false">✕</button>
         </div>
-        <div class="p-6 space-y-4">
+        <div class="p-4 space-y-4">
           <div class="space-y-1.5">
             <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Periode Payroll <span class="text-red-500">*</span></label>
             <input type="month" v-model="bulkPeriod" class="w-full border rounded-lg px-3 py-2 text-sm font-black text-green-700 outline-none focus:border-green-500" />
@@ -283,7 +283,7 @@
           </div>
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="formDialog = false">✕</button>
         </div>
-        <div class="p-6 space-y-4">
+        <div class="p-4 space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
               <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Karyawan <span class="text-red-500">*</span></label>

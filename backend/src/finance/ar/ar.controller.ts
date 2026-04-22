@@ -16,7 +16,7 @@ export class ArController {
   async list(@Req() req: FastifyRequest & { user: AuthUser }, @Query('status') status?: string) {
     const invoices = await this.prisma.customerInvoice.findMany({
       where: { tenantId: req.user.tenantId!, ...(status ? { status } : {}) },
-      include: { payments: true, lines: true },
+      include: { customer: true, payments: true, lines: true },
       orderBy: [{ invoiceDate: 'desc' }],
       take: 200,
     });
@@ -28,21 +28,21 @@ export class ArController {
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const invoice = await this.prisma.customerInvoice.findFirst({
       where: { id, tenantId: req.user.tenantId! },
-      include: { payments: true, lines: { orderBy: [{ lineNo: 'asc' }] } },
+      include: { customer: true, payments: true, lines: { orderBy: [{ lineNo: 'asc' }] } },
     });
     return { invoice };
   }
 
   @Post()
   @RequirePermissions('finance.ar.create')
-  async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { invoiceNo: string; customerCode: string; invoiceDate: string; dueDate?: string; description?: string; lines: { description: string; qty: number; unitPrice: number; taxCode?: string; amount: number }[] }) {
+  async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { invoiceNo: string; customerId: string; invoiceDate: string; dueDate?: string; description?: string; lines: { description: string; qty: number; unitPrice: number; taxCode?: string; amount: number }[] }) {
     const totalAmount = body.lines.reduce((sum, l) => sum + (l.amount || 0), 0);
 
     const invoice = await this.prisma.customerInvoice.create({
       data: {
         tenantId: req.user.tenantId!,
         invoiceNo: body.invoiceNo,
-        customerCode: body.customerCode,
+        customerId: body.customerId,
         invoiceDate: new Date(body.invoiceDate),
         dueDate: body.dueDate ? new Date(body.dueDate) : null,
         description: body.description,
@@ -99,7 +99,7 @@ export class ArController {
   async debtCollection(@Req() req: FastifyRequest & { user: AuthUser }) {
     const overdueInvoices = await this.prisma.customerInvoice.findMany({
       where: { tenantId: req.user.tenantId!, status: { in: ['OPEN', 'OVERDUE'] } },
-      include: { payments: true },
+      include: { customer: true, payments: true },
     });
 
     const collectionItems = [];
@@ -112,7 +112,7 @@ export class ArController {
       collectionItems.push({
         id: inv.id,
         invoiceNo: inv.invoiceNo,
-        customerCode: inv.customerCode,
+        customerCode: (inv as any).customer?.code || 'N/A',
         invoiceDate: inv.invoiceDate,
         dueDate: inv.dueDate,
         totalAmount: inv.totalAmount,

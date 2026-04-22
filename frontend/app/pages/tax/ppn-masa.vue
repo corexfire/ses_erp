@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -26,11 +26,14 @@
     <!-- Main Position Cards -->
     <div v-if="summary" class="grid grid-cols-1 md:grid-cols-3 gap-8">
        <!-- PPN Keluaran (Payable Base) -->
-       <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm relative overflow-hidden group">
-          <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+       <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm relative overflow-hidden group hover:border-red-200 transition-colors">
+          <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i class="pi pi-arrow-up-right text-6xl text-red-600"></i>
           </div>
-          <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">PPN Keluaran (Output)</p>
+          <div class="flex items-center gap-2 mb-1">
+            <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">PPN Keluaran (Output)</p>
+            <i class="pi pi-info-circle text-slate-300 hover:text-red-500 cursor-help" v-tooltip.top="'PPN yang Anda pungut dari pelanggan saat melakukan penjualan. Nilai ini merupakan liabilitas pajak yang harus disetorkan ke kas negara.'"></i>
+          </div>
           <div class="flex items-baseline gap-2 mb-4">
              <span class="text-3xl font-black text-slate-900">IDR {{ fmtNumber(summary.totalOutput) }}</span>
           </div>
@@ -40,11 +43,14 @@
        </div>
 
        <!-- PPN Masukan (Credit Base) -->
-       <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm relative overflow-hidden group border-b-emerald-400 border-b-4">
-          <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+       <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm relative overflow-hidden group border-b-emerald-400 border-b-4 hover:border-emerald-200 transition-colors">
+          <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i class="pi pi-arrow-down-left text-6xl text-emerald-600"></i>
           </div>
-          <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">PPN Masukan (Input)</p>
+          <div class="flex items-center gap-2 mb-1">
+            <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">PPN Masukan (Input)</p>
+            <i class="pi pi-info-circle text-slate-300 hover:text-emerald-500 cursor-help" v-tooltip.top="'PPN yang Anda bayar kepada pemasok saat melakukan pembelian. Jika faktur pajak valid, nilai ini dapat digunakan sebagai pengurang (kredit) terhadap PPN Keluaran.'"></i>
+          </div>
           <div class="flex items-baseline gap-2 mb-4">
              <span class="text-3xl font-black text-slate-900">IDR {{ fmtNumber(summary.totalInput) }}</span>
           </div>
@@ -55,10 +61,13 @@
 
        <!-- Net Position -->
        <div :class="['p-8 rounded-xl shadow-2xl relative overflow-hidden border-none', summary.netPpn >= 0 ? 'bg-slate-900 text-white' : 'bg-emerald-600 text-white']">
-          <div class="absolute top-0 right-0 p-6 opacity-20">
+          <div class="absolute top-0 right-0 p-4 opacity-20">
              <i :class="[summary.netPpn >= 0 ? 'pi pi-wallet' : 'pi pi-percentage', 'text-6xl']"></i>
           </div>
-          <p class="text-[11px] font-black text-slate-300 uppercase tracking-widest mb-1">Status Pajak Bersih</p>
+          <div class="flex items-center gap-2 mb-1">
+            <p class="text-[11px] font-black text-slate-300 uppercase tracking-widest">Status Pajak Bersih</p>
+            <i class="pi pi-info-circle text-white/30 hover:text-white cursor-help" v-tooltip.top="'Hasil akhir rekonsiliasi. Status KB (Kurang Bayar) mewajibkan setoran ke kas negara. Status LB (Lebih Bayar) berarti kelebihan bayar dapat dikompensasi ke masa pajak berikutnya atau direstitusi.'"></i>
+          </div>
           <div class="flex items-baseline gap-2 mb-4">
              <span class="text-3xl font-black">{{ fmtNumber(Math.abs(summary.netPpn)) }}</span>
              <span class="text-xs font-bold text-white/60">IDR</span>
@@ -75,7 +84,10 @@
        <!-- Output Details -->
        <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[400px]">
           <div class="p-8 border-b border-slate-100 bg-slate-50/10 flex justify-between items-center">
-             <h3 class="text-[12px] font-black text-slate-900 uppercase tracking-widest">Buku PPN Keluaran</h3>
+             <div class="flex items-center gap-2">
+                <h3 class="text-[12px] font-black text-slate-900 uppercase tracking-widest">Buku PPN Keluaran</h3>
+                <i class="pi pi-info-circle text-slate-300 hover:text-indigo-600 cursor-help" v-tooltip.right="'Rincian seluruh faktur penjualan pada periode ini. Data ini disinkronkan langsung dari modul Penjualan & Distribusi.'"></i>
+             </div>
              <span class="text-[10px] font-bold text-slate-400">{{ outputInvoices.length }} Baris Data</span>
           </div>
           <DataTable :value="outputInvoices" dataKey="id" class="p-datatable-sm w-full">
@@ -92,7 +104,10 @@
        <!-- Input Details -->
        <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[400px]">
           <div class="p-8 border-b border-slate-100 bg-slate-50/10 flex justify-between items-center">
-             <h3 class="text-[12px] font-black text-slate-900 uppercase tracking-widest">Buku PPN Masukan</h3>
+             <div class="flex items-center gap-2">
+                <h3 class="text-[12px] font-black text-slate-900 uppercase tracking-widest">Buku PPN Masukan</h3>
+                <i class="pi pi-info-circle text-slate-300 hover:text-indigo-600 cursor-help" v-tooltip.right="'Rincian seluruh faktur pembelian dan pengeluaran beban. Pastikan faktur pajak telah diklaim sebagai kredit pajak untuk mengurangi beban PPN.'"></i>
+             </div>
              <span class="text-[10px] font-bold text-slate-400">{{ inputInvoices.length }} Baris Data</span>
           </div>
           <DataTable :value="inputInvoices" class="p-datatable-sm w-full">

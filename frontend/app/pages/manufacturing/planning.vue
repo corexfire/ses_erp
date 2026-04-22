@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 p-6 space-y-4">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 p-4 space-y-4">
     
     <!-- Header (Premium Planning Command Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-indigo-100 italic">Material Requirements Planning</span>
@@ -31,8 +31,8 @@
     </div>
 
     <!-- Planning Telemetry KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
-      <div v-for="stat in stats" :key="stat.label" class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
+      <div v-for="stat in stats" :key="stat.label" class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4 opacity-80 group-hover:text-indigo-400 transition-colors">{{ stat.label }}</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-slate-800 tracking-tighter leading-none">{{ stat.value }}</h3>
@@ -78,7 +78,7 @@
                 v-for="r in runs"
                 :key="r.id"
                 :class="selectedRunId === r.id ? 'bg-indigo-600 text-white shadow-2xl shadow-indigo-200 -translate-y-1' : 'bg-white border border-slate-100 text-slate-600 hover:bg-slate-50'"
-                class="w-full p-6 rounded-[2rem] text-left transition-all duration-500 relative overflow-hidden group/run"
+                class="w-full p-4 rounded-[2rem] text-left transition-all duration-500 relative overflow-hidden group/run"
                 @click="selectRun(r)"
               >
                 <div v-if="selectedRunId === r.id" class="absolute right-[-20px] top-[-20px] w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
@@ -120,7 +120,7 @@
         <div class="rounded-[2.5rem] bg-indigo-900 border border-slate-800 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.4)] overflow-hidden flex flex-col h-full relative group">
           <div class="absolute inset-0 bg-gradient-to-br from-indigo-800/20 to-transparent pointer-events-none"></div>
           
-          <div class="p-8 border-b border-indigo-800 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+          <div class="p-8 border-b border-indigo-800 flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
             <div>
               <h2 class="text-sm font-black text-white uppercase tracking-widest italic">Planning Suggestions</h2>
               <div v-if="selectedRun" class="flex items-center gap-3 mt-2 text-[10px] font-black uppercase tracking-widest text-indigo-300">
@@ -162,7 +162,7 @@
               </div>
             </div>
 
-            <div v-else-if="loadingSuggestions" class="flex flex-col items-center py-32 gap-6">
+            <div v-else-if="loadingSuggestions" class="flex flex-col items-center py-32 gap-4">
               <i class="pi pi-spinner pi-spin text-6xl text-indigo-500"></i>
               <span class="text-[10px] font-black uppercase text-indigo-400 tracking-[0.5em] animate-pulse">Processing Planning Matrix...</span>
             </div>
@@ -232,8 +232,8 @@
                     </div>
 
                     <!-- Additional Details & Actions -->
-                    <div class="mt-6 flex flex-col sm:flex-row items-end sm:items-center justify-between gap-6 border-t border-indigo-800/50 pt-6">
-                       <div class="flex flex-wrap items-center gap-6">
+                    <div class="mt-6 flex flex-col sm:flex-row items-end sm:items-center justify-between gap-4 border-t border-indigo-800/50 pt-6">
+                       <div class="flex flex-wrap items-center gap-4">
                           <div v-if="s.dueDate" class="flex items-center gap-2">
                              <div class="p-2 rounded-lg bg-indigo-950/50 border border-indigo-800 text-indigo-400">
                                 <i class="pi pi-calendar-clock text-xs"></i>
@@ -312,14 +312,14 @@
     
     <!-- MRP COMMAND CENTER (CENTERED DIALOG) -->
     <transition name="modal">
-      <div v-if="runDialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
+      <div v-if="runDialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <!-- Non-dismissible backdrop -->
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xl transition-all duration-700"></div>
         
         <div class="relative z-10 w-full max-w-2xl bg-white rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col border border-white/20 animate-scale-in border-b-[12px] border-b-indigo-900 shadow-[0_0_50px_rgba(49,46,129,0.2)]">
           <!-- Dialog Header -->
           <div class="px-10 py-8 flex justify-between items-center border-b border-slate-100 bg-slate-50/50">
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
               <div class="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-200">
                 <i class="pi pi-calculator text-2xl"></i>
               </div>

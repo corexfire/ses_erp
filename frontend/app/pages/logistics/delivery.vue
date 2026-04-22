@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -21,8 +21,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
              <i :class="[s.icon, 'text-6xl', s.iconColor]"></i>
           </div>
@@ -110,11 +110,147 @@
        </DataTable>
     </div>
 
-    <!-- View Drawer -->
+    <!-- Manual Create Drawer -->
+    <Drawer v-model:visible="createDrawerOpen" header="Registrasi Delivery Order (Manual)" position="right" class="w-[850px] shadow-2xl">
+       <div class="h-full flex flex-col pt-4 overflow-hidden">
+          <div class="flex-1 overflow-y-auto px-6 space-y-8 pb-32 custom-scrollbar">
+             <!-- Section 1: Customer & Logistics -->
+             <div class="grid grid-cols-2 gap-8">
+                <div class="space-y-6">
+                   <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs">1</div>
+                      <h4 class="text-[11px] font-black uppercase tracking-widest text-slate-900">Partner & Warehouse</h4>
+                   </div>
+                   <div class="space-y-4 pt-1">
+                      <div class="space-y-1">
+                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer / Penerima</label>
+                         <Select v-model="manualDoForm.customerId" :options="customers" optionLabel="name" optionValue="id" filter placeholder="Cari Customer..." class="w-full rounded-xl" @change="onCustomerSelect" />
+                      </div>
+                      <div class="space-y-1">
+                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Gudang Pengirim</label>
+                         <Select v-model="manualDoForm.warehouseId" :options="warehouses" optionLabel="name" optionValue="id" placeholder="Pilih Gudang" class="w-full rounded-xl" />
+                      </div>
+                   </div>
+                </div>
+                <div class="space-y-6">
+                   <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs">2</div>
+                      <h4 class="text-[11px] font-black uppercase tracking-widest text-slate-900">Jadwal & Prioritas</h4>
+                   </div>
+                   <div class="space-y-4 pt-1">
+                      <div class="space-y-1">
+                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Estimasi Pengiriman</label>
+                         <InputText v-model="manualDoForm.plannedShipDate" type="date" class="w-full rounded-xl border-slate-200" />
+                      </div>
+                      <div class="space-y-1">
+                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Priority Class</label>
+                         <Select v-model="manualDoForm.priority" :options="priorityOptions" optionLabel="label" optionValue="value" class="w-full rounded-xl" />
+                      </div>
+                   </div>
+                </div>
+             </div>
+
+             <!-- Section 2: Address Details -->
+             <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                   <div class="w-8 h-8 rounded-full bg-slate-400 flex items-center justify-center text-white text-xs"><i class="pi pi-map-marker text-[10px]"></i></div>
+                   <h4 class="text-[11px] font-black uppercase tracking-widest text-slate-900">Detail Alamat Pengiriman</h4>
+                </div>
+                <div class="grid grid-cols-2 gap-4 p-4 rounded-3xl bg-slate-50 border border-slate-100">
+                   <div class="space-y-4">
+                      <div class="space-y-1">
+                         <label class="text-[9px] font-black text-slate-400 uppercase">Alamat Lengkap</label>
+                         <Textarea v-model="manualDoForm.deliveryAddress1" rows="2" class="w-full rounded-xl text-xs border-slate-200" />
+                      </div>
+                      <div class="grid grid-cols-2 gap-3">
+                         <div class="space-y-1">
+                            <label class="text-[9px] font-black text-slate-400 uppercase">Kota</label>
+                            <InputText v-model="manualDoForm.deliveryCity" class="w-full rounded-xl text-xs border-slate-200" />
+                         </div>
+                         <div class="space-y-1">
+                             <label class="text-[9px] font-black text-slate-400 uppercase">Kode Pos</label>
+                             <InputText v-model="manualDoForm.deliveryPostalCode" class="w-full rounded-xl text-xs border-slate-200" />
+                         </div>
+                      </div>
+                   </div>
+                   <div class="space-y-4">
+                      <div class="space-y-1">
+                         <label class="text-[9px] font-black text-slate-400 uppercase">Provinsi</label>
+                         <InputText v-model="manualDoForm.deliveryProvince" class="w-full rounded-xl text-xs border-slate-200" />
+                      </div>
+                      <div class="space-y-1">
+                         <label class="text-[9px] font-black text-slate-400 uppercase">Catatan Khusus (Notes)</label>
+                         <Textarea v-model="manualDoForm.deliveryNotes" rows="2" class="w-full rounded-xl text-xs border-slate-200" placeholder="Ex: Masuk Gang, Titip di Security..." />
+                      </div>
+                   </div>
+                </div>
+             </div>
+
+             <!-- Section 3: Item Lines -->
+             <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                   <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs"><i class="pi pi-plus text-[10px]"></i></div>
+                      <h4 class="text-[11px] font-black uppercase tracking-widest text-slate-900">Rincian Barang</h4>
+                   </div>
+                   <Button label="Tambah Item" icon="pi pi-plus" text class="text-[10px] font-black uppercase tracking-widest text-indigo-600" @click="addItemRow" />
+                </div>
+                <div class="rounded-3xl border border-slate-200 overflow-hidden shadow-sm bg-white">
+                   <table class="w-full text-xs">
+                      <thead class="bg-slate-50 text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                         <tr>
+                            <th class="px-4 py-4 text-left">Pilih Item Master</th>
+                            <th class="px-4 py-4 text-left">Deskripsi</th>
+                            <th class="px-4 py-4 text-center w-24">Qty</th>
+                            <th class="px-4 py-4 text-center w-20">UOM</th>
+                            <th class="px-4 py-4 text-center w-12"></th>
+                         </tr>
+                      </thead>
+                      <tbody>
+                         <tr v-for="(item, idx) in manualDoForm.items" :key="idx" class="border-t border-slate-100 hover:bg-slate-50/50">
+                            <td class="px-4 py-3">
+                               <Select v-model="item.itemId" :options="itemsMaster" optionLabel="name" optionValue="id" filter placeholder="Cari SKU..." class="w-full p-select-xs border-none bg-transparent" @change="onItemSelect(idx, item.itemId)" />
+                            </td>
+                            <td class="px-4 py-3">
+                               <InputText v-model="item.description" class="w-full p-inputtext-xs border-none bg-transparent font-bold text-slate-700" />
+                            </td>
+                            <td class="px-4 py-3">
+                               <InputNumber v-model="item.orderedQty" class="w-full p-inputnumber-xs" inputClass="text-center bg-transparent border-none font-black" />
+                            </td>
+                            <td class="px-4 py-3">
+                               <InputText v-model="item.uomCode" class="w-full p-inputtext-xs text-center border-none bg-transparent font-black text-slate-400" />
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                               <Button icon="pi pi-trash" severity="danger" text rounded @click="removeItemRow(idx)" />
+                            </td>
+                         </tr>
+                         <tr v-if="manualDoForm.items.length === 0">
+                            <td colspan="5" class="p-8 text-center bg-slate-50/30">
+                               <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Belum ada item ditambahkan</p>
+                            </td>
+                         </tr>
+                      </tbody>
+                   </table>
+                </div>
+             </div>
+          </div>
+
+          <!-- Bottom Actions -->
+          <div class="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 flex items-center justify-between rounded-t-[2.5rem] shadow-[0_-15px_40px_rgba(0,0,0,0.04)]">
+             <div class="flex items-center gap-4">
+                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">{{ manualDoForm.items.length }} Items Terdaftar</span>
+             </div>
+             <div class="flex items-center gap-3">
+                <Button label="Batalkan" severity="secondary" text @click="createDrawerOpen = false" class="font-black text-[10px] uppercase" />
+                <Button label="Simpan DO" icon="pi pi-check" class="p-button-rounded font-black text-[10px] uppercase px-10 bg-slate-900 border-slate-900 shadow-xl" @click="saveManualDo" :loading="saving" />
+             </div>
+          </div>
+       </div>
+    </Drawer>
     <Drawer v-model:visible="viewDialogOpen" :header="`Detail Pengiriman: ${viewingDo?.code}`" position="right" class="w-[700px]">
        <div v-if="viewingDo" class="space-y-8 pt-4 px-4 overflow-y-auto pb-24 h-full custom-scrollbar">
           <!-- Timeline & Header -->
-          <div class="p-6 rounded-3xl bg-indigo-50/50 border border-indigo-100 flex items-center justify-between">
+          <div class="p-4 rounded-3xl bg-indigo-50/50 border border-indigo-100 flex items-center justify-between">
              <div class="space-y-1">
                 <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest text-[rgb(129,140,248)]">Tracking Status</span>
                 <div class="flex items-center gap-3">
@@ -134,7 +270,7 @@
                 <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs"><i class="pi pi-user text-[10px]"></i></div>
                 <h4 class="text-[11px] font-black uppercase tracking-widest text-slate-900">Informasi Penerima</h4>
              </div>
-             <div class="grid grid-cols-2 gap-6 bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+             <div class="grid grid-cols-2 gap-4 bg-white p-4 rounded-3xl border border-slate-100 shadow-sm">
                 <div class="space-y-4">
                    <div>
                       <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Nama Customer</label>
@@ -201,7 +337,7 @@
                 <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs"><i class="pi pi-check-circle text-[10px]"></i></div>
                 <h4 class="text-[11px] font-black uppercase tracking-widest text-slate-900">Proof of Delivery (POD)</h4>
              </div>
-             <div class="p-6 rounded-3xl bg-emerald-50 border border-emerald-100 grid grid-cols-2 gap-6 relative overflow-hidden">
+             <div class="p-4 rounded-3xl bg-emerald-50 border border-emerald-100 grid grid-cols-2 gap-4 relative overflow-hidden">
                 <div class="absolute top-0 right-0 p-4 opacity-5"><i class="pi pi-verified text-8xl text-emerald-900"></i></div>
                 <div class="space-y-4 relative">
                    <div>
@@ -286,8 +422,24 @@ const viewDialogOpen = ref(false)
 const viewingDo = ref<any>(null)
 
 const generateDialogOpen = ref(false)
+const createDrawerOpen = ref(false)
 const saving = ref(false)
 const warehouses = ref<any[]>([])
+const customers = ref<any[]>([])
+const itemsMaster = ref<any[]>([])
+
+const manualDoForm = reactive({
+  customerId: '',
+  warehouseId: '',
+  plannedShipDate: new Date().toISOString().slice(0, 10),
+  priority: 'NORMAL',
+  deliveryAddress1: '',
+  deliveryCity: '',
+  deliveryProvince: '',
+  deliveryPostalCode: '',
+  deliveryNotes: '',
+  items: [] as any[]
+})
 
 const generateForm = reactive({
   warehouseId: '',
@@ -353,8 +505,74 @@ async function openView(data: any) {
   }
 }
 
-function openCreate() {
-  toast.add({ severity: 'info', summary: 'Info', detail: 'Fitur pembuatan DO manual dalam pengembangan.' })
+async function openCreate() {
+  manualDoForm.customerId = ''
+  manualDoForm.warehouseId = ''
+  manualDoForm.items = []
+  manualDoForm.deliveryAddress1 = ''
+  manualDoForm.deliveryCity = ''
+  manualDoForm.deliveryProvince = ''
+  manualDoForm.deliveryPostalCode = ''
+  manualDoForm.deliveryNotes = ''
+  
+  try {
+    const [custRes, itemRes, whRes] = await Promise.all([
+      api.get('/crm/customers'),
+      api.get('/inventory/items'),
+      api.get('/inventory/warehouses')
+    ])
+    customers.value = custRes.data?.customers || []
+    itemsMaster.value = itemRes.data?.items || []
+    warehouses.value = whRes.data?.warehouses || whRes.data?.data || []
+    createDrawerOpen.value = true
+  } catch (e: any) {
+    toast.add({ severity: 'error', summary: 'Gagal Memuat Data', detail: e.message })
+  }
+}
+
+async function saveManualDo() {
+  if (!manualDoForm.customerId || !manualDoForm.warehouseId || manualDoForm.items.length === 0) {
+    toast.add({ severity: 'warn', summary: 'Gagal', detail: 'Pastikan customer, gudang, dan item telah terisi.' })
+    return
+  }
+  
+  saving.value = true
+  try {
+    await api.post('/logistics/delivery-orders', manualDoForm)
+    toast.add({ severity: 'success', summary: 'DO Berhasil Dibuat', detail: 'Status dokumen saat ini adalah DRAFT.' })
+    createDrawerOpen.value = false
+    load()
+  } catch (e: any) {
+    toast.add({ severity: 'error', summary: 'Gagal Menyimpan', detail: e.message })
+  } finally {
+    saving.value = false
+  }
+}
+
+function addItemRow() {
+  manualDoForm.items.push({ itemId: '', description: '', orderedQty: 1, uomCode: 'PCS', unitPrice: 0 })
+}
+
+function removeItemRow(idx: number) {
+  manualDoForm.items.splice(idx, 1)
+}
+
+function onCustomerSelect() {
+  const cust = customers.value.find(c => c.id === manualDoForm.customerId)
+  if (cust) {
+    manualDoForm.deliveryAddress1 = cust.address1 || ''
+    manualDoForm.deliveryCity = cust.city || ''
+    manualDoForm.deliveryProvince = cust.province || ''
+    manualDoForm.deliveryPostalCode = cust.postalCode || ''
+  }
+}
+
+function onItemSelect(idx: number, itemId: string) {
+  const item = itemsMaster.value.find(i => i.id === itemId)
+  if (item) {
+    manualDoForm.items[idx].description = item.name
+    manualDoForm.items[idx].uomCode = item.uomCode || 'PCS'
+  }
 }
 
 async function openGenerate() {

@@ -35,7 +35,7 @@
           </p>
         </div>
 
-        <div class="relative z-10 mt-12 bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors">
+        <div class="relative z-10 mt-12 bg-white/5 rounded-2xl p-4 border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors">
            <div class="flex items-center gap-4">
               <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
                  <i class="pi pi-shield"></i>

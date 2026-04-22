@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section (Premium Calibration Style) -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -20,8 +20,8 @@
     </div>
 
     <!-- Health Metrics Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -146,7 +146,7 @@
              <div class="w-8 h-8 rounded-full bg-rose-600 flex items-center justify-center text-white text-xs">{{ isNew ? '2' : '1' }}</div>
              <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Data Sertifikasi</h4>
            </div>
-           <div class="grid grid-cols-2 gap-6 pl-9">
+           <div class="grid grid-cols-2 gap-4 pl-9">
               <div class="space-y-2">
                  <label class="text-[10px] font-black text-slate-400 uppercase">Tanggal Kalibrasi</label>
                  <InputText v-model="form.calibrationDate" type="date" class="w-full text-xs font-bold rounded-xl h-10 border-slate-200" @change="onDateChange" />

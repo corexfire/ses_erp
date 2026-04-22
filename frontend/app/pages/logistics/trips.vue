@@ -49,6 +49,7 @@
               <td class="px-3 py-2 text-right">
                 <div class="inline-flex gap-2">
                   <Button label="View" size="small" severity="secondary" @click="openView(trip)" />
+                  <Button v-if="canManage && trip.status === 'PLANNED'" label="Assign DOs" size="small" severity="info" @click="openAssign(trip)" />
                   <Button v-if="canManage && ['PLANNED', 'READY'].includes(trip.status)" label="Dispatch" size="small" :disabled="!canDispatch" @click="openDispatch(trip)" />
                 </div>
               </td>
@@ -95,7 +96,10 @@
         </div>
 
         <div class="mt-4">
-          <div class="text-xs font-semibold text-slate-700">Delivery Orders</div>
+          <div class="flex items-center justify-between">
+            <div class="text-xs font-semibold text-slate-700">Delivery Orders</div>
+            <Button v-if="canManage && viewingTrip.status === 'PLANNED'" label="Add DO" icon="pi pi-plus" size="small" text @click="openAssign(viewingTrip)" class="text-[10px] font-black" />
+          </div>
           <div class="mt-2 space-y-2">
             <div v-for="do_ in viewingTrip.deliveryOrders" :key="do_.id" class="flex items-center justify-between rounded border p-2 text-xs">
               <div>{{ do_.code }} - {{ do_.customer?.name || do_.customerId }}</div>
@@ -105,18 +109,74 @@
           </div>
         </div>
 
-        <div v-if="viewingTrip.checkpoints?.length" class="mt-4">
-          <div class="text-xs font-semibold text-slate-700">Checkpoint Timeline</div>
-          <div class="mt-2 space-y-2">
-            <div v-for="cp in viewingTrip.checkpoints" :key="cp.id" class="flex items-center gap-2 text-xs">
-              <div class="w-20 rounded bg-slate-100 px-2 py-1 text-center">{{ cp.checkpointType }}</div>
-              <div class="flex-1">{{ cp.locationName || '-' }}</div>
-              <div class="text-slate-500">{{ fmt(cp.timestamp) }}</div>
+        <div v-if="viewingTrip.checkpoints?.length" class="mt-6 border-t pt-4">
+          <div class="text-xs font-semibold text-slate-700 uppercase tracking-widest mb-3">Checkpoint Timeline</div>
+          <div class="space-y-3">
+            <div v-for="cp in viewingTrip.checkpoints" :key="cp.id" class="flex items-start gap-3 text-xs">
+              <div class="w-20 rounded bg-slate-50 px-2 py-1 text-center font-black text-[9px] uppercase border border-slate-100">{{ cp.checkpointType }}</div>
+              <div class="flex-1">
+                <div class="font-bold text-slate-700">{{ cp.locationName || 'Location Not Specified' }}</div>
+                <div class="text-[10px] text-slate-400 font-medium">{{ fmt(cp.timestamp) }}</div>
+              </div>
             </div>
+          </div>
+        </div>
+
+        <!-- TRIP COSTS SECTION -->
+        <div class="mt-6 border-t pt-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-xs font-semibold text-slate-700 uppercase tracking-widest">Operational Costs</div>
+            <Button label="Add Cost" icon="pi pi-plus" size="small" text @click="openAddCost" v-if="canManage" class="text-[10px] font-black" />
+          </div>
+          <div class="space-y-2">
+            <div v-for="cost in viewingTrip.costs" :key="cost.id" class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="flex items-center gap-3">
+                 <div class="w-8 h-8 rounded-lg bg-white border flex items-center justify-center text-rose-600">
+                    <i :class="costIcon(cost.costType)"></i>
+                 </div>
+                 <div>
+                   <div class="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{{ cost.costType }}</div>
+                   <div class="text-[11px] font-bold text-slate-700">{{ cost.description || 'No description' }}</div>
+                 </div>
+              </div>
+              <div class="text-right">
+                 <div class="text-xs font-black text-slate-900">{{ formatRp(cost.amount) }}</div>
+                 <div :class="['text-[8px] font-black px-1.5 py-0.5 rounded-full inline-block uppercase', costStatusClass(cost.status)]">{{ cost.status }}</div>
+              </div>
+            </div>
+            <div v-if="!viewingTrip.costs?.length" class="py-6 text-center text-slate-400 border border-dashed rounded-xl text-xs italic">
+              No operational costs recorded for this trip.
+            </div>
+          </div>
+          <div v-if="viewingTrip.costs?.length" class="mt-3 flex justify-between items-center p-3 rounded-xl bg-rose-50 border border-rose-100">
+             <div class="text-xs font-black text-rose-900 uppercase">Total Trip Expense</div>
+             <div class="text-sm font-black text-rose-700">{{ formatRp(totalCost(viewingTrip.costs)) }}</div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- ADD COST DIALOG -->
+    <Dialog v-model:visible="costDialogOpen" header="Add Trip Operational Cost" modal class="w-[400px]">
+       <div class="space-y-4 pt-4">
+          <div class="space-y-1">
+             <label class="text-[10px] font-black text-slate-400 uppercase">Cost Type</label>
+             <Select v-model="costForm.costType" :options="['FUEL', 'TOLL', 'PARKING', 'MEAL', 'MAINTENANCE', 'OTHER']" class="w-full" />
+          </div>
+          <div class="space-y-1">
+             <label class="text-[10px] font-black text-slate-400 uppercase">Amount (IDR)</label>
+             <InputNumber v-model="costForm.amount" class="w-full" />
+          </div>
+          <div class="space-y-1">
+             <label class="text-[10px] font-black text-slate-400 uppercase">Description / Notes</label>
+             <Textarea v-model="costForm.description" rows="2" class="w-full" />
+          </div>
+          <div class="pt-4 flex justify-end gap-2">
+             <Button label="Cancel" severity="secondary" text @click="costDialogOpen = false" />
+             <Button label="Save Cost" class="bg-indigo-600 border-none px-6" @click="saveCost" :loading="saving" />
+          </div>
+       </div>
+    </Dialog>
 
     <div v-if="createDialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
       <div class="w-full max-w-lg rounded-xl border bg-white p-5 shadow-xl">
@@ -175,10 +235,57 @@
         <div v-if="dialogError" class="mt-3 text-sm text-red-600">{{ dialogError }}</div>
       </div>
     </div>
+
+    <!-- Assign DO Dialog -->
+    <Dialog v-if="assignDialogOpen" v-model:visible="assignDialogOpen" header="Assign Delivery Orders" modal class="w-full max-w-2xl bg-white p-5 rounded-xl shadow-xl">
+      <div class="space-y-4">
+        <div class="text-xs text-slate-500 mb-2">Select available delivery orders to assign to this trip. Only DOs with status PLANNED or RELEASED that are not yet assigned to a trip will be shown.</div>
+        
+        <div class="max-h-[300px] overflow-y-auto border rounded-lg">
+          <table class="w-full text-xs">
+            <thead class="bg-slate-50 sticky top-0 border-b">
+              <tr>
+                <th class="px-3 py-2 text-left w-10 text-slate-500">Select</th>
+                <th class="px-3 py-2 text-left text-slate-500">DO Code</th>
+                <th class="px-3 py-2 text-left text-slate-500">Customer</th>
+                <th class="px-3 py-2 text-left text-slate-500">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="do_ in availableDOs" :key="do_.id" class="border-t hover:bg-slate-50 cursor-pointer" @click="toggleSelect(do_.id)">
+                <td class="px-3 py-2">
+                   <div :class="['w-4 h-4 rounded border flex items-center justify-center', selectedDOIds.includes(do_.id) ? 'bg-indigo-600 border-indigo-600' : 'bg-white']">
+                     <i v-if="selectedDOIds.includes(do_.id)" class="pi pi-check text-[8px] text-white"></i>
+                   </div>
+                </td>
+                <td class="px-3 py-2 font-black text-slate-700">{{ do_.code }}</td>
+                <td class="px-3 py-2 text-slate-600">{{ do_.customer?.name || do_.customerId }}</td>
+                <td class="px-3 py-2">
+                  <span :class="statusClass(do_.status)">{{ do_.status }}</span>
+                </td>
+              </tr>
+              <tr v-if="availableDOs.length === 0">
+                <td colspan="4" class="px-3 py-10 text-center text-slate-400 italic">No available delivery orders found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="flex items-center justify-between pt-4 border-t">
+          <div class="text-xs font-black text-indigo-600 uppercase tracking-widest">{{ selectedDOIds.length }} selected</div>
+          <div class="flex gap-2">
+            <Button label="Cancel" severity="secondary" text size="small" @click="assignDialogOpen = false" />
+            <Button label="Confirm Assignment" class="bg-indigo-600 border-none px-6 font-black text-xs" :disabled="selectedDOIds.length === 0" :loading="saving" @click="confirmAssignment" />
+          </div>
+        </div>
+      </div>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useToast } from 'primevue/usetoast';
+
 type Trip = {
   id: string
   code: string
@@ -190,6 +297,7 @@ type Trip = {
   deliveryOrders?: any[]
   checkpoints?: any[]
   departureAt?: string
+  costs?: any[]
 }
 
 type Vehicle = { id: string; plateNo: string; vehicleType: string }
@@ -197,6 +305,7 @@ type Driver = { id: string; name: string; licenseType: string }
 
 const api = useApi()
 const auth = useAuthStore()
+const toast = useToast()
 
 const canManage = computed(() => auth.hasPermission('logistics.trip.manage'))
 const canDispatch = computed(() => auth.hasPermission('logistics.dispatch.execute'))
@@ -220,6 +329,13 @@ const dialogError = ref<string | null>(null)
 const vehicles = ref<Vehicle[]>([])
 const drivers = ref<Driver[]>([])
 
+const costDialogOpen = ref(false)
+const costForm = reactive({
+  costType: 'FUEL',
+  amount: 0,
+  description: '',
+})
+
 const createForm = reactive({
   routeDate: new Date().toISOString().slice(0, 10),
   notes: '',
@@ -230,6 +346,57 @@ const dispatchForm = reactive({
   driverId: '',
   departureAt: new Date().toISOString().slice(0, 16) + ':00',
 })
+
+const assignDialogOpen = ref(false)
+const assigningTripId = ref('')
+const availableDOs = ref<any[]>([])
+const selectedDOIds = ref<string[]>([])
+
+const formatRp = (v: number) => 'Rp ' + Number(v).toLocaleString('id-ID')
+
+const costIcon = (type: string) => {
+  switch (type) {
+    case 'FUEL': return 'pi pi-filter'
+    case 'TOLL': return 'pi pi-map'
+    case 'PARKING': return 'pi pi-car'
+    case 'MEAL': return 'pi pi-heart'
+    default: return 'pi pi-wallet'
+  }
+}
+
+const costStatusClass = (status: string) => {
+  if (status === 'APPROVED' || status === 'POSTED') return 'bg-emerald-50 text-emerald-700 border-emerald-100'
+  if (status === 'SUBMITTED') return 'bg-blue-50 text-blue-700 border-blue-100'
+  return 'bg-slate-100 text-slate-500 border-slate-200'
+}
+
+const totalCost = (costs: any[]) => costs.reduce((acc, c) => acc + Number(c.amount || 0), 0)
+
+const openAddCost = () => {
+  costForm.costType = 'FUEL'
+  costForm.amount = 0
+  costForm.description = ''
+  costDialogOpen.value = true
+}
+
+const saveCost = async () => {
+  if (!viewingTrip.value) return
+  saving.value = true
+  try {
+    await api.post('/logistics/costs', {
+      tripPlanId: viewingTrip.value.id,
+      ...costForm,
+    })
+    const res = await api.get(`/logistics/trips/${viewingTrip.value.id}`)
+    viewingTrip.value = res.data?.trip
+    costDialogOpen.value = false
+    toast.add({ severity: 'success', summary: 'Cost Added', detail: 'Operational cost recorded successfully.' })
+  } catch (e: any) {
+    toast.add({ severity: 'error', summary: 'Error', detail: e?.response?.data?.message ?? 'Failed to save cost' })
+  } finally {
+    saving.value = false
+  }
+}
 
 const fmt = (value?: string) => {
   if (!value) return '-'
@@ -332,6 +499,51 @@ const dispatch = async () => {
     await load()
   } catch (e: any) {
     dialogError.value = e?.response?.data?.message ?? 'Failed to dispatch trip'
+  } finally {
+    saving.value = false
+  }
+}
+
+const openAssign = async (trip: Trip) => {
+  assigningTripId.value = trip.id
+  selectedDOIds.value = []
+  loading.value = true
+  try {
+    const res = await api.get('/logistics/delivery-orders')
+    const allDOs = res.data.deliveryOrders || []
+    // Filter DOs that are PLANNED or RELEASED and DON'T have a trip yet
+    availableDOs.value = allDOs.filter((do_: any) => 
+      ['PLANNED', 'RELEASED'].includes(do_.status) && !do_.tripPlanId
+    )
+    assignDialogOpen.value = true
+  } catch (e) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to load available DOs' })
+  } finally {
+    loading.value = false
+  }
+}
+
+const toggleSelect = (id: string) => {
+  const idx = selectedDOIds.value.indexOf(id)
+  if (idx > -1) selectedDOIds.value.splice(idx, 1)
+  else selectedDOIds.value.push(id)
+}
+
+const confirmAssignment = async () => {
+  saving.value = true
+  try {
+    await api.post(`/logistics/trips/${assigningTripId.value}/assign-deliveries`, {
+      deliveryOrderIds: selectedDOIds.value,
+    })
+    toast.add({ severity: 'success', summary: 'Success', detail: `${selectedDOIds.value.length} DOs assigned successfully.` })
+    assignDialogOpen.value = false
+    // Refresh current view if open
+    if (viewDialogOpen.value && viewingTrip.value?.id === assigningTripId.value) {
+      await openView(viewingTrip.value)
+    }
+    await load()
+  } catch (e: any) {
+    toast.add({ severity: 'error', summary: 'Error', detail: e?.response?.data?.message ?? 'Failed to assign DOs' })
   } finally {
     saving.value = false
   }

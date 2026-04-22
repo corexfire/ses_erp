@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section (Premium Style) -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -157,7 +157,7 @@
                 <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-[10px] font-black shadow-lg">!</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Catatan Auditor Mutu</h4>
              </div>
-             <div class="p-6 rounded-3xl bg-white border border-slate-100 shadow-sm">
+             <div class="p-4 rounded-3xl bg-white border border-slate-100 shadow-sm">
                 <p class="text-xs font-bold text-slate-500 leading-relaxed italic">
                    "{{ activeRating?.notes || 'Tidak ada catatan khusus untuk periode ini. Pertahankan standar operasional yang ada.' }}"
                 </p>

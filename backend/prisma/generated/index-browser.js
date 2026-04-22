@@ -1156,11 +1156,58 @@ exports.Prisma.CompanyProfileScalarFieldEnum = {
   province: 'province',
   postalCode: 'postalCode',
   countryCode: 'countryCode',
-  latitude: 'latitude',
-  longitude: 'longitude',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
   companySize: 'companySize',
+  latitude: 'latitude',
+  longitude: 'longitude'
+};
+
+exports.Prisma.SystemConfigScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  key: 'key',
+  group: 'group',
+  value: 'value',
+  description: 'description',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PrintFormatScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  name: 'name',
+  docType: 'docType',
+  module: 'module',
+  paperSize: 'paperSize',
+  orientation: 'orientation',
+  fontFamily: 'fontFamily',
+  margin: 'margin',
+  accentColor: 'accentColor',
+  secondaryColor: 'secondaryColor',
+  footerText: 'footerText',
+  status: 'status',
+  isDefault: 'isDefault',
+  showLogo: 'showLogo',
+  showShippingAddress: 'showShippingAddress',
+  showTax: 'showTax',
+  showDiscount: 'showDiscount',
+  showNotes: 'showNotes',
+  showSignature: 'showSignature',
+  showBankInfo: 'showBankInfo',
+  showQrCode: 'showQrCode',
+  usageCount: 'usageCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  barcodeType: 'barcodeType',
+  formatType: 'formatType',
+  height: 'height',
+  showBarcode: 'showBarcode',
+  showItemCode: 'showItemCode',
+  showPrice: 'showPrice',
+  width: 'width'
 };
 
 exports.Prisma.BranchScalarFieldEnum = {
@@ -1317,7 +1364,6 @@ exports.Prisma.SupplierInvoiceScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
   invoiceNo: 'invoiceNo',
-  supplierCode: 'supplierCode',
   invoiceDate: 'invoiceDate',
   dueDate: 'dueDate',
   status: 'status',
@@ -1326,7 +1372,8 @@ exports.Prisma.SupplierInvoiceScalarFieldEnum = {
   taxAmount: 'taxAmount',
   paidAmount: 'paidAmount',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  supplierId: 'supplierId'
 };
 
 exports.Prisma.SupplierInvoiceLineScalarFieldEnum = {
@@ -1356,7 +1403,6 @@ exports.Prisma.CustomerInvoiceScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
   invoiceNo: 'invoiceNo',
-  customerCode: 'customerCode',
   invoiceDate: 'invoiceDate',
   dueDate: 'dueDate',
   status: 'status',
@@ -1365,7 +1411,8 @@ exports.Prisma.CustomerInvoiceScalarFieldEnum = {
   taxAmount: 'taxAmount',
   paidAmount: 'paidAmount',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  customerId: 'customerId'
 };
 
 exports.Prisma.CustomerInvoiceLineScalarFieldEnum = {
@@ -1627,13 +1674,14 @@ exports.Prisma.CustomerReceiptScalarFieldEnum = {
   tenantId: 'tenantId',
   receiptNo: 'receiptNo',
   receiptDate: 'receiptDate',
-  customerCode: 'customerCode',
   amount: 'amount',
   paymentMethod: 'paymentMethod',
   reference: 'reference',
   notes: 'notes',
   status: 'status',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  customerId: 'customerId',
+  invoiceId: 'invoiceId'
 };
 
 exports.Prisma.VendorPaymentScalarFieldEnum = {
@@ -1641,13 +1689,14 @@ exports.Prisma.VendorPaymentScalarFieldEnum = {
   tenantId: 'tenantId',
   paymentNo: 'paymentNo',
   paymentDate: 'paymentDate',
-  supplierCode: 'supplierCode',
   amount: 'amount',
   paymentMethod: 'paymentMethod',
   reference: 'reference',
   notes: 'notes',
   status: 'status',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  invoiceId: 'invoiceId',
+  supplierId: 'supplierId'
 };
 
 exports.Prisma.PaymentRequestScalarFieldEnum = {
@@ -1660,7 +1709,11 @@ exports.Prisma.PaymentRequestScalarFieldEnum = {
   amount: 'amount',
   status: 'status',
   approvalStatus: 'approvalStatus',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  invoiceId: 'invoiceId',
+  projectId: 'projectId',
+  supplierId: 'supplierId',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AssetDisposalScalarFieldEnum = {
@@ -2960,7 +3013,24 @@ exports.Prisma.SubcontractorLogScalarFieldEnum = {
   dailyReportId: 'dailyReportId',
   subcontractorName: 'subcontractorName',
   workerCount: 'workerCount',
-  workDescription: 'workDescription'
+  workDescription: 'workDescription',
+  subcontractorId: 'subcontractorId'
+};
+
+exports.Prisma.SubcontractorScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  code: 'code',
+  name: 'name',
+  category: 'category',
+  contactName: 'contactName',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  taxId: 'taxId',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ResourceUsageScalarFieldEnum = {
@@ -2972,6 +3042,57 @@ exports.Prisma.ResourceUsageScalarFieldEnum = {
   unit: 'unit',
   notes: 'notes',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.ConstructionDrawingScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  projectId: 'projectId',
+  wbsTaskId: 'wbsTaskId',
+  code: 'code',
+  title: 'title',
+  category: 'category',
+  discipline: 'discipline',
+  revision: 'revision',
+  revisionDate: 'revisionDate',
+  status: 'status',
+  fileId: 'fileId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.HseIncidentScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  projectId: 'projectId',
+  incidentDate: 'incidentDate',
+  type: 'type',
+  severity: 'severity',
+  location: 'location',
+  description: 'description',
+  rootCause: 'rootCause',
+  actionTaken: 'actionTaken',
+  reportedBy: 'reportedBy',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  attachments: 'attachments'
+};
+
+exports.Prisma.HseInspectionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  projectId: 'projectId',
+  inspectionDate: 'inspectionDate',
+  type: 'type',
+  score: 'score',
+  summary: 'summary',
+  findings: 'findings',
+  status: 'status',
+  inspectorId: 'inspectorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  attachments: 'attachments'
 };
 
 exports.Prisma.ProgressInvoiceScalarFieldEnum = {
@@ -3457,6 +3578,382 @@ exports.Prisma.MarketplaceSyncLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ConstructionMaterialRequestScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  code: 'code',
+  projectId: 'projectId',
+  wbsTaskId: 'wbsTaskId',
+  requestDate: 'requestDate',
+  status: 'status',
+  priority: 'priority',
+  notes: 'notes',
+  requestedById: 'requestedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ConstructionMaterialRequestItemScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  requestId: 'requestId',
+  itemId: 'itemId',
+  description: 'description',
+  quantity: 'quantity',
+  uomCode: 'uomCode',
+  requiredDate: 'requiredDate',
+  notes: 'notes'
+};
+
+exports.Prisma.LeaveRequestScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  employeeId: 'employeeId',
+  leaveType: 'leaveType',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  reason: 'reason',
+  status: 'status',
+  approvedById: 'approvedById',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.LeaveBalanceScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  employeeId: 'employeeId',
+  leaveType: 'leaveType',
+  allowance: 'allowance',
+  used: 'used',
+  period: 'period'
+};
+
+exports.Prisma.OvertimeRequestScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  employeeId: 'employeeId',
+  date: 'date',
+  hours: 'hours',
+  reason: 'reason',
+  status: 'status',
+  approvedById: 'approvedById',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.EmployeeLoanScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  employeeId: 'employeeId',
+  amount: 'amount',
+  reason: 'reason',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.LoanInstallmentScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  loanId: 'loanId',
+  amount: 'amount',
+  dueDate: 'dueDate',
+  paidDate: 'paidDate',
+  status: 'status'
+};
+
+exports.Prisma.EmployeeMovementScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  employeeId: 'employeeId',
+  type: 'type',
+  fromDept: 'fromDept',
+  toDept: 'toDept',
+  fromPos: 'fromPos',
+  toPos: 'toPos',
+  effectiveDate: 'effectiveDate',
+  reason: 'reason',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.DisciplinaryActionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  employeeId: 'employeeId',
+  type: 'type',
+  issueDate: 'issueDate',
+  expiryDate: 'expiryDate',
+  reason: 'reason',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.EmployeeDocumentScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  employeeId: 'employeeId',
+  name: 'name',
+  fileUrl: 'fileUrl',
+  type: 'type',
+  expiryDate: 'expiryDate',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.TimesheetEntryScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  employeeId: 'employeeId',
+  date: 'date',
+  hours: 'hours',
+  description: 'description',
+  project: 'project',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.EmployeeTerminationScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  employeeId: 'employeeId',
+  terminationDate: 'terminationDate',
+  reason: 'reason',
+  type: 'type',
+  severanceAmount: 'severanceAmount',
+  servicePayAmount: 'servicePayAmount',
+  compensationPayAmount: 'compensationPayAmount',
+  totalAmount: 'totalAmount',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.SuccessionPlanScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  positionName: 'positionName',
+  department: 'department',
+  incumbentId: 'incumbentId',
+  priority: 'priority',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SuccessionCandidateScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  planId: 'planId',
+  employeeId: 'employeeId',
+  readiness: 'readiness',
+  potentialScore: 'potentialScore',
+  performanceScore: 'performanceScore',
+  gapAnalysis: 'gapAnalysis',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.TaskDependencyScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  predecessorId: 'predecessorId',
+  successorId: 'successorId',
+  dependencyType: 'dependencyType',
+  lag: 'lag',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProjectIssueScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  projectId: 'projectId',
+  title: 'title',
+  description: 'description',
+  type: 'type',
+  severity: 'severity',
+  status: 'status',
+  assignedToId: 'assignedToId',
+  dueDate: 'dueDate',
+  resolvedAt: 'resolvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProjectChangeOrderScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  projectId: 'projectId',
+  orderNo: 'orderNo',
+  title: 'title',
+  description: 'description',
+  amountChange: 'amountChange',
+  scheduleImpact: 'scheduleImpact',
+  status: 'status',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProjectDefectScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  projectId: 'projectId',
+  wbsTaskId: 'wbsTaskId',
+  title: 'title',
+  description: 'description',
+  severity: 'severity',
+  status: 'status',
+  assignedTo: 'assignedTo',
+  raisedBy: 'raisedBy',
+  resolvedAt: 'resolvedAt',
+  photos: 'photos',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProjectRFIScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  projectId: 'projectId',
+  wbsTaskId: 'wbsTaskId',
+  rfiNo: 'rfiNo',
+  subject: 'subject',
+  description: 'description',
+  requestedDate: 'requestedDate',
+  neededByDate: 'neededByDate',
+  status: 'status',
+  assignedToUser: 'assignedToUser',
+  isUrgent: 'isUrgent',
+  attachments: 'attachments',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProjectEquipmentLogScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  projectId: 'projectId',
+  equipmentName: 'equipmentName',
+  operatorName: 'operatorName',
+  hoursOperated: 'hoursOperated',
+  fuelConsumption: 'fuelConsumption',
+  logDate: 'logDate',
+  notes: 'notes',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProjectWeatherLogScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  projectId: 'projectId',
+  logDate: 'logDate',
+  morningCondition: 'morningCondition',
+  afternoonCondition: 'afternoonCondition',
+  eveningCondition: 'eveningCondition',
+  impactDescription: 'impactDescription',
+  isSignificantDelay: 'isSignificantDelay',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProjectSiteInventoryScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  projectId: 'projectId',
+  materialName: 'materialName',
+  sku: 'sku',
+  quantityIn: 'quantityIn',
+  quantityOut: 'quantityOut',
+  balance: 'balance',
+  uom: 'uom',
+  transactionDate: 'transactionDate',
+  notes: 'notes',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PosShiftScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  userId: 'userId',
+  terminalId: 'terminalId',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  startingCash: 'startingCash',
+  endingCash: 'endingCash',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PosTransactionScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  shiftId: 'shiftId',
+  transactionId: 'transactionId',
+  receiptNo: 'receiptNo',
+  totalAmount: 'totalAmount',
+  taxAmount: 'taxAmount',
+  paymentMethod: 'paymentMethod',
+  splitPayments: 'splitPayments',
+  status: 'status',
+  loyaltyPointsEarned: 'loyaltyPointsEarned',
+  loyaltyPointsUsed: 'loyaltyPointsUsed',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PosLoyaltyMemberScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  customerId: 'customerId',
+  pointsBalance: 'pointsBalance',
+  tier: 'tier',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PosFiscalRecordScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  transactionId: 'transactionId',
+  fiscalCode: 'fiscalCode',
+  taxAmount: 'taxAmount',
+  reportedAt: 'reportedAt',
+  status: 'status'
+};
+
+exports.Prisma.EcommerceStoreConfigScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  storeName: 'storeName',
+  domain: 'domain',
+  theme: 'theme',
+  primaryColor: 'primaryColor',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EcommerceOrderScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  channel: 'channel',
+  extOrderId: 'extOrderId',
+  extOrderStatus: 'extOrderStatus',
+  customerName: 'customerName',
+  totalAmount: 'totalAmount',
+  paymentStatus: 'paymentStatus',
+  fulfillmentStatus: 'fulfillmentStatus',
+  orderDate: 'orderDate',
+  syncedAt: 'syncedAt'
+};
+
+exports.Prisma.EcommerceStockSyncScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  itemId: 'itemId',
+  channel: 'channel',
+  availableQty: 'availableQty',
+  syncStatus: 'syncStatus',
+  errorMessage: 'errorMessage',
+  syncedAt: 'syncedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3930,6 +4427,8 @@ exports.Prisma.ModelName = {
   NotificationLog: 'NotificationLog',
   NotificationSchedule: 'NotificationSchedule',
   CompanyProfile: 'CompanyProfile',
+  SystemConfig: 'SystemConfig',
+  PrintFormat: 'PrintFormat',
   Branch: 'Branch',
   Currency: 'Currency',
   ExchangeRate: 'ExchangeRate',
@@ -4049,7 +4548,11 @@ exports.Prisma.ModelName = {
   ProjectSite: 'ProjectSite',
   SitePhoto: 'SitePhoto',
   SubcontractorLog: 'SubcontractorLog',
+  Subcontractor: 'Subcontractor',
   ResourceUsage: 'ResourceUsage',
+  ConstructionDrawing: 'ConstructionDrawing',
+  HseIncident: 'HseIncident',
+  HseInspection: 'HseInspection',
   ProgressInvoice: 'ProgressInvoice',
   ProgressClaim: 'ProgressClaim',
   ProjectCommitment: 'ProjectCommitment',
@@ -4080,7 +4583,36 @@ exports.Prisma.ModelName = {
   WarehouseZone: 'WarehouseZone',
   MarketplaceChannel: 'MarketplaceChannel',
   MarketplaceListing: 'MarketplaceListing',
-  MarketplaceSyncLog: 'MarketplaceSyncLog'
+  MarketplaceSyncLog: 'MarketplaceSyncLog',
+  ConstructionMaterialRequest: 'ConstructionMaterialRequest',
+  ConstructionMaterialRequestItem: 'ConstructionMaterialRequestItem',
+  LeaveRequest: 'LeaveRequest',
+  LeaveBalance: 'LeaveBalance',
+  OvertimeRequest: 'OvertimeRequest',
+  EmployeeLoan: 'EmployeeLoan',
+  LoanInstallment: 'LoanInstallment',
+  EmployeeMovement: 'EmployeeMovement',
+  DisciplinaryAction: 'DisciplinaryAction',
+  EmployeeDocument: 'EmployeeDocument',
+  TimesheetEntry: 'TimesheetEntry',
+  EmployeeTermination: 'EmployeeTermination',
+  SuccessionPlan: 'SuccessionPlan',
+  SuccessionCandidate: 'SuccessionCandidate',
+  TaskDependency: 'TaskDependency',
+  ProjectIssue: 'ProjectIssue',
+  ProjectChangeOrder: 'ProjectChangeOrder',
+  ProjectDefect: 'ProjectDefect',
+  ProjectRFI: 'ProjectRFI',
+  ProjectEquipmentLog: 'ProjectEquipmentLog',
+  ProjectWeatherLog: 'ProjectWeatherLog',
+  ProjectSiteInventory: 'ProjectSiteInventory',
+  PosShift: 'PosShift',
+  PosTransaction: 'PosTransaction',
+  PosLoyaltyMember: 'PosLoyaltyMember',
+  PosFiscalRecord: 'PosFiscalRecord',
+  EcommerceStoreConfig: 'EcommerceStoreConfig',
+  EcommerceOrder: 'EcommerceOrder',
+  EcommerceStockSync: 'EcommerceStockSync'
 };
 
 /**

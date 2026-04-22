@@ -23,6 +23,7 @@ import { FsmModule } from './fsm/fsm.module';
 import { ConstructionModule } from './construction/construction.module';
 import { SupportModule } from './support/support.module';
 import { EcommerceModule } from './ecommerce/ecommerce.module';
+import { PosModule } from './pos/pos.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { EcommerceModule } from './ecommerce/ecommerce.module';
     ConstructionModule,
     SupportModule,
     EcommerceModule,
+    PosModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuditService],

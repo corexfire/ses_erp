@@ -4,7 +4,7 @@
     <!-- Header (Premium Shop Floor Operations Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0 animate-fade-in-up">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-100 font-sans">Shop Floor Hub</span>
@@ -25,8 +25,8 @@
     </div>
 
     <!-- Production Telemetry Dashboard (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div @click="filterByStatus('')" class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group cursor-pointer" :class="!statusFilter ? 'ring-4 ring-emerald-500 ring-offset-2' : ''">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div @click="filterByStatus('')" class="p-4 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group cursor-pointer" :class="!statusFilter ? 'ring-4 ring-emerald-500 ring-offset-2' : ''">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total Perintah Kerja</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ workOrders.length }}</h3>
@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <div @click="filterByStatus('RELEASED')" class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group cursor-pointer" :class="statusFilter === 'RELEASED' ? 'ring-4 ring-emerald-500 ring-offset-2' : ''">
+      <div @click="filterByStatus('RELEASED')" class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group cursor-pointer" :class="statusFilter === 'RELEASED' ? 'ring-4 ring-emerald-500 ring-offset-2' : ''">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Released & In-Progress</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ workOrders.filter(x => ['RELEASED', 'IN_PROGRESS'].includes(x.status)).length }}</h3>
@@ -44,7 +44,7 @@
         </div>
       </div>
 
-      <div @click="filterByStatus('COMPLETED')" class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group cursor-pointer" :class="statusFilter === 'COMPLETED' ? 'ring-4 ring-emerald-500 ring-offset-2' : ''">
+      <div @click="filterByStatus('COMPLETED')" class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group cursor-pointer" :class="statusFilter === 'COMPLETED' ? 'ring-4 ring-emerald-500 ring-offset-2' : ''">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Akurasi Penyelesaian</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">
@@ -54,7 +54,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-emerald-100 tracking-[0.2em] mb-4 opacity-80">Sistem Operasi Aktif</div>
         <div class="flex items-end justify-between">
@@ -68,7 +68,7 @@
     <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
       
       <!-- Controls Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -204,7 +204,7 @@
         <!-- Registry Workspace Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-list-check text-3xl font-black"></i>
             </div>
@@ -373,7 +373,7 @@
                                             <input v-model="op.description" placeholder="Deskripsi Operasi..." class="flex-1 bg-transparent border-b border-white/10 text-[12px] font-black text-white focus:border-emerald-400 outline-none pb-1 transition-all placeholder:text-white/20" />
                                             <input v-model="op.workstation" placeholder="Workstation..." class="w-32 bg-transparent border-b border-white/10 text-[10px] font-black text-emerald-400 focus:border-emerald-400 outline-none pb-1 transition-all placeholder:text-emerald-400/20 uppercase" />
                                          </div>
-                                         <div class="flex items-center gap-6">
+                                         <div class="flex items-center gap-4">
                                             <div class="flex items-center gap-2">
                                                <i class="pi pi-clock text-[9px] text-emerald-500/60"></i>
                                                <span class="text-[8px] font-black text-emerald-100/40 uppercase">Setup:</span>
@@ -699,7 +699,7 @@ const doComplete = async () => {
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .animate-fade-in-up { 
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
 }

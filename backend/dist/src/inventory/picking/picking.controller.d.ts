@@ -50,8 +50,8 @@ export declare class PickingController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            warehouseId: string;
             salesOrderId: string | null;
+            warehouseId: string;
             pickingDate: Date;
         })[];
     }>;
@@ -134,10 +134,10 @@ export declare class PickingController {
                 lineNo: number;
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 itemId: string | null;
+                pickedQty: import("@prisma/client-runtime-utils").Decimal;
                 serialNo: string | null;
                 batchCode: string | null;
                 fromBinLocationId: string | null;
-                pickedQty: import("@prisma/client-runtime-utils").Decimal;
                 pickingId: string;
             })[];
         } & {
@@ -148,8 +148,8 @@ export declare class PickingController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            warehouseId: string;
             salesOrderId: string | null;
+            warehouseId: string;
             pickingDate: Date;
         };
     }>;
@@ -220,10 +220,10 @@ export declare class PickingController {
                 lineNo: number;
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 itemId: string | null;
+                pickedQty: import("@prisma/client-runtime-utils").Decimal;
                 serialNo: string | null;
                 batchCode: string | null;
                 fromBinLocationId: string | null;
-                pickedQty: import("@prisma/client-runtime-utils").Decimal;
                 pickingId: string;
             })[];
         } & {
@@ -234,8 +234,8 @@ export declare class PickingController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            warehouseId: string;
             salesOrderId: string | null;
+            warehouseId: string;
             pickingDate: Date;
         };
     }>;
@@ -292,10 +292,10 @@ export declare class PickingController {
                 lineNo: number;
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 itemId: string | null;
+                pickedQty: import("@prisma/client-runtime-utils").Decimal;
                 serialNo: string | null;
                 batchCode: string | null;
                 fromBinLocationId: string | null;
-                pickedQty: import("@prisma/client-runtime-utils").Decimal;
                 pickingId: string;
             })[];
         } & {
@@ -306,8 +306,8 @@ export declare class PickingController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            warehouseId: string;
             salesOrderId: string | null;
+            warehouseId: string;
             pickingDate: Date;
         };
     }>;
@@ -369,10 +369,10 @@ export declare class PickingController {
                 lineNo: number;
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 itemId: string | null;
+                pickedQty: import("@prisma/client-runtime-utils").Decimal;
                 serialNo: string | null;
                 batchCode: string | null;
                 fromBinLocationId: string | null;
-                pickedQty: import("@prisma/client-runtime-utils").Decimal;
                 pickingId: string;
             })[];
         } & {
@@ -383,8 +383,8 @@ export declare class PickingController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            warehouseId: string;
             salesOrderId: string | null;
+            warehouseId: string;
             pickingDate: Date;
         };
     }>;

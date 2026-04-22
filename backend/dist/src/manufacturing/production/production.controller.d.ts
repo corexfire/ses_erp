@@ -91,8 +91,8 @@ export declare class ProductionController {
             code: string;
             status: string;
             notes: string | null;
-            issueDate: Date;
             warehouseId: string | null;
+            issueDate: Date;
             workOrderId: string;
             issuedBy: string | null;
             purpose: string | null;
@@ -183,8 +183,8 @@ export declare class ProductionController {
             code: string;
             status: string;
             notes: string | null;
-            issueDate: Date;
             warehouseId: string | null;
+            issueDate: Date;
             workOrderId: string;
             issuedBy: string | null;
             purpose: string | null;
@@ -202,8 +202,8 @@ export declare class ProductionController {
             code: string;
             status: string;
             notes: string | null;
-            issueDate: Date;
             warehouseId: string | null;
+            issueDate: Date;
             workOrderId: string;
             issuedBy: string | null;
             purpose: string | null;
@@ -256,6 +256,7 @@ export declare class ProductionController {
             notes: string | null;
             uomCode: string | null;
             warehouseId: string | null;
+            batchNo: string | null;
             receiptDate: Date;
             workOrderId: string;
             qtyProduced: import("@prisma/client-runtime-utils").Decimal;
@@ -263,7 +264,6 @@ export declare class ProductionController {
             qtyScrap: import("@prisma/client-runtime-utils").Decimal;
             shiftNo: number | null;
             receivedBy: string | null;
-            batchNo: string | null;
         })[];
     }>;
     getReceipt(req: FastifyRequest & {
@@ -312,6 +312,7 @@ export declare class ProductionController {
             notes: string | null;
             uomCode: string | null;
             warehouseId: string | null;
+            batchNo: string | null;
             receiptDate: Date;
             workOrderId: string;
             qtyProduced: import("@prisma/client-runtime-utils").Decimal;
@@ -319,7 +320,6 @@ export declare class ProductionController {
             qtyScrap: import("@prisma/client-runtime-utils").Decimal;
             shiftNo: number | null;
             receivedBy: string | null;
-            batchNo: string | null;
         };
     }>;
     createReceipt(req: FastifyRequest & {
@@ -335,6 +335,7 @@ export declare class ProductionController {
             notes: string | null;
             uomCode: string | null;
             warehouseId: string | null;
+            batchNo: string | null;
             receiptDate: Date;
             workOrderId: string;
             qtyProduced: import("@prisma/client-runtime-utils").Decimal;
@@ -342,7 +343,6 @@ export declare class ProductionController {
             qtyScrap: import("@prisma/client-runtime-utils").Decimal;
             shiftNo: number | null;
             receivedBy: string | null;
-            batchNo: string | null;
         };
     }>;
     listQc(req: FastifyRequest & {

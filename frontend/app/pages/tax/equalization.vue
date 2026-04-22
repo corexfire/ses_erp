@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 left-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -20,8 +20,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -91,65 +91,71 @@
        </DataTable>
     </div>
 
-    <!-- New Equalization Drawer -->
-    <Drawer v-model:visible="drawerOpen" header="Inisialisasi Perhitungan Ekualisasi" position="right" class="w-[500px]">
-       <div class="space-y-8 pt-4 px-4 overflow-y-auto pb-20">
-          <div class="p-6 rounded-3xl bg-indigo-50 border border-indigo-100 flex items-start gap-4">
+    <!-- New Equalization Dialog -->
+    <Dialog v-model:visible="drawerOpen" header="Inisialisasi Perhitungan Ekualisasi" modal class="w-full max-w-2xl overflow-hidden !rounded-xl" :pt="{
+       header: { class: 'p-8 border-b border-slate-100' },
+       content: { class: 'p-8 pb-10 max-h-[70vh] overflow-y-auto' },
+       footer: { class: 'p-8 border-t border-slate-100 bg-slate-50/50' }
+    }">
+       <div class="space-y-8">
+          <div class="p-4 rounded-[2rem] bg-indigo-50 border border-indigo-100 flex items-start gap-4">
              <i class="pi pi-info-circle text-indigo-600 mt-1"></i>
              <div class="space-y-1">
-                <p class="text-[11px] font-black text-indigo-900 uppercase tracking-wide">Instruksi Audit</p>
+                <p class="text-[11px] font-black text-indigo-900 uppercase tracking-widest">Instruksi Audit</p>
                 <p class="text-[10px] text-indigo-700 leading-relaxed font-medium">Input ringkasan omzet dari buku besar Anda dan bandingkan dengan total PPN Keluaran yang dilaporkan di Portal Web DJP.</p>
              </div>
           </div>
 
           <div class="space-y-4">
              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs">1</div>
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs font-black">1</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Periode & Deskripsi</h4>
              </div>
              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase pl-2 font-bold">Periode Audit</label>
-                   <InputText v-model="form.period" class="w-full !rounded-2xl" placeholder="YYYY-MM" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Periode Audit</label>
+                   <InputText v-model="form.period" class="w-full !rounded-2xl !p-3 border-slate-200" placeholder="YYYY-MM" />
                 </div>
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase pl-2 font-bold">Referensi Perhitungan</label>
-                   <InputText v-model="form.description" class="w-full !rounded-2xl" placeholder="Misal: Penutupan Bulanan" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Referensi Perhitungan</label>
+                   <InputText v-model="form.description" class="w-full !rounded-2xl !p-3 border-slate-200" placeholder="Misal: Penutupan Bulanan" />
                 </div>
              </div>
           </div>
 
-          <div class="space-y-6 p-8 rounded-xl bg-slate-50 border border-slate-100">
+          <div class="space-y-6 p-8 rounded-[2rem] bg-slate-50 border border-slate-100">
              <div class="flex items-center gap-3 mb-2">
-                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs">2</div>
+                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-black">2</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Perbandingan Penghasilan</h4>
              </div>
              
              <div class="space-y-6">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-500 uppercase pl-2 font-bold">Omzet per Buku (Akuntansi)</label>
-                   <InputNumber v-model="form.bookIncome" mode="currency" currency="IDR" locale="id-ID" class="w-full !p-inputtext-lg" />
+                   <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-2 font-bold">Omzet per Buku (Akuntansi)</label>
+                   <InputNumber v-model="form.bookIncome" mode="currency" currency="IDR" locale="id-ID" class="w-full" pt:input:class="!rounded-2xl !p-4 border-none bg-white font-black text-lg shadow-sm" />
                 </div>
-                <div class="space-y-1 border-b border-slate-200 pb-4">
-                   <label class="text-[10px] font-black text-slate-500 uppercase pl-2 font-bold">Omzet per Fiskal (Laporan Pajak)</label>
-                   <InputNumber v-model="form.fiscalIncome" mode="currency" currency="IDR" locale="id-ID" class="w-full !p-inputtext-lg" />
+                <div class="space-y-1">
+                   <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-2 font-bold">Omzet per Fiskal (Laporan Pajak)</label>
+                   <InputNumber v-model="form.fiscalIncome" mode="currency" currency="IDR" locale="id-ID" class="w-full" pt:input:class="!rounded-2xl !p-4 border-none bg-white font-black text-lg shadow-sm" />
                 </div>
                 
-                <div class="flex justify-between items-center px-2">
+                <div class="pt-6 border-t border-slate-200 flex justify-between items-center px-2">
                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Varians Terhitung</p>
-                   <p :class="['text-xl font-black', (form.fiscalIncome - form.bookIncome) < 0 ? 'text-red-600' : 'text-emerald-600']">
+                   <p :class="['text-2xl font-black tracking-tighter', (form.fiscalIncome - form.bookIncome) < 0 ? 'text-red-600' : 'text-emerald-600']">
                       IDR {{ fmtNumber(form.fiscalIncome - form.bookIncome) }}
                    </p>
                 </div>
              </div>
           </div>
-
-          <div class="fixed bottom-0 left-0 w-full bg-white p-6 border-t flex justify-end gap-3 rounded-t-[2.5rem] shadow-2xl">
-             <Button label="Batal" severity="secondary" text @click="drawerOpen = false" class="font-black text-[10px] uppercase" />
-             <Button label="Catat Ekualisasi" icon="pi pi-shield" class="p-button-rounded font-black text-[10px] uppercase px-8 p-button-indigo" @click="save" :loading="saving" />
-          </div>
        </div>
-    </Drawer>
+
+       <template #footer>
+          <div class="flex gap-3 justify-end w-full">
+             <Button label="Batalkan" severity="secondary" text @click="drawerOpen = false" class="text-[10px] font-black uppercase" />
+             <Button label="Catat Ekualisasi" icon="pi pi-shield" class="p-button-rounded font-black text-[10px] uppercase shadow-lg shadow-indigo-100 p-button-indigo px-8" @click="save" :loading="saving" />
+          </div>
+       </template>
+    </Dialog>
 
   </div>
 </template>

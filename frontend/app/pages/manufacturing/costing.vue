@@ -4,7 +4,7 @@
     <!-- Header (Premium Manufacturing Costing Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0 animate-fade-in-up">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-100 font-sans">Accounting Engine</span>
@@ -31,8 +31,8 @@
     </div>
 
     <!-- Costing Telemetry Dashboard (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total COGM (MTD)</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
@@ -45,7 +45,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Valuasi WIP Aktif</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Rata-Rata Varian Biaya</div>
         <div class="flex items-end justify-between">
           <div class="flex flex-col">
@@ -67,7 +67,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-emerald-100 tracking-[0.2em] mb-4 opacity-80">Status Audit Sistem</div>
         <div class="flex items-end justify-between">
@@ -197,7 +197,7 @@
         <div class="rounded-[2.5rem] border border-slate-200 bg-white p-10 shadow-sm">
            <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8 border-l-2 border-indigo-500 pl-4">II. Recent Journal Settlements</h3>
            <div class="space-y-8">
-              <div v-for="i in 3" :key="i" class="flex gap-6 group/log">
+              <div v-for="i in 3" :key="i" class="flex gap-4 group/log">
                  <div class="flex flex-col items-center gap-2">
                     <div class="h-10 w-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover/log:bg-emerald-600 group-hover/log:text-white transition-all shadow-inner">
                        <i class="pi pi-book text-xs"></i>
@@ -221,7 +221,7 @@
         
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-600 flex items-center justify-center text-white shadow-xl rotate-3">
                <i class="pi pi-calculator text-3xl font-black"></i>
             </div>
@@ -242,7 +242,7 @@
                     <option v-for="wo in workOrders" :key="wo.id" :value="wo.id">{{ wo.label }}</option>
                 </select>
              </div>
-             <div class="grid grid-cols-2 gap-6">
+             <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Periode Akuntansi</label>
                    <select v-model="calcForm.period" class="w-full h-14 border-none rounded-2xl px-6 text-[11px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-emerald-400 transition-all appearance-none cursor-pointer uppercase tracking-tight font-mono">
@@ -288,7 +288,7 @@
         
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-950 flex items-center justify-center text-white shadow-xl rotate-3">
                <i class="pi pi-chart-line text-3xl font-black"></i>
             </div>
@@ -329,7 +329,7 @@
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <div v-for="detail in selectedCost.details" :key="detail.id" class="flex items-center justify-between p-8 rounded-[2rem] bg-white border-2 border-slate-50 hover:border-emerald-100 transition-all hover:shadow-xl group">
-                    <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-4">
                        <div :class="['h-14 w-14 flex items-center justify-center rounded-2xl shadow-sm transition-transform group-hover:scale-110', getCategoryStyle(detail.costCategory)]">
                           <i :class="getCategoryIcon(detail.costCategory)" class="text-xl"></i>
                        </div>

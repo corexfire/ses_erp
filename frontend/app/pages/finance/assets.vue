@@ -5,7 +5,7 @@
       <i class="pi pi-check-circle text-xl"></i> {{ success }}
     </div>
     
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-sky-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-sky-100/50"></div>
       
       <div class="relative">
@@ -29,8 +29,8 @@
     </div>
 
     <!-- Asset Performance Board (KPI Cards) -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mx-6">
-        <div class="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mx-6">
+        <div class="bg-white rounded-[2rem] border border-slate-200 p-4 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50">
            <div class="flex justify-between items-center">
               <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Total Unit Aktif</div>
               <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shadow-sm"><i class="pi pi-box"></i></div>
@@ -38,13 +38,13 @@
            <div class="mt-4 text-2xl font-black text-slate-800 tabular-nums tracking-tighter">{{ assets.length }} Asset Registry</div>
         </div>
 
-        <div class="bg-slate-900 rounded-[2rem] p-6 shadow-xl relative overflow-hidden group transition-all hover:translate-y-[-5px]">
+        <div class="bg-slate-900 rounded-[2rem] p-4 shadow-xl relative overflow-hidden group transition-all hover:translate-y-[-5px]">
            <div class="absolute right-[-20px] top-[-20px] opacity-10 group-hover:scale-125 transition-transform duration-700 text-sky-500"><i class="pi pi-wallet text-[120px]"></i></div>
            <div class="text-[9px] font-black text-sky-400 uppercase tracking-widest mb-1 relative z-10">Nilai Perolehan (Cost)</div>
            <div class="text-xl font-black text-white tabular-nums tracking-tighter relative z-10">{{ formatRupiah(totalAssetCost) }}</div>
         </div>
 
-        <div class="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50">
+        <div class="bg-white rounded-[2rem] border border-slate-200 p-4 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50">
            <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Akumulasi Penyusutan</div>
            <div class="text-xl font-black text-amber-600 tabular-nums tracking-tighter">{{ formatRupiah(totalDepreciation) }}</div>
            <div class="mt-3 flex items-center gap-2">
@@ -55,7 +55,7 @@
            </div>
         </div>
 
-        <div class="bg-sky-50 border border-sky-100 rounded-[2rem] p-6 shadow-sm flex flex-col justify-between group transition-all hover:bg-sky-100">
+        <div class="bg-sky-50 border border-sky-100 rounded-[2rem] p-4 shadow-sm flex flex-col justify-between group transition-all hover:bg-sky-100">
            <div class="text-[9px] font-black text-sky-700 uppercase tracking-widest mb-1 italic">Net Book Value (NBV)</div>
            <div class="text-xl font-black text-sky-800 tabular-nums tracking-tighter">{{ formatRupiah(netBookValue) }}</div>
            <p class="text-[8px] font-bold text-sky-600 uppercase mt-2 opacity-60">Nilai Buku Bersih Terkini</p>
@@ -66,7 +66,7 @@
     <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up uppercase tracking-tighter">
       
       <!-- Ledger Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-sky-200/10 rounded-full blur-3xl text-slate-900"></div>
         
         <div class="relative flex items-center gap-4 text-slate-900">
@@ -170,12 +170,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ ASSET REGISTRATION DIALOG ══════════════════════════════════ -->
-    <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
+    <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
       <div class="relative w-full max-w-2xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-sky-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-sky-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-sky-700 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-sky-200">
                <i class="pi pi-box text-3xl font-black"></i>
             </div>
@@ -259,7 +259,7 @@
     </div>
 
     <!-- ═══════════════════════════════════ DEPRECIATION JOB DIALOG ══════════════════════════════════ -->
-    <div v-if="deprDialog" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
+    <div v-if="deprDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
       <div class="relative w-full max-w-md bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white border-b-[12px] border-b-amber-900">
         <!-- Header -->
         <div class="p-8 border-b border-slate-100 bg-amber-50 flex justify-between items-center relative overflow-hidden">
@@ -278,7 +278,7 @@
 
         <div class="p-8 space-y-8 bg-white text-slate-900">
            <!-- Asset Info Ribbon -->
-           <div class="p-6 bg-slate-900 text-white rounded-[2rem] relative overflow-hidden group">
+           <div class="p-4 bg-slate-900 text-white rounded-[2rem] relative overflow-hidden group">
               <div class="absolute right-[-10px] top-[-10px] opacity-10 group-hover:scale-110 transition-transform"><i class="pi pi-box text-5xl"></i></div>
               <div class="text-[8px] font-black text-sky-400 uppercase tracking-widest mb-2 leading-none">Aset Target Dikalibrasi</div>
               <div class="text-[11px] font-black uppercase tracking-tight line-clamp-1 group-hover:text-sky-300 transition-colors">{{ activeAssetObj?.name }}</div>

@@ -329,6 +329,17 @@ let SalesInvoicesController = class SalesInvoicesController {
             }
         };
     }
+    async listBillableDos(req) {
+        const deliveryOrders = await this.prisma.deliveryOrder.findMany({
+            where: {
+                tenantId: req.user.tenantId,
+                status: 'DELIVERED',
+            },
+            include: { customer: true, items: true },
+            orderBy: [{ createdAt: 'desc' }],
+        });
+        return { deliveryOrders };
+    }
 };
 exports.SalesInvoicesController = SalesInvoicesController;
 __decorate([
@@ -377,6 +388,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], SalesInvoicesController.prototype, "submit", null);
+__decorate([
+    (0, common_1.Get)('billable-dos'),
+    (0, permissions_decorator_1.RequirePermissions)('sales.invoice.read'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SalesInvoicesController.prototype, "listBillableDos", null);
 exports.SalesInvoicesController = SalesInvoicesController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     (0, common_1.Controller)('sales/invoices'),

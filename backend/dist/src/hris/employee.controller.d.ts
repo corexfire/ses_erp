@@ -190,6 +190,136 @@ export declare class EmployeeController {
             salary: import("@prisma/client-runtime-utils").Decimal | null;
         };
     }>;
+    listMovements(req: FastifyRequest & {
+        user: AuthUser;
+    }, id: string): Promise<{
+        movements: {
+            id: string;
+            tenantId: string;
+            createdAt: Date;
+            type: string;
+            effectiveDate: Date;
+            reason: string | null;
+            employeeId: string;
+            fromDept: string | null;
+            toDept: string | null;
+            fromPos: string | null;
+            toPos: string | null;
+        }[];
+    }>;
+    createMovement(req: FastifyRequest & {
+        user: AuthUser;
+    }, id: string, body: any): Promise<{
+        movement: {
+            id: string;
+            tenantId: string;
+            createdAt: Date;
+            type: string;
+            effectiveDate: Date;
+            reason: string | null;
+            employeeId: string;
+            fromDept: string | null;
+            toDept: string | null;
+            fromPos: string | null;
+            toPos: string | null;
+        };
+    }>;
+    listDisciplinary(req: FastifyRequest & {
+        user: AuthUser;
+    }, id: string): Promise<{
+        actions: {
+            id: string;
+            tenantId: string;
+            createdAt: Date;
+            type: string;
+            status: string;
+            issueDate: Date;
+            expiryDate: Date | null;
+            reason: string | null;
+            employeeId: string;
+        }[];
+    }>;
+    createDisciplinary(req: FastifyRequest & {
+        user: AuthUser;
+    }, id: string, body: any): Promise<{
+        action: {
+            id: string;
+            tenantId: string;
+            createdAt: Date;
+            type: string;
+            status: string;
+            issueDate: Date;
+            expiryDate: Date | null;
+            reason: string | null;
+            employeeId: string;
+        };
+    }>;
+    calcTermination(req: FastifyRequest & {
+        user: AuthUser;
+    }, id: string): Promise<{
+        serviceYears: string;
+        salary: number;
+        severance: number;
+        servicePay: number;
+        compensation: number;
+        total: number;
+    }>;
+    terminate(req: FastifyRequest & {
+        user: AuthUser;
+    }, id: string, body: any): Promise<{
+        termination: {
+            id: string;
+            tenantId: string;
+            createdAt: Date;
+            type: string;
+            status: string;
+            notes: string | null;
+            totalAmount: import("@prisma/client-runtime-utils").Decimal;
+            reason: string;
+            employeeId: string;
+            terminationDate: Date;
+            severanceAmount: import("@prisma/client-runtime-utils").Decimal;
+            servicePayAmount: import("@prisma/client-runtime-utils").Decimal;
+            compensationPayAmount: import("@prisma/client-runtime-utils").Decimal;
+        };
+    }>;
+    listTerminations(req: FastifyRequest & {
+        user: AuthUser;
+    }): Promise<{
+        terminations: ({
+            employee: {
+                id: string;
+                email: string;
+                tenantId: string;
+                createdAt: Date;
+                phone: string | null;
+                updatedAt: Date;
+                status: string;
+                department: string | null;
+                managerId: string | null;
+                employeeNo: string;
+                firstName: string;
+                lastName: string | null;
+                position: string | null;
+                hireDate: Date | null;
+                salary: import("@prisma/client-runtime-utils").Decimal | null;
+            };
+        } & {
+            id: string;
+            tenantId: string;
+            createdAt: Date;
+            type: string;
+            status: string;
+            notes: string | null;
+            totalAmount: import("@prisma/client-runtime-utils").Decimal;
+            reason: string;
+            employeeId: string;
+            terminationDate: Date;
+            severanceAmount: import("@prisma/client-runtime-utils").Decimal;
+            servicePayAmount: import("@prisma/client-runtime-utils").Decimal;
+            compensationPayAmount: import("@prisma/client-runtime-utils").Decimal;
+        })[];
+    }>;
 }
 export declare class OrgStructureController {
     private readonly prisma;
@@ -248,6 +378,45 @@ export declare class OrgStructureController {
             parentId: string | null;
             managerId: string | null;
         };
+    }>;
+    get(req: FastifyRequest & {
+        user: AuthUser;
+    }, id: string): Promise<{
+        unit: {
+            id: string;
+            tenantId: string;
+            name: string;
+            createdAt: Date;
+            code: string;
+            type: string;
+            parentId: string | null;
+            managerId: string | null;
+        } | null;
+    }>;
+    update(req: FastifyRequest & {
+        user: AuthUser;
+    }, id: string, body: {
+        name?: string;
+        code?: string;
+        parentId?: string;
+        managerId?: string;
+        type?: string;
+    }): Promise<{
+        unit: {
+            id: string;
+            tenantId: string;
+            name: string;
+            createdAt: Date;
+            code: string;
+            type: string;
+            parentId: string | null;
+            managerId: string | null;
+        };
+    }>;
+    delete(req: FastifyRequest & {
+        user: AuthUser;
+    }, id: string): Promise<{
+        success: boolean;
     }>;
 }
 export declare class RecruitmentController {

@@ -34,6 +34,8 @@ import {
   FiscalReconciliationController,
 } from './tax-compliance/tax-compliance.controller';
 
+import { ThreeWayMatchingController } from './vendor-reconciliation/three-way-matching.controller';
+
 @Module({
   providers: [AuditService],
   controllers: [
@@ -69,6 +71,7 @@ import {
     IdBillingController,
     EqualizationController,
     FiscalReconciliationController,
+    ThreeWayMatchingController,
   ],
 })
 export class FinanceModule {}

@@ -75,7 +75,7 @@ const handleCheckout = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#0f172a] text-slate-200 flex flex-col p-4 md:p-6 gap-6 font-sans">
+  <div class="min-h-screen bg-[#0f172a] text-slate-200 flex flex-col p-4 md:p-4 gap-4 font-sans">
     <!-- Header Area -->
     <header class="flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-900/50 backdrop-blur-xl border border-slate-800 p-4 rounded-2xl">
       <div class="flex items-center gap-4">
@@ -119,9 +119,9 @@ const handleCheckout = () => {
       </div>
     </header>
 
-    <div class="flex flex-col lg:flex-row gap-6 flex-1 h-0 overflow-hidden">
+    <div class="flex flex-col lg:flex-row gap-4 flex-1 h-0 overflow-hidden">
       <!-- Catalog Area -->
-      <div class="flex-1 flex flex-col gap-6 overflow-hidden">
+      <div class="flex-1 flex flex-col gap-4 overflow-hidden">
         <!-- Categories -->
         <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
           <button 
@@ -181,11 +181,11 @@ const handleCheckout = () => {
       </div>
 
       <!-- Sidebar / Cart Area -->
-      <aside class="w-full lg:w-[400px] flex flex-col gap-6 h-full overflow-hidden">
+      <aside class="w-full lg:w-[400px] flex flex-col gap-4 h-full overflow-hidden">
         <!-- Cart Card -->
         <div class="flex-1 bg-slate-900/80 backdrop-blur-2xl border border-slate-800 rounded-3xl flex flex-col overflow-hidden shadow-2xl relative">
           <!-- Customer Selection -->
-          <div class="p-6 border-b border-slate-800">
+          <div class="p-4 border-b border-slate-800">
             <div class="flex justify-between items-center mb-4">
               <h2 class="font-bold flex items-center gap-2">
                 <ShoppingCart class="w-4 h-4 text-emerald-400" />
@@ -207,7 +207,7 @@ const handleCheckout = () => {
           </div>
 
           <!-- Items List -->
-          <div class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+          <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
             <div v-if="cart.length === 0" class="flex flex-col items-center justify-center h-full opacity-20 py-20">
               <ShoppingCart class="w-16 h-16 mb-4" />
               <p class="font-bold uppercase tracking-widest text-sm">Cart is Empty</p>
@@ -242,7 +242,7 @@ const handleCheckout = () => {
           </div>
 
           <!-- Totals Area -->
-          <div class="p-6 bg-slate-900 border-t border-slate-800 relative z-10">
+          <div class="p-4 bg-slate-900 border-t border-slate-800 relative z-10">
             <div class="space-y-2 mb-6">
               <div class="flex justify-between text-sm">
                 <span class="text-slate-500 font-medium">Subtotal</span>

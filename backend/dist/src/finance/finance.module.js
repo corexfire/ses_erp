@@ -31,6 +31,7 @@ const profit_center_controller_1 = require("./periods/profit-center.controller")
 const tax_code_controller_1 = require("./periods/tax-code.controller");
 const reports_controller_1 = require("./reports/reports.controller");
 const tax_compliance_controller_1 = require("./tax-compliance/tax-compliance.controller");
+const three_way_matching_controller_1 = require("./vendor-reconciliation/three-way-matching.controller");
 let FinanceModule = class FinanceModule {
 };
 exports.FinanceModule = FinanceModule;
@@ -70,6 +71,7 @@ exports.FinanceModule = FinanceModule = __decorate([
             tax_compliance_controller_1.IdBillingController,
             tax_compliance_controller_1.EqualizationController,
             tax_compliance_controller_1.FiscalReconciliationController,
+            three_way_matching_controller_1.ThreeWayMatchingController,
         ],
     })
 ], FinanceModule);

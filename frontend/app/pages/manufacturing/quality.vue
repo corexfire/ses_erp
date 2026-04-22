@@ -1,10 +1,10 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-emerald-50/20 p-6 space-y-4">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-emerald-50/20 p-4 space-y-4">
     
     <!-- Header (Premium Quality Assurance Hub) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-100 italic">Core Quality Protocol</span>
@@ -27,8 +27,8 @@
     </div>
 
     <!-- Quality Telemetry Dashboard -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
          <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4 opacity-80 group-hover:text-emerald-400 transition-colors">Total Inspected</div>
          <div class="flex items-end justify-between">
            <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-slate-800 tracking-tighter leading-none">{{ totalInspected }}</h3>
@@ -38,7 +38,7 @@
          </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
+      <div class="p-4 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
          <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4">Items Passed</div>
          <div class="flex items-end justify-between">
            <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ totalPassed }}</h3>
@@ -48,7 +48,7 @@
          </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
          <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Rejected Items</div>
          <div class="flex items-end justify-between">
            <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-rose-700 tracking-tighter leading-none">{{ totalFailed }}</h3>
@@ -56,7 +56,7 @@
          </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
          <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
          <div class="text-[10px] font-black uppercase text-emerald-100 tracking-[0.2em] mb-4 opacity-80">Yield Accuracy</div>
          <div class="flex items-end justify-between">
@@ -69,7 +69,7 @@
     <!-- Inspection Ledger (3-Panel Style Table) -->
     <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden pb-20 mt-6 animate-fade-in-up">
        <div class="p-10 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div class="flex items-center gap-6">
+          <div class="flex items-center gap-4">
              <div class="w-14 h-14 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-xl shadow-emerald-100 rotate-3 group-hover:rotate-0 transition-transform">
                 <i class="pi pi-shield text-2xl"></i>
              </div>
@@ -173,13 +173,13 @@
 
     <!-- MODERN INSPECTION HUB (DIALOG PROPORTIONS) -->
     <transition name="modal">
-      <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
+      <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xl" @click="closeDialog"></div>
         
         <div class="relative z-10 w-full max-w-2xl bg-slate-50 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col border border-white/20 animate-scale-in border-b-[12px] border-b-emerald-900 shadow-[0_0_50px_rgba(5,150,105,0.2)]">
           <!-- Hub Header -->
           <div class="bg-white px-10 py-8 flex justify-between items-center border-b border-slate-100 shrink-0">
-            <div class="flex items-center gap-6">
+            <div class="flex items-center gap-4">
               <div class="w-14 h-14 rounded-[1.2rem] bg-emerald-600 flex items-center justify-center text-white shadow-2xl rotate-3 shadow-emerald-200">
                 <i class="pi pi-shield text-2xl"></i>
               </div>
@@ -212,7 +212,7 @@
              </div>
 
              <!-- Metrics Grid -->
-             <div class="grid grid-cols-2 lg:grid-cols-3 gap-6" v-if="!editingId">
+             <div class="grid grid-cols-2 lg:grid-cols-3 gap-4" v-if="!editingId">
                 <div class="space-y-3">
                    <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Qty Inspected</label>
                    <InputText v-model="form.qtyInspected" type="number" class="w-full h-16 bg-white border-none rounded-2xl px-6 text-[12px] font-black text-slate-800 outline-none focus:ring-4 focus:ring-emerald-100 shadow-sm" />
@@ -239,7 +239,7 @@
 
              <div class="space-y-4">
                 <label class="text-[10px] font-black uppercase tracking-widest text-slate-400">Technical Notes / Observation</label>
-                <textarea v-model="form.notes" rows="4" placeholder="Observation report details..." class="w-full bg-white border-none rounded-[1.5rem] p-6 text-[11px] font-bold text-slate-700 outline-none focus:ring-4 focus:ring-emerald-100 shadow-sm resize-none"></textarea>
+                <textarea v-model="form.notes" rows="4" placeholder="Observation report details..." class="w-full bg-white border-none rounded-[1.5rem] p-4 text-[11px] font-bold text-slate-700 outline-none focus:ring-4 focus:ring-emerald-100 shadow-sm resize-none"></textarea>
              </div>
           </div>
 

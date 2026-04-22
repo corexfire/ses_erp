@@ -3,7 +3,7 @@
     <!-- Header (Premium CRM Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-purple-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-purple-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">CRM</span>
@@ -33,15 +33,15 @@
     <div v-else-if="dashboard" class="space-y-4">
       
       <!-- Overview Banners -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4 transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start gap-4 transition-all hover:shadow-xl hover:-translate-y-1">
           <div class="p-4 bg-purple-100 rounded-3xl text-purple-600 text-xl border shadow-inner"><i class="pi pi-chart-line"></i></div>
           <div>
             <div class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Real-time Sales Performance</div>
             <p class="text-xs text-slate-600 leading-relaxed font-medium">Pantau performa penjualan dan pipeline deals secara real-time untuk pengambilan keputusan strategis.</p>
           </div>
         </div>
-        <div class="p-6 rounded-xl bg-purple-900 text-white shadow-xl flex items-start gap-4 border border-purple-800 transition-all hover:bg-purple-950">
+        <div class="p-4 rounded-xl bg-purple-900 text-white shadow-xl flex items-start gap-4 border border-purple-800 transition-all hover:bg-purple-950">
           <div class="p-4 bg-purple-600 rounded-3xl text-white text-xl shadow-lg animate-pulse"><i class="pi pi-users"></i></div>
           <div>
             <div class="text-[10px] font-black uppercase text-purple-300 tracking-widest mb-1">Customer Intelligence</div>
@@ -107,8 +107,8 @@
       </div>
 
       <!-- Charts & Visuals row 1 -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="rounded-xl bg-white border border-slate-200 shadow-sm p-6 relative overflow-hidden flex flex-col">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="rounded-xl bg-white border border-slate-200 shadow-sm p-4 relative overflow-hidden flex flex-col">
           <div class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2 border-b border-slate-100 pb-3 shrink-0">
             <i class="pi pi-filter text-emerald-500 bg-emerald-50 p-1.5 rounded"></i> Opportunity Pipeline Funnel
           </div>
@@ -127,7 +127,7 @@
           </div>
         </div>
 
-        <div class="rounded-xl bg-white border border-slate-200 shadow-sm p-6 relative overflow-hidden flex flex-col">
+        <div class="rounded-xl bg-white border border-slate-200 shadow-sm p-4 relative overflow-hidden flex flex-col">
           <div class="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2 border-b border-slate-100 pb-3 shrink-0">
             <i class="pi pi-star text-sky-500 bg-sky-50 p-1.5 rounded"></i> Lead Conversion Distribusi
           </div>
@@ -147,7 +147,7 @@
       </div>
 
       <!-- Tables row 2 -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[350px]">
           <div class="p-5 border-b border-slate-100 bg-slate-50/10 flex items-center justify-between shrink-0">
             <div class="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">

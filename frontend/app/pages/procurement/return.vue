@@ -3,7 +3,7 @@
     <!-- Header (Premium QC Claims Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-rose-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-rose-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-rose-100">Quality Governance</span>
@@ -21,8 +21,8 @@
     </div>
 
     <!-- Dynamic QC Valuation KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-rose-950 text-white shadow-xl flex flex-col justify-between border border-rose-900 transition-all hover:bg-black group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-rose-950 text-white shadow-xl flex flex-col justify-between border border-rose-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-rose-400 tracking-[0.2em] mb-4 opacity-80">Total Klaim Retur</div>
         <div class="flex items-end justify-between">
           <h3 class="text-2xl font-black text-white tracking-widest leading-none">IDR <span class="text-4xl tracking-tighter">{{ formatCurrency(returns.reduce((acc, x) => acc + x.grandTotal, 0)) }}</span></h3>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Pending Validasi QC</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-700 tracking-tighter leading-none">{{ returns.filter(x => x.status === 'PENDING_APPROVAL').length }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Kompensasi A/P</div>
         <div class="flex items-end justify-between">
           <h3 class="text-2xl font-black text-slate-700 tracking-tighter leading-none uppercase">Balanced</h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl group-hover:bg-amber-500/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Defect Ratio</div>
         <div class="flex items-end justify-between">
@@ -61,7 +61,7 @@
     <!-- Claims Ledger (Premium Grid Architecture) -->
     <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
       <!-- Controls Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-rose-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -165,7 +165,7 @@
         <!-- Workspace Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-rose-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-replay text-3xl font-black"></i>
             </div>
@@ -252,8 +252,8 @@
 
                     <div class="space-y-4">
                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Log Bukti Kerusakan</label>
-                       <textarea v-if="!isReadonly" v-model="form.notes" rows="1" class="w-full rounded-2xl border-none p-6 text-[12px] font-black bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-rose-400 transition-all italic text-slate-600 uppercase" placeholder="KRONOLOGI INVESTIGASI..."></textarea>
-                       <div v-else class="p-6 bg-slate-50 rounded-2xl font-black text-[11px] text-slate-500 italic border-2 border-slate-100 uppercase leading-relaxed shadow-sm">{{ activeRet?.notes || 'TIDAK ADA CATATAN INVESTIGASI.' }}</div>
+                       <textarea v-if="!isReadonly" v-model="form.notes" rows="1" class="w-full rounded-2xl border-none p-4 text-[12px] font-black bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-rose-400 transition-all italic text-slate-600 uppercase" placeholder="KRONOLOGI INVESTIGASI..."></textarea>
+                       <div v-else class="p-4 bg-slate-50 rounded-2xl font-black text-[11px] text-slate-500 italic border-2 border-slate-100 uppercase leading-relaxed shadow-sm">{{ activeRet?.notes || 'TIDAK ADA CATATAN INVESTIGASI.' }}</div>
                     </div>
                  </div>
               </div>

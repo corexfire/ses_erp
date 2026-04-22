@@ -3,7 +3,7 @@
     <!-- Header (Premium Inventory Logistics Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-100">Catalog Governance</span>
@@ -21,8 +21,8 @@
     </div>
 
     <!-- Dynamic Catalog Telemetry KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total Katalog SKUs</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ items.length }}</h3>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Item Tidak Aktif</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-700 tracking-tighter leading-none">{{ items.filter(x => !x.isActive).length }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Out of Stock Alert</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">8<span class="text-xl ml-1">SKUs</span></h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Valuasi Katalog</div>
         <div class="flex items-end justify-between">
@@ -61,7 +61,7 @@
     <!-- Inventory Ledger (Premium Grid Architecture) -->
     <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
       <!-- Controls Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -176,7 +176,7 @@
         <!-- Workspace Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-box text-3xl font-black"></i>
             </div>
@@ -201,7 +201,7 @@
                     <i class="pi pi-id-card text-emerald-500"></i> I. Parameter Identitas & Flagging
                  </div>
                  <div class="bg-white p-8 rounded-[2rem] border-2 border-slate-100 shadow-sm space-y-6 transition-all hover:border-emerald-100">
-                    <div class="grid grid-cols-2 gap-6">
+                    <div class="grid grid-cols-2 gap-4">
                        <div class="space-y-4">
                           <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Nomor SKU Utama <span class="text-emerald-500 ml-1 opacity-50 font-black">*</span></label>
                           <InputText v-model="form.code" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-emerald-400 transition-all font-mono tracking-widest uppercase" placeholder="SKU-..." />
@@ -222,7 +222,7 @@
 
                     <div class="space-y-4">
                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Ketersediaan Transaksional (Flags)</label>
-                       <div class="grid grid-cols-1 gap-3 bg-emerald-50/50 p-6 rounded-[1.5rem] border border-emerald-100 shadow-inner">
+                       <div class="grid grid-cols-1 gap-3 bg-emerald-50/50 p-4 rounded-[1.5rem] border border-emerald-100 shadow-inner">
                           <label class="flex items-center gap-4 cursor-pointer group/flag">
                              <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm border border-emerald-100 group-hover/flag:scale-110 transition-transform"><input type="checkbox" v-model="form.isSalesItem" class="w-5 h-5 accent-emerald-600" /></div>
                              <div class="flex flex-col">
@@ -277,7 +277,7 @@
                        <div class="text-[10px] font-black text-amber-700 uppercase tracking-[0.2em] mb-2 flex items-center gap-2 italic">
                           <i class="pi pi-bell animate-bounce"></i> Resupply Parameters
                        </div>
-                       <div class="grid grid-cols-2 gap-6">
+                       <div class="grid grid-cols-2 gap-4">
                           <div class="space-y-4">
                              <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1 leading-tight">Reorder Point (Min)</label>
                              <InputText type="number" v-model.number="form.reorderPoint" class="w-full h-14 border-none rounded-2xl px-4 text-right font-mono font-black text-amber-700 bg-white shadow-md outline-none focus:ring-4 focus:ring-amber-400 transition-all" />
@@ -315,8 +315,8 @@
 
                     <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 -mr-6 px-1">
                        <div class="space-y-4">
-                          <div v-for="(u, idx) in form.uoms" :key="idx" class="bg-white/5 rounded-[2rem] p-6 border border-white/10 relative overflow-hidden transition-all hover:bg-white/10 hover:border-white/20 group/uom" :class="idx === 0 ? 'bg-indigo-500/10 border-indigo-500/30 ring-2 ring-indigo-500/20' : ''">
-                             <div class="flex items-center gap-6 relative z-10">
+                          <div v-for="(u, idx) in form.uoms" :key="idx" class="bg-white/5 rounded-[2rem] p-4 border border-white/10 relative overflow-hidden transition-all hover:bg-white/10 hover:border-white/20 group/uom" :class="idx === 0 ? 'bg-indigo-500/10 border-indigo-500/30 ring-2 ring-indigo-500/20' : ''">
+                             <div class="flex items-center gap-4 relative z-10">
                                 <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white font-black text-xs border border-white/5">
                                    {{ idx === 0 ? '1' : '=' }}
                                 </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-cyan-600 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-cyan-600 relative overflow-hidden">
       <div class="absolute right-[-12px] top-[-12px] opacity-5 pointer-events-none">
         <i class="pi pi-clock text-[150px] text-cyan-900"></i>
       </div>
@@ -145,7 +145,7 @@
         </div>
 
         <!-- BARCODE MODE -->
-        <div v-if="checkinMode === 'barcode'" class="p-6 space-y-4">
+        <div v-if="checkinMode === 'barcode'" class="p-4 space-y-4">
           <div class="bg-slate-950 rounded-xl aspect-video relative flex items-center justify-center overflow-hidden">
             <div class="absolute inset-0 flex items-center justify-center">
               <!-- Simulated scanner frame -->
@@ -181,7 +181,7 @@
         </div>
 
         <!-- FACE MODE -->
-        <div v-if="checkinMode === 'face'" class="p-6 space-y-4">
+        <div v-if="checkinMode === 'face'" class="p-4 space-y-4">
           <div class="bg-slate-950 rounded-xl aspect-video relative flex items-center justify-center overflow-hidden">
             <div class="absolute inset-0 flex items-center justify-center">
               <div class="w-40 h-48 border-2 border-violet-400 rounded-full relative flex items-center justify-center">
@@ -209,7 +209,7 @@
         </div>
 
         <!-- LOCATION MODE -->
-        <div v-if="checkinMode === 'location'" class="p-6 space-y-4">
+        <div v-if="checkinMode === 'location'" class="p-4 space-y-4">
           <div class="bg-slate-100 rounded-xl p-4 border border-slate-200 space-y-3">
             <!-- Map placeholder -->
             <div class="rounded-xl overflow-hidden bg-slate-200 aspect-video flex items-center justify-center text-slate-400 relative">
@@ -282,7 +282,7 @@
           </div>
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="manualDialog = false">✕</button>
         </div>
-        <div class="p-6 space-y-4">
+        <div class="p-4 space-y-4">
           <div class="space-y-1.5">
             <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Karyawan <span class="text-red-500">*</span></label>
             <select v-model="mForm.employeeId" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold outline-none focus:border-cyan-500">

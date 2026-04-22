@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-indigo-900 border border-indigo-800 shadow-2xl">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-indigo-900 border border-indigo-800 shadow-2xl">
       <div class="absolute top-0 right-0 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl -mr-48 -mt-48"></div>
       <div class="relative z-10">
         <div class="flex items-center gap-3 mb-2">
@@ -20,8 +20,8 @@
     </div>
 
     <!-- Stats Ribbon -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl text-slate-900']"></i>
           </div>
@@ -127,7 +127,7 @@
           <div class="flex-1 overflow-y-auto p-8 bg-slate-50/30 custom-scrollbar pb-32">
              <!-- Tab 1: Logistics -->
              <div v-if="activeTab === 'logistic'" class="space-y-6">
-                <div class="grid grid-cols-2 gap-6">
+                <div class="grid grid-cols-2 gap-4">
                    <div class="space-y-1">
                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Delivery Order (Ref)</label>
                       <Select v-model="form.deliveryOrderId" :options="deliveryOrders" optionLabel="label" optionValue="value" :disabled="!!editingId" class="w-full rounded-xl border-slate-200" placeholder="Pilih Order" />
@@ -157,7 +157,7 @@
                    </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-6">
+                <div class="grid grid-cols-2 gap-4">
                    <div class="space-y-1">
                       <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Seal Number (Segel)</label>
                       <InputText v-model="form.sealNumber" placeholder="Ex: SL-00921" class="w-full rounded-xl border-slate-200" />
@@ -206,7 +206,7 @@
           </div>
 
           <!-- Actions -->
-          <div class="absolute bottom-0 left-0 right-0 p-6 bg-white border-t border-slate-100 flex items-center justify-between rounded-t-[2.5rem] shadow-[0_-20px_50px_rgba(0,0,0,0.05)]">
+          <div class="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 flex items-center justify-between rounded-t-[2.5rem] shadow-[0_-20px_50px_rgba(0,0,0,0.05)]">
              <div class="flex items-center gap-4">
                 <div v-if="form.status === 'CONFIRMED'" class="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-full">
                    <i class="pi pi-verified text-sm"></i>

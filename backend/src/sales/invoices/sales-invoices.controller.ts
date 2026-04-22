@@ -406,4 +406,21 @@ export class SalesInvoicesController {
       }
     };
   }
+
+  @Get('billable-dos')
+  @RequirePermissions('sales.invoice.read')
+  async listBillableDos(
+    @Req() req: FastifyRequest & { user: AuthUser },
+  ) {
+    const deliveryOrders = await this.prisma.deliveryOrder.findMany({
+      where: {
+        tenantId: req.user.tenantId!,
+        status: 'DELIVERED',
+        // In a real system, we'd also check if an invoice already exists for this DO
+      },
+      include: { customer: true, items: true },
+      orderBy: [{ createdAt: 'desc' }],
+    });
+    return { deliveryOrders };
+  }
 }

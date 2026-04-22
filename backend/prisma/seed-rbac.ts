@@ -51,6 +51,12 @@ export async function seedRolesAndPermissions(prisma: PrismaClient, tenantId: st
     { key: 'finance.budget.create', description: 'Create budget' },
     { key: 'finance.report.read', description: 'View financial reports' },
     { key: 'finance.report.export', description: 'Export financial reports' },
+    { key: 'finance.reconciliation.read', description: 'View vendor reconciliation' },
+    { key: 'finance.reconciliation.create', description: 'Run auto-match reconciliation' },
+    { key: 'finance.assetDisposal.read', description: 'View asset disposal history' },
+    { key: 'finance.assetDisposal.create', description: 'Create asset disposal record' },
+    { key: 'finance.assetDisposal.approve', description: 'Approve asset disposal' },
+    { key: 'finance.assetDisposal.delete', description: 'Delete asset disposal record' },
     // PROCUREMENT
     { key: 'procurement.pr.read', description: 'View purchase requests' },
     { key: 'procurement.pr.create', description: 'Create purchase request' },
@@ -92,12 +98,26 @@ export async function seedRolesAndPermissions(prisma: PrismaClient, tenantId: st
     { key: 'project.read', description: 'View projects' },
     { key: 'project.create', description: 'Create project' },
     { key: 'project.update', description: 'Update project' },
+    { key: 'project.budget.read', description: 'View project financial plans' },
+    { key: 'project.budget.manage', description: 'Manage project budgets and allocations' },
     { key: 'construction.read', description: 'View construction data' },
     // QMS
     { key: 'qms.ncr.read', description: 'View NCR records' },
     { key: 'qms.ncr.create', description: 'Create NCR' },
     { key: 'qms.ncr.approve', description: 'Approve NCR' },
     { key: 'qms.capa.read', description: 'View CAPA records' },
+    // POS
+    { key: 'pos.shift.read', description: 'View POS shifts' },
+    { key: 'pos.shift.create', description: 'Open POS shift' },
+    { key: 'pos.shift.update', description: 'Update/close POS shift' },
+    { key: 'pos.transaction.read', description: 'View POS transactions' },
+    { key: 'pos.transaction.create', description: 'Create POS transaction' },
+    { key: 'pos.transaction.refund', description: 'Refund POS transaction' },
+    { key: 'pos.loyalty.read', description: 'View loyalty members' },
+    { key: 'pos.loyalty.update', description: 'Update loyalty member' },
+    { key: 'pos.fiscal.read', description: 'View fiscal records' },
+    { key: 'pos.fiscal.sync', description: 'Sync fiscal records' },
+    { key: 'pos.dashboard.read', description: 'View POS dashboard' },
     // AUDIT
     { key: 'audit.log.read', description: 'View audit logs' },
   ];
@@ -119,7 +139,7 @@ export async function seedRolesAndPermissions(prisma: PrismaClient, tenantId: st
   const roles = [
     {
       name: 'Super Administrator',
-      permissions: allPermissions.map(p => p.key), // All permissions
+      permissions: allPermissions.map(p => p.key),
     },
     {
       name: 'Finance Manager',

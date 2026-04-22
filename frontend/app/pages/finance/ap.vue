@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-rose-600 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-rose-600 relative overflow-hidden">
       <!-- Decorative background icon -->
       <div class="absolute right-[-20px] top-[-20px] opacity-5 pointer-events-none">
         <i class="pi pi-credit-card text-[150px] text-rose-900"></i>
@@ -52,8 +52,8 @@
            <i class="pi pi-users"></i> Rekonsiliasi Hutang per Supplier
         </div>
       </div>
-      <div class="p-6 overflow-hidden bg-slate-50/50">
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="p-4 overflow-hidden bg-slate-50/50">
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div v-for="r in reconciliation" :key="r.supplierCode" class="bg-white border shadow-sm rounded-xl overflow-hidden hover:shadow transition">
                <div class="p-4 border-b bg-indigo-900 text-white flex justify-between items-center">
                   <div>
@@ -170,7 +170,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full font-bold transition-colors shadow-inner" @click="showDialog = false">✕</button>
         </div>
 
-        <div class="p-6 overflow-auto flex-1 space-y-5">
+        <div class="p-4 overflow-auto flex-1 space-y-5">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5 px-1">
              <div class="space-y-1">
                 <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">No. Invoice Supplier</label>
@@ -239,7 +239,7 @@
           <button class="text-amber-500 hover:text-amber-700 bg-white shadow-sm w-8 h-8 rounded-full font-bold transition-colors" @click="payDialog = false">✕</button>
         </div>
         
-        <div class="p-6 space-y-4 bg-white">
+        <div class="p-4 space-y-4 bg-white">
            <div class="bg-rose-50 border border-rose-100 rounded-lg p-3 text-center mb-2">
               <div class="text-[10px] uppercase font-bold text-rose-600 tracking-wider">Membayar Tagihan Outbound</div>
               <div class="font-mono font-black text-rose-900 mt-1">{{ activeInvoiceNo }}</div>

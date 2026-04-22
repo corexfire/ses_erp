@@ -114,8 +114,8 @@ export declare class NcrService {
                 code: string;
                 status: import("prisma/generated").$Enums.InventoryDocStatus;
                 notes: string | null;
-                supplierId: string | null;
                 warehouseId: string;
+                supplierId: string | null;
                 receiptDate: Date;
                 purchaseOrderId: string | null;
                 purchaseInvoiceId: string | null;

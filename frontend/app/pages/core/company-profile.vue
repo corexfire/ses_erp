@@ -1,36 +1,38 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
-      <div class="relative">
-        <div class="flex items-center gap-3 mb-2">
-           <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Core Identity</span>
-           <span class="text-slate-300">/</span>
-           <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-blue-600">Profil Perusahaan</span>
-        </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Company <span class="text-blue-600">Profile</span></h1>
-        <p class="text-slate-500 text-sm font-medium uppercase italic tracking-tight italic">Manajemen identitas hukum, informasi kontak, dan alamat korespondensi resmi perusahaan.</p>
-      </div>
-
-      <div class="flex items-center gap-3 relative">
-        <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="load" :loading="loading" />
-        <Button label="Simpan Perubahan" icon="pi pi-save" class="p-button-rounded font-black text-xs shadow-lg shadow-blue-100 px-6" @click="save" :loading="saving" />
-      </div>
-    </div>
+    <DashboardHero
+      badge="Core Identity"
+      badge-accent="Profil Perusahaan"
+      title="Company"
+      title-accent="Profile"
+      description="Manajemen identitas hukum, informasi kontak, dan alamat korespondensi resmi perusahaan."
+      color="sky"
+      :loading="loading"
+      @refresh="load"
+    >
+      <template #actions>
+        <Button 
+          label="Simpan Perubahan" 
+          icon="pi pi-save" 
+          class="p-button-sm font-black text-xs px-6 bg-white/20 hover:bg-white/30 text-white border-white/20" 
+          @click="save" 
+          :loading="saving" 
+        />
+      </template>
+    </DashboardHero>
 
     <!-- Stats / Overview Section -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-          <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-             <i :class="[s.icon, 'text-6xl']"></i>
-          </div>
-          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ s.label }}</p>
-          <h3 class="text-xl font-black text-slate-900 group-hover:text-blue-600 transition-colors uppercase truncate">{{ s.value }}</h3>
-          <div class="flex items-center gap-2 mt-2">
-             <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-full', s.color]">{{ s.sub }}</span>
-          </div>
-       </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+       <MiniStatsCard
+          v-for="s in stats"
+          :key="s.label"
+          :label="s.label"
+          :value="s.value"
+          :sub="s.sub"
+          :icon="s.icon"
+          :sub-color="s.subColor"
+       />
     </div>
 
     <!-- Main Content: Forms -->
@@ -41,48 +43,49 @@
         
         <div class="flex flex-col md:flex-row gap-8">
           <!-- LEGAL CARD -->
-          <div class="flex-1 rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:border-blue-300 transition-all duration-300">
-             <div class="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/10 shrink-0">
-                <div>
-                   <h2 class="text-[13px] font-black text-slate-900 uppercase tracking-widest">Identitas Hukum</h2>
-                   <p class="text-xs text-slate-500 font-medium">Data legalitas yang tercatat pada akta pendirian.</p>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-blue-600 group-hover:bg-blue-50 transition-all">
-                  <i class="pi pi-id-card text-lg"></i>
-                </div>
-             </div>
-
-             <div class="p-8 space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <div class="space-y-2">
-                      <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Legal Perusahaan</label>
-                      <InputText v-model="form.legalName" class="w-full text-sm font-black rounded-2xl border-slate-200 hover:border-blue-400 transition-all" placeholder="Contoh: PT. Sinergi Era Solusi" />
-                   </div>
-                   <div class="space-y-2">
-                      <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Komersial / Brand</label>
-                      <InputText v-model="form.tradeName" class="w-full text-sm font-black rounded-2xl border-slate-200 hover:border-blue-400 transition-all" placeholder="Contoh: SES ERP" />
-                   </div>
-                </div>
-                <div class="space-y-2">
-                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">NPWP (Nomor Pokok Wajib Pajak)</label>
-                   <InputText v-model="form.npwp" class="w-full text-sm font-black rounded-2xl border-slate-200 font-mono tracking-widest" placeholder="00.000.000.0-000.000" />
-                </div>
-             </div>
-          </div>
+          <PanelCard
+            title="Identitas Hukum"
+            subtitle="Data legalitas yang tercatat pada akta pendirian."
+            icon="pi pi-id-card"
+            theme="blue"
+            :show-search="false"
+            :show-filter="false"
+            :show-refresh="false"
+            class="flex-1"
+          >
+            <template #table>
+              <div class="p-8 space-y-6">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Legal Perusahaan</label>
+                        <InputText v-model="form.legalName" class="w-full text-sm font-black rounded-2xl border-slate-200 hover:border-blue-400 transition-all" placeholder="Contoh: PT. Sinergi Era Solusi" />
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Komersial / Brand</label>
+                        <InputText v-model="form.tradeName" class="w-full text-sm font-black rounded-2xl border-slate-200 hover:border-blue-400 transition-all" placeholder="Contoh: SES ERP" />
+                    </div>
+                  </div>
+                  <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">NPWP (Nomor Pokok Wajib Pajak)</label>
+                    <InputText v-model="form.npwp" class="w-full text-sm font-black rounded-2xl border-slate-200 font-mono tracking-widest" placeholder="00.000.000.0-000.000" />
+                  </div>
+              </div>
+            </template>
+          </PanelCard>
 
           <!-- CONTACT CARD -->
-          <div class="flex-1 rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:border-emerald-300 transition-all duration-300">
-             <div class="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/10 shrink-0">
-                <div>
-                   <h2 class="text-[13px] font-black text-slate-900 uppercase tracking-widest">Informasi Kontak</h2>
-                   <p class="text-xs text-slate-500 font-medium">Saluran komunikasi resmi korespondensi perusahaan.</p>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-emerald-600 group-hover:bg-emerald-50 transition-all">
-                  <i class="pi pi-envelope text-lg"></i>
-                </div>
-             </div>
-
-             <div class="p-8 space-y-6">
+          <PanelCard
+            title="Informasi Kontak"
+            subtitle="Saluran komunikasi resmi korespondensi perusahaan."
+            icon="pi pi-envelope"
+            theme="emerald"
+            :show-search="false"
+            :show-filter="false"
+            :show-refresh="false"
+            class="flex-1"
+          >
+            <template #table>
+              <div class="p-8 space-y-6">
                 <div class="space-y-2">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Alamat Email Resmi</label>
                    <InputText v-model="form.email" class="w-full text-sm font-black rounded-2xl border-slate-200" placeholder="admin@corporate.id" />
@@ -91,55 +94,52 @@
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">No. Telepon / Kantor</label>
                    <InputText v-model="form.phone" class="w-full text-sm font-black rounded-2xl border-slate-200" placeholder="021-xxxx-xxxx" />
                 </div>
-             </div>
-          </div>
+              </div>
+            </template>
+          </PanelCard>
         </div>
 
         <!-- ADDRESS CARD (Full Width) -->
-        <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:border-indigo-300 transition-all duration-300">
-           <div class="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/10">
-              <div>
-                 <h2 class="text-[13px] font-black text-slate-900 uppercase tracking-widest">Lokasi & Alamat Kantor Pusat</h2>
-                 <p class="text-xs text-slate-500 font-medium">Titik koordinat penagihan dan pengiriman dokumen resmi.</p>
-              </div>
-              <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:text-indigo-600 group-hover:bg-indigo-50 transition-all">
-                <i class="pi pi-map-marker text-lg"></i>
-              </div>
-           </div>
-
-           <div class="p-8 space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <div class="space-y-2">
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Alamat Baris 1</label>
-                    <InputText v-model="form.address1" class="w-full text-sm font-black rounded-2xl border-slate-200" placeholder="Nama Jalan, Gedung, No." />
-                 </div>
-                 <div class="space-y-2">
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Alamat Baris 2 (Opsional)</label>
-                    <InputText v-model="form.address2" class="w-full text-sm font-black rounded-2xl border-slate-200" placeholder="Lantai, Suite, Unit" />
-                 </div>
-              </div>
-
-               <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <PanelCard
+          title="Lokasi & Alamat Kantor Pusat"
+          subtitle="Titik koordinat penagihan dan pengiriman dokumen resmi."
+          icon="pi pi-map-marker"
+          theme="indigo"
+          :show-search="false"
+          :show-filter="false"
+          :show-refresh="false"
+          class="mt-8"
+        >
+          <template #table>
+            <div class="p-8 space-y-6">
+               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div class="space-y-2">
-                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kota / Kabupaten</label>
-                     <InputText v-model="form.city" class="w-full text-sm font-black rounded-2xl border-slate-200" />
+                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Negara</label>
+                     <InputText v-model="form.country" class="w-full text-sm font-black rounded-2xl border-slate-200" placeholder="Indonesia" />
                   </div>
                   <div class="space-y-2">
-                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Provinsi</label>
-                     <InputText v-model="form.province" class="w-full text-sm font-black rounded-2xl border-slate-200" />
+                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Provinsi / State</label>
+                     <InputText v-model="form.province" class="w-full text-sm font-black rounded-2xl border-slate-200" placeholder="DKI Jakarta" />
+                  </div>
+                  <div class="space-y-2">
+                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kota / Kabupaten</label>
+                     <InputText v-model="form.city" class="w-full text-sm font-black rounded-2xl border-slate-200" placeholder="Jakarta Pusat" />
+                  </div>
+               </div>
+
+               <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div class="md:col-span-3 space-y-2">
+                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Alamat Lengkap (Baris 1)</label>
+                     <InputText v-model="form.address1" class="w-full text-sm font-black rounded-2xl border-slate-200" placeholder="Nama Jalan, Gedung, No." />
                   </div>
                   <div class="space-y-2">
                      <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kode Pos</label>
-                     <InputText v-model="form.postalCode" class="w-full text-sm font-black rounded-2xl border-slate-200" />
-                  </div>
-                  <div class="space-y-2">
-                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kode Negara (ISO)</label>
-                     <InputText v-model="form.countryCode" class="w-full text-sm font-black rounded-2xl border-slate-200" placeholder="ID" />
+                     <InputText v-model="form.postalCode" class="w-full text-sm font-black rounded-2xl border-slate-200" placeholder="10110" />
                   </div>
                </div>
                
                <!-- Map Location & Company Size -->
-               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-slate-100">
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-slate-100">
                   <!-- Map Location -->
                   <div class="space-y-4">
                      <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Lokasi Mapa (Koordinat GPS)</label>
@@ -189,11 +189,10 @@
                   </div>
                </div>
             </div>
-         </div>
-
+          </template>
+        </PanelCard>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -230,16 +229,16 @@ const companySizeOptions = [
 ];
 
 const stats = computed(() => {
-  const sizeLabel = {
+  const sizeLabel = ({
     'KECIL': 'Kecil',
     'MENENGAH': 'Menengah',
     'BESAR': 'Besar'
-  }[form.value.companySize] || 'Kecil';
+  } as Record<string, string>)[form.value.companySize] || 'Kecil';
   
   return [
-    { label: 'Entitas Resmi', value: form.value.legalName || 'Belum Diatur', sub: 'Nama Terdaftar', icon: 'pi pi-verified', color: 'bg-emerald-50 text-emerald-600' },
-    { label: 'Domisili Pajak', value: form.value.province || 'Belum Diatur', sub: form.value.city || 'Nasional', icon: 'pi pi-map', color: 'bg-blue-50 text-blue-600' },
-    { label: 'Klasifikasi Pajak', value: sizeLabel, sub: 'Berpengaruh ke PPh & SPT', icon: 'pi pi-building', color: 'bg-amber-50 text-amber-600' }
+    { label: 'Entitas Resmi', value: form.value.legalName || 'Belum Diatur', sub: 'Nama Terdaftar', icon: 'pi pi-verified', subColor: 'emerald' as const },
+    { label: 'Domisili Pajak', value: form.value.province || 'Belum Diatur', sub: form.value.city || 'Nasional', icon: 'pi pi-map', subColor: 'blue' as const },
+    { label: 'Klasifikasi Pajak', value: sizeLabel, sub: 'Berpengaruh ke PPh & SPT', icon: 'pi pi-building', subColor: 'amber' as const }
   ];
 });
 
@@ -247,7 +246,7 @@ async function load() {
   loading.value = true;
   try {
     const res = await api.get('/core/company-profile');
-    const data = res.companyProfile || res.data?.companyProfile || res.data;
+    const data = res.data?.companyProfile || res.data;
     
     if (data) {
       profileData.value = data;

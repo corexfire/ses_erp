@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -27,9 +27,9 @@
     </div>
 
     <!-- Stats Dashboard -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
        <!-- Budget -->
-       <div class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-blue-100 relative overflow-hidden">
+       <div class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-blue-100 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
              <i class="pi pi-briefcase text-6xl"></i>
           </div>
@@ -48,7 +48,7 @@
        </div>
 
        <!-- Actual -->
-       <div class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-amber-100 relative overflow-hidden">
+       <div class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-amber-100 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
              <i class="pi pi-wallet text-6xl"></i>
           </div>
@@ -67,7 +67,7 @@
        </div>
 
        <!-- Committed -->
-       <div class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-indigo-100 relative overflow-hidden">
+       <div class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl hover:border-indigo-100 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
              <i class="pi pi-file-edit text-6xl"></i>
           </div>
@@ -86,7 +86,7 @@
        </div>
 
        <!-- Variance -->
-       <div :class="['group p-6 rounded-xl bg-white border shadow-sm transition-all duration-500 hover:shadow-xl relative overflow-hidden', stats.variance < 0 ? 'border-red-100 hover:border-red-200' : 'border-emerald-100 hover:border-emerald-200']">
+       <div :class="['group p-4 rounded-xl bg-white border shadow-sm transition-all duration-500 hover:shadow-xl relative overflow-hidden', stats.variance < 0 ? 'border-red-100 hover:border-red-200' : 'border-emerald-100 hover:border-emerald-200']">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
              <i class="pi pi-chart-line text-6xl"></i>
           </div>
@@ -178,7 +178,7 @@
     <!-- Draggable Sidebar/Drawer for Details -->
     <Drawer v-model:visible="detailVisible" position="right" class="w-[450px]" header="Cost Detail Analysis">
        <div class="space-y-8 pt-4 px-4" v-if="selectedTask">
-          <div class="p-6 rounded-xl bg-slate-900 text-white shadow-2xl relative overflow-hidden">
+          <div class="p-4 rounded-xl bg-slate-900 text-white shadow-2xl relative overflow-hidden">
              <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
              <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{{ selectedTask.wbsTask?.taskCode }}</p>
              <h3 class="text-xl font-bold mb-4 leading-tight">{{ selectedTask.wbsTask?.taskName }}</h3>
@@ -215,7 +215,7 @@
              </div>
           </div>
 
-          <div class="p-6 rounded-xl bg-blue-50/50 border border-blue-100 border-dashed">
+          <div class="p-4 rounded-xl bg-blue-50/50 border border-blue-100 border-dashed">
              <div class="flex items-center gap-3 mb-3">
                 <i class="pi pi-shield text-blue-600"></i>
                 <h4 class="text-[10px] font-black text-blue-900 uppercase tracking-widest">Variance Forecast</h4>

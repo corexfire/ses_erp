@@ -297,23 +297,25 @@ let PpnMasaController = class PpnMasaController {
         this.prisma = prisma;
     }
     async summary(req, period) {
-        const [year, month] = period.split('-').map(Number);
-        const startDate = new Date(year, month - 1, 1);
-        const endDate = new Date(year, month, 0, 23, 59, 59);
+        const [yearStr, monthStr] = period.split('-');
+        const year = parseInt(yearStr);
+        const validStatuses = ['POSTED', 'VERIFIED', 'REPLACEMENT'];
         const outputInvoices = await this.prisma.taxInvoice.findMany({
             where: {
                 tenantId: req.user.tenantId,
                 invoiceType: 'OUTPUT',
-                invoiceDate: { gte: startDate, lte: endDate },
-                status: 'POSTED',
+                taxYear: year,
+                taxPeriod: monthStr,
+                status: { in: validStatuses },
             },
         });
         const inputInvoices = await this.prisma.taxInvoice.findMany({
             where: {
                 tenantId: req.user.tenantId,
                 invoiceType: 'INPUT',
-                invoiceDate: { gte: startDate, lte: endDate },
-                status: 'POSTED',
+                taxYear: year,
+                taxPeriod: monthStr,
+                status: { in: validStatuses },
             },
         });
         const summary = {

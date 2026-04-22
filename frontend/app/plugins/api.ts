@@ -8,12 +8,16 @@ export default defineNuxtPlugin(() => {
     withCredentials: true,
   });
 
+  let isShowingSessionExpired = false;
+
   api.interceptors.response.use(
     (response) => response,
     (error) => {
       if (error.response && error.response.status === 401) {
-        if (import.meta.client) {
+        if (import.meta.client && !isShowingSessionExpired) {
+          isShowingSessionExpired = true;
           const nuxtApp = useNuxtApp();
+          
           if (nuxtApp.$swal) {
             (nuxtApp.$swal as any).fire({
               icon: 'warning',
@@ -21,11 +25,15 @@ export default defineNuxtPlugin(() => {
               text: 'Sesi autentikasi Anda telah kadaluarsa. Silakan login kembali untuk melanjutkan.',
               confirmButtonText: 'Ke Halaman Login',
               allowOutsideClick: false,
-            }).then(() => {
-              navigateTo('/login');
+              allowEscapeKey: false,
+            }).then((result: any) => {
+              if (result.isConfirmed) {
+                isShowingSessionExpired = false;
+                window.location.href = '/login';
+              }
             });
           } else {
-            navigateTo('/login');
+            window.location.href = '/login';
           }
         }
       }

@@ -1,86 +1,114 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
-      <div class="relative">
-        <div class="flex items-center gap-3 mb-2">
-           <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Compliance & Regulatory</span>
-           <span class="text-slate-300">/</span>
-           <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-amber-600">Konfigurasi Pajak</span>
+    <DashboardHero
+      title="Tax Config"
+      subtitle="Registrasi kode pajak untuk otomatisasi kalkulasi PPN dan pemotongan PPh."
+      category="Compliance & Regulatory"
+      category-sub="Konfigurasi Pajak"
+      color="amber"
+    >
+      <template #actions>
+        <div class="flex items-center gap-3">
+          <Button label="Buat Kode Pajak" icon="pi pi-shield" class="p-button-sm font-black text-xs px-6 bg-white/20 hover:bg-white/30 text-white border-white/20" @click="openNew" />
         </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Tax <span class="text-amber-600">Config</span></h1>
-        <p class="text-slate-500 text-sm font-medium uppercase italic tracking-tight italic">Registrasi kode pajak untuk otomatisasi kalkulasi PPN dan pemotongan PPh.</p>
-      </div>
-
-      <div class="flex items-center gap-3 relative">
-        <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="load" :loading="loading" />
-        <Button label="Buat Kode Pajak" icon="pi pi-shield" class="p-button-rounded p-button-warning font-black text-xs shadow-lg shadow-amber-100 px-6" @click="openNew" />
-      </div>
-    </div>
+      </template>
+    </DashboardHero>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-          <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-             <i :class="[s.icon, 'text-6xl']"></i>
-          </div>
-          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ s.label }}</p>
-          <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ s.value }}</h3>
-          <div class="flex items-center gap-2 mt-2">
-             <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-full', s.color]">{{ s.sub }}</span>
-          </div>
-       </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <MiniStatsCard
+          v-for="s in stats"
+          :key="s.label"
+          :label="s.label"
+          :value="s.value"
+          :icon="s.icon"
+          :sub="s.sub"
+          :sub-color="s.theme"
+          :icon-color="s.theme"
+       />
     </div>
 
     <!-- Main Content: Table -->
-    <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:border-amber-300 transition-all duration-500">
-       <DataTable :value="taxCodes" dataKey="id" class="p-datatable-sm w-full" :loading="loading">
-          <Column field="code" header="KODE PAJAK" class="pl-8">
-             <template #body="{ data }">
-                <span class="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 font-mono italic uppercase">
-                   {{ data.code }}
-                </span>
-             </template>
-          </Column>
-          <Column field="name" header="NAMA PERATURAN / DESKRIPSI">
-             <template #body="{ data }">
-                <span class="text-[12px] font-black text-slate-800 uppercase tracking-tight">{{ data.name }}</span>
-             </template>
-          </Column>
-          <Column header="TARIF (%)">
-             <template #body="{ data }">
-                <div class="flex items-center gap-2">
-                   <div class="w-12 py-1 bg-amber-50 text-amber-700 text-center rounded-lg text-[11px] font-black border border-amber-100 italic">
-                      {{ data.rate }}%
-                   </div>
-                </div>
-             </template>
-          </Column>
-          <Column header="TANGGAL EFEKTIF">
-             <template #body="{ data }">
-                <span class="text-[10px] font-bold text-slate-500 uppercase">{{ fmtDate(data.effectiveDate) }}</span>
-             </template>
-          </Column>
-          <Column header="STATUS">
-             <template #body="{ data }">
-                <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', data.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100']">
-                   {{ data.isActive ? 'Active' : 'Inactive' }}
-                </span>
-             </template>
-          </Column>
-          <Column class="text-right pr-8">
-             <template #body="{ data }">
-                <Button icon="pi pi-ban" severity="danger" text rounded size="small" v-if="data.isActive" @click="deactivate(data)" v-tooltip.top="'Deactivate Tax'" />
-             </template>
-          </Column>
-       </DataTable>
-    </div>
+    <!-- Main Content: Table -->
+    <PanelCard
+      title="Daftar Kode Pajak"
+      subtitle="Master data tarif pajak pertambahan nilai dan pajak penghasilan."
+      icon="pi pi-shield"
+      theme="amber"
+      :show-search="false"
+      :show-refresh="false"
+      flat-controls
+    >
+       <template #filters>
+          <SelectButton 
+            v-model="activeTab" 
+            :options="tabOptions" 
+            optionLabel="label" 
+            optionValue="value" 
+            :allowEmpty="false" 
+            :pt="{
+               root: { class: 'bg-slate-100/80 p-1 rounded-2xl border border-slate-200/50 flex gap-1 shadow-inner' },
+               pcbutton: ({ context }: any) => ({
+                 root: {
+                   class: [
+                     '!border-none !rounded-xl transition-all duration-300 px-4 py-2',
+                     context.active ? '!bg-white !text-amber-600 shadow-sm' : '!bg-transparent !text-slate-500 hover:!bg-white/50'
+                   ]
+                 }
+               })
+            }"
+          >
+            <template #option="slotProps">
+               <div class="flex items-center gap-2">
+                  <i :class="[slotProps.option.icon, 'text-[10px]']"></i>
+                  <span class="text-[9px] font-black uppercase tracking-[0.2em]">{{ slotProps.option.label }}</span>
+               </div>
+            </template>
+          </SelectButton>
+       </template>
+
+       <template #table>
+          <PanelTable
+            :items="taxCodes"
+            :columns="taxColumns"
+            :loading="loading"
+            hover-border-color="border-l-amber-400"
+          >
+            <template #col-code="{ item }">
+               <span class="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 font-mono italic uppercase">
+                  {{ item.code }}
+               </span>
+            </template>
+            <template #col-name="{ item }">
+               <span class="text-[12px] font-black text-slate-800 uppercase tracking-tight">{{ item.name }}</span>
+            </template>
+            <template #col-rate="{ item }">
+               <div class="w-12 py-1 bg-amber-50 text-amber-700 text-center rounded-lg text-[11px] font-black border border-amber-100 italic">
+                  {{ item.rate }}%
+               </div>
+            </template>
+            <template #col-effectiveDate="{ item }">
+               <span class="text-[10px] font-bold text-slate-500 uppercase">{{ fmtDate(item.effectiveDate) }}</span>
+            </template>
+            <template #col-status="{ item }">
+               <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', item.isActive ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100']">
+                  {{ item.isActive ? 'Active' : 'Inactive' }}
+               </span>
+            </template>
+            <template #col-actions="{ item }">
+               <div class="flex gap-2 justify-end">
+                  <Button icon="pi pi-ban" severity="danger" text rounded size="small" v-if="item.isActive" @click="deactivate(item)" v-tooltip.top="'Deactivate Tax'" />
+               </div>
+            </template>
+          </PanelTable>
+       </template>
+    </PanelCard>
 
     <!-- Management Dialog (Glass) -->
     <Dialog v-model:visible="dialogOpen" header="Registrasi Kode Pajak Baru" :modal="true" :dismissableMask="false" class="w-[500px] border-none shadow-2xl overflow-hidden glass-dialog">
        <div class="space-y-8 pt-4 px-2 pb-12 custom-scrollbar">
-          <div class="p-6 bg-amber-50 border border-amber-100 rounded-3xl flex items-center gap-4">
+          <div class="p-4 bg-amber-50 border border-amber-100 rounded-3xl flex items-center gap-4">
              <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-amber-600 shadow-sm border border-amber-100">
                 <i class="pi pi-shield text-xl"></i>
              </div>
@@ -143,18 +171,33 @@ const form = ref<any>({
 const stats = computed(() => {
   const ppn = taxCodes.value.find(t => t.code.includes('PPN-11'))?.rate || 0;
   return [
-    { label: 'Kode Pajak Aktif', value: taxCodes.value.filter(t => t.isActive).length, sub: 'Regulatory Coverage', icon: 'pi pi-shield', color: 'bg-emerald-50 text-emerald-600' },
-    { label: 'PPN Standard', value: ppn + '%', sub: 'Fixed Rate', icon: 'pi pi-percentage', color: 'bg-amber-50 text-amber-600' },
-    { label: 'Pajak Non-Aktif', value: taxCodes.value.filter(t => !t.isActive).length, sub: 'Historical Rates', icon: 'pi pi-history', color: 'bg-slate-50 text-slate-600' },
-    { label: 'Compliance Index', value: '100%', sub: 'Verified PSAK', icon: 'pi pi-verified', color: 'bg-blue-50 text-blue-600' }
+    { label: 'Kode Pajak Aktif', value: taxCodes.value.filter(t => t.isActive).length, sub: 'Regulatory Coverage', icon: 'pi pi-shield', theme: 'emerald' as const },
+    { label: 'PPN Standard', value: ppn + '%', sub: 'Fixed Rate', icon: 'pi pi-percentage', theme: 'amber' as const },
+    { label: 'Pajak Non-Aktif', value: taxCodes.value.filter(t => !t.isActive).length, sub: 'Historical Rates', icon: 'pi pi-history', theme: 'slate' as const },
+    { label: 'Compliance Index', value: '100%', sub: 'Verified PSAK', icon: 'pi pi-verified', theme: 'blue' as const }
   ];
 });
+
+const taxColumns = [
+  { key: 'code', header: 'KODE PAJAK', width: 'w-48' },
+  { key: 'name', header: 'NAMA PERATURAN / DESKRIPSI' },
+  { key: 'rate', header: 'TARIF (%)', width: 'w-32', borderLeft: true },
+  { key: 'effectiveDate', header: 'TANGGAL EFEKTIF', width: 'w-48', borderLeft: true },
+  { key: 'status', header: 'STATUS', width: 'w-48', borderLeft: true },
+  { key: 'actions', header: 'AKSI', align: 'right' as const, width: 'w-24', borderLeft: true }
+];
+
+const tabOptions = [
+  { label: 'Master Pajak', value: 'master', icon: 'pi pi-shield' }
+];
+
+const activeTab = ref('master');
 
 async function load() {
   loading.value = true;
   try {
     const res = await api.get('/core/tax-codes');
-    taxCodes.value = res.taxCodes || res.data?.taxCodes || [];
+    taxCodes.value = res.data?.taxCodes || res.data || [];
   } catch (e: any) {
     toast.add({ severity: 'error', summary: 'Load Failed', detail: e.message });
   } finally {
@@ -197,7 +240,7 @@ function fmtDate(d: string) { return d ? new Date(d).toLocaleDateString('id-ID',
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 :deep(.p-datatable-thead > tr > th) {
   background: transparent !important;
   font-size: 10px !important;

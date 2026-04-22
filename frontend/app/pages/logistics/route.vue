@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -20,8 +20,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -144,12 +144,12 @@
           </div>
 
           <!-- Section 2: Parameter Teknis -->
-          <div class="space-y-5 p-6 rounded-3xl bg-emerald-50/50 border border-emerald-100">
+          <div class="space-y-5 p-4 rounded-3xl bg-emerald-50/50 border border-emerald-100">
              <div class="flex items-center gap-3 mb-2">
                 <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs">2</div>
                 <h4 class="text-[11px] font-black uppercase tracking-widest text-slate-900">Estimasi & Parameter Teknis</h4>
              </div>
-             <div class="grid grid-cols-2 gap-6">
+             <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
                    <label class="text-[10px] font-black text-emerald-400 uppercase">Jarak Tempuh (KM)</label>
                    <InputNumber v-model="form.distanceKm" class="w-full p-inputtext-sm" :minFractionDigits="1" />
@@ -182,7 +182,7 @@
           </div>
 
           <!-- Actions -->
-          <div class="fixed bottom-0 right-0 w-[600px] bg-white p-6 border-t flex justify-end gap-3 rounded-t-[2rem] shadow-2xl">
+          <div class="fixed bottom-0 right-0 w-[600px] bg-white p-4 border-t flex justify-end gap-3 rounded-t-[2rem] shadow-2xl">
              <Button label="Batalkan" severity="secondary" text @click="drawerOpen = false" class="font-black text-[10px] uppercase" />
              <Button label="Simpan Rute" icon="pi pi-save" class="p-button-rounded font-black text-[10px] uppercase px-8 bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-100" @click="save" :loading="saving" :disabled="!form.code || !form.name" />
           </div>

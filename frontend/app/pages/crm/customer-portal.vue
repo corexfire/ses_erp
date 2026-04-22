@@ -3,7 +3,7 @@
     <!-- Header (Premium Portal Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-cyan-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-cyan-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Portal Admin</span>
@@ -31,9 +31,9 @@
     </div>
 
     <!-- High-Contrast KPI Banners (Premium style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
        <!-- Primary engagement banner -->
-      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+      <div class="p-4 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
         <div class="text-[10px] font-black uppercase text-cyan-400 tracking-[0.2em] mb-4 opacity-80">Telemetry Hits</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter">{{ summary.engagementLogs || 0 }}</h3>
@@ -43,7 +43,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Total Clients</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-800 tracking-tighter">{{ summary.totalCustomers || 0 }}</h3>
@@ -51,7 +51,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-cyan-600 tracking-[0.2em] mb-4">Provisioned Access</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-cyan-700 tracking-tighter">{{ summary.portalUsers || 0 }}</h3>
@@ -59,7 +59,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-500 tracking-[0.2em] mb-4">Adoption Rate</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-emerald-600 tracking-tighter">{{ Math.round((summary.portalUsers / summary.totalCustomers) * 100) || 0 }}<span class="text-xl">%</span></h3>
@@ -179,7 +179,7 @@
        </div>
  
        <div v-else class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm flex flex-col divide-y divide-slate-50">
-          <div v-for="lg in logs" :key="lg.id" class="p-6 flex items-start gap-6 hover:bg-slate-50/80 transition-all group">
+          <div v-for="lg in logs" :key="lg.id" class="p-4 flex items-start gap-4 hover:bg-slate-50/80 transition-all group">
               <div :class="['w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-lg border-2 border-white group-hover:rotate-6 transition-transform transition-all duration-300', getLogIcon(lg.activityType).bg]">
                   <i :class="['pi text-2xl', getLogIcon(lg.activityType).icon]"></i>
               </div>

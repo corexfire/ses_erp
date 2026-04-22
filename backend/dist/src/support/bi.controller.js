@@ -85,7 +85,8 @@ let SupportBiController = class SupportBiController {
                 orderBy: { period: 'desc' }
             })
         ]);
-        const activeKpis = kpis.filter(k => k.period === '2024-Q4' || k.period === '2024-M4');
+        const latestPeriod = kpis.length > 0 ? kpis[0].period : null;
+        const activeKpis = latestPeriod ? kpis.filter(k => k.period === latestPeriod) : [];
         return {
             summary: {
                 totalAssets: assets,

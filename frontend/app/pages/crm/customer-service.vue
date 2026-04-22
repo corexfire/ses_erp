@@ -3,7 +3,7 @@
     <!-- Header (Premium Helpdesk Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-rose-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Support Core</span>
@@ -28,9 +28,9 @@
     </div>
 
     <!-- High-Contrast KPI Banners (Premium style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
        <!-- Primary engagement banner -->
-      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+      <div class="p-4 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
         <div class="text-[10px] font-black uppercase text-rose-400 tracking-[0.2em] mb-4 opacity-80">Open Queues</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter">{{ countStatus('OPEN') }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">In Treatment</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-amber-600 tracking-tighter">{{ countStatus('IN_PROGRESS') }}</h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Critical SLA</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-rose-700 tracking-tighter">{{ countPriority('URGENT') }}</h3>
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-500 tracking-[0.2em] mb-4">Resolved Flow</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-emerald-600 tracking-tighter">{{ countStatus('RESOLVED') + countStatus('CLOSED') }}</h3>
@@ -205,7 +205,7 @@
             </div>
             
             <div class="pl-11 space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Ticket Handle <span class="text-red-500">*</span></label>
                   <input type="text" v-model="form.code" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-mono font-black text-rose-700 bg-white shadow-inner outline-none focus:ring-2 focus:ring-rose-100 placeholder:italic" placeholder="TCK-AUTO" :disabled="!!editingId" />
@@ -235,7 +235,7 @@
             
             <div class="pl-11">
               <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 lowercase">Support History & Internal Coordination Narrative</label>
-              <textarea v-model="form.notes" rows="6" class="w-full border-none rounded-3xl p-6 text-sm font-medium text-slate-700 bg-white shadow-inner outline-none focus:ring-2 focus:ring-rose-100 resize-none transition-all" placeholder="Detail investigation results, proposed compensation, technical fixes, and client satisfaction markers..."></textarea>
+              <textarea v-model="form.notes" rows="6" class="w-full border-none rounded-3xl p-4 text-sm font-medium text-slate-700 bg-white shadow-inner outline-none focus:ring-2 focus:ring-rose-100 resize-none transition-all" placeholder="Detail investigation results, proposed compensation, technical fixes, and client satisfaction markers..."></textarea>
             </div>
           </div>
 

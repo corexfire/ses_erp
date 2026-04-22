@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-[#f5f6fa]">
 
     <!-- ═══════════════════════════════════ HEADER (Premium Service Engine) ══════════════════════════════════ -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
       
       <div class="relative">
@@ -22,12 +22,12 @@
     </div>
 
     <!-- Telemetry Dashboard (High-Contrast Emerald) -->
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-6 mx-6 mb-8 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mx-6 mb-8 animate-fade-in-up">
        <!-- Total Orders -->
-       <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
+       <div class="p-4 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
           <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total Penugasan</div>
           <div class="flex items-end justify-between">
-             <h3 class="text-4xl font-black text-white tracking-tighter leading-none">{{ loading ? '—' : stats[0].value }}</h3>
+             <h3 class="text-4xl font-black text-white tracking-tighter leading-none">{{ loading ? '—' : stats?.[0]?.value }}</h3>
              <div class="p-3 bg-white/5 rounded-xl text-white shadow-lg group-hover:rotate-12 transition-transform">
                 <i class="pi pi-ticket text-lg text-emerald-400"></i>
              </div>
@@ -35,37 +35,37 @@
        </div>
 
        <!-- Unscheduled -->
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
           <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Butuh Penjadwalan</div>
           <div class="flex items-end justify-between">
-             <h3 class="text-4xl font-black text-amber-700 tracking-tighter leading-none">{{ loading ? '—' : stats[1].value }}</h3>
+             <h3 class="text-4xl font-black text-amber-700 tracking-tighter leading-none">{{ loading ? '—' : stats?.[1]?.value }}</h3>
              <div class="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100 group-hover:scale-110 transition-transform"><i class="pi pi-clock text-lg"></i></div>
           </div>
        </div>
 
        <!-- Scheduled -->
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
           <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Siap Eksekusi</div>
           <div class="flex items-end justify-between">
-             <h3 class="text-4xl font-black text-emerald-700 tracking-tighter leading-none">{{ loading ? '—' : stats[2].value }}</h3>
+             <h3 class="text-4xl font-black text-emerald-700 tracking-tighter leading-none">{{ loading ? '—' : stats?.[2]?.value }}</h3>
              <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-100 group-hover:rotate-12 transition-transform"><i class="pi pi-calendar text-lg"></i></div>
           </div>
        </div>
 
        <!-- Active -->
-       <div class="p-6 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
           <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4 italic">Live di Lapangan</div>
           <div class="flex items-end justify-between">
-             <h3 class="text-4xl font-black text-emerald-800 tracking-tighter leading-none">{{ loading ? '—' : stats[3].value }}</h3>
+             <h3 class="text-4xl font-black text-emerald-800 tracking-tighter leading-none">{{ loading ? '—' : stats?.[3]?.value }}</h3>
              <div class="p-3 bg-emerald-600 text-white rounded-xl shadow-lg shadow-emerald-200 group-hover:rotate-12 transition-transform"><i class="pi pi-bolt text-lg"></i></div>
           </div>
        </div>
 
        <!-- Completed -->
-       <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
           <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4 font-mono">Archive Selesai</div>
           <div class="flex items-end justify-between">
-             <h3 class="text-4xl font-black text-slate-400 tracking-tighter leading-none">{{ loading ? '—' : stats[4].value }}</h3>
+             <h3 class="text-4xl font-black text-slate-400 tracking-tighter leading-none">{{ loading ? '—' : stats?.[4]?.value }}</h3>
              <div class="p-3 bg-slate-200 text-slate-500 rounded-xl group-hover:grayscale-0 grayscale transition-all"><i class="pi pi-check-circle text-lg"></i></div>
           </div>
        </div>
@@ -75,7 +75,7 @@
     <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up">
 
       <!-- Header Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -277,12 +277,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ CREATE/EDIT ORDER DIALOG ══════════════════════════════════ -->
-    <div v-if="orderDialogVisible" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="orderDialogVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-5xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-ticket text-3xl font-black"></i>
             </div>
@@ -352,7 +352,7 @@
               </div>
               <div class="md:col-span-2 space-y-2">
                 <label class="px-1">Alamat Presisi Lokasi Layanan <span class="text-rose-500">*</span></label>
-                <textarea v-model="orderForm.locationAddress" rows="3" class="w-full bg-white border-slate-200 rounded-2xl p-6 text-[11px] font-medium text-slate-700 outline-none focus:ring-4 focus:ring-emerald-50 transition-all border" placeholder="Alamat lengkap armada harus dikirim..."></textarea>
+                <textarea v-model="orderForm.locationAddress" rows="3" class="w-full bg-white border-slate-200 rounded-2xl p-4 text-[11px] font-medium text-slate-700 outline-none focus:ring-4 focus:ring-emerald-50 transition-all border" placeholder="Alamat lengkap armada harus dikirim..."></textarea>
               </div>
             </div>
           </div>
@@ -366,7 +366,7 @@
             <div class="space-y-8">
               <div class="space-y-2">
                 <label class="px-1">Subjek Penugasan <span class="text-rose-500">*</span></label>
-                <input v-model="orderForm.subject" class="h-16 bg-white border-slate-200 rounded-[1.25rem] p-6 text-[13px] font-black text-slate-800 w-full outline-none focus:ring-4 focus:ring-indigo-50 transition-all border shadow-sm" placeholder="Judul singkat yang muncul di aplikasi teknisi..." />
+                <input v-model="orderForm.subject" class="h-16 bg-white border-slate-200 rounded-[1.25rem] p-4 text-[13px] font-black text-slate-800 w-full outline-none focus:ring-4 focus:ring-indigo-50 transition-all border shadow-sm" placeholder="Judul singkat yang muncul di aplikasi teknisi..." />
               </div>
               <div class="space-y-2">
                 <label class="px-1">Brief Deskripsi Lingkup Kerja</label>
@@ -393,12 +393,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ ASSIGN TECHNICIAN DIALOG ══════════════════════════════════ -->
-    <div v-if="assignDialogVisible" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="assignDialogVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-4xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-indigo-950">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-indigo-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-bolt text-3xl font-black"></i>
             </div>
@@ -413,7 +413,7 @@
         <div class="flex-1 overflow-y-auto p-10 space-y-12 custom-scrollbar bg-slate-50/30 pb-32">
           <!-- Order Brief -->
           <div class="p-8 bg-white border border-slate-100 rounded-[2rem] shadow-sm relative overflow-hidden group border-l-[8px] border-l-emerald-500">
-             <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 transition-transform">
+             <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
                 <i class="pi pi-receipt text-7xl text-slate-300"></i>
              </div>
              <div class="relative">
@@ -461,7 +461,7 @@
             <div class="space-y-8">
               <div class="space-y-2">
                 <label class="px-1 text-slate-400">Personel Tersedia (Available) <span class="text-rose-500">*</span></label>
-                <select v-model="assignForm.technicianId" class="field-select h-16 bg-white border-slate-200 rounded-[1.25rem] p-6 text-[12px] font-black uppercase tracking-widest text-slate-800 w-full outline-none focus:ring-4 focus:ring-indigo-50 transition-all border shadow-sm">
+                <select v-model="assignForm.technicianId" class="field-select h-16 bg-white border-slate-200 rounded-[1.25rem] p-4 text-[12px] font-black uppercase tracking-widest text-slate-800 w-full outline-none focus:ring-4 focus:ring-indigo-50 transition-all border shadow-sm">
                   <option value="">-- Pilih Teknisi --</option>
                   <option v-for="t in technicians" :key="t.id" :value="t.id">
                     {{ t.name }} ({{ t.email }})
@@ -493,12 +493,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ VIEW DETAIL DIALOG ══════════════════════════════════ -->
-    <div v-if="viewDialogVisible && viewOrder" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="viewDialogVisible && viewOrder" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-5xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-50"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-slate-900 flex items-center justify-center text-white shadow-xl rotate-3">
                <i class="pi pi-search text-3xl font-black"></i>
             </div>
@@ -515,16 +515,16 @@
 
         <div class="flex-1 overflow-y-auto p-10 space-y-12 custom-scrollbar bg-slate-50/30 pb-32">
           <!-- Identity Brief -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+             <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Nomor Referensi</p>
                 <p class="text-lg font-black text-slate-900 font-mono tracking-tighter">{{ viewOrder.code }}</p>
              </div>
-             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+             <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Entitas Pelanggan</p>
                 <p class="text-lg font-black text-slate-900 uppercase tracking-tighter truncate">{{ viewOrder.customer?.name }}</p>
              </div>
-             <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+             <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
                 <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Prioritas Kerja</p>
                 <p :class="['text-lg font-black uppercase tracking-tighter', getPriorityClass(viewOrder.priority)]">{{ getPriorityLabel(viewOrder.priority) }}</p>
              </div>
@@ -573,8 +573,8 @@
             </div>
             <div class="space-y-6">
               <div v-for="a in viewOrder.appointments" :key="a.id" class="group p-8 bg-white border border-slate-100 rounded-[2rem] hover:shadow-2xl hover:bg-slate-50 transition-all border-l-8 border-l-slate-200 hover:border-l-indigo-600">
-                <div class="flex items-center justify-between gap-6">
-                  <div class="flex items-center gap-6">
+                <div class="flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-4">
                     <div class="w-16 h-16 rounded-[1.25rem] bg-indigo-950 flex items-center justify-center text-white text-xl font-black uppercase shadow-xl group-hover:bg-indigo-600 transition-colors">
                       {{ a.technician?.name?.charAt(0) || 'T' }}
                     </div>
@@ -592,7 +592,7 @@
                   </div>
                 </div>
 
-                <div v-if="a.report" class="bg-emerald-50 rounded-[1.5rem] p-6 mt-6 border border-emerald-100/50 relative overflow-hidden">
+                <div v-if="a.report" class="bg-emerald-50 rounded-[1.5rem] p-4 mt-6 border border-emerald-100/50 relative overflow-hidden">
                   <div class="absolute top-0 right-0 p-4 opacity-10"><i class="pi pi-check-circle text-5xl"></i></div>
                   <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 flex items-center gap-2 relative z-10">
                     <i class="pi pi-file-check"></i> Laporan Penyelesaian Teknisi
@@ -616,12 +616,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ COMPLETE REPORT DIALOG ══════════════════════════════════ -->
-    <div v-if="reportDialogVisible" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="reportDialogVisible" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-4xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-emerald-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-check-circle text-3xl font-black"></i>
             </div>
@@ -698,7 +698,7 @@
     </div>
 
     <!-- ═══════════════════════════════════ DELETE CONFIRMATION DIALOG ══════════════════════════════════ -->
-    <div v-if="deleteTarget" class="fixed inset-0 z-[60] flex items-center justify-center p-6 bg-slate-900/80 backdrop-blur-xl transition-all">
+    <div v-if="deleteTarget" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-xl transition-all">
        <div class="relative w-full max-w-md bg-white shadow-2xl animate-scale-in rounded-[2.5rem] border-4 border-white overflow-hidden text-center border-b-[12px] border-b-rose-900 px-8 py-12">
           <div class="w-24 h-24 rounded-full bg-rose-50 flex items-center justify-center mx-auto mb-8 shadow-inner border-4 border-white">
              <i class="pi pi-trash text-4xl text-rose-500 animate-bounce"></i>
@@ -1002,7 +1002,7 @@ function openCompleteReport(so: any) {
   reportDialogVisible.value = true;
 }
 
-async function submitReport() {
+async function saveReport() {
   if (!reportForm.summary || !reportForm.resolution) {
     showToast('warn', 'Ringkasan dan resolusi penyelesaian wajib diisi');
     return;
@@ -1098,7 +1098,7 @@ function showToast(type: 'success' | 'error' | 'warn', message: string) {
 onMounted(loadData);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 /* ────────────────────────────────────────────────────────────────────────────
    DATATABLE ALIGNMENT (TAX STYLE)
    ──────────────────────────────────────────────────────────────────────────── */

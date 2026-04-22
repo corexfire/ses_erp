@@ -3,7 +3,7 @@
     <!-- Header (Premium Marketing Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-fuchsia-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-fuchsia-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Campaign Hub</span>
@@ -28,9 +28,9 @@
     </div>
 
     <!-- High-Contrast KPI Banners (Premium style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
        <!-- Primary engagement banner -->
-      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+      <div class="p-4 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
         <div class="text-[10px] font-black uppercase text-fuchsia-400 tracking-[0.2em] mb-4 opacity-80">Total Alocation</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl font-black text-white tracking-tighter">{{ fmtRp(totalBudget) }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Strategic Planned</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-800 tracking-tighter">{{ countStatus('PLANNED') }}</h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-fuchsia-600 tracking-[0.2em] mb-4">Live Activation</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-fuchsia-700 tracking-tighter">{{ countStatus('ACTIVE') }}</h3>
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-500 tracking-[0.2em] mb-4">Completed Cycles</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-emerald-600 tracking-tighter">{{ countStatus('COMPLETED') }}</h3>
@@ -136,7 +136,7 @@
                   <select v-model="statusSelection[c.id]"
                     class="w-full h-10 rounded-2xl appearance-none text-center text-[10px] font-black uppercase tracking-widest outline-none transition-all cursor-pointer border shadow-sm px-4"
                     :disabled="!canUpdate"
-                    :style="typeStyle(statusSelection[c.id])"
+                    :style="typeStyle(statusSelection[c.id] || 'PLANNED')"
                     @change="updateStatus(c)">
                     <option value="PLANNED" class="bg-white text-slate-800">PLANNED</option>
                     <option value="ACTIVE" class="bg-white text-slate-800">ACTIVE</option>
@@ -192,7 +192,7 @@
             </div>
             
             <div class="pl-11 space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Reference Code <span class="text-red-500">*</span></label>
                   <input type="text" v-model="form.code" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-mono font-black text-fuchsia-700 bg-white shadow-inner outline-none focus:ring-2 focus:ring-fuchsia-100 placeholder:italic" placeholder="System Generated" :disabled="!!editingId" />
@@ -213,7 +213,7 @@
             </div>
             
             <div class="pl-11 space-y-8">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <div class="space-y-2">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-none lowercase italic">Advertising Channel Placement</label>
                    <input type="text" v-model="form.channel" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-bold text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-fuchsia-100" placeholder="Meta, Google, Offline Event..." :disabled="editingId ? !canUpdate : !canCreate" />
@@ -224,7 +224,7 @@
                  </div>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-dashed border-slate-200">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 border-t border-dashed border-slate-200">
                 <div class="space-y-2">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Activation Date</label>
                    <input type="date" v-model="form.startDate" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-bold text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-fuchsia-100" :disabled="editingId ? !canUpdate : !canCreate" />
@@ -246,7 +246,7 @@
             
             <div class="pl-11">
               <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 lowercase">Campaign Narrative & Performance Indicators</label>
-              <textarea v-model="form.notes" rows="4" class="w-full border-none rounded-3xl p-6 text-sm font-medium text-slate-700 bg-white shadow-inner outline-none focus:ring-2 focus:ring-fuchsia-100 resize-none transition-all" placeholder="Describe the core objective, targeted CPA, and any logistical requirements..."></textarea>
+              <textarea v-model="form.notes" rows="4" class="w-full border-none rounded-3xl p-4 text-sm font-medium text-slate-700 bg-white shadow-inner outline-none focus:ring-2 focus:ring-fuchsia-100 resize-none transition-all" placeholder="Describe the core objective, targeted CPA, and any logistical requirements..."></textarea>
             </div>
           </div>
 
@@ -352,7 +352,8 @@ const load = async () => {
   try {
     if (!canRead.value) { campaigns.value = []; return; }
     const res = await api.get('/crm/campaigns');
-    campaigns.value = res.data?.campaigns ?? res.campaigns ?? [];
+    const data = res.data as any;
+    campaigns.value = data?.campaigns ?? data ?? [];
     for (const c of campaigns.value) statusSelection[c.id] = c.status;
   } catch (e: any) { error.value = e?.response?.data?.message ?? 'Gagal load Master Campaign'; } 
   finally { loading.value = false; }
@@ -405,9 +406,12 @@ const save = async () => {
 const updateStatus = async (c: Campaign) => {
   const oldVal = c.status;
   try {
-    await api.patch(`/crm/campaigns/${c.id}`, { status: statusSelection[c.id] });
-    showMsg(success, `Berhasil mengalihkan kampanye ke mode ${statusSelection[c.id]}.`);
-    c.status = statusSelection[c.id];
+    const newStatus = statusSelection[c.id];
+    if (newStatus) {
+      await api.patch(`/crm/campaigns/${c.id}`, { status: newStatus });
+      showMsg(success, `Berhasil mengalihkan kampanye ke mode ${newStatus}.`);
+      c.status = newStatus;
+    }
   } catch (e: any) {
     statusSelection[c.id] = oldVal;
     showMsg(error, e?.response?.data?.message ?? 'Gagal memperbarui status');
@@ -417,7 +421,7 @@ const updateStatus = async (c: Campaign) => {
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .animate-fade-in-up { 
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
 }

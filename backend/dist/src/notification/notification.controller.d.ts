@@ -163,10 +163,10 @@ export declare class NotificationController {
             key: string;
             updatedAt: Date;
             status: import("prisma/generated").$Enums.NotificationTemplateStatus;
+            module: string | null;
             subject: string | null;
             channel: import("prisma/generated").$Enums.NotificationChannel;
             eventKey: string | null;
-            module: string | null;
             body: string;
             variables: import("prisma/generated/runtime/client").JsonValue | null;
         }[];
@@ -181,10 +181,10 @@ export declare class NotificationController {
         key: string;
         updatedAt: Date;
         status: import("prisma/generated").$Enums.NotificationTemplateStatus;
+        module: string | null;
         subject: string | null;
         channel: import("prisma/generated").$Enums.NotificationChannel;
         eventKey: string | null;
-        module: string | null;
         body: string;
         variables: import("prisma/generated/runtime/client").JsonValue | null;
     }>;
@@ -198,10 +198,10 @@ export declare class NotificationController {
         key: string;
         updatedAt: Date;
         status: import("prisma/generated").$Enums.NotificationTemplateStatus;
+        module: string | null;
         subject: string | null;
         channel: import("prisma/generated").$Enums.NotificationChannel;
         eventKey: string | null;
-        module: string | null;
         body: string;
         variables: import("prisma/generated/runtime/client").JsonValue | null;
     }>;

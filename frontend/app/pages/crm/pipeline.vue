@@ -3,7 +3,7 @@
     <!-- Header (Premium CRM Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-indigo-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">CRM Management</span>
@@ -30,40 +30,48 @@
     </div>
 
     <!-- Quick Metrics Pipeline (Premium Banners) -->
-    <div v-if="canRead" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 overflow-x-auto pb-2 custom-scrollbar shrink-0">
+    <div v-if="canRead" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 overflow-x-auto pb-2 custom-scrollbar shrink-0">
       <!-- Total Pipeline -->
-      <div class="p-5 rounded-2xl bg-indigo-900 text-white shadow-xl flex flex-col justify-between border border-indigo-800 transition-all hover:bg-indigo-950 group min-w-[200px]">
-        <div class="text-[10px] font-black uppercase text-indigo-300 tracking-[0.2em] mb-3 opacity-80">Total Pipeline</div>
-        <div class="flex items-end justify-between">
-          <h3 class="text-xl font-black text-white tracking-tighter font-mono">{{ fmtRpRp(totalValue) }}</h3>
-          <div class="p-2 bg-indigo-600 rounded-xl text-indigo-100 shadow-lg animate-pulse">
-            <i class="pi pi-chart-line text-xs"></i>
-          </div>
-        </div>
-      </div>
+      <StatsCard
+        title="Total Pipeline"
+        :value="fmtRpRp(totalValue)"
+        variant="dark"
+        color="indigo"
+        icon="pi pi-chart-line"
+        pulse
+        mono
+        min-width="200px"
+      />
 
       <!-- Active Deals -->
-      <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-lg min-w-[160px]">
-        <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-3">Active Deals</div>
-        <div class="flex items-end justify-between">
-          <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ activeDeals }} <span class="text-xs text-slate-400 uppercase font-sans">Deals</span></h3>
-          <div class="p-2 bg-slate-50 text-slate-400 rounded-xl border border-slate-100"><i class="pi pi-briefcase text-xs"></i></div>
-        </div>
-      </div>
+      <StatsCard
+        title="Active Deals"
+        :value="activeDeals"
+        unit="Deals"
+        icon="pi pi-briefcase"
+        min-width="160px"
+      />
 
       <!-- Stage Metrics -->
-      <div v-for="c in columns" :key="c.stage" class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-lg min-w-[180px]">
-        <div class="text-[10px] font-black uppercase tracking-[0.2em] mb-3" :style="{ color: stageMeta(c.stage).color }">{{ c.title }}</div>
-        <div class="flex items-end justify-between">
-           <div>
-              <h3 class="text-lg font-black text-slate-900 tracking-tighter font-mono">{{ fmtRpRp(c.sum) }}</h3>
-              <div class="text-[10px] font-bold text-slate-400 uppercase mt-0.5">{{ c.items.length }} Deals</div>
-           </div>
-           <div class="p-2 rounded-xl border opacity-20" :style="{ color: stageMeta(c.stage).color, backgroundColor: stageMeta(c.stage).color + '11', borderColor: stageMeta(c.stage).color }">
-              <i class="pi pi-folder-open text-xs"></i>
-           </div>
-        </div>
-      </div>
+      <StatsCard
+        v-for="c in columns"
+        :key="c.stage"
+        :title="c.title"
+        :value="fmtRpRp(c.sum)"
+        min-width="180px"
+      >
+        <template #value>
+          <div>
+            <h3 class="text-lg font-black text-slate-900 tracking-tighter font-mono">{{ fmtRpRp(c.sum) }}</h3>
+            <div class="text-[10px] font-bold text-slate-400 uppercase mt-0.5">{{ c.items.length }} Deals</div>
+          </div>
+        </template>
+        <template #icon>
+          <div class="p-2 rounded-xl border" :style="{ color: stageMeta(c.stage).color, backgroundColor: stageMeta(c.stage).color + '11', borderColor: stageMeta(c.stage).color }">
+            <i class="pi pi-folder-open text-xs"></i>
+          </div>
+        </template>
+      </StatsCard>
     </div>
 
     <div v-if="success" class="p-3 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm font-bold flex items-center gap-2 animate-fade-in-up">
@@ -75,7 +83,7 @@
 
     <!-- KANBAN BOARD (Premium Style) -->
     <div v-if="canRead" class="h-[calc(100vh-22rem)] min-h-[500px] overflow-x-auto overflow-y-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-inner flex relative">
-      <div class="flex gap-6 p-6 min-w-max h-full">
+      <div class="flex gap-4 p-4 min-w-max h-full">
 
         <!-- KANBAN COLUMN -->
         <div v-for="col in columns" :key="col.stage" class="w-[340px] flex flex-col h-full shrink-0 group/col"
@@ -97,13 +105,13 @@
 
           <!-- Cards Container -->
           <div class="flex-1 overflow-y-auto px-1 space-y-4 kanban-scroll relative custom-scrollbar">
-            <div v-if="loading && col.items.length === 0" class="animate-pulse bg-white p-6 rounded-2xl border h-32"></div>
+            <div v-if="loading && col.items.length === 0" class="animate-pulse bg-white p-4 rounded-2xl border h-32"></div>
             
             <div v-for="o in col.items" :key="o.id" 
                  draggable="true" 
                  @dragstart="e => onDragStart(e, o)"
                  @dragend="onDragEnd"
-                 class="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all cursor-grab active:cursor-grabbing group relative overflow-hidden active:scale-[0.98]"
+                 class="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all cursor-grab active:cursor-grabbing group relative overflow-hidden active:scale-[0.98]"
                  :class="{ 'opacity-50 scale-95': draggingId === o.id }">
                  
               <!-- Decorator line on left -->
@@ -196,14 +204,14 @@ const fmtRpRp = (n: number|string|null|undefined) => {
   return `Rp ${v.toLocaleString('id-ID')}`;
 };
 
-const fmtDateShort = (iso: string) => {
+const fmtDateShort = (iso: string | null | undefined) => {
   if (!iso) return 'N/A';
   const d = new Date(iso);
   const map = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   return `${d.getDate()} ${map[d.getMonth()]}`;
 };
 
-const isPast = (iso: string) => iso && new Date(iso) < new Date();
+const isPast = (iso: string | null | undefined) => iso ? new Date(iso) < new Date() : false;
 
 const stageMeta = (stage: string) => {
   const meta: any = {
@@ -236,7 +244,8 @@ const load = async () => {
   error.value = null; success.value = null;
   try {
     const res = await api.get('/crm/opportunities', { params: q.value ? { q: q.value } : undefined });
-    opportunities.value = res.data?.opportunities ?? res.opportunities ?? [];
+    const data = res.data as any;
+    opportunities.value = data?.opportunities ?? data ?? [];
   } catch (e: any) {
     error.value = 'Gagal memuat pipeline. Silakan coba lagi.';
   } finally {
@@ -295,7 +304,7 @@ const onDrop = async (e: DragEvent, newStage: Opportunity['stage']) => {
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .animate-fade-in-up { 
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
 }

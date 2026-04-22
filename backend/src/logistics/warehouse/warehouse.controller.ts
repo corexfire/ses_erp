@@ -4,12 +4,14 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import type { FastifyRequest } from 'fastify';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import type { AuthUser } from '../../auth/auth.types';
 import { RequirePermissions } from '../../auth/permissions.decorator';
@@ -18,16 +20,49 @@ import { AuditService } from '../../audit/audit.service';
 import { PrismaService } from '../../prisma/prisma.service';
 
 export class CreateWavePickingDto {
+  @IsString()
+  @IsNotEmpty()
   warehouseId!: string;
+
+  @IsString()
+  @IsNotEmpty()
   plannedDate!: string;
+
+  @IsArray()
+  @IsString({ each: true })
   deliveryOrderIds!: string[];
+
+  @IsString()
+  @IsOptional()
   notes?: string;
 }
 
 export class CreateStagingLoadDto {
+  @IsString()
+  @IsOptional()
   waveId?: string;
+
+  @IsString()
+  @IsOptional()
   tripPlanId?: string;
+
+  @IsString()
+  @IsNotEmpty()
   warehouseId!: string;
+}
+
+export class UpdateStagingLoadDto {
+  @IsString()
+  @IsOptional()
+  waveId?: string;
+
+  @IsString()
+  @IsOptional()
+  tripPlanId?: string;
+
+  @IsString()
+  @IsOptional()
+  warehouseId?: string;
 }
 
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -219,8 +254,12 @@ export class WarehouseController {
 
     const stagings = await this.prisma.stagingLoad.findMany({
       where,
-      include: { warehouse: true },
-      orderBy: { createdAt: 'desc' },
+      include: {
+        warehouse: true,
+        tripPlan: true,
+        wavePicking: true,
+      },
+      orderBy: [{ createdAt: 'desc' }],
       take: 200,
     });
     return { stagings };
@@ -275,6 +314,40 @@ export class WarehouseController {
     return { staging: updated };
   }
 
+  @Patch('staging/:id')
+  @RequirePermissions('logistics.warehouse.execute')
+  async updateStaging(
+    @Req() req: FastifyRequest & { user: AuthUser },
+    @Param('id') id: string,
+    @Body() body: UpdateStagingLoadDto,
+  ) {
+    const staging = await this.prisma.stagingLoad.findFirst({
+      where: { id, tenantId: req.user.tenantId! },
+      select: { id: true, code: true },
+    });
+    if (!staging) throw new NotFoundException('Staging load not found');
+
+    const updated = await this.prisma.stagingLoad.update({
+      where: { id },
+      data: {
+        ...(body.waveId !== undefined && { waveId: body.waveId }),
+        ...(body.tripPlanId !== undefined && { tripPlanId: body.tripPlanId }),
+        ...(body.warehouseId !== undefined && { warehouseId: body.warehouseId }),
+      },
+    });
+
+    await this.audit.log({
+      tenantId: req.user.tenantId!,
+      actorUserId: req.user.id,
+      action: 'UPDATE',
+      entity: 'StagingLoad',
+      entityId: id,
+      metadata: { code: staging.code, ...body },
+    });
+
+    return { staging: updated };
+  }
+
   @Get('staging/:id')
   @RequirePermissions('logistics.warehouse.read')
   async getStaging(
@@ -283,7 +356,11 @@ export class WarehouseController {
   ) {
     const staging = await this.prisma.stagingLoad.findFirst({
       where: { id, tenantId: req.user.tenantId! },
-      include: { warehouse: true },
+      include: {
+        warehouse: true,
+        tripPlan: true,
+        wavePicking: true,
+      },
     });
     if (!staging) throw new NotFoundException('Staging load not found');
     return { staging };

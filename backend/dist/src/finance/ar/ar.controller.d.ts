@@ -8,6 +8,26 @@ export declare class ArController {
         user: AuthUser;
     }, status?: string): Promise<{
         invoices: ({
+            customer: {
+                id: string;
+                email: string | null;
+                tenantId: string;
+                name: string;
+                isActive: boolean;
+                createdAt: Date;
+                npwp: string | null;
+                phone: string | null;
+                address1: string | null;
+                address2: string | null;
+                city: string | null;
+                province: string | null;
+                postalCode: string | null;
+                countryCode: string | null;
+                updatedAt: Date;
+                code: string;
+                nik: string | null;
+                taxAddress: string | null;
+            };
             lines: {
                 taxCode: string | null;
                 id: string;
@@ -36,7 +56,7 @@ export declare class ArController {
             description: string | null;
             updatedAt: Date;
             status: string;
-            customerCode: string;
+            customerId: string;
             invoiceDate: Date;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             taxAmount: import("@prisma/client-runtime-utils").Decimal;
@@ -49,6 +69,26 @@ export declare class ArController {
         user: AuthUser;
     }, id: string): Promise<{
         invoice: ({
+            customer: {
+                id: string;
+                email: string | null;
+                tenantId: string;
+                name: string;
+                isActive: boolean;
+                createdAt: Date;
+                npwp: string | null;
+                phone: string | null;
+                address1: string | null;
+                address2: string | null;
+                city: string | null;
+                province: string | null;
+                postalCode: string | null;
+                countryCode: string | null;
+                updatedAt: Date;
+                code: string;
+                nik: string | null;
+                taxAddress: string | null;
+            };
             lines: {
                 taxCode: string | null;
                 id: string;
@@ -77,7 +117,7 @@ export declare class ArController {
             description: string | null;
             updatedAt: Date;
             status: string;
-            customerCode: string;
+            customerId: string;
             invoiceDate: Date;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             taxAmount: import("@prisma/client-runtime-utils").Decimal;
@@ -90,7 +130,7 @@ export declare class ArController {
         user: AuthUser;
     }, body: {
         invoiceNo: string;
-        customerCode: string;
+        customerId: string;
         invoiceDate: string;
         dueDate?: string;
         description?: string;
@@ -121,7 +161,7 @@ export declare class ArController {
             description: string | null;
             updatedAt: Date;
             status: string;
-            customerCode: string;
+            customerId: string;
             invoiceDate: Date;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             taxAmount: import("@prisma/client-runtime-utils").Decimal;
@@ -145,7 +185,7 @@ export declare class ArController {
             description: string | null;
             updatedAt: Date;
             status: string;
-            customerCode: string;
+            customerId: string;
             invoiceDate: Date;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;
             taxAmount: import("@prisma/client-runtime-utils").Decimal;
@@ -160,7 +200,7 @@ export declare class ArController {
         collection: {
             id: string;
             invoiceNo: string;
-            customerCode: string;
+            customerCode: any;
             invoiceDate: Date;
             dueDate: Date | null;
             totalAmount: import("@prisma/client-runtime-utils").Decimal;

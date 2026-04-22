@@ -5,7 +5,7 @@
       <div class="absolute right-[-40px] top-[-40px] opacity-10 transition-transform duration-700 group-hover:scale-110">
          <i class="pi pi-shield text-[220px] text-white"></i>
       </div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative z-10">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative z-10">
         <div class="space-y-3">
            <div class="flex items-center gap-2">
               <span class="px-3 py-1 bg-indigo-600 text-white text-[9px] font-black uppercase tracking-[0.2em] rounded-full shadow-lg shadow-indigo-500/20">Finance & Inventory</span>
@@ -24,7 +24,7 @@
 
     <!-- Background Processing Banner -->
     <transition name="fade">
-       <div v-if="jobActive" class="p-6 rounded-3xl bg-indigo-50 border border-indigo-100 shadow-sm flex items-center justify-between gap-6 animate-pulse">
+       <div v-if="jobActive" class="p-4 rounded-3xl bg-indigo-50 border border-indigo-100 shadow-sm flex items-center justify-between gap-4 animate-pulse">
           <div class="flex items-center gap-4">
              <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg">
                 <i class="pi pi-spin pi-spinner text-xl"></i>
@@ -44,7 +44,7 @@
     </transition>
 
     <!-- Analytics Dashboard -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
        <!-- Total Assets -->
        <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm relative overflow-hidden group">
           <div class="absolute right-0 top-0 w-32 h-32 bg-indigo-50 rounded-full blur-3xl -mr-16 -mt-16 group-hover:bg-indigo-100 transition-colors"></div>
@@ -178,7 +178,7 @@
        </div>
 
        <div class="p-10 space-y-8 max-h-[70vh] overflow-y-auto bg-slate-50/30">
-          <div class="flex items-center justify-between bg-white p-6 rounded-3xl border border-slate-100 shadow-sm group hover:border-indigo-200 transition-colors">
+          <div class="flex items-center justify-between bg-white p-4 rounded-3xl border border-slate-100 shadow-sm group hover:border-indigo-200 transition-colors">
              <div class="flex items-center gap-4 text-slate-900">
                 <div class="p-4 bg-indigo-50 rounded-2xl text-indigo-600 transition-transform group-hover:scale-110"><i class="pi pi-box scale-150"></i></div>
                 <div>

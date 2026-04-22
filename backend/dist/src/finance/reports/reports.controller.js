@@ -30,62 +30,59 @@ let ReportsController = class ReportsController {
             where: { tenantId: req.user.tenantId, isActive: true, isPosting: true },
             orderBy: { code: 'asc' },
         });
+        const priorBalancesGrouped = await this.prisma.journalEntryLine.groupBy({
+            by: ['accountCode'],
+            where: {
+                tenantId: req.user.tenantId,
+                journalEntry: { status: 'POSTED', entryDate: { lt: start } }
+            },
+            _sum: { debit: true, credit: true }
+        });
+        const priorMap = new Map(priorBalancesGrouped.map(l => [l.accountCode, l._sum]));
         const entries = await this.prisma.journalEntry.findMany({
             where: { tenantId: req.user.tenantId, status: 'POSTED', entryDate: { gte: start, lte: end } },
             select: { id: true, entryNo: true, description: true, referenceNo: true, entryDate: true },
         });
         const entryMap = new Map(entries.map(e => [e.id, e]));
         const entryIds = [...entryMap.keys()];
-        const lineWhere = { tenantId: req.user.tenantId, journalEntryId: { in: entryIds } };
-        if (accountCode)
-            lineWhere.accountCode = accountCode;
         const journalLines = await this.prisma.journalEntryLine.findMany({
-            where: lineWhere,
-            orderBy: { accountCode: 'asc' },
+            where: { tenantId: req.user.tenantId, journalEntryId: { in: entryIds }, ...(accountCode ? { accountCode } : {}) },
+            orderBy: { accountCode: 'asc' }
         });
-        const ccIds = [...new Set(journalLines
-                .filter(l => l.costCenterId != null)
-                .map(l => l.costCenterId))];
-        const costCenters = await this.prisma.costCenter.findMany({
-            where: { id: { in: ccIds } },
-            select: { id: true, code: true, name: true },
-        });
-        const ccMap = new Map(costCenters.map(c => [c.id, c]));
+        const ccIds = [...new Set(journalLines.filter(l => l.costCenterId).map(l => l.costCenterId))];
+        const ccMap = new Map((await this.prisma.costCenter.findMany({
+            where: { id: { in: ccIds } }, select: { id: true, code: true, name: true }
+        })).map(c => [c.id, c]));
         const gl = {};
+        for (const acc of accounts) {
+            if (accountCode && acc.code !== accountCode)
+                continue;
+            const sums = priorMap.get(acc.code) || { debit: 0, credit: 0 };
+            const priorDebit = Number(sums.debit || 0);
+            const priorCredit = Number(sums.credit || 0);
+            let openingBalance = 0;
+            if (['ASSET', 'EXPENSE'].includes(acc.type))
+                openingBalance = priorDebit - priorCredit;
+            else
+                openingBalance = priorCredit - priorDebit;
+            gl[acc.code] = {
+                code: acc.code,
+                name: acc.name,
+                type: acc.type,
+                openingBalance,
+                transactions: [],
+                closingBalance: openingBalance
+            };
+        }
         for (const line of journalLines) {
             const code = line.accountCode;
-            if (!gl[code]) {
-                const acc = accounts.find(a => a.code === code);
-                gl[code] = {
-                    code,
-                    name: acc?.name || code,
-                    type: acc?.type || 'UNKNOWN',
-                    openingBalance: 0,
-                    transactions: [],
-                    closingBalance: 0,
-                };
-            }
+            if (!gl[code])
+                continue;
             const debit = Number(line.debit || 0);
             const credit = Number(line.credit || 0);
-            if (gl[code].transactions.length === 0) {
-                const priorEntryIds = await this.prisma.journalEntry.findMany({
-                    where: { tenantId: req.user.tenantId, status: 'POSTED', entryDate: { lt: start } },
-                    select: { id: true },
-                });
-                const priorIds = priorEntryIds.map(e => e.id);
-                const priorLines = await this.prisma.journalEntryLine.findMany({
-                    where: { tenantId: req.user.tenantId, accountCode: code, journalEntryId: { in: priorIds } },
-                });
-                const priorDebit = priorLines.reduce((s, l) => s + Number(l.debit || 0), 0);
-                const priorCredit = priorLines.reduce((s, l) => s + Number(l.credit || 0), 0);
-                const accType = gl[code].type;
-                gl[code].openingBalance = accType === 'ASSET' || accType === 'EXPENSE'
-                    ? priorDebit - priorCredit
-                    : priorCredit - priorDebit;
-            }
             const accType = gl[code].type;
-            const change = accType === 'ASSET' || accType === 'EXPENSE' ? debit - credit : credit - debit;
-            gl[code].closingBalance = gl[code].openingBalance + change;
+            const change = ['ASSET', 'EXPENSE'].includes(accType) ? debit - credit : credit - debit;
+            gl[code].closingBalance += change;
             const entry = entryMap.get(line.journalEntryId);
             const cc = line.costCenterId ? ccMap.get(line.costCenterId) : null;
             gl[code].transactions.push({
@@ -98,51 +95,45 @@ let ReportsController = class ReportsController {
                 credit,
                 balance: gl[code].closingBalance,
             });
-            gl[code].openingBalance = gl[code].closingBalance;
         }
-        return { generalLedger: Object.values(gl), startDate: start.toISOString().slice(0, 10), endDate: end.toISOString().slice(0, 10) };
+        return { generalLedger: Object.values(gl).filter((acc) => acc.transactions.length > 0 || acc.openingBalance !== 0), startDate: start.toISOString().slice(0, 10), endDate: end.toISOString().slice(0, 10) };
     }
     async balanceSheet(req, asOfDate) {
         const endDate = asOfDate ? new Date(asOfDate + 'T23:59:59.999') : new Date();
         const accounts = await this.prisma.coaAccount.findMany({
-            where: { tenantId: req.user.tenantId, isActive: true, isPosting: true },
+            where: { tenantId: req.user.tenantId, isActive: true, isPosting: true, type: { in: ['ASSET', 'LIABILITY', 'EQUITY'] } },
             orderBy: { code: 'asc' },
         });
-        const ledgers = await this.prisma.stockLedger.findMany({
-            where: {
-                tenantId: req.user.tenantId,
-                postingDate: { lte: endDate },
-            },
-        });
-        const journalLines = await this.prisma.journalEntryLine.findMany({
+        const targetCodes = accounts.map(a => a.code);
+        const linesGrouped = await this.prisma.journalEntryLine.groupBy({
+            by: ['accountCode'],
             where: {
                 tenantId: req.user.tenantId,
                 journalEntry: { status: 'POSTED', entryDate: { lte: endDate } },
+                accountCode: { in: targetCodes }
             },
+            _sum: { debit: true, credit: true }
         });
+        const linesMap = new Map(linesGrouped.map(l => [l.accountCode, l._sum]));
         const balanceSheet = { assets: [], liabilities: [], equity: [] };
         let totalAssets = 0, totalLiabilities = 0, totalEquity = 0;
         for (const acc of accounts) {
-            const debit = journalLines.filter(l => l.accountCode === acc.code).reduce((sum, l) => sum + Number(l.debit), 0);
-            const credit = journalLines.filter(l => l.accountCode === acc.code).reduce((sum, l) => sum + Number(l.credit), 0);
+            const sums = linesMap.get(acc.code) || { debit: 0, credit: 0 };
+            const debit = Number(sums.debit || 0);
+            const credit = Number(sums.credit || 0);
             let balance = 0;
-            if (acc.type === 'ASSET')
-                balance = debit - credit;
-            else if (acc.type === 'LIABILITY' || acc.type === 'EQUITY')
-                balance = credit - debit;
-            else if (acc.type === 'INCOME')
-                balance = credit - debit;
-            else if (acc.type === 'EXPENSE')
-                balance = debit - credit;
             if (acc.type === 'ASSET') {
+                balance = debit - credit;
                 totalAssets += balance;
                 balanceSheet.assets.push({ code: acc.code, name: acc.name, balance });
             }
             else if (acc.type === 'LIABILITY') {
+                balance = credit - debit;
                 totalLiabilities += balance;
                 balanceSheet.liabilities.push({ code: acc.code, name: acc.name, balance });
             }
             else if (acc.type === 'EQUITY') {
+                balance = credit - debit;
                 totalEquity += balance;
                 balanceSheet.equity.push({ code: acc.code, name: acc.name, balance });
             }
@@ -150,35 +141,45 @@ let ReportsController = class ReportsController {
         balanceSheet.totalAssets = totalAssets;
         balanceSheet.totalLiabilities = totalLiabilities;
         balanceSheet.totalEquity = totalEquity;
-        balanceSheet.check = totalAssets === totalLiabilities + totalEquity;
+        balanceSheet.check = Math.abs(totalAssets - (totalLiabilities + totalEquity)) < 0.01;
         return { balanceSheet, asOfDate: endDate.toISOString().slice(0, 10) };
     }
     async profitLoss(req, startDate, endDate) {
         const start = startDate ? new Date(startDate + 'T00:00:00.000') : new Date(new Date().getFullYear(), 0, 1);
         const end = endDate ? new Date(endDate + 'T23:59:59.999') : new Date();
         const accounts = await this.prisma.coaAccount.findMany({
-            where: { tenantId: req.user.tenantId, isActive: true, isPosting: true },
+            where: { tenantId: req.user.tenantId, isActive: true, isPosting: true, type: { in: ['INCOME', 'EXPENSE'] } },
             orderBy: { code: 'asc' },
         });
-        const journalLines = await this.prisma.journalEntryLine.findMany({
+        const targetCodes = accounts.map(a => a.code);
+        const linesGrouped = await this.prisma.journalEntryLine.groupBy({
+            by: ['accountCode'],
             where: {
                 tenantId: req.user.tenantId,
                 journalEntry: { status: 'POSTED', entryDate: { gte: start, lte: end } },
+                accountCode: { in: targetCodes }
             },
+            _sum: { debit: true, credit: true }
         });
+        const linesMap = new Map(linesGrouped.map(l => [l.accountCode, l._sum]));
         const pl = { income: [], expenses: [], totalIncome: 0, totalExpenses: 0, netProfit: 0 };
         for (const acc of accounts) {
-            const debit = journalLines.filter(l => l.accountCode === acc.code).reduce((sum, l) => sum + Number(l.debit), 0);
-            const credit = journalLines.filter(l => l.accountCode === acc.code).reduce((sum, l) => sum + Number(l.credit), 0);
+            const sums = linesMap.get(acc.code) || { debit: 0, credit: 0 };
+            const debit = Number(sums.debit || 0);
+            const credit = Number(sums.credit || 0);
             if (acc.type === 'INCOME') {
                 const amount = credit - debit;
-                pl.income.push({ code: acc.code, name: acc.name, amount });
-                pl.totalIncome += amount;
+                if (amount !== 0) {
+                    pl.income.push({ code: acc.code, name: acc.name, amount });
+                    pl.totalIncome += amount;
+                }
             }
             else if (acc.type === 'EXPENSE') {
                 const amount = debit - credit;
-                pl.expenses.push({ code: acc.code, name: acc.name, amount });
-                pl.totalExpenses += amount;
+                if (amount !== 0) {
+                    pl.expenses.push({ code: acc.code, name: acc.name, amount });
+                    pl.totalExpenses += amount;
+                }
             }
         }
         pl.netProfit = pl.totalIncome - pl.totalExpenses;
@@ -186,24 +187,26 @@ let ReportsController = class ReportsController {
         return { profitLoss: pl, startDate: start.toISOString().slice(0, 10), endDate: end.toISOString().slice(0, 10) };
     }
     async trialBalance(req, asOfDate) {
-        const endDate = asOfDate
-            ? new Date(asOfDate + 'T23:59:59.999')
-            : new Date();
+        const endDate = asOfDate ? new Date(asOfDate + 'T23:59:59.999') : new Date();
         const accounts = await this.prisma.coaAccount.findMany({
             where: { tenantId: req.user.tenantId, isActive: true, isPosting: true },
             orderBy: { code: 'asc' },
         });
-        const journalLines = await this.prisma.journalEntryLine.findMany({
+        const linesGrouped = await this.prisma.journalEntryLine.groupBy({
+            by: ['accountCode'],
             where: {
                 tenantId: req.user.tenantId,
-                journalEntry: { status: 'POSTED', entryDate: { lte: endDate } },
+                journalEntry: { status: 'POSTED', entryDate: { lte: endDate } }
             },
+            _sum: { debit: true, credit: true }
         });
+        const linesMap = new Map(linesGrouped.map(l => [l.accountCode, l._sum]));
         const trialBalance = [];
         let totalDebit = 0, totalCredit = 0;
         for (const acc of accounts) {
-            const debit = journalLines.filter(l => l.accountCode === acc.code).reduce((sum, l) => sum + Number(l.debit), 0);
-            const credit = journalLines.filter(l => l.accountCode === acc.code).reduce((sum, l) => sum + Number(l.credit), 0);
+            const sums = linesMap.get(acc.code) || { debit: 0, credit: 0 };
+            const debit = Number(sums.debit || 0);
+            const credit = Number(sums.credit || 0);
             if (debit !== 0 || credit !== 0) {
                 let balance = 0;
                 if (['ASSET', 'EXPENSE'].includes(acc.type))
@@ -223,21 +226,19 @@ let ReportsController = class ReportsController {
         if (!type || type === 'AR') {
             const invoices = await this.prisma.customerInvoice.findMany({
                 where: { tenantId: req.user.tenantId, status: { in: ['OPEN', 'OVERDUE'] } },
+                include: { customer: true }
             });
-            const customers = await this.prisma.customer.findMany({
-                where: { tenantId: req.user.tenantId },
-            });
-            const customerMap = new Map(customers.map(c => [c.code, c]));
             for (const inv of invoices) {
                 const dueDate = inv.dueDate || new Date(inv.invoiceDate);
                 const daysOverdue = Math.floor((endDate.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24));
                 if (daysOverdue <= 0)
                     continue;
-                const customer = customerMap.get(inv.customerCode);
+                const customer = inv.customer;
                 agingData.push({
                     type: 'AR',
-                    customerCode: inv.customerCode,
+                    customerId: inv.customerId,
                     customerName: customer?.name || '',
+                    customerCode: customer?.code || '',
                     invoiceNo: inv.invoiceNo,
                     dueDate: inv.dueDate,
                     amount: inv.totalAmount,
@@ -249,21 +250,19 @@ let ReportsController = class ReportsController {
         if (!type || type === 'AP') {
             const invoices = await this.prisma.supplierInvoice.findMany({
                 where: { tenantId: req.user.tenantId, status: { in: ['OPEN', 'OVERDUE'] } },
+                include: { supplier: true }
             });
-            const suppliers = await this.prisma.supplier.findMany({
-                where: { tenantId: req.user.tenantId },
-            });
-            const supplierMap = new Map(suppliers.map(s => [s.code, s]));
             for (const inv of invoices) {
                 const dueDate = inv.dueDate || new Date(inv.invoiceDate);
                 const daysOverdue = Math.floor((endDate.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24));
                 if (daysOverdue <= 0)
                     continue;
-                const supplier = supplierMap.get(inv.supplierCode);
+                const supplier = inv.supplier;
                 agingData.push({
                     type: 'AP',
-                    supplierCode: inv.supplierCode,
+                    supplierId: inv.supplierId,
                     supplierName: supplier?.name || '',
+                    supplierCode: supplier?.code || '',
                     invoiceNo: inv.invoiceNo,
                     dueDate: inv.dueDate,
                     amount: inv.totalAmount,

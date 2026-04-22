@@ -3,7 +3,7 @@
     <!-- Header (Premium Satellite Logistics Mapping Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-fuchsia-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-fuchsia-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-fuchsia-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-fuchsia-100">Satellite Logistics Map</span>
@@ -20,8 +20,8 @@
     </div>
 
     <!-- Dynamic Logistics Telemetry KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-fuchsia-400 tracking-[0.2em] mb-4 opacity-80">Total SKU Tersebar</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ Array.from(new Set(balances.map(b => b.item?.id))).length }}</h3>
@@ -31,7 +31,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-fuchsia-600 tracking-[0.2em] mb-4">Zona Aktif (Titik MAP)</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-fuchsia-700 tracking-tighter leading-none">{{ Array.from(new Set(balances.map(b => b.binLocation?.id))).length }}</h3>
@@ -39,7 +39,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Populasi Unit Global</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl font-black text-indigo-700 tracking-tight leading-none">{{ balances.reduce((a, b) => a + b.qtyOnHand, 0).toLocaleString('id-ID') }} <span class="text-[10px] text-slate-400 uppercase">Unit</span></h3>
@@ -47,7 +47,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-gradient-to-br from-fuchsia-600 to-purple-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-gradient-to-br from-fuchsia-600 to-purple-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-fuchsia-100 tracking-[0.2em] mb-4 opacity-80">Indeks Akurasi MAP</div>
         <div class="flex items-end justify-between">
@@ -58,7 +58,7 @@
     </div>
 
     <!-- Satellite Hierarchy & Stock Ledger Architecture -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
        <!-- Node Selector Tree (Satellite Hierarki) -->
        <div class="lg:col-span-3 rounded-[2.5rem] border border-slate-200 bg-white shadow-sm flex flex-col overflow-hidden animate-fade-in-up">
           <div class="p-8 bg-slate-50 border-b border-slate-100 relative">
@@ -70,7 +70,7 @@
                 <input type="text" placeholder="Temukan Titik Cabang..." class="w-full pl-10 pr-4 h-12 text-[11px] font-black uppercase tracking-widest border-none rounded-2xl bg-white shadow-inner outline-none focus:ring-4 focus:ring-fuchsia-400 transition-all placeholder-slate-300" />
              </div>
           </div>
-          <div class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-2">
+          <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
              <!-- Tree Node (Pusat) -->
              <div class="group/node">
                 <div class="flex items-center justify-between p-4 bg-slate-50/50 hover:bg-fuchsia-50 rounded-2xl cursor-pointer transition-all border border-transparent hover:border-fuchsia-100 shadow-sm" @click="toggleWh('W1')">
@@ -116,7 +116,7 @@
                 </div>
              </div>
           </div>
-          <div class="p-6 border-t bg-slate-50">
+          <div class="p-4 border-t bg-slate-50">
              <Button label="Reset Global View" severity="secondary" text @click="activeBin = 'ALL'" class="w-full h-12 rounded-2xl text-[10px] font-black uppercase tracking-widest" />
           </div>
        </div>
@@ -126,7 +126,7 @@
           <div class="p-10 border-b bg-slate-50/50 flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden">
              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-fuchsia-100/30 rounded-full blur-3xl"></div>
              
-             <div class="relative flex items-center gap-6">
+             <div class="relative flex items-center gap-4">
                 <div class="w-16 h-16 rounded-[1.5rem] bg-fuchsia-600 flex items-center justify-center text-white shadow-xl shadow-fuchsia-100 rotate-3 transition-transform hover:rotate-0">
                    <i class="pi pi-sitemap text-3xl"></i>
                 </div>
@@ -234,7 +234,7 @@
         <!-- Workspace Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden text-slate-900">
           <div class="absolute top-0 right-0 w-64 h-64 bg-fuchsia-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-fuchsia-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-check-square text-3xl font-black"></i>
             </div>
@@ -266,7 +266,7 @@
                     <div class="space-y-6 relative z-10">
                        <div class="flex flex-col gap-2">
                           <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Material Analisis</label>
-                          <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 shadow-inner">
+                          <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 shadow-inner">
                              <div class="text-lg font-black text-slate-800 tracking-tight leading-none uppercase italic mb-2">{{ auditDoc?.item?.name || 'Pilih Produk di Map...' }}</div>
                              <div class="text-[10px] font-black font-mono text-fuchsia-600 bg-white border border-fuchsia-100 px-2 py-0.5 rounded shadow-sm w-fit uppercase">{{ auditDoc?.item?.code || 'NOMOR SKU' }}</div>
                           </div>
@@ -274,7 +274,7 @@
 
                        <div class="flex flex-col gap-2">
                           <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Lokasi Node (Rak)</label>
-                          <div class="bg-indigo-900 rounded-2xl p-6 border border-indigo-800 shadow-2xl relative overflow-hidden group/bin">
+                          <div class="bg-indigo-900 rounded-2xl p-4 border border-indigo-800 shadow-2xl relative overflow-hidden group/bin">
                              <i class="pi pi-map-marker absolute right-4 top-1/2 -translate-y-1/2 text-4xl text-white opacity-10 transition-transform group-hover/bin:rotate-12"></i>
                              <div class="text-xs font-black text-indigo-300 uppercase tracking-[0.2em] mb-1">Lorong Database</div>
                              <div class="text-3xl font-black text-white font-mono tracking-tighter">{{ auditDoc?.binLocation?.code || 'ZONA BEBAS' }}</div>
@@ -349,7 +349,7 @@
                     <div class="flex-1 p-10">
                        <div class="space-y-4">
                           <label class="text-[10px] font-black text-indigo-300 uppercase tracking-widest px-1">Alasan Penyesuaian (Notes)</label>
-                          <textarea v-model="auditForm.reason" rows="8" class="w-full rounded-2xl border-none bg-white/5 p-6 text-[12px] font-medium text-white shadow-inner focus:ring-4 focus:ring-fuchsia-400 transition-all placeholder-indigo-800 outline-none" placeholder="Barang ditemukan terselip di Rak B2, cacat bungkusan, dll..."></textarea>
+                          <textarea v-model="auditForm.reason" rows="8" class="w-full rounded-2xl border-none bg-white/5 p-4 text-[12px] font-medium text-white shadow-inner focus:ring-4 focus:ring-fuchsia-400 transition-all placeholder-indigo-800 outline-none" placeholder="Barang ditemukan terselip di Rak B2, cacat bungkusan, dll..."></textarea>
                        </div>
                     </div>
 

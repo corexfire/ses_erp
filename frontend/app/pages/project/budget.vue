@@ -187,11 +187,11 @@ onMounted(fetchData);
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900 font-sans p-8">
     <!-- Premium Header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-10 mb-10 rounded-xl bg-indigo-950 border border-white/10 shadow-2xl">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-10 mb-10 rounded-xl bg-indigo-950 border border-white/10 shadow-2xl">
       <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500 rounded-full blur-[100px] opacity-20 -mr-32 -mt-32"></div>
       <div class="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500 rounded-full blur-[80px] opacity-10 -ml-20 -mb-20"></div>
       
-      <div class="relative flex items-center gap-6">
+      <div class="relative flex items-center gap-4">
         <div class="w-20 h-20 rounded-3xl bg-white/5 backdrop-blur-xl flex items-center justify-center shadow-inner border border-white/10 shrink-0">
           <i class="pi pi-chart-bar text-white text-4xl"></i>
         </div>
@@ -215,7 +215,7 @@ onMounted(fetchData);
     <!-- Stats Ribbon -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
        <div v-for="s in stats" :key="s.label" class="group p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-          <div class="absolute top-0 right-0 p-6 opacity-5 transition-opacity group-hover:opacity-10 translate-x-4 -translate-y-4">
+          <div class="absolute top-0 right-0 p-4 opacity-5 transition-opacity group-hover:opacity-10 translate-x-4 -translate-y-4">
              <i :class="[s.icon, 'text-9xl', `text-${s.color}-600`]"></i>
           </div>
           <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ s.label }}</p>
@@ -316,7 +316,7 @@ onMounted(fetchData);
                 </div>
                 <div class="md:col-span-2 flex flex-col gap-3">
                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Konteks Strategis / Catatan</label>
-                   <Textarea v-model="form.description" rows="3" placeholder="Deskripsikan tujuan perencanaan anggaran ini..." class="w-full rounded-3xl border-slate-200 p-6" />
+                   <Textarea v-model="form.description" rows="3" placeholder="Deskripsikan tujuan perencanaan anggaran ini..." class="w-full rounded-3xl border-slate-200 p-4" />
                 </div>
              </div>
           </div>
@@ -340,7 +340,7 @@ onMounted(fetchData);
                       <Button icon="pi pi-times" severity="danger" rounded text size="small" @click="removeLine(idx)" />
                    </div>
                    
-                   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div class="md:col-span-2 flex flex-col gap-2">
                          <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Item / Deskripsi Pekerjaan</label>
                          <InputText v-model="line.description" placeholder="Contoh: Pekerjaan Tanah & Galian" class="w-full rounded-xl border-slate-100 text-sm font-bold" />
@@ -398,7 +398,7 @@ onMounted(fetchData);
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
   height: 5px;

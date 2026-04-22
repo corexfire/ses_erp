@@ -15,14 +15,9 @@ export declare class WarehousesController {
     }, q?: string): Promise<{
         warehouses: ({
             _count: {
-                zones: number;
                 binLocations: number;
+                zones: number;
             };
-            manager: {
-                id: string;
-                email: string;
-                name: string | null;
-            } | null;
             binLocations: {
                 id: string;
                 tenantId: string;
@@ -35,6 +30,11 @@ export declare class WarehousesController {
                 warehouseId: string;
                 zoneId: string | null;
             }[];
+            manager: {
+                id: string;
+                email: string;
+                name: string | null;
+            } | null;
         } & {
             id: string;
             tenantId: string;
@@ -57,6 +57,18 @@ export declare class WarehousesController {
         user: AuthUser;
     }, id: string): Promise<{
         warehouse: {
+            binLocations: {
+                id: string;
+                tenantId: string;
+                name: string | null;
+                isActive: boolean;
+                createdAt: Date;
+                updatedAt: Date;
+                code: string;
+                type: import("prisma/generated").$Enums.BinType;
+                warehouseId: string;
+                zoneId: string | null;
+            }[];
             manager: {
                 id: string;
                 email: string;
@@ -86,18 +98,6 @@ export declare class WarehousesController {
                 code: string;
                 warehouseId: string;
             })[];
-            binLocations: {
-                id: string;
-                tenantId: string;
-                name: string | null;
-                isActive: boolean;
-                createdAt: Date;
-                updatedAt: Date;
-                code: string;
-                type: import("prisma/generated").$Enums.BinType;
-                warehouseId: string;
-                zoneId: string | null;
-            }[];
         } & {
             id: string;
             tenantId: string;

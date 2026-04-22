@@ -8,7 +8,7 @@
       <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-fuchsia-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-fuchsia-100/50"></div>
       
       <div class="relative">
@@ -32,8 +32,8 @@
     </div>
 
     <!-- Variance Analytics Board (KPI Cards) -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mx-6">
-        <div class="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50 text-slate-900 shadow-none border-none">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mx-6">
+        <div class="bg-white rounded-[2rem] border border-slate-200 p-4 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50 text-slate-900 shadow-none border-none">
            <div class="flex justify-between items-center text-slate-900 border-none">
               <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">Budget Pos Induk</div>
               <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center shadow-sm"><i class="pi pi-briefcase"></i></div>
@@ -41,13 +41,13 @@
            <div class="mt-4 text-2xl font-black text-slate-800 tabular-nums tracking-tighter">{{ budgets.length }} Active Lines</div>
         </div>
 
-        <div class="bg-slate-900 rounded-[2rem] p-6 shadow-xl relative overflow-hidden group transition-all hover:translate-y-[-5px] text-slate-900 shadow-none border-none">
+        <div class="bg-slate-900 rounded-[2rem] p-4 shadow-xl relative overflow-hidden group transition-all hover:translate-y-[-5px] text-slate-900 shadow-none border-none">
            <div class="absolute right-[-20px] top-[-20px] opacity-10 group-hover:scale-125 transition-transform duration-700 text-fuchsia-500"><i class="pi pi-calculator text-[120px]"></i></div>
            <div class="text-[9px] font-black text-fuchsia-400 uppercase tracking-widest mb-1 relative z-10 italic">Total Pagu Disetujui</div>
            <div class="text-xl font-black text-white tabular-nums tracking-tighter relative z-10">{{ formatRupiah(totalBudget) }}</div>
         </div>
 
-        <div class="bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50 text-slate-900 shadow-none border-none">
+        <div class="bg-white rounded-[2rem] border border-slate-200 p-4 shadow-sm flex flex-col justify-between group transition-all hover:bg-slate-50 text-slate-900 shadow-none border-none">
            <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Realisasi (Spent)</div>
            <div class="text-xl font-black text-indigo-600 tabular-nums tracking-tighter">{{ formatRupiah(totalSpent) }}</div>
            <div class="mt-3 flex items-center gap-2">
@@ -58,7 +58,7 @@
            </div>
         </div>
 
-        <div class="bg-emerald-50 border border-emerald-100 rounded-[2rem] p-6 shadow-sm flex flex-col justify-between group transition-all hover:bg-emerald-100 text-slate-900 shadow-none border-none">
+        <div class="bg-emerald-50 border border-emerald-100 rounded-[2rem] p-4 shadow-sm flex flex-col justify-between group transition-all hover:bg-emerald-100 text-slate-900 shadow-none border-none">
            <div class="text-[9px] font-black text-emerald-700 uppercase tracking-widest mb-1 italic">Total Variance Sisa</div>
            <div class="text-xl font-black text-emerald-800 tabular-nums tracking-tighter">{{ formatRupiah(totalBudget - totalSpent) }}</div>
            <p class="text-[8px] font-bold text-emerald-600 uppercase mt-2 opacity-60">Balance Available To Use</p>
@@ -69,7 +69,7 @@
     <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up uppercase tracking-tighter border-none shadow-none text-slate-900">
       
       <!-- Ledger Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden text-slate-900">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden text-slate-900">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-fuchsia-200/10 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -187,12 +187,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ CREATE BUDGET DIALOG (Non-Dismissible) ══════════════════════════════════ -->
-    <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
+    <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
       <div class="relative w-full max-w-lg bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white border-b-[12px] border-b-fuchsia-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-fuchsia-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6 text-slate-900 border-none shadow-none">
+          <div class="relative flex items-center gap-4 text-slate-900 border-none shadow-none">
             <div class="w-16 h-16 rounded-[1.5rem] bg-fuchsia-700 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-fuchsia-200">
                <i class="pi pi-calculator text-3xl font-black"></i>
             </div>
@@ -263,7 +263,7 @@ const canManage = computed(() => auth.hasPermission('finance.budget.create') || 
 const filterYear = ref(new Date().getFullYear().toString());
 const search = ref('');
 const loading = ref(false);
-
+const fetchError = ref<string | null>(null);
 const budgets = ref<any[]>([]);
 
 const showDialog = ref(false);
@@ -334,16 +334,26 @@ const formatRupiah = (val: number | string) => {
 
 const load = async () => {
   loading.value = true;
+  fetchError.value = null;
   try {
     const params = filterYear.value ? `?fiscalYear=${filterYear.value}` : '';
     const res = await api.get(`/finance/budget${params}`);
     
-    // Safe Extraction
-    const payload: any = res.data || res;
-    budgets.value = payload?.budgets || [];
+    // Support various response structures (Axios, direct fetch, or nested budgets)
+    const raw: any = res.data || res;
+    if (raw && typeof raw === 'object') {
+      budgets.value = raw.budgets || (Array.isArray(raw) ? raw : []);
+    } else {
+      budgets.value = [];
+    }
 
-  } catch (e) {
+    if (budgets.value.length === 0 && filterYear.value === '2026') {
+       console.log('No data found for 2026, checking consistency...');
+    }
+
+  } catch (e: any) {
     console.warn('Failed loading budget plans', e);
+    fetchError.value = e.response?.data?.message || e.message || 'Unknown network error';
   } finally {
     loading.value = false;
   }

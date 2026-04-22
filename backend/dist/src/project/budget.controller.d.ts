@@ -76,9 +76,9 @@ export declare class ProjectBudgetController {
                 endDate: Date | null;
                 status: string;
                 actualCost: import("@prisma/client-runtime-utils").Decimal | null;
+                projectId: string;
                 teamId: string | null;
                 level: number;
-                projectId: string;
                 taskCode: string;
                 taskName: string;
                 parentTaskId: string | null;

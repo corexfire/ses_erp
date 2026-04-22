@@ -61,8 +61,9 @@ export class SupportBiController {
       })
     ]);
 
-    // Current period (latest)
-    const activeKpis = kpis.filter(k => k.period === '2024-Q4' || k.period === '2024-M4');
+    // Dynamically determine the latest period available in the database
+    const latestPeriod = kpis.length > 0 ? kpis[0].period : null;
+    const activeKpis = latestPeriod ? kpis.filter(k => k.period === latestPeriod) : [];
 
     return {
       summary: {

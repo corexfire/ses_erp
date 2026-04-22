@@ -137,7 +137,7 @@ onMounted(fetchData);
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900 font-sans p-8">
     <!-- Premium Header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-12 mb-10 rounded-[3.5rem] bg-indigo-950 border border-white/10 shadow-2xl">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-12 mb-10 rounded-[3.5rem] bg-indigo-950 border border-white/10 shadow-2xl">
       <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500 rounded-full blur-[120px] opacity-20 -mr-64 -mt-64"></div>
       <div class="absolute bottom-0 left-0 w-80 h-80 bg-emerald-500 rounded-full blur-[100px] opacity-10 -ml-32 -mb-32"></div>
       
@@ -287,7 +287,7 @@ onMounted(fetchData);
                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-10 bg-white border border-slate-100 rounded-xl shadow-sm">
                       <div class="md:col-span-2 flex flex-col gap-3">
                          <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Full Address</label>
-                         <Textarea v-model="form.address" rows="2" placeholder="Street, Industrial Area, etc..." class="w-full rounded-2xl border-slate-100 p-6" />
+                         <Textarea v-model="form.address" rows="2" placeholder="Street, Industrial Area, etc..." class="w-full rounded-2xl border-slate-100 p-4" />
                       </div>
                       <div class="flex flex-col gap-3">
                          <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">City / Regency</label>
@@ -375,7 +375,7 @@ onMounted(fetchData);
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .custom-scrollbar::-webkit-scrollbar {
   width: 5px;
 }

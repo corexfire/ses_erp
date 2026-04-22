@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-orange-500 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-orange-500 relative overflow-hidden">
       <div class="absolute right-[-12px] top-[-12px] opacity-5 pointer-events-none">
         <i class="pi pi-calendar text-[150px] text-orange-900"></i>
       </div>
@@ -164,7 +164,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="formDialog = false">✕</button>
         </div>
 
-        <div class="p-6 space-y-5">
+        <div class="p-4 space-y-5">
           <!-- Preview timeline -->
           <div class="rounded-xl border border-orange-200 bg-orange-50 p-4">
             <div class="text-[10px] font-black text-orange-700 uppercase tracking-widest mb-2">Preview Jadwal</div>

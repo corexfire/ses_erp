@@ -3,7 +3,7 @@
     <!-- Header (Premium Landed Cost Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-slate-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-indigo-400">Valuation Core</span>
@@ -21,8 +21,8 @@
     </div>
 
     <!-- Dynamic Valuation KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-black group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-indigo-400 tracking-[0.2em] mb-4 opacity-80">Total Kapitalisasi Biaya</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl font-black text-white tracking-widest leading-none">IDR <span class="text-5xl tracking-tighter">{{ formatCurrency(lcs.reduce((acc, x) => acc + x.totalAmount, 0)) }}</span></h3>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Dokumen LCV Aktif</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-700 tracking-tighter leading-none">{{ lcs.filter(x => x.status === 'APPROVED').length }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Rata-rata Beban Unit</div>
         <div class="flex flex-col items-start gap-1">
           <h3 class="text-3xl font-black text-amber-700 tracking-tighter leading-none">IDR 5.250<span class="text-base text-amber-300 ml-1">/ Unit</span></h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl group-hover:bg-emerald-500/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Barang Tervaluasi</div>
         <div class="flex items-end justify-between">
@@ -61,7 +61,7 @@
     <!-- Capitalization Ledger (Premium Grid) -->
     <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
       <!-- Controls Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -169,7 +169,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-indigo-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-chart-line text-3xl font-black"></i>
             </div>
@@ -249,7 +249,7 @@
 
                     <div class="space-y-4">
                        <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest px-1">Catatan Jurnal LCV</label>
-                       <textarea v-if="!isReadonly" v-model="form.notes" rows="1" class="w-full rounded-2xl border-none p-6 text-[12px] font-black bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-indigo-400 transition-all italic text-slate-600 uppercase" placeholder="KETERANGAN KAPITALISASI..."></textarea>
+                       <textarea v-if="!isReadonly" v-model="form.notes" rows="1" class="w-full rounded-2xl border-none p-4 text-[12px] font-black bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-indigo-400 transition-all italic text-slate-600 uppercase" placeholder="KETERANGAN KAPITALISASI..."></textarea>
                        <div v-else class="p-4 bg-slate-50 rounded-2xl font-black text-[11px] text-slate-500 italic border-2 border-slate-100 uppercase leading-relaxed">{{ activeLc?.notes || 'NO JOURNAL NARRATIVE.' }}</div>
                     </div>
                  </div>
@@ -314,7 +314,7 @@
               </div>
 
               <!-- Educational Message -->
-              <div class="bg-indigo-600 p-8 rounded-[2.5rem] shadow-2xl shadow-indigo-100 flex items-start gap-6 relative overflow-hidden group">
+              <div class="bg-indigo-600 p-8 rounded-[2.5rem] shadow-2xl shadow-indigo-100 flex items-start gap-4 relative overflow-hidden group">
                  <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
                  <div class="w-16 h-16 rounded-[1.2rem] bg-white/10 flex items-center justify-center text-white shrink-0 shadow-lg border border-white/20">
                     <i class="pi pi-info-circle text-2xl font-black"></i>

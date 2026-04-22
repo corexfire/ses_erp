@@ -8,7 +8,7 @@
       <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-rose-100/50"></div>
       
       <div class="relative">
@@ -147,12 +147,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ INITIALIZE YEAR DIALOG ══════════════════════════════════ -->
-    <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all border-none text-slate-900 shadow-none">
+    <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all border-none text-slate-900 shadow-none">
       <div class="relative w-full max-w-md bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white border-b-[12px] border-b-rose-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6 text-slate-900 border-none shadow-none">
+          <div class="relative flex items-center gap-4 text-slate-900 border-none shadow-none">
             <div class="w-16 h-16 rounded-[1.5rem] bg-rose-700 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-rose-200">
                <i class="pi pi-flag text-3xl font-black"></i>
             </div>
@@ -190,7 +190,7 @@
               </div>
            </div>
 
-           <div class="p-6 bg-blue-50/50 rounded-[2rem] border border-blue-100 flex items-start gap-4">
+           <div class="p-4 bg-blue-50/50 rounded-[2rem] border border-blue-100 flex items-start gap-4">
               <i class="pi pi-info-circle text-blue-600 mt-1"></i>
               <div class="text-[9px] font-bold text-blue-800 uppercase leading-relaxed italic opacity-80">Sistem akan secara otomatis menghasilkan 12 periode bulanan berdasarkan rincian tanggal di atas. Data ini bersifat krusial bagi audit pabrik.</div>
            </div>
@@ -205,7 +205,7 @@
     </div>
 
     <!-- ═══════════════════════════════════ AUDIT CHECKLIST DIALOG ══════════════════════════════════ -->
-    <div v-if="checklistDialog" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none shadow-none">
+    <div v-if="checklistDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none shadow-none">
       <div class="relative w-full max-w-md bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white border-b-[12px] border-b-rose-900">
         <!-- Header -->
         <div class="p-8 border-b border-slate-100 bg-rose-50 flex justify-between items-center relative overflow-hidden text-slate-900 border-none shadow-none">
@@ -223,7 +223,7 @@
         </div>
 
         <div class="p-8 space-y-8 bg-white text-slate-900 border-none shadow-none">
-           <div class="p-6 bg-slate-900 text-white rounded-[2rem] relative overflow-hidden group">
+           <div class="p-4 bg-slate-900 text-white rounded-[2rem] relative overflow-hidden group">
               <div class="absolute right-[-10px] top-[-10px] opacity-10 group-hover:scale-110 transition-transform"><i class="pi pi-lock text-5xl"></i></div>
               <div class="text-[8px] font-black text-rose-400 uppercase tracking-widest mb-2 leading-none">Objek Terminasi</div>
               <div class="text-[11px] font-black uppercase tracking-tight line-clamp-1 group-hover:text-rose-300 transition-colors italic">{{ activeChecklistObj?.name || 'Periode Bulanan' }}</div>

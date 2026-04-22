@@ -8,7 +8,7 @@
       <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-purple-100/50"></div>
       
       <div class="relative">
@@ -35,7 +35,7 @@
     <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up">
       
       <!-- Ledger Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-purple-200/10 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -54,7 +54,7 @@
 
           <select v-model="filterSupplier" class="h-11 rounded-2xl border-slate-200 px-4 text-[9px] font-black uppercase tracking-widest text-slate-600 focus:border-purple-500 outline-none bg-white shadow-sm transition-all">
             <option value="">Semua Supplier</option>
-            <option v-for="s in suppliers" :key="s.code" :value="s.code">{{ s.name }}</option>
+            <option v-for="s in suppliers" :key="s.id" :value="s.id">{{ s.name }}</option>
           </select>
 
           <select v-model="filterStatus" class="h-11 rounded-2xl border-slate-200 px-4 text-[9px] font-black uppercase tracking-widest text-slate-600 focus:border-purple-500 outline-none bg-white shadow-sm transition-all" @change="load">
@@ -90,7 +90,7 @@
               </td>
             </tr>
             
-            <tr v-for="pay in filteredData" v-else :key="pay.id" class="transition-all hover:bg-purple-50/20 group border-l-4 border-l-transparent hover:border-l-purple-400">
+            <tr v-for="pay in filteredData" :key="pay.id" class="transition-all hover:bg-purple-50/20 group border-l-4 border-l-transparent hover:border-l-purple-400">
               <td class="px-8 py-6 align-middle">
                 <div class="flex items-center gap-4">
                    <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
@@ -112,7 +112,7 @@
               </td>
               
               <td class="px-6 py-6 align-middle border-l border-slate-50">
-                 <div class="font-black text-[11px] text-slate-900 group-hover:text-purple-700 transition-colors">{{ getSupplierName(pay.supplierCode) }}</div>
+                 <div class="font-black text-[11px] text-slate-900 group-hover:text-purple-700 transition-colors">{{ getSupplierName(pay) }}</div>
                  <div class="text-[9px] text-slate-500 font-medium line-clamp-1 italic tracking-tight uppercase leading-relaxed mt-1 opacity-70">{{ pay.notes || 'Pelunasan Tagihan Operasional' }}</div>
                  <!-- Workflow Status Ribbon -->
                  <div class="mt-2 flex gap-1">
@@ -155,12 +155,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ PAYMENT FORM DIALOG ══════════════════════════════════ -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-2xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-purple-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-purple-700 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-purple-200">
                <i class="pi pi-credit-card text-3xl font-black"></i>
             </div>
@@ -176,7 +176,7 @@
 
         <div class="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar bg-slate-50/30 pb-32">
            <!-- Alert Context -->
-           <div class="p-6 bg-purple-50 border border-purple-100 rounded-[2rem] flex items-start gap-4">
+           <div class="p-4 bg-purple-50 border border-purple-100 rounded-[2rem] flex items-start gap-4">
               <i class="pi pi-shield text-purple-500 text-xl mt-1"></i>
               <div>
                  <h4 class="text-[11px] font-black text-purple-800 uppercase tracking-widest">Kontrol Audit Pencairan</h4>
@@ -188,9 +188,9 @@
            <div class="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm space-y-8 text-slate-900">
               <div class="space-y-4">
                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Pilih Master Vendor / Rekanan</label>
-                 <select v-model="form.supplierCode" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-50 text-[11px] font-black text-slate-800 outline-none focus:border-purple-500 focus:bg-white transition-all shadow-sm cursor-pointer uppercase tracking-tight">
+                 <select v-model="form.supplierId" class="w-full h-14 px-5 rounded-2xl bg-slate-50 border-2 border-slate-50 text-[11px] font-black text-slate-800 outline-none focus:border-purple-500 focus:bg-white transition-all shadow-sm cursor-pointer uppercase tracking-tight">
                     <option value="" disabled>-- Daftar Master Supplier --</option>
-                    <option v-for="s in suppliers" :key="s.code" :value="s.code">[{{ s.code }}] {{ s.name }}</option>
+                    <option v-for="s in suppliers" :key="s.id" :value="s.id">[{{ s.code }}] {{ s.name }}</option>
                  </select>
               </div>
 
@@ -273,16 +273,17 @@ const dialogOpen = ref(false);
 const form = reactive({
   paymentNo: '',
   paymentDate: '',
-  supplierCode: '',
+  supplierId: '',
   amount: 0,
   paymentMethod: 'BANK_TRANSFER',
   reference: '',
   notes: '',
-  status: 'DRAFT'
+  status: 'DRAFT',
+  invoiceId: ''
 });
 
 const isValid = computed(() => {
-   return form.supplierCode && form.amount > 0 && form.paymentDate;
+   return form.supplierId && form.amount > 0 && form.paymentDate;
 });
 
 const loadDeps = async () => {
@@ -321,19 +322,21 @@ const filteredData = computed(() => {
     list = list.filter(x => 
        x.paymentNo?.toLowerCase().includes(q) || 
        x.reference?.toLowerCase().includes(q) ||
-       x.supplierCode?.toLowerCase().includes(q) ||
+       x.supplier?.name?.toLowerCase().includes(q) ||
+       x.supplier?.code?.toLowerCase().includes(q) ||
        x.notes?.toLowerCase().includes(q)
     );
   }
   if (filterSupplier.value) {
-    list = list.filter(x => x.supplierCode === filterSupplier.value);
+    list = list.filter(x => x.supplierId === filterSupplier.value);
   }
   return list;
 });
 
-const getSupplierName = (code: string) => {
-    const s = suppliers.value.find(x => x.code === code);
-    return s ? `[${s.code}] ${s.name}` : code;
+const getSupplierName = (rec: any) => {
+    if (rec.supplier) return `[${rec.supplier.code}] ${rec.supplier.name}`;
+    const s = suppliers.value.find(x => x.id === rec.supplierId);
+    return s ? `[${s.code}] ${s.name}` : rec.supplierId;
 }
 
 const fmtDate = (d: string) => {
@@ -351,12 +354,13 @@ function openCreate() {
   Object.assign(form, {
       paymentNo: `PAY-PBL-${new Date().getFullYear()}${String(new Date().getMonth()+1).padStart(2,'0')}-${rnd}`,
       paymentDate: new Date().toISOString().slice(0, 10),
-      supplierCode: '',
+      supplierId: '',
       amount: 0,
       paymentMethod: 'BANK_TRANSFER',
       reference: '',
       notes: '',
-      status: 'DRAFT'
+      status: 'DRAFT',
+      invoiceId: ''
   });
   dialogOpen.value = true;
 }

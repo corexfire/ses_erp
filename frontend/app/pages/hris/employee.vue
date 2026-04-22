@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-indigo-600 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-indigo-600 relative overflow-hidden">
       <div class="absolute right-[-15px] top-[-15px] opacity-5 pointer-events-none">
         <i class="pi pi-users text-[150px] text-indigo-900"></i>
       </div>
@@ -201,7 +201,7 @@
             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 block ml-1">
               <i class="pi pi-id-card"></i> Personal & Professional Profile
             </div>
-            <div class="grid grid-cols-2 gap-6">
+            <div class="grid grid-cols-2 gap-4">
               <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
                 <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">NIK (Employee Ref)</div>
                 <div class="text-xs font-black font-mono text-indigo-700">{{ detailEmployee.employeeNo }}</div>
@@ -300,7 +300,7 @@
               <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-800">Personel Identity (Master Info)</h4>
             </div>
             <div class="pl-11 space-y-8">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">NIK System <span class="text-red-500">*</span></label>
                   <input v-model="form.employeeNo" :disabled="!!editId || saving" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-mono font-black text-indigo-700 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100" placeholder="EMP-102" />
@@ -318,7 +318,7 @@
                    </div>
                 </div>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-dashed border-slate-200">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-6 border-t border-dashed border-slate-200">
                 <div class="space-y-4">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Corporate Email <span class="text-red-500">*</span></label>
                   <input type="email" v-model="form.email" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-sm font-bold text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100 lowercase" placeholder="nama@seserp.co.id" />
@@ -338,7 +338,7 @@
               <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-indigo-900">Job Specification & Payroll</h4>
             </div>
             <div class="pl-11 space-y-8">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Departmental Assignment</label>
                   <select v-model="form.department" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-xs font-black text-slate-800 bg-white shadow-inner outline-none focus:ring-2 focus:ring-indigo-100 appearance-none cursor-pointer">
@@ -362,7 +362,7 @@
                 </select>
               </div>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-dashed border-slate-200">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-dashed border-slate-200">
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Employment Status</label>
                   <select v-model="form.status" :disabled="saving" class="w-full h-14 border-none rounded-2xl px-5 text-xs font-black text-slate-800 bg-emerald-50 shadow-inner outline-none focus:ring-2 focus:ring-emerald-100 appearance-none cursor-pointer">

@@ -98,23 +98,13 @@ export declare class AssetSupportController {
             province: string | null;
             updatedAt: Date;
             status: string;
+            projectId: string;
             contactName: string | null;
             address: string | null;
-            projectId: string;
             siteCode: string;
             gpsCoords: string | null;
             contactPhone: string | null;
         } | null;
-        depreciationEntries: {
-            id: string;
-            tenantId: string;
-            createdAt: Date;
-            notes: string | null;
-            assetId: string;
-            periodDate: Date;
-            depreciationAmount: import("@prisma/client-runtime-utils").Decimal;
-            accumulatedAmount: import("@prisma/client-runtime-utils").Decimal;
-        }[];
         custodian: {
             id: string;
             email: string;
@@ -132,6 +122,16 @@ export declare class AssetSupportController {
             hireDate: Date | null;
             salary: import("@prisma/client-runtime-utils").Decimal | null;
         } | null;
+        depreciationEntries: {
+            id: string;
+            tenantId: string;
+            createdAt: Date;
+            notes: string | null;
+            assetId: string;
+            periodDate: Date;
+            depreciationAmount: import("@prisma/client-runtime-utils").Decimal;
+            accumulatedAmount: import("@prisma/client-runtime-utils").Decimal;
+        }[];
     } & {
         id: string;
         tenantId: string;

@@ -9,6 +9,15 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import {
+  IsArray,
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import type { AuthUser } from '../../auth/auth.types';
@@ -23,37 +32,100 @@ const isTripStatus = (value?: string): value is TripPlanStatus =>
   Boolean(value) && tripStatusSet.has(value as TripPlanStatus);
 
 export class CreateRouteTemplateDto {
+  @IsString()
+  @IsOptional()
   code?: string;
+
+  @IsString()
+  @IsNotEmpty()
   name!: string;
+
+  @IsString()
+  @IsOptional()
   warehouseId?: string;
+
+  @IsString()
+  @IsOptional()
   description?: string;
 }
 
 export class CreateTripDto {
+  @IsDateString()
+  @IsNotEmpty()
   routeDate!: string;
+
+  @IsString()
+  @IsOptional()
   vehicleId?: string;
+
+  @IsString()
+  @IsOptional()
   driverId?: string;
+
+  @IsString()
+  @IsOptional()
   routeTemplateId?: string;
+
+  @IsString()
+  @IsOptional()
   notes?: string;
 }
 
 export class AssignDeliveriesDto {
+  @IsArray()
+  @IsString({ each: true })
   deliveryOrderIds!: string[];
 }
 
 export class DispatchTripDto {
+  @IsString()
+  @IsNotEmpty()
   vehicleId!: string;
+
+  @IsString()
+  @IsNotEmpty()
   driverId!: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
   loaderUserIds?: string[];
+
+  @IsDateString()
+  @IsNotEmpty()
   departureAt!: string;
 }
 
 export class AddCheckpointDto {
-  checkpointType!: 'LOADED' | 'DEPARTED' | 'ARRIVED' | 'DELIVERED' | 'RETURNED' | 'FAILED';
+  @IsString()
+  @IsNotEmpty()
+  @IsEnum(['LOADED', 'DEPARTED', 'ARRIVED', 'DELIVERED', 'RETURNED', 'FAILED'])
+  checkpointType!:
+    | 'LOADED'
+    | 'DEPARTED'
+    | 'ARRIVED'
+    | 'DELIVERED'
+    | 'RETURNED'
+    | 'FAILED';
+
+  @IsString()
+  @IsOptional()
   locationName?: string;
+
+  @IsNumber()
+  @IsOptional()
   latitude?: number;
+
+  @IsNumber()
+  @IsOptional()
   longitude?: number;
+
+  @IsString()
+  @IsOptional()
   deliveryOrderId?: string;
+
+  @IsString()
+  @IsOptional()
   notes?: string;
 }
 

@@ -4,7 +4,7 @@
     <!-- Header (Premium Shop Floor Operations Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0 animate-fade-in-up">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-100 font-sans">Shop Floor Center</span>
@@ -29,8 +29,8 @@
     </div>
 
     <!-- Shop Floor Telemetry Dashboard (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Pesanan Aktif (WIP)</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ stats[0]?.value || 0 }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Operasi Dalam Antrean</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ stats[1]?.value || 0 }}</h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Total Selesai (Shift)</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ stats[2]?.value || 0 }}</h3>
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-emerald-100 tracking-[0.2em] mb-4 opacity-80">Rasio Reject</div>
         <div class="flex items-end justify-between">
@@ -85,7 +85,7 @@
 
     <!-- Shop Floor Board (Kanban Architecture) -->
     <div v-if="viewMode === 'board'" class="flex gap-8 overflow-x-auto pb-12 snap-x scrollbar-hide animate-fade-in-up">
-      <div v-for="col in columns" :key="col.id" class="flex min-w-[340px] flex-1 flex-col gap-6 snap-start">
+      <div v-for="col in columns" :key="col.id" class="flex min-w-[340px] flex-1 flex-col gap-4 snap-start">
         <div class="flex items-center justify-between px-2">
           <div class="flex items-center gap-3">
              <div :class="`h-4 w-4 rounded-full ${col.dotColor} border-4 border-white shadow-sm`" />
@@ -299,7 +299,7 @@
         <!-- Hub Workspace Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-desktop text-3xl font-black"></i>
             </div>
@@ -320,8 +320,8 @@
         <div class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50/30 p-10">
            
            <!-- Quick Telemetry Row -->
-           <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10 animate-fade-in-up">
-              <div v-for="st in detailStats" :key="st.label" class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:bg-emerald-50 group">
+           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10 animate-fade-in-up">
+              <div v-for="st in detailStats" :key="st.label" class="bg-white p-4 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:bg-emerald-50 group">
                  <p class="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-emerald-600 transition-colors mb-2">{{ st.label }}</p>
                  <p class="text-xl font-black text-slate-800 tracking-tight font-mono">{{ st.value }}</p>
               </div>
@@ -336,11 +336,11 @@
                     <span class="text-[9px] font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-100 italic">LIVE OPERATIONS AUDIT</span>
                  </div>
                  <div class="bg-white p-4 rounded-[2.5rem] border-2 border-slate-100 shadow-sm relative overflow-hidden transition-all hover:border-emerald-100">
-                    <div class="p-6 space-y-6">
+                    <div class="p-4 space-y-6">
                        <div v-for="(op, idx) in selectedWo.operations" :key="op.id" class="group/op relative flex flex-col gap-5 rounded-[2rem] border-2 border-slate-50 bg-slate-50/20 p-8 transition-all hover:bg-white hover:shadow-2xl hover:border-emerald-100">
                           
                           <div class="flex items-center justify-between">
-                             <div class="flex items-center gap-6">
+                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-[13px] font-black text-slate-300 group-hover/op:scale-110 group-hover/op:text-emerald-600 group-hover/op:border-emerald-200 transition-all shadow-sm">
                                    {{ op.lineNo || (Number(idx) + 1) }}
                                 </div>
@@ -404,7 +404,7 @@
                  <div class="bg-indigo-950 p-8 rounded-[2.5rem] shadow-2xl border-4 border-indigo-900 relative overflow-hidden flex flex-col min-h-[600px]">
                     <div class="absolute right-[-20px] top-[-20px] w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl opacity-30"></div>
                     <div class="flex-1 overflow-y-auto custom-scrollbar px-2 space-y-8 relative z-10 p-2">
-                       <div v-for="log in selectedWo.shopFloorLogs" :key="log.id" class="flex gap-6 group/log">
+                       <div v-for="log in selectedWo.shopFloorLogs" :key="log.id" class="flex gap-4 group/log">
                           <div class="flex flex-col items-center gap-2">
                             <div :class="getLogIconClass(log.action)" class="flex h-10 w-10 items-center justify-center rounded-2xl text-white shadow-xl shadow-black/20 group-hover/log:scale-110 transition-transform relative z-10 border-2 border-indigo-900/50">
                                <i :class="getLogIcon(log.action)" class="text-xs"></i>
@@ -480,7 +480,7 @@
             <div class="space-y-3">
               <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Komentar / Observasi Teknis</label>
               <textarea v-model="reportForm.notes" rows="3"
-                class="w-full rounded-2xl border-none bg-slate-50 p-6 text-[11px] font-medium text-slate-700 outline-none shadow-inner focus:bg-white focus:ring-4 focus:ring-emerald-400 transition-all"
+                class="w-full rounded-2xl border-none bg-slate-50 p-4 text-[11px] font-medium text-slate-700 outline-none shadow-inner focus:bg-white focus:ring-4 focus:ring-emerald-400 transition-all"
                 placeholder="Catat anomali atau justifikasi pembuangan bahan..."></textarea>
             </div>
           </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900 overflow-hidden relative">
     <!-- ═══════════════════════════════════ HEADER ══════════════════════════════════ -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-6 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-4 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
       <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-40"></div>
       
       <div class="relative flex items-center gap-4">
@@ -160,9 +160,9 @@
           </div>
 
           <!-- CONTROLS & STATUS -->
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-6 relative">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 relative">
              <!-- LEFT: Main Controls -->
-             <div class="md:col-span-8 flex flex-col gap-6">
+             <div class="md:col-span-8 flex flex-col gap-4">
                 
                 <!-- Tabbed Sections -->
                 <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col">
@@ -317,13 +317,13 @@
                       <!-- Tab 3: Documentation -->
                       <div v-if="activeTab === 'PHOTOS'" class="space-y-8 animate-in fade-in duration-300">
                          <div class="space-y-4">
-                            <div class="bg-white p-6 rounded-3xl border border-dashed border-slate-200 flex flex-col items-center justify-center text-center">
+                            <div class="bg-white p-4 rounded-3xl border border-dashed border-slate-200 flex flex-col items-center justify-center text-center">
                                <i class="pi pi-images text-4xl text-slate-200 mb-4"></i>
                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Visual Documentation Gallery</p>
                                <p class="text-[8px] font-bold text-slate-400 mt-1 max-w-[200px]">Semua foto progres lapangan, safety, dan material terdokumentasi di sini.</p>
                             </div>
                             
-                            <div class="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-2 lg:grid-cols-3 gap-4">
                                <div v-for="i in 3" :key="i" class="group relative rounded-3xl overflow-hidden bg-slate-100 aspect-square border-2 border-white shadow-sm transition-all hover:scale-[1.05] hover:shadow-xl">
                                   <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
                                   <div class="absolute bottom-4 left-4 right-4">
@@ -339,7 +339,7 @@
                             <h4 class="text-[10px] font-black uppercase tracking-widest text-red-500 flex items-center gap-2 font-mono">
                                <i class="pi pi-shield"></i> Safety & HSE Summary
                             </h4>
-                            <div class="p-6 bg-red-50/20 rounded-xl border border-red-100/50">
+                            <div class="p-4 bg-red-50/20 rounded-xl border border-red-100/50">
                                <textarea v-if="isCreating || isEditing" v-model="form.safetySummary" rows="3" class="w-full text-[11px] font-bold bg-transparent border-none p-0 focus:ring-0 text-red-900" placeholder="Summary kondisi K3 hari ini..."></textarea>
                                <p v-else class="text-[11px] font-bold text-red-800 leading-relaxed italic">"{{ selectedItem.safetySummary || 'Tidak ada temuan unsafe action/condition hari ini. Semua Pekerja menggunakan APD lengkap.' }}"</p>
                             </div>
@@ -372,7 +372,7 @@
                           <span class="text-[10px] font-black uppercase tracking-widest">Approve Laporan</span>
                           <i class="pi pi-check-circle group-hover:scale-110 transition-transform"></i>
                         </button>
-                        <div v-if="selectedItem?.status === 'APPROVED'" class="p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-3xl flex flex-col items-center text-center">
+                        <div v-if="selectedItem?.status === 'APPROVED'" class="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-3xl flex flex-col items-center text-center">
                            <i class="pi pi-verified text-2xl text-emerald-400 mb-2"></i>
                            <p class="text-[10px] font-black uppercase tracking-widest text-emerald-100 leading-none">Laporan Disetujui</p>
                            <p class="text-[8px] font-bold text-emerald-500 mt-2 uppercase">Verified on System</p>
@@ -605,7 +605,7 @@ function getStatusStyles(s: string) {
 onMounted(() => { if (canRead.value) load(); });
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { @apply bg-slate-200 rounded-full; }

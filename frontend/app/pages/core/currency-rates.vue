@@ -1,136 +1,148 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
-      <div class="relative">
-        <div class="flex items-center gap-3 mb-2">
-           <span class="px-3 py-1 bg-amber-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Treasury & Forex</span>
-           <span class="text-slate-300">/</span>
-           <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-amber-600">Manajemen Kurs</span>
+    <DashboardHero
+      title="Currency Rates"
+      subtitle="Monitoring nilai tukar mata uang asing terhadap mata uang dasar (Functional Currency) secara harian."
+      category="Treasury & Forex"
+      category-sub="Manajemen Kurs"
+      color="amber"
+    >
+      <template #actions>
+        <div class="flex items-center gap-3">               
+          <Button label="Input Kurs Baru" icon="pi pi-plus" class="p-button-sm font-black text-xs px-6 bg-white/20 hover:bg-white/30 text-white border-white/20" @click="openNewRate" />
         </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Currency <span class="text-amber-600">Rates</span></h1>
-        <p class="text-slate-500 text-sm font-medium uppercase italic tracking-tight italic">Monitoring nilai tukar mata uang asing terhadap mata uang dasar (Functional Currency) secara harian.</p>
-      </div>
-
-      <div class="flex items-center gap-3 relative">
-        <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="load" :loading="loading" />
-        <Button label="Input Kurs Baru" icon="pi pi-plus" class="p-button-rounded p-button-warning font-black text-xs shadow-lg shadow-amber-100 px-6" @click="openNewRate" />
-      </div>
-    </div>
+      </template>
+    </DashboardHero>
 
     <!-- Stats / Treasury Overview -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-          <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-             <i :class="[s.icon, 'text-6xl']"></i>
-          </div>
-          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ s.label }}</p>
-          <h3 class="text-2xl font-black text-slate-900">{{ s.prefix }} {{ fmtNumber(s.value) }}</h3>
-          <div class="flex items-center gap-2 mt-2">
-             <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-full', s.color]">{{ s.sub }}</span>
-          </div>
-       </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <MiniStatsCard
+          v-for="s in stats"
+          :key="s.label"
+          :label="s.label"
+          :value="s.displayValue"
+          :icon="s.icon"
+          :sub="s.sub"
+          :sub-color="s.theme"
+          :icon-color="s.theme"
+       />
     </div>
 
     <!-- Main Content Area with Tabs -->
-    <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:border-amber-300 transition-all duration-500">
-       <div class="p-2 border-b border-slate-100 bg-slate-50/10">
-          <Tabs v-model:value="activeTab">
-            <TabList class="bg-transparent border-none px-6 pt-4">
-              <Tab value="rates" class="text-[11px] font-black uppercase tracking-widest mr-4 pb-4">Histori Kurs Harian</Tab>
-              <Tab value="master" class="text-[11px] font-black uppercase tracking-widest pb-4">Master Mata Uang</Tab>
-            </TabList>
-          </Tabs>
-       </div>
+    <!-- Main Content Area with Tabs -->
+    <PanelCard
+      :title="activeTab === 'rates' ? 'Histori Kurs Harian' : 'Master Mata Uang'"
+      subtitle="Dataset moneter dan pencatatan nilai tukar valuta asing sistem."
+      icon="pi pi-wallet"
+      theme="amber"
+      :show-search="false"
+      :show-refresh="false"
+      flat-controls
+    >
+      <template #filters>
+         <SelectButton 
+            v-model="activeTab" 
+            :options="tabOptions" 
+            optionLabel="label" 
+            optionValue="value" 
+            :allowEmpty="false" 
+            :pt="{
+               root: { class: 'bg-slate-100/80 p-1 rounded-2xl border border-slate-200/50 flex gap-1 shadow-inner' },
+               pcbutton: ({ context }: any) => ({
+                 root: {
+                   class: [
+                     '!border-none !rounded-xl transition-all duration-300 px-4 py-2',
+                     context.active ? '!bg-white !text-amber-600 shadow-sm' : '!bg-transparent !text-slate-500 hover:!bg-white/50'
+                   ]
+                 }
+               })
+            }"
+         >
+            <template #option="slotProps">
+               <div class="flex items-center gap-2">
+                  <i :class="[slotProps.option.icon, 'text-[10px]']"></i>
+                  <span class="text-[9px] font-black uppercase tracking-[0.2em]">{{ slotProps.option.label }}</span>
+               </div>
+            </template>
+         </SelectButton>
+      </template>
 
-       <div class="p-0">
+      <template #table>
           <!-- VIEW: EXCHANGE RATES HISTORY -->
-          <template v-if="activeTab === 'rates'">
-             <DataTable :value="exchangeRates" dataKey="id" class="p-datatable-sm w-full" :loading="loading">
-                <Column header="CURRENCY PAIR" class="pl-8">
-                   <template #body="{ data }">
-                      <div class="flex items-center gap-3">
-                         <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center border border-amber-100">
-                            <span class="text-[10px] font-black text-amber-600">{{ data.baseCurrency?.symbol || '?' }}</span>
-                         </div>
-                         <div class="flex flex-col">
-                            <span class="text-[12px] font-black text-slate-900 font-mono">{{ data.baseCurrency?.code }} / {{ data.quoteCurrency?.code }}</span>
-                            <span class="text-[9px] font-bold text-slate-400 uppercase">{{ data.baseCurrency?.name }}</span>
-                         </div>
-                      </div>
-                   </template>
-                </Column>
-                <Column header="EXCHANGE RATE">
-                   <template #body="{ data }">
-                      <span class="text-[13px] font-black text-slate-900 italic">
-                         {{ fmtRate(data.rate) }}
-                      </span>
-                   </template>
-                </Column>
-                <Column header="VALID DATE">
-                   <template #body="{ data }">
-                      <div class="flex items-center gap-2">
-                         <i class="pi pi-calendar text-[10px] text-slate-400"></i>
-                         <span class="text-[11px] font-bold text-slate-600">{{ fmtDate(data.rateDate) }}</span>
-                      </div>
-                   </template>
-                </Column>
-                <Column header="LAST UPDATED">
-                   <template #body="{ data }">
-                      <span class="text-[9px] font-bold text-slate-400 uppercase font-mono">{{ fmtDateTime(data.updatedAt) }}</span>
-                   </template>
-                </Column>
-                <Column class="text-right pr-8">
-                   <template #body="{ data }">
-                      <Button icon="pi pi-chart-line" severity="secondary" rounded text />
-                   </template>
-                </Column>
-             </DataTable>
-          </template>
+          <PanelTable
+            v-if="activeTab === 'rates'"
+            :items="exchangeRates"
+            :columns="rateColumns"
+            :loading="loading"
+            hover-border-color="border-l-amber-400"
+          >
+            <template #col-pair="{ item }">
+               <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center border border-amber-100">
+                     <span class="text-[10px] font-black text-amber-600">{{ item.baseCurrency?.symbol || '?' }}</span>
+                  </div>
+                  <div class="flex flex-col">
+                     <span class="text-[12px] font-black text-slate-900 font-mono">{{ item.baseCurrency?.code }} / {{ item.quoteCurrency?.code }}</span>
+                     <span class="text-[9px] font-bold text-slate-400 uppercase leading-none mt-1">{{ item.baseCurrency?.name }}</span>
+                  </div>
+               </div>
+            </template>
+            <template #col-rate="{ item }">
+               <span class="text-[13px] font-black text-slate-900 italic font-mono">
+                  {{ fmtRate(item.rate) }}
+               </span>
+            </template>
+            <template #col-date="{ item }">
+               <div class="flex items-center gap-2">
+                  <i class="pi pi-calendar text-[10px] text-slate-400"></i>
+                  <span class="text-[11px] font-bold text-slate-600">{{ fmtDate(item.rateDate) }}</span>
+               </div>
+            </template>
+            <template #col-updated="{ item }">
+               <span class="text-[9px] font-bold text-slate-400 uppercase font-mono">{{ fmtDateTime(item.updatedAt) }}</span>
+            </template>
+            <template #col-actions>
+               <Button icon="pi pi-chart-line" severity="secondary" rounded text />
+            </template>
+          </PanelTable>
 
           <!-- VIEW: MASTER CURRENCIES -->
-          <template v-else>
-             <div class="p-8 border-b border-slate-50 flex items-center justify-between">
-                <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400">Enabled Currencies in System</h3>
-                <Button label="Mata Uang Baru" icon="pi pi-plus" size="small" text @click="openNewCurrency" />
+          <div v-else>
+             <div class="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/20">
+                <h3 class="text-[9px] font-black uppercase tracking-widest text-slate-400">Supported Currencies & Functional Settings</h3>
+                <Button label="Mata Uang Baru" icon="pi pi-plus" size="small" text @click="openNewCurrency" class="font-black text-[10px] uppercase tracking-widest" />
              </div>
-             <DataTable :value="currencies" dataKey="id" class="p-datatable-sm w-full">
-                <Column field="code" header="CODE" class="pl-8">
-                   <template #body="{ data }">
-                      <span class="font-mono text-[11px] font-black text-indigo-600">{{ data.code }}</span>
-                   </template>
-                </Column>
-                <Column field="name" header="CURRENCY NAME">
-                   <template #body="{ data }">
-                      <span class="text-[11px] font-bold text-slate-800 uppercase">{{ data.name }}</span>
-                   </template>
-                </Column>
-                <Column field="symbol" header="SYMBOL">
-                   <template #body="{ data }">
-                      <span class="text-lg font-bold text-slate-400">{{ data.symbol }}</span>
-                   </template>
-                </Column>
-                <Column header="TYPE">
-                   <template #body="{ data }">
-                      <span v-if="data.isBase" class="px-3 py-1 bg-blue-900 text-white text-[9px] font-black uppercase rounded-full">Base / Functional</span>
-                      <span v-else class="text-[9px] font-bold text-slate-400 uppercase">Foreign Currency</span>
-                   </template>
-                </Column>
-                <Column class="text-right pr-8">
-                   <template #body="{ data }">
-                      <Button icon="pi pi-ban" severity="danger" text rounded size="small" v-if="!data.isBase" @click="deactivateCurrency(data)" />
-                   </template>
-                </Column>
-             </DataTable>
-          </template>
-       </div>
-    </div>
+             <PanelTable
+               :items="currencies"
+               :columns="currencyColumns"
+               hover-border-color="border-l-blue-400"
+             >
+                <template #col-code="{ item }">
+                   <span class="font-mono text-[11px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 italic">{{ item.code }}</span>
+                </template>
+                <template #col-name="{ item }">
+                   <span class="text-[11px] font-black text-slate-800 uppercase tracking-tight">{{ item.name }}</span>
+                </template>
+                <template #col-symbol="{ item }">
+                   <span class="text-xl font-black text-slate-300">{{ item.symbol }}</span>
+                </template>
+                <template #col-type="{ item }">
+                   <span v-if="item.isBase" class="px-3 py-1 bg-blue-900 text-white text-[9px] font-black uppercase rounded-full tracking-widest">Base / Functional</span>
+                   <span v-else class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">Foreign Currency</span>
+                </template>
+                <template #col-actions="{ item }">
+                   <Button icon="pi pi-ban" severity="danger" text rounded size="small" v-if="!item.isBase" @click="deactivateCurrency(item)" />
+                </template>
+             </PanelTable>
+          </div>
+      </template>
+    </PanelCard>
 
     <!-- Rate Entry Dialog -->
     <Dialog v-model:visible="rateDrawerOpen" header="Input Kurs Exchange" :modal="true" :dismissableMask="false" class="w-[500px] border-none shadow-2xl overflow-hidden glass-dialog">
        <div class="space-y-8 pt-4 px-2 pb-12 custom-scrollbar">
-          <div class="p-6 bg-amber-50 border border-amber-100 rounded-3xl flex items-center gap-4">
+          <div class="p-4 bg-amber-50 border border-amber-100 rounded-3xl flex items-center gap-4">
              <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-amber-600 shadow-sm border border-amber-100">
                 <i class="pi pi-money-bill text-xl"></i>
              </div>
@@ -178,7 +190,7 @@
     <!-- Currency Master Dialog -->
     <Dialog v-model:visible="currencyDrawerOpen" header="Registrasi Mata Uang" :modal="true" :dismissableMask="false" class="w-[500px] border-none shadow-2xl overflow-hidden glass-dialog">
        <div class="space-y-8 pt-4 px-2 pb-12 custom-scrollbar">
-          <div class="p-6 bg-indigo-50 border border-indigo-100 rounded-3xl flex items-center gap-4">
+          <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-3xl flex items-center gap-4">
              <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
                 <i class="pi pi-globe text-xl"></i>
              </div>
@@ -252,13 +264,36 @@ const currencyForm = ref<any>({
 const stats = computed(() => {
   const usdRate = exchangeRates.value.find(r => r.baseCurrency?.code === 'USD')?.rate || 0;
   const eurRate = exchangeRates.value.find(r => r.baseCurrency?.code === 'EUR')?.rate || 0;
+  const baseCurrencyCode = currencies.value.find(c => c.isBase)?.code || '-';
+  
   return [
-    { label: 'Base Operational', value: currencies.value.find(c => c.isBase)?.code || '-', prefix: '', sub: 'Functional Currency', icon: 'pi pi-home', color: 'bg-blue-50 text-blue-600' },
-    { label: 'Current USD Rate', value: usdRate, prefix: 'Rp', sub: 'vs IDR (Last Entry)', icon: 'pi pi-dollar', color: 'bg-emerald-50 text-emerald-600' },
-    { label: 'Current EUR Rate', value: eurRate, prefix: 'Rp', sub: 'vs IDR (Last Entry)', icon: 'pi pi-euro', color: 'bg-indigo-50 text-indigo-600' },
-    { label: 'Forex Coverage', value: currencies.value.filter(c => !c.isBase).length, prefix: '', sub: 'Supported Currencies', icon: 'pi pi-globe', color: 'bg-amber-50 text-amber-600' }
+    { label: 'Base Operational', displayValue: baseCurrencyCode, sub: 'Functional Currency', icon: 'pi pi-home', theme: 'blue' as const },
+    { label: 'Current USD Rate', displayValue: `Rp ${fmtNumber(usdRate)}`, sub: 'vs IDR (Last Entry)', icon: 'pi pi-dollar', theme: 'emerald' as const },
+    { label: 'Current EUR Rate', displayValue: `Rp ${fmtNumber(eurRate)}`, sub: 'vs IDR (Last Entry)', icon: 'pi pi-euro', theme: 'indigo' as const },
+    { label: 'Forex Coverage', displayValue: currencies.value.filter(c => !c.isBase).length.toString(), sub: 'Supported Currencies', icon: 'pi pi-globe', theme: 'amber' as const }
   ];
 });
+
+const rateColumns = [
+  { key: 'pair', header: 'CURRENCY PAIR', width: 'w-64' },
+  { key: 'rate', header: 'EXCHANGE RATE', borderLeft: true },
+  { key: 'date', header: 'VALID DATE', borderLeft: true },
+  { key: 'updated', header: 'LAST UPDATED', borderLeft: true },
+  { key: 'actions', header: 'AKSI', align: 'right' as const, width: 'w-32', borderLeft: true }
+];
+
+const currencyColumns = [
+  { key: 'code', header: 'CODE', width: 'w-32' },
+  { key: 'name', header: 'CURRENCY NAME' },
+  { key: 'symbol', header: 'SYMBOL', align: 'center' as const, width: 'w-32', borderLeft: true },
+  { key: 'type', header: 'TYPE', borderLeft: true },
+  { key: 'actions', header: 'AKSI', align: 'right' as const, width: 'w-32', borderLeft: true }
+];
+
+const tabOptions = [
+  { label: 'Histori Kurs', value: 'rates', icon: 'pi pi-history' },
+  { label: 'Master Currency', value: 'master', icon: 'pi pi-database' }
+];
 
 async function load() {
   loading.value = true;
@@ -267,8 +302,8 @@ async function load() {
       api.get('/core/currencies'),
       api.get('/core/exchange-rates')
     ]);
-    currencies.value = cRes.currencies || cRes.data?.currencies || [];
-    exchangeRates.value = rRes.exchangeRates || rRes.data?.exchangeRates || [];
+    currencies.value = cRes.data?.currencies || cRes.data || [];
+    exchangeRates.value = rRes.data?.exchangeRates || rRes.data || [];
     
     const base = currencies.value.find(c => c.isBase);
     if (base) rateForm.value.quoteCurrencyId = base.id;
@@ -339,7 +374,7 @@ function fmtDateTime(d: string) { return d ? new Date(d).toLocaleTimeString('id-
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 :deep(.p-datatable-thead > tr > th) {
   background: transparent !important;
   font-size: 10px !important;

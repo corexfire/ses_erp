@@ -1,6 +1,11 @@
 import { PrismaClient } from './generated/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import bcrypt from 'bcryptjs';
+import { seedVendorReconciliation } from './seed-finance-vendor-reconciliation';
+import { seedHrisAnalytics } from './seed-hris-analytics';
+import { seedHrisSuccession } from './seed-hris-succession';
+import { seedProjectExpansion } from './seed-project-expansion';
+import { seedPremiumProject } from './seed-premium-project';
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
@@ -100,6 +105,12 @@ async function main() {
     'core.workflow.create',
     'core.workflow.update',
     'core.workflow.deactivate',
+    'core.systemConfig.read',
+    'core.systemConfig.update',
+    'core.systemConfig.delete',
+    'core.printFormat.read',
+    'core.printFormat.update',
+    'core.printFormat.delete',
     'crm.lead.read',
     'crm.lead.create',
     'crm.lead.update',
@@ -368,9 +379,6 @@ async function main() {
   const { seedPacking } = await import('./seed-packing');
   await seedPacking(prisma, tenant.id);
 
-  const { seedProjectBudgets } = await import('./seed-project-budgets');
-  await seedProjectBudgets(prisma, tenant.id);
-
   const { seedSiteInfrastructure } = await import('./seed-site-infrastructure');
   await seedSiteInfrastructure(prisma, tenant.id);
 
@@ -397,6 +405,125 @@ async function main() {
 
   const { seedEnterpriseFull } = await import('./seed-enterprise-full');
   await seedEnterpriseFull(prisma, tenant.id);
+
+  const { seedConstructionMR } = await import('./seed-construction-mr');
+  await seedConstructionMR(prisma, tenant.id);
+
+  const { seedSubcontractors } = await import('./seed-construction-subcontractors');
+  await seedSubcontractors(prisma, tenant.id);
+
+  const { seedDailyProgress } = await import('./seed-construction-progress');
+  await seedDailyProgress(prisma, tenant.id);
+
+  const { seedDrawings } = await import('./seed-construction-drawings');
+  await seedDrawings(prisma, tenant.id);
+
+  const { seedHse } = await import('./seed-construction-hse');
+  await seedHse(prisma, tenant.id);
+
+  const { seedInterCompany } = await import('./seed-finance-intercompany');
+  await seedInterCompany(prisma, tenant.id);
+
+  const { seedReconciliation } = await import('./seed-finance-reconciliation');
+  await seedReconciliation(prisma, tenant.id);
+
+  const { seedPettyCash } = await import('./seed-finance-petty-cash');
+  await seedPettyCash(prisma, tenant.id);
+
+  const { seedCustomerReceipts } = await import('./seed-finance-receipts');
+  await seedCustomerReceipts(prisma, tenant.id);
+
+  const { seedFullFinanceFlow } = await import('./seed-finance-full-flow');
+  await seedFullFinanceFlow(prisma, tenant.id);
+
+  const { seedPaymentRequests } = await import('./seed-finance-payment-requests');
+  await seedPaymentRequests(prisma, tenant.id);
+
+  const { seedVendorReconciliation } = await import('./seed-finance-vendor-reconciliation');
+  await seedVendorReconciliation(prisma, tenant.id);
+
+  const { seedDepreciation } = await import('./seed-finance-depreciation');
+  await seedDepreciation(prisma, tenant.id);
+
+  const { seedAssetDisposal } = await import('./seed-finance-asset-disposal');
+  await seedAssetDisposal(prisma, tenant.id);
+
+  const { seedFinanceBudget } = await import('./seed-finance-budget');
+  await seedFinanceBudget(prisma, tenant.id);
+
+  const { seedProjectBudgets } = await import('./seed-project-budgets');
+  await seedProjectBudgets(prisma, tenant.id);
+
+  const { seedTaxInvoiceIntegrated } = await import('./seed-tax-invoice-integrated');
+  await seedTaxInvoiceIntegrated(prisma, tenant.id);
+
+  const { seedTaxInvoiceInputIntegrated } = await import('./seed-tax-invoice-input-integrated');
+  await seedTaxInvoiceInputIntegrated(prisma, tenant.id);
+
+  const { seedTaxNsfpIntegrated } = await import('./seed-tax-nsfp-integrated');
+  await seedTaxNsfpIntegrated(prisma, tenant.id);
+
+  const { seedTaxPpnMasaIntegrated } = await import('./seed-tax-ppn-masa-integrated');
+  await seedTaxPpnMasaIntegrated(prisma, tenant.id);
+
+  const { seedTaxEbupotIntegrated } = await import('./seed-tax-ebupot-integrated');
+  await seedTaxEbupotIntegrated(prisma, tenant.id);
+
+  const { seedTaxPph21Integrated } = await import('./seed-tax-pph21-integrated');
+  await seedTaxPph21Integrated(prisma, tenant.id);
+
+  const { seedTaxBuktiPotongIntegrated } = await import('./seed-tax-bukti-potong-integrated');
+  await seedTaxBuktiPotongIntegrated(prisma, tenant.id);
+
+  const { seedTaxIdBillingIntegrated } = await import('./seed-tax-id-billing-integrated');
+  await seedTaxIdBillingIntegrated(prisma, tenant.id);
+
+  const { seedTaxEqualizationIntegrated } = await import('./seed-tax-equalization-integrated');
+  await seedTaxEqualizationIntegrated(prisma, tenant.id);
+
+  const { seedHrisRecruitmentIntegrated } = await import('./seed-hris-recruitment-integrated');
+  await seedHrisRecruitmentIntegrated(prisma, tenant.id);
+
+  const { seedHrisLmsIntegrated } = await import('./seed-hris-lms-integrated');
+  await seedHrisLmsIntegrated(prisma, tenant.id);
+
+  const { seedHrisAttendanceIntegrated } = await import('./seed-hris-attendance-integrated');
+  await seedHrisAttendanceIntegrated(prisma, tenant.id);
+
+  const { seedHrisShiftIntegrated } = await import('./seed-hris-shift-integrated');
+  await seedHrisShiftIntegrated(prisma, tenant.id);
+
+  const { seedHrisExpenseIntegrated } = await import('./seed-hris-expense-integrated');
+  await seedHrisExpenseIntegrated(prisma, tenant.id);
+
+  const { seedProjectTenderIntegrated } = await import('./seed-project-tender-integrated');
+  await seedProjectTenderIntegrated(prisma, tenant.id);
+
+  const { seedProjectBillingIntegrated } = await import('./seed-project-billing-integrated');
+  await seedProjectBillingIntegrated(prisma, tenant.id);
+
+  const { seedSupportBiIntegrated } = await import('./seed-support-bi-integrated');
+  await seedSupportBiIntegrated(prisma, tenant.id);
+
+  const { seedSystemSettings } = await import('./seed-system-settings');
+  await seedSystemSettings(prisma, tenant.id);
+
+  const { seedHrisProductivity } = await import('./seed-hris-productivity');
+  await seedHrisProductivity(prisma, tenant.id);
+
+  const { seedHrisTimesheets } = await import('./seed-hris-timesheets');
+  await seedHrisTimesheets(prisma, tenant.id);
+
+  const { seedHrisOffboarding } = await import('./seed-hris-offboarding');
+  await seedHrisOffboarding(prisma, tenant.id);
+
+  const { seedLogisticsExpansion } = await import('./seed-logistics-expansion');
+  await seedLogisticsExpansion(prisma, tenant.id);
+
+  await seedHrisAnalytics(prisma, tenant.id);
+  await seedHrisSuccession(prisma, tenant.id);
+  await seedProjectExpansion(prisma, tenant.id);
+  await seedPremiumProject(prisma, tenant.id);
 }
 
 main()

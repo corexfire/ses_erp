@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900 overflow-hidden relative">
     <!-- Header / Navigation Bar -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-6 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-4 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       
       <div class="relative flex items-center gap-4">
@@ -43,7 +43,7 @@
     <main v-if="selectedTeamId" class="mx-6 p-2 h-[calc(100vh-200px)] overflow-hidden">
       
       <!-- 1. KANBAN VIEW -->
-      <div v-if="activeView === 'kanban'" class="h-full flex gap-6 overflow-x-auto pb-4 custom-scrollbar">
+      <div v-if="activeView === 'kanban'" class="h-full flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
         <div v-for="column in columns" :key="column.status" class="flex-shrink-0 w-80 flex flex-col gap-4">
           <div class="flex items-center justify-between px-2">
             <div class="flex items-center gap-3">
@@ -58,7 +58,7 @@
             group="tasks"
             item-key="id"
             class="flex-1 space-y-4 p-2 bg-slate-100/50 rounded-xl border border-dashed border-slate-200 min-h-[200px] overflow-y-auto custom-scrollbar"
-            @change="(e) => onDragChange(e, column.status)"
+            @change="onDragChange($event, column.status)"
           >
             <template #item="{ element: task }">
               <div @click="editTask(task)" class="group bg-white p-5 rounded-xl border border-slate-200 hover:border-indigo-400 hover:shadow-xl hover:shadow-indigo-100/50 hover:-translate-y-1 transition-all cursor-grab active:cursor-grabbing relative overflow-hidden">
@@ -99,7 +99,7 @@
       <div v-else-if="activeView === 'gantt'">
           <!-- Gantt UI (Simplified as in main module) -->
           <div class="h-full bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col shadow-sm">
-            <div class="flex-1 overflow-x-auto p-6 min-h-[400px]">
+            <div class="flex-1 overflow-x-auto p-4 min-h-[400px]">
                <div class="text-[10px] font-black text-slate-400 mb-4 px-4 uppercase tracking-[0.2em] italic">Timeline Kegiatan Tim</div>
                <!-- Simplified Gantt Mock for display as in previous iterations -->
                <div class="space-y-4">
@@ -135,7 +135,7 @@
 
     </main>
 
-    <div v-else class="flex flex-col items-center justify-center h-[calc(100vh-250px)] gap-6 opacity-30 select-none">
+    <div v-else class="flex flex-col items-center justify-center h-[calc(100vh-250px)] gap-4 opacity-30 select-none">
        <i class="pi pi-users text-[8rem] text-indigo-100"></i>
        <div class="text-center">
          <p class="text-2xl font-black text-slate-300 uppercase tracking-widest leading-none">Pilih Tim</p>
@@ -381,7 +381,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .custom-scrollbar::-webkit-scrollbar { height: 4px; width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { @apply bg-slate-200 rounded-full; }
 .p-button-indigo { @apply bg-indigo-600 border-indigo-600 text-white hover:bg-indigo-700; }

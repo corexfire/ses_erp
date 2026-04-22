@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-[#f5f6fa] pb-12">
     <!-- ═══════════════════════════════════ HEADER ══════════════════════════════════ -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
       <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-60"></div>
       
       <div class="relative">
@@ -21,8 +21,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mx-6 mb-8">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mx-6 mb-8">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl text-blue-900']"></i>
           </div>
@@ -42,7 +42,7 @@
 
         <!-- Tab Bar + Filters -->
         <div class="border-b border-slate-100 px-8 pt-6 pb-0 flex flex-col md:flex-row md:items-end gap-4">
-          <div class="flex gap-6">
+          <div class="flex gap-4">
             <button v-for="tab in tabOptions" :key="tab.key" @click="statusFilter = tab.key"
               :class="['pb-4 text-[11px] font-black uppercase tracking-widest transition-all border-b-4',
                 statusFilter === tab.key ? 'border-blue-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-700']">
@@ -153,7 +153,7 @@
 
       <div class="flex h-[600px]">
         <!-- Sidebar Tabs -->
-        <div class="w-64 bg-white border-r border-slate-100 p-6 space-y-2">
+        <div class="w-64 bg-white border-r border-slate-100 p-4 space-y-2">
           <button v-for="t in formTabs" :key="t.key" @click="activeFormTab = t.key"
             :class="['w-full flex items-center gap-3 p-4 rounded-2xl transition-all text-left group',
               activeFormTab === t.key ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'text-slate-500 hover:bg-slate-50']">
@@ -303,8 +303,8 @@
       </div>
 
       <template #footer>
-        <div class="flex items-center justify-between p-6 bg-slate-50 border-t border-slate-100">
-          <div class="flex items-center gap-6">
+        <div class="flex items-center justify-between p-4 bg-slate-50 border-t border-slate-100">
+          <div class="flex items-center gap-4">
             <div class="flex items-center gap-2">
               <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Status:</span>
               <Select v-model="form.status" :options="formStatusOptions" optionLabel="label" optionValue="value" class="w-32 h-8 text-[9px] font-black bg-white rounded-lg border-slate-200" />

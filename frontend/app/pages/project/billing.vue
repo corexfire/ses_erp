@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-slate-50/50 p-6">
+  <div class="min-h-screen bg-slate-50/50 p-4">
     <!-- Header Section -->
     <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
       <div>
@@ -29,8 +29,8 @@
     </div>
 
     <!-- Summary Statistics -->
-    <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-4">
-      <div v-for="stat in summaryStats" :key="stat.label" class="rounded-3xl border border-white bg-white p-6 shadow-sm">
+    <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-4">
+      <div v-for="stat in summaryStats" :key="stat.label" class="rounded-3xl border border-white bg-white p-4 shadow-sm">
         <div class="flex items-center justify-between font-black uppercase tracking-widest text-slate-400 text-[10px] mb-4">
           <span>{{ stat.label }}</span>
           <i :class="stat.icon"></i>
@@ -45,7 +45,7 @@
       
       <!-- Progress & Invoices (Left 2/3) -->
       <div class="lg:col-span-2 space-y-6">
-        <div class="rounded-3xl border border-white bg-white/80 p-6 shadow-sm">
+        <div class="rounded-3xl border border-white bg-white/80 p-4 shadow-sm">
           <Tabs value="0">
             <TabList>
               <Tab value="0" class="text-xs font-black uppercase tracking-tighter">Progress Claims</Tab>
@@ -130,7 +130,7 @@
       <!-- Right Sidebar: Ledger & Summary -->
       <div class="space-y-6">
         <!-- Project Context -->
-        <div class="rounded-3xl border border-white bg-blue-900 p-6 shadow-xl text-white relative overflow-hidden">
+        <div class="rounded-3xl border border-white bg-blue-900 p-4 shadow-xl text-white relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-10">
             <i class="pi pi-building text-6xl"></i>
           </div>
@@ -150,7 +150,7 @@
         </div>
 
         <!-- Retention Ledger -->
-        <div class="rounded-3xl border border-white bg-white p-6 shadow-sm">
+        <div class="rounded-3xl border border-white bg-white p-4 shadow-sm">
           <h3 class="text-xs font-black uppercase tracking-tighter text-slate-500 mb-6 flex justify-between">
             <span>Retention Ledger</span>
             <i class="pi pi-lock text-[10px]"></i>
@@ -204,7 +204,7 @@
     <!-- 2. Create Invoice Dialog -->
     <Dialog v-model:visible="invoiceDialogOpen" header="Generate Progress Invoice" :style="{ width: '500px' }" class="p-fluid">
        <div class="space-y-6 pt-4 px-2" v-if="selectedClaim">
-          <div class="bg-indigo-900 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+          <div class="bg-indigo-900 rounded-2xl p-4 text-white shadow-xl relative overflow-hidden">
              <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
              <p class="text-[9px] font-black uppercase tracking-widest text-indigo-300">GROSS BILLING (DELTA)</p>
              <h2 class="text-3xl font-black font-mono">IDR {{ fmtMoney(calculatedGross) }}</h2>
@@ -335,7 +335,7 @@
     <!-- 5. Retention Release Dialog -->
     <Dialog v-model:visible="releaseDialogOpen" header="Release Retention Funds" :style="{ width: '450px' }" class="p-fluid">
        <div class="space-y-6 pt-4 px-2">
-          <div class="bg-emerald-900 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+          <div class="bg-emerald-900 rounded-2xl p-4 text-white shadow-xl relative overflow-hidden">
              <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
              <p class="text-[9px] font-black uppercase tracking-widest text-emerald-300">TOTAL RELEASABLE</p>
              <h2 class="text-3xl font-black font-mono">IDR {{ fmtMoney(ledgerSummary.totalRetention) }}</h2>

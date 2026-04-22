@@ -3,7 +3,7 @@
     <!-- Header (Premium Audit Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-emerald-400">Audit Core</span>
@@ -21,8 +21,8 @@
     </div>
 
     <!-- Dynamic Audit KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-emerald-600 text-white shadow-xl flex flex-col justify-between border border-emerald-500 transition-all hover:bg-emerald-700 group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-emerald-600 text-white shadow-xl flex flex-col justify-between border border-emerald-500 transition-all hover:bg-emerald-700 group">
         <div class="text-[10px] font-black uppercase text-emerald-200 tracking-[0.2em] mb-4 opacity-80">Total Audit Aktif</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ matches.length }}</h3>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Nilai Deviasi Terdeteksi</div>
         <div class="flex flex-col items-start">
            <div class="flex items-center gap-1">
@@ -42,7 +42,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Dokumen Sesuai (Matched)</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-emerald-700 tracking-tighter leading-none">{{ matches.filter(m => standardizeStatus(m) === 'MATCHED').length }}</h3>
@@ -50,7 +50,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Menunggu Rekonsiliasi</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-700 tracking-tighter leading-none">8</h3>
@@ -62,7 +62,7 @@
     <!-- Audit Ledger (Premium Grid) -->
     <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
       <!-- Controls Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -176,7 +176,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-emerald-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-shield-check text-3xl font-black"></i>
             </div>
@@ -200,7 +200,7 @@
               <div class="text-[11px] font-black tracking-[0.2em] text-slate-400 uppercase mb-6 flex items-center gap-2">
                  <i class="pi pi-sitemap text-emerald-500"></i> Pemetaan Komponen Rantai Pasok
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <!-- Komponen 1: PO -->
                   <div class="bg-white border-2 border-slate-100 rounded-[2rem] overflow-hidden shadow-sm flex flex-col transition-all hover:bg-blue-50/30 hover:border-blue-100 group">
                      <div class="bg-blue-50/50 border-b p-4 border-blue-50 flex items-center gap-4">
@@ -210,7 +210,7 @@
                            <div class="text-[9px] font-bold text-blue-400 uppercase tracking-widest">Komersial & Harga</div>
                         </div>
                      </div>
-                     <div class="p-6 bg-white shrink-0">
+                     <div class="p-4 bg-white shrink-0">
                         <input v-if="!isReadonly" type="text" v-model="form.orderCode" placeholder="Masukkan Nomor PO..." class="w-full h-12 border-none rounded-xl px-4 text-[13px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-blue-400 transition-all font-mono tracking-widest uppercase" />
                         <div v-else class="font-mono text-[13px] font-black text-slate-800 tracking-widest bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">{{ activeMw?.order?.code || 'PO-?' }}</div>
                      </div>
@@ -225,7 +225,7 @@
                            <div class="text-[9px] font-bold text-amber-400 uppercase tracking-widest">Fisik & Kuantitas</div>
                         </div>
                      </div>
-                     <div class="p-6 bg-white shrink-0">
+                     <div class="p-4 bg-white shrink-0">
                         <input v-if="!isReadonly" type="text" v-model="form.receiptCode" placeholder="Masukkan Nomor GRN..." class="w-full h-12 border-none rounded-xl px-4 text-[13px] font-black text-slate-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-amber-400 transition-all font-mono tracking-widest uppercase" />
                         <div v-else class="font-mono text-[13px] font-black text-slate-800 tracking-widest bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">{{ activeMw?.receipt?.code || 'GRN-?' }}</div>
                      </div>
@@ -240,7 +240,7 @@
                            <div class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest">Tagihan Akhir</div>
                         </div>
                      </div>
-                     <div class="p-6 bg-white shrink-0">
+                     <div class="p-4 bg-white shrink-0">
                         <input v-if="!isReadonly" type="text" v-model="form.invoiceCode" placeholder="Kode Faktur Vendor..." class="w-full h-12 border-none rounded-xl px-4 text-[13px] font-black text-indigo-900 bg-slate-50 shadow-inner outline-none focus:ring-4 focus:ring-indigo-400 transition-all font-mono tracking-widest uppercase" />
                         <div v-else class="font-mono text-[13px] font-black text-indigo-700 tracking-widest bg-slate-50 rounded-xl px-4 py-3 border border-slate-100">{{ activeMw?.invoice?.code || 'INV-?' }}</div>
                         <Button v-if="!isReadonly" label="Mulai Engine Rekonsiliasi" icon="pi pi-bolt" class="w-full h-12 text-[10px] font-black uppercase tracking-widest bg-indigo-600 border-none text-white shadow-xl mt-4 hover:scale-[1.02] active:scale-95 transition-all rounded-xl" @click="runSimulation" />

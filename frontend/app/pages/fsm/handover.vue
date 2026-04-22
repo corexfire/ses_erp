@@ -188,10 +188,10 @@ const formatDate = (date) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#f8fafc] p-6 lg:p-10 font-sans selection:bg-indigo-100 selection:text-indigo-700">
+  <div class="min-h-screen bg-[#f8fafc] p-4 lg:p-10 font-sans selection:bg-indigo-100 selection:text-indigo-700">
     <!-- Header Block -->
     <header class="mb-10 animate-in fade-in slide-in-from-top-4 duration-700">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div class="flex items-center gap-5">
           <div class="w-16 h-16 rounded-xl bg-indigo-600 flex items-center justify-center shadow-2xl shadow-indigo-200 shrink-0 rotate-3">
             <i class="pi pi-file-check text-white text-2xl"></i>
@@ -213,8 +213,8 @@ const formatDate = (date) => {
       </div>
 
       <!-- Stats Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-        <div class="bg-white p-6 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:shadow-indigo-50/50 transition-all duration-500 group">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
+        <div class="bg-white p-4 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:shadow-indigo-50/50 transition-all duration-500 group">
           <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 group-hover:scale-110 transition-transform">
               <i class="pi pi-folder-open text-lg"></i>
@@ -223,7 +223,7 @@ const formatDate = (date) => {
           </div>
           <div class="text-4xl font-black text-slate-900 tracking-tighter">{{ stats.total }}</div>
         </div>
-        <div class="bg-white p-6 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:shadow-amber-50/50 transition-all duration-500 group">
+        <div class="bg-white p-4 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:shadow-amber-50/50 transition-all duration-500 group">
           <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 group-hover:scale-110 transition-transform">
               <i class="pi pi-pencil text-lg"></i>
@@ -232,7 +232,7 @@ const formatDate = (date) => {
           </div>
           <div class="text-4xl font-black text-slate-900 tracking-tighter">{{ stats.pending }}</div>
         </div>
-        <div class="bg-white p-6 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:shadow-emerald-50/50 transition-all duration-500 group">
+        <div class="bg-white p-4 rounded-xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:shadow-emerald-50/50 transition-all duration-500 group">
           <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
               <i class="pi pi-verified text-lg"></i>
@@ -317,7 +317,7 @@ const formatDate = (date) => {
               <div class="space-y-8">
                 <div>
                   <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Informasi Pihak Terkait</h4>
-                  <div class="bg-slate-50 rounded-xl p-6 space-y-4 border border-slate-100">
+                  <div class="bg-slate-50 rounded-xl p-4 space-y-4 border border-slate-100">
                     <div class="flex items-center justify-between">
                       <span class="text-[10px] font-bold text-slate-400">Penerima</span>
                       <span class="text-[11px] font-black text-slate-900 uppercase tracking-tight">{{ selectedHandover.recipientName }}</span>
@@ -335,7 +335,7 @@ const formatDate = (date) => {
 
                 <div>
                   <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Objek Serah Terima</h4>
-                  <div class="bg-indigo-50/50 rounded-xl p-6 space-y-4 border border-indigo-100/50">
+                  <div class="bg-indigo-50/50 rounded-xl p-4 space-y-4 border border-indigo-100/50">
                     <div class="flex items-center gap-4">
                       <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-indigo-600 shadow-sm">
                         <i class="pi pi-box"></i>
@@ -392,7 +392,7 @@ const formatDate = (date) => {
 
     <!-- Modal Form -->
     <Dialog v-model:visible="displayDialog" :header="handover.id ? 'Edit Berita Acara' : 'Input Berita Acara Baru'" modal class="!rounded-xl overflow-hidden" :style="{ width: '900px' }">
-      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-8">
         <div class="space-y-6">
           <div class="flex flex-col gap-2">
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nomor BAST</label>
@@ -434,7 +434,7 @@ const formatDate = (date) => {
       </div>
 
       <template #footer>
-        <div class="flex justify-end gap-3 p-6 border-t bg-slate-50/50">
+        <div class="flex justify-end gap-3 p-4 border-t bg-slate-50/50">
           <Button label="Batal" icon="pi pi-times" text @click="displayDialog = false" class="!text-slate-400 !font-black !text-[10px] uppercase" />
           <Button label="Simpan BAST" icon="pi pi-check" @click="saveHandover" class="!bg-indigo-600 !border-none !rounded-xl !px-6 !font-black !text-[10px] uppercase" />
         </div>

@@ -21,6 +21,8 @@ const audit_service_1 = require("../../audit/audit.service");
 const prisma_service_1 = require("../../prisma/prisma.service");
 const create_fleet_vehicle_dto_1 = require("./dto/create-fleet-vehicle.dto");
 const update_fleet_vehicle_dto_1 = require("./dto/update-fleet-vehicle.dto");
+const maintenance_dto_1 = require("./dto/maintenance.dto");
+const document_dto_1 = require("./dto/document.dto");
 const vehicleOwnershipTypeSet = new Set(['OWNED', 'LEASED', 'THIRD_PARTY']);
 const isVehicleOwnershipType = (value) => Boolean(value) && vehicleOwnershipTypeSet.has(value);
 const vehicleStatusSet = new Set(['ACTIVE', 'MAINTENANCE', 'INACTIVE']);
@@ -171,6 +173,156 @@ let FleetController = class FleetController {
         });
         return { vehicle: updated };
     }
+    async listMaintenance(req, id) {
+        const logs = await this.prisma.vehicleMaintenance.findMany({
+            where: { vehicleId: id, tenantId: req.user.tenantId },
+            orderBy: { nextServiceAt: 'asc' },
+        });
+        return { logs };
+    }
+    async createMaintenance(req, id, body) {
+        const log = await this.prisma.vehicleMaintenance.create({
+            data: {
+                tenantId: req.user.tenantId,
+                vehicleId: id,
+                maintenanceType: body.maintenanceType,
+                description: body.description,
+                kmInterval: body.kmInterval,
+                dateInterval: body.dateInterval,
+                lastServiceAt: body.lastServiceAt ? new Date(body.lastServiceAt) : undefined,
+                nextServiceAt: body.nextServiceAt ? new Date(body.nextServiceAt) : undefined,
+                cost: body.cost,
+                vendorId: body.vendorId,
+                status: body.status || 'SCHEDULED',
+            },
+        });
+        await this.audit.log({
+            tenantId: req.user.tenantId,
+            actorUserId: req.user.id,
+            action: 'CREATE',
+            entity: 'VehicleMaintenance',
+            entityId: log.id,
+            metadata: { vehicleId: id, type: body.maintenanceType },
+        });
+        return { log };
+    }
+    async updateMaintenance(req, logId, body) {
+        const exists = await this.prisma.vehicleMaintenance.findFirst({
+            where: { id: logId, tenantId: req.user.tenantId },
+        });
+        if (!exists)
+            throw new common_1.NotFoundException('Maintenance log not found');
+        const updated = await this.prisma.vehicleMaintenance.update({
+            where: { id: logId },
+            data: {
+                ...(body.maintenanceType && { maintenanceType: body.maintenanceType }),
+                ...(body.description !== undefined && { description: body.description }),
+                ...(body.kmInterval !== undefined && { kmInterval: body.kmInterval }),
+                ...(body.dateInterval !== undefined && { dateInterval: body.dateInterval }),
+                ...(body.lastServiceAt && { lastServiceAt: new Date(body.lastServiceAt) }),
+                ...(body.nextServiceAt && { nextServiceAt: new Date(body.nextServiceAt) }),
+                ...(body.cost !== undefined && { cost: body.cost }),
+                ...(body.vendorId !== undefined && { vendorId: body.vendorId }),
+                ...(body.status && { status: body.status }),
+            },
+        });
+        await this.audit.log({
+            tenantId: req.user.tenantId,
+            actorUserId: req.user.id,
+            action: 'UPDATE',
+            entity: 'VehicleMaintenance',
+            entityId: logId,
+        });
+        return { log: updated };
+    }
+    async deleteMaintenance(req, logId) {
+        const exists = await this.prisma.vehicleMaintenance.findFirst({
+            where: { id: logId, tenantId: req.user.tenantId },
+        });
+        if (!exists)
+            throw new common_1.NotFoundException('Maintenance log not found');
+        await this.prisma.vehicleMaintenance.delete({ where: { id: logId } });
+        await this.audit.log({
+            tenantId: req.user.tenantId,
+            actorUserId: req.user.id,
+            action: 'DELETE',
+            entity: 'VehicleMaintenance',
+            entityId: logId,
+        });
+        return { success: true };
+    }
+    async listDocuments(req, id) {
+        const documents = await this.prisma.vehicleDocument.findMany({
+            where: { vehicleId: id, tenantId: req.user.tenantId },
+            orderBy: { expiryDate: 'asc' },
+        });
+        return { documents };
+    }
+    async createDocument(req, id, body) {
+        const document = await this.prisma.vehicleDocument.create({
+            data: {
+                tenantId: req.user.tenantId,
+                vehicleId: id,
+                documentType: body.documentType,
+                documentNumber: body.documentNumber,
+                issueDate: body.issueDate ? new Date(body.issueDate) : undefined,
+                expiryDate: body.expiryDate ? new Date(body.expiryDate) : undefined,
+                status: body.status || 'ACTIVE',
+                notes: body.notes,
+            },
+        });
+        await this.audit.log({
+            tenantId: req.user.tenantId,
+            actorUserId: req.user.id,
+            action: 'CREATE',
+            entity: 'VehicleDocument',
+            entityId: document.id,
+            metadata: { vehicleId: id, type: body.documentType },
+        });
+        return { document };
+    }
+    async updateDocument(req, docId, body) {
+        const exists = await this.prisma.vehicleDocument.findFirst({
+            where: { id: docId, tenantId: req.user.tenantId },
+        });
+        if (!exists)
+            throw new common_1.NotFoundException('Document not found');
+        const updated = await this.prisma.vehicleDocument.update({
+            where: { id: docId },
+            data: {
+                ...(body.documentType && { documentType: body.documentType }),
+                ...(body.documentNumber && { documentNumber: body.documentNumber }),
+                ...(body.issueDate && { issueDate: new Date(body.issueDate) }),
+                ...(body.expiryDate && { expiryDate: new Date(body.expiryDate) }),
+                ...(body.status && { status: body.status }),
+                ...(body.notes !== undefined && { notes: body.notes }),
+            },
+        });
+        await this.audit.log({
+            tenantId: req.user.tenantId,
+            actorUserId: req.user.id,
+            action: 'UPDATE',
+            entity: 'VehicleDocument',
+            entityId: docId,
+        });
+        return { document: updated };
+    }
+    async deleteDocument(req, docId) {
+        const exists = await this.prisma.vehicleDocument.findFirst({
+            where: { id: docId, tenantId: req.user.tenantId },
+        });
+        if (!exists)
+            throw new common_1.NotFoundException('Document not found');
+        await this.prisma.vehicleDocument.delete({ where: { id: docId } });
+        await this.audit.log({
+            tenantId: req.user.tenantId,
+            actorUserId: req.user.id,
+            action: 'DELETE',
+            entity: 'VehicleDocument',
+            entityId: docId,
+        });
+        return { success: true };
+    }
 };
 exports.FleetController = FleetController;
 __decorate([
@@ -220,6 +372,82 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], FleetController.prototype, "deactivate", null);
+__decorate([
+    (0, common_1.Get)(':id/maintenance'),
+    (0, permissions_decorator_1.RequirePermissions)('logistics.fleet.read'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], FleetController.prototype, "listMaintenance", null);
+__decorate([
+    (0, common_1.Post)(':id/maintenance'),
+    (0, permissions_decorator_1.RequirePermissions)('logistics.fleet.manage'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, maintenance_dto_1.CreateVehicleMaintenanceDto]),
+    __metadata("design:returntype", Promise)
+], FleetController.prototype, "createMaintenance", null);
+__decorate([
+    (0, common_1.Patch)('maintenance/:logId'),
+    (0, permissions_decorator_1.RequirePermissions)('logistics.fleet.manage'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('logId')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, maintenance_dto_1.UpdateVehicleMaintenanceDto]),
+    __metadata("design:returntype", Promise)
+], FleetController.prototype, "updateMaintenance", null);
+__decorate([
+    (0, common_1.Delete)('maintenance/:logId'),
+    (0, permissions_decorator_1.RequirePermissions)('logistics.fleet.manage'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('logId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], FleetController.prototype, "deleteMaintenance", null);
+__decorate([
+    (0, common_1.Get)(':id/documents'),
+    (0, permissions_decorator_1.RequirePermissions)('logistics.fleet.read'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], FleetController.prototype, "listDocuments", null);
+__decorate([
+    (0, common_1.Post)(':id/documents'),
+    (0, permissions_decorator_1.RequirePermissions)('logistics.fleet.manage'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, document_dto_1.CreateVehicleDocumentDto]),
+    __metadata("design:returntype", Promise)
+], FleetController.prototype, "createDocument", null);
+__decorate([
+    (0, common_1.Patch)('documents/:docId'),
+    (0, permissions_decorator_1.RequirePermissions)('logistics.fleet.manage'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('docId')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, document_dto_1.UpdateVehicleDocumentDto]),
+    __metadata("design:returntype", Promise)
+], FleetController.prototype, "updateDocument", null);
+__decorate([
+    (0, common_1.Delete)('documents/:docId'),
+    (0, permissions_decorator_1.RequirePermissions)('logistics.fleet.manage'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('docId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], FleetController.prototype, "deleteDocument", null);
 exports.FleetController = FleetController = __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, permissions_guard_1.PermissionsGuard),
     (0, common_1.Controller)('logistics/fleet'),

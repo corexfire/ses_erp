@@ -8,6 +8,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import {
+  IsArray,
+  IsDateString,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import type { AuthUser } from '../../auth/auth.types';
@@ -17,23 +25,75 @@ import { AuditService } from '../../audit/audit.service';
 import { PrismaService } from '../../prisma/prisma.service';
 
 export class SubmitPodDto {
+  @IsString()
+  @IsNotEmpty()
   receivedBy!: string;
+
+  @IsDateString()
+  @IsNotEmpty()
   receivedAt!: string;
+
+  @IsString()
+  @IsOptional()
   notes?: string;
+
+  @IsString()
+  @IsOptional()
   signatureFileId?: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
   photoFileIds?: string[];
+
+  @IsNumber()
+  @IsOptional()
   geoLat?: number;
+
+  @IsNumber()
+  @IsOptional()
   geoLng?: number;
 }
 
 export class MobileSubmitPodDto {
+  @IsString()
+  @IsNotEmpty()
   receivedBy!: string;
+
+  @IsDateString()
+  @IsNotEmpty()
   receivedAt!: string;
+
+  @IsString()
+  @IsOptional()
   notes?: string;
+
+  @IsString()
+  @IsOptional()
   signatureFileId?: string;
+
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
   photoFileIds?: string[];
+
+  @IsNumber()
+  @IsOptional()
   geoLat?: number;
+
+  @IsNumber()
+  @IsOptional()
   geoLng?: number;
+}
+
+export class MarkFailedDto {
+  @IsString()
+  @IsNotEmpty()
+  reason!: string;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
 }
 
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -164,7 +224,7 @@ export class PodController {
   async markFailed(
     @Req() req: FastifyRequest & { user: AuthUser },
     @Param('id') id: string,
-    @Body() body: { reason: string; description?: string },
+    @Body() body: MarkFailedDto,
   ) {
     const deliveryOrder = await this.prisma.deliveryOrder.findFirst({
       where: { id, tenantId: req.user.tenantId! },

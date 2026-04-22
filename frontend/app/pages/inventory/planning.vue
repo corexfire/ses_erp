@@ -3,7 +3,7 @@
     <!-- Header (Premium Planning Style) -->
     <div class="rounded-xl bg-slate-900 border border-slate-800 p-8 shadow-2xl relative overflow-hidden group">
       <div class="absolute top-0 right-0 w-80 h-80 bg-orange-500/10 rounded-full blur-[100px] -mr-40 -mt-40 transition-all duration-700 group-hover:bg-orange-500/20"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
            <div class="flex items-center gap-2 mb-1">
               <span class="px-3 py-1 bg-orange-600 text-white text-[9px] font-black uppercase tracking-widest rounded-full">Supply Chain AI</span>

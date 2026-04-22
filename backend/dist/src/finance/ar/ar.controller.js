@@ -26,7 +26,7 @@ let ArController = class ArController {
     async list(req, status) {
         const invoices = await this.prisma.customerInvoice.findMany({
             where: { tenantId: req.user.tenantId, ...(status ? { status } : {}) },
-            include: { payments: true, lines: true },
+            include: { customer: true, payments: true, lines: true },
             orderBy: [{ invoiceDate: 'desc' }],
             take: 200,
         });
@@ -35,7 +35,7 @@ let ArController = class ArController {
     async get(req, id) {
         const invoice = await this.prisma.customerInvoice.findFirst({
             where: { id, tenantId: req.user.tenantId },
-            include: { payments: true, lines: { orderBy: [{ lineNo: 'asc' }] } },
+            include: { customer: true, payments: true, lines: { orderBy: [{ lineNo: 'asc' }] } },
         });
         return { invoice };
     }
@@ -45,7 +45,7 @@ let ArController = class ArController {
             data: {
                 tenantId: req.user.tenantId,
                 invoiceNo: body.invoiceNo,
-                customerCode: body.customerCode,
+                customerId: body.customerId,
                 invoiceDate: new Date(body.invoiceDate),
                 dueDate: body.dueDate ? new Date(body.dueDate) : null,
                 description: body.description,
@@ -94,7 +94,7 @@ let ArController = class ArController {
     async debtCollection(req) {
         const overdueInvoices = await this.prisma.customerInvoice.findMany({
             where: { tenantId: req.user.tenantId, status: { in: ['OPEN', 'OVERDUE'] } },
-            include: { payments: true },
+            include: { customer: true, payments: true },
         });
         const collectionItems = [];
         for (const inv of overdueInvoices) {
@@ -106,7 +106,7 @@ let ArController = class ArController {
             collectionItems.push({
                 id: inv.id,
                 invoiceNo: inv.invoiceNo,
-                customerCode: inv.customerCode,
+                customerCode: inv.customer?.code || 'N/A',
                 invoiceDate: inv.invoiceDate,
                 dueDate: inv.dueDate,
                 totalAmount: inv.totalAmount,

@@ -10,7 +10,7 @@
     <!-- Header (Premium Retention Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-purple-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Retention Core</span>
@@ -28,9 +28,9 @@
 
     <!-- Metrics Cards -->
     <!-- High-Contrast KPI Banners (Premium style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
        <!-- Primary engagement banner -->
-      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+      <div class="p-4 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
         <div class="text-[10px] font-black uppercase text-purple-400 tracking-[0.2em] mb-4 opacity-80">Portfolio Value</div>
         <div class="flex items-end justify-between">
           <h3 class="text-2xl font-black text-white tracking-tighter leading-none">Rp {{ formatNumber(subs.reduce((a,c) => a + Number(c.amount||0), 0)) }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Langganan Aktif</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-emerald-600 tracking-tighter leading-none">{{ summary.active || 0 }}</h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Tunggakan Bayar</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-rose-700 tracking-tighter leading-none">{{ summary.pastDue || 0 }}</h3>
@@ -56,7 +56,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Kontrak Berhenti</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-400 tracking-tighter group-hover:text-slate-600 transition-colors leading-none">{{ summary.cancelled || 0 }}</h3>
@@ -162,7 +162,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b bg-white flex justify-between items-center shrink-0 relative overflow-hidden border-b-purple-100">
           <div class="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700 bg-purple-50"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-slate-900 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-sync text-3xl animate-spin-slow text-purple-400"></i>
             </div>
@@ -257,7 +257,7 @@
                        </div>
 
                        <div class="space-y-2 md:col-span-2">
-                          <div class="p-6 rounded-[2rem] bg-purple-50 border border-purple-100">
+                          <div class="p-4 rounded-[2rem] bg-purple-50 border border-purple-100">
                              <label class="text-[10px] font-black text-purple-600 uppercase tracking-[0.2em] block font-bold mb-3">JADWAL INVOICE BERIKUTNYA (SYSTEM TRIGGER)</label>
                              <input type="date" v-model="form.nextBillingDate" class="w-full h-14 border-none rounded-2xl px-5 text-xl font-black text-purple-950 bg-white shadow-xl outline-none focus:ring-2 focus:ring-purple-500" />
                           </div>

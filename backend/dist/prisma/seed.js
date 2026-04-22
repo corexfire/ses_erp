@@ -39,6 +39,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const client_1 = require("./generated/client");
 const adapter_pg_1 = require("@prisma/adapter-pg");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const seed_hris_analytics_1 = require("./seed-hris-analytics");
+const seed_hris_succession_1 = require("./seed-hris-succession");
+const seed_project_expansion_1 = require("./seed-project-expansion");
+const seed_premium_project_1 = require("./seed-premium-project");
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
     throw new Error('DATABASE_URL is required');
@@ -130,6 +134,12 @@ async function main() {
         'core.workflow.create',
         'core.workflow.update',
         'core.workflow.deactivate',
+        'core.systemConfig.read',
+        'core.systemConfig.update',
+        'core.systemConfig.delete',
+        'core.printFormat.read',
+        'core.printFormat.update',
+        'core.printFormat.delete',
         'crm.lead.read',
         'crm.lead.create',
         'crm.lead.update',
@@ -370,8 +380,6 @@ async function main() {
     await seedWarehousesDetailed(prisma, tenant.id);
     const { seedPacking } = await Promise.resolve().then(() => __importStar(require('./seed-packing')));
     await seedPacking(prisma, tenant.id);
-    const { seedProjectBudgets } = await Promise.resolve().then(() => __importStar(require('./seed-project-budgets')));
-    await seedProjectBudgets(prisma, tenant.id);
     const { seedSiteInfrastructure } = await Promise.resolve().then(() => __importStar(require('./seed-site-infrastructure')));
     await seedSiteInfrastructure(prisma, tenant.id);
     const { seedSupportAssets } = await Promise.resolve().then(() => __importStar(require('./seed-support-assets')));
@@ -390,6 +398,86 @@ async function main() {
     await seedIntegratedErp(prisma, tenant.id);
     const { seedEnterpriseFull } = await Promise.resolve().then(() => __importStar(require('./seed-enterprise-full')));
     await seedEnterpriseFull(prisma, tenant.id);
+    const { seedConstructionMR } = await Promise.resolve().then(() => __importStar(require('./seed-construction-mr')));
+    await seedConstructionMR(prisma, tenant.id);
+    const { seedSubcontractors } = await Promise.resolve().then(() => __importStar(require('./seed-construction-subcontractors')));
+    await seedSubcontractors(prisma, tenant.id);
+    const { seedDailyProgress } = await Promise.resolve().then(() => __importStar(require('./seed-construction-progress')));
+    await seedDailyProgress(prisma, tenant.id);
+    const { seedDrawings } = await Promise.resolve().then(() => __importStar(require('./seed-construction-drawings')));
+    await seedDrawings(prisma, tenant.id);
+    const { seedHse } = await Promise.resolve().then(() => __importStar(require('./seed-construction-hse')));
+    await seedHse(prisma, tenant.id);
+    const { seedInterCompany } = await Promise.resolve().then(() => __importStar(require('./seed-finance-intercompany')));
+    await seedInterCompany(prisma, tenant.id);
+    const { seedReconciliation } = await Promise.resolve().then(() => __importStar(require('./seed-finance-reconciliation')));
+    await seedReconciliation(prisma, tenant.id);
+    const { seedPettyCash } = await Promise.resolve().then(() => __importStar(require('./seed-finance-petty-cash')));
+    await seedPettyCash(prisma, tenant.id);
+    const { seedCustomerReceipts } = await Promise.resolve().then(() => __importStar(require('./seed-finance-receipts')));
+    await seedCustomerReceipts(prisma, tenant.id);
+    const { seedFullFinanceFlow } = await Promise.resolve().then(() => __importStar(require('./seed-finance-full-flow')));
+    await seedFullFinanceFlow(prisma, tenant.id);
+    const { seedPaymentRequests } = await Promise.resolve().then(() => __importStar(require('./seed-finance-payment-requests')));
+    await seedPaymentRequests(prisma, tenant.id);
+    const { seedVendorReconciliation } = await Promise.resolve().then(() => __importStar(require('./seed-finance-vendor-reconciliation')));
+    await seedVendorReconciliation(prisma, tenant.id);
+    const { seedDepreciation } = await Promise.resolve().then(() => __importStar(require('./seed-finance-depreciation')));
+    await seedDepreciation(prisma, tenant.id);
+    const { seedAssetDisposal } = await Promise.resolve().then(() => __importStar(require('./seed-finance-asset-disposal')));
+    await seedAssetDisposal(prisma, tenant.id);
+    const { seedFinanceBudget } = await Promise.resolve().then(() => __importStar(require('./seed-finance-budget')));
+    await seedFinanceBudget(prisma, tenant.id);
+    const { seedProjectBudgets } = await Promise.resolve().then(() => __importStar(require('./seed-project-budgets')));
+    await seedProjectBudgets(prisma, tenant.id);
+    const { seedTaxInvoiceIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-tax-invoice-integrated')));
+    await seedTaxInvoiceIntegrated(prisma, tenant.id);
+    const { seedTaxInvoiceInputIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-tax-invoice-input-integrated')));
+    await seedTaxInvoiceInputIntegrated(prisma, tenant.id);
+    const { seedTaxNsfpIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-tax-nsfp-integrated')));
+    await seedTaxNsfpIntegrated(prisma, tenant.id);
+    const { seedTaxPpnMasaIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-tax-ppn-masa-integrated')));
+    await seedTaxPpnMasaIntegrated(prisma, tenant.id);
+    const { seedTaxEbupotIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-tax-ebupot-integrated')));
+    await seedTaxEbupotIntegrated(prisma, tenant.id);
+    const { seedTaxPph21Integrated } = await Promise.resolve().then(() => __importStar(require('./seed-tax-pph21-integrated')));
+    await seedTaxPph21Integrated(prisma, tenant.id);
+    const { seedTaxBuktiPotongIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-tax-bukti-potong-integrated')));
+    await seedTaxBuktiPotongIntegrated(prisma, tenant.id);
+    const { seedTaxIdBillingIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-tax-id-billing-integrated')));
+    await seedTaxIdBillingIntegrated(prisma, tenant.id);
+    const { seedTaxEqualizationIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-tax-equalization-integrated')));
+    await seedTaxEqualizationIntegrated(prisma, tenant.id);
+    const { seedHrisRecruitmentIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-hris-recruitment-integrated')));
+    await seedHrisRecruitmentIntegrated(prisma, tenant.id);
+    const { seedHrisLmsIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-hris-lms-integrated')));
+    await seedHrisLmsIntegrated(prisma, tenant.id);
+    const { seedHrisAttendanceIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-hris-attendance-integrated')));
+    await seedHrisAttendanceIntegrated(prisma, tenant.id);
+    const { seedHrisShiftIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-hris-shift-integrated')));
+    await seedHrisShiftIntegrated(prisma, tenant.id);
+    const { seedHrisExpenseIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-hris-expense-integrated')));
+    await seedHrisExpenseIntegrated(prisma, tenant.id);
+    const { seedProjectTenderIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-project-tender-integrated')));
+    await seedProjectTenderIntegrated(prisma, tenant.id);
+    const { seedProjectBillingIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-project-billing-integrated')));
+    await seedProjectBillingIntegrated(prisma, tenant.id);
+    const { seedSupportBiIntegrated } = await Promise.resolve().then(() => __importStar(require('./seed-support-bi-integrated')));
+    await seedSupportBiIntegrated(prisma, tenant.id);
+    const { seedSystemSettings } = await Promise.resolve().then(() => __importStar(require('./seed-system-settings')));
+    await seedSystemSettings(prisma, tenant.id);
+    const { seedHrisProductivity } = await Promise.resolve().then(() => __importStar(require('./seed-hris-productivity')));
+    await seedHrisProductivity(prisma, tenant.id);
+    const { seedHrisTimesheets } = await Promise.resolve().then(() => __importStar(require('./seed-hris-timesheets')));
+    await seedHrisTimesheets(prisma, tenant.id);
+    const { seedHrisOffboarding } = await Promise.resolve().then(() => __importStar(require('./seed-hris-offboarding')));
+    await seedHrisOffboarding(prisma, tenant.id);
+    const { seedLogisticsExpansion } = await Promise.resolve().then(() => __importStar(require('./seed-logistics-expansion')));
+    await seedLogisticsExpansion(prisma, tenant.id);
+    await (0, seed_hris_analytics_1.seedHrisAnalytics)(prisma, tenant.id);
+    await (0, seed_hris_succession_1.seedHrisSuccession)(prisma, tenant.id);
+    await (0, seed_project_expansion_1.seedProjectExpansion)(prisma, tenant.id);
+    await (0, seed_premium_project_1.seedPremiumProject)(prisma, tenant.id);
 }
 main()
     .then(async () => {

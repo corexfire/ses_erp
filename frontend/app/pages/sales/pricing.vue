@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section (Premium Sales Style) -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 hover:shadow-xl group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-rose-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -20,15 +20,15 @@
     </div>
 
     <!-- Overview Banners -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-       <div class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl flex items-start gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+       <div class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl flex items-start gap-4">
           <div class="p-4 bg-slate-900 rounded-3xl text-white text-xl shadow-xl flex-shrink-0"><i class="pi pi-book"></i></div>
           <div>
              <div class="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Level 1: Price List Utama</div>
              <p class="text-xs text-slate-600 leading-relaxed font-medium">Harga dasar publik untuk semua pelanggan. Bersifat statis kecuali di-override oleh aturan harga khusus.</p>
           </div>
        </div>
-       <div class="group p-6 rounded-xl bg-rose-900 text-white shadow-xl flex items-start gap-4 border border-rose-800">
+       <div class="group p-4 rounded-xl bg-rose-900 text-white shadow-xl flex items-start gap-4 border border-rose-800">
           <div class="p-4 bg-rose-600 rounded-3xl text-white text-xl shadow-lg flex-shrink-0 animate-pulse"><i class="pi pi-bolt"></i></div>
           <div>
              <div class="text-[10px] font-black uppercase text-rose-300 tracking-widest mb-1">Level 2: Pricing Rules Engine</div>
@@ -136,7 +136,7 @@
              <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs">1</div>
              <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Definisi Strategi</h4>
            </div>
-           <div class="grid grid-cols-2 gap-6 pl-9">
+           <div class="grid grid-cols-2 gap-4 pl-9">
               <div class="space-y-2">
                  <label class="text-[10px] font-black text-slate-400 uppercase">Kode Aturan</label>
                  <InputText v-model="form.code" class="w-full text-xs font-bold rounded-xl h-10 border-slate-200" placeholder="PR-XXXX-2024" :disabled="!isNew" />
@@ -162,7 +162,7 @@
              <div class="w-8 h-8 rounded-full bg-rose-600 flex items-center justify-center text-white text-xs">2</div>
              <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Kondisi Pemantik (Trigger)</h4>
            </div>
-           <div class="grid grid-cols-2 gap-6 pl-9">
+           <div class="grid grid-cols-2 gap-4 pl-9">
               <div class="space-y-2 lg:col-span-2">
                  <label class="text-[10px] font-black text-slate-400 uppercase">Target Produk / SKU</label>
                  <Select v-model="form.itemCode" :options="items" optionLabel="label" optionValue="code" placeholder="Pilih Produk (Kosongkan untuk Global)..." filter class="w-full text-xs font-bold rounded-xl border-slate-200" showClear />
@@ -184,7 +184,7 @@
              <div class="w-8 h-8 rounded-full bg-slate-400 flex items-center justify-center text-white text-xs">3</div>
              <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Masa Berlaku Aturan</h4>
            </div>
-           <div class="grid grid-cols-2 gap-6 pl-9">
+           <div class="grid grid-cols-2 gap-4 pl-9">
               <div class="space-y-2">
                  <label class="text-[10px] font-black text-slate-400 uppercase">Tanggal Efektif</label>
                  <InputText v-model="form.effectiveDate" type="date" class="w-full text-xs font-bold rounded-xl h-10 border-slate-200" />

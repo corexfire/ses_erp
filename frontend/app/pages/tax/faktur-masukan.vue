@@ -1,8 +1,8 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -25,8 +25,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -97,70 +97,83 @@
        </DataTable>
     </div>
 
-    <!-- New/Edit Drawer -->
-    <Drawer v-model:visible="drawerOpen" :header="editingId ? 'Edit Faktur Masukan' : 'Faktur Masukan Baru'" position="right" class="w-[550px]">
-       <div class="space-y-8 pt-4 px-4 overflow-y-auto pb-20">
+    <!-- New/Edit Dialog -->
+    <Dialog v-model:visible="drawerOpen" :header="editingId ? 'Edit Faktur Masukan' : 'Faktur Masukan Baru'" modal class="w-full max-w-2xl overflow-hidden !rounded-xl" :pt="{
+       header: { class: 'p-8 border-b border-slate-100' },
+       content: { class: 'p-8 pb-10 max-h-[70vh] overflow-y-auto' },
+       footer: { class: 'p-8 border-t border-slate-100 bg-slate-50/50' }
+    }">
+       <div class="space-y-8">
+          <!-- Section 1: Purchase Info -->
           <div class="space-y-4">
              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs">1</div>
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs font-black">1</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Informasi Pembelian</h4>
              </div>
              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">Tanggal Invoice</label>
-                   <InputText v-model="form.invoiceDate" type="date" class="w-full rounded-xl" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Tanggal Invoice</label>
+                   <InputText v-model="form.invoiceDate" type="date" class="w-full !rounded-2xl !p-3 border-slate-200" />
                 </div>
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">No Invoice Vendor</label>
-                   <InputText v-model="form.invoiceNo" class="w-full rounded-xl" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">No Invoice Vendor</label>
+                   <InputText v-model="form.invoiceNo" class="w-full !rounded-2xl !p-3 border-slate-200" />
                 </div>
              </div>
           </div>
 
+          <!-- Section 2: Supplier Info -->
           <div class="space-y-4">
              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs">2</div>
+                <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs font-black">2</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Identitas Pemasok</h4>
              </div>
              <div class="space-y-1">
-                <label class="text-[10px] font-black text-slate-400 uppercase">Nama Pemasok</label>
-                <InputText v-model="form.customerName" class="w-full rounded-xl" />
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Nama Pemasok</label>
+                <InputText v-model="form.customerName" class="w-full !rounded-2xl !p-3 border-slate-200" />
              </div>
              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">Nomor NSFP (Input)</label>
-                   <InputText v-model="form.fpNumber" class="w-full rounded-xl" placeholder="010.000-24.xxxxxxxx" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Nomor NSFP (Input)</label>
+                   <InputText v-model="form.fpNumber" class="w-full !rounded-2xl !p-3 border-slate-200 font-mono" placeholder="010.000-24.xxxxxxxx" />
                 </div>
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">Tanggal NSFP</label>
-                   <InputText v-model="form.fpDate" type="date" class="w-full rounded-xl" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Tanggal NSFP</label>
+                   <InputText v-model="form.fpDate" type="date" class="w-full !rounded-2xl !p-3 border-slate-200" />
                 </div>
              </div>
           </div>
 
-          <div class="space-y-4 p-6 rounded-3xl bg-slate-50 border border-slate-100">
+          <!-- Section 3: Tax Values -->
+          <div class="space-y-4 p-4 rounded-[2rem] bg-slate-50 border border-slate-100">
              <div class="flex items-center gap-3 mb-2">
-                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs">3</div>
+                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-black">3</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Nilai Kena Pajak</h4>
              </div>
              <div class="space-y-3">
                 <div class="flex justify-between items-center text-sm">
-                   <span class="font-bold text-slate-500 uppercase text-[10px]">Nilai DPP (Dasar Pengenaan Pajak)</span>
-                   <InputNumber v-model="form.baseAmount" mode="currency" currency="IDR" locale="id-ID" class="p-inputtext-sm text-right" @input="calcVat" />
+                   <span class="font-black text-slate-500 uppercase text-[10px] tracking-widest">Nilai DPP</span>
+                   <InputNumber v-model="form.baseAmount" mode="currency" currency="IDR" locale="id-ID" class="p-inputtext-sm text-right" pt:input:class="!border-none !bg-transparent font-black" @input="calcVat" />
                 </div>
                 <div class="flex justify-between items-center text-sm">
-                   <span class="font-bold text-slate-500 uppercase text-[10px]">Nilai PPN</span>
-                   <InputNumber v-model="form.taxAmount" mode="currency" currency="IDR" locale="id-ID" class="p-inputtext-sm text-right" />
+                   <span class="font-black text-slate-500 uppercase text-[10px] tracking-widest">Nilai PPN</span>
+                   <InputNumber v-model="form.taxAmount" mode="currency" currency="IDR" locale="id-ID" class="p-inputtext-sm text-right" pt:input:class="!border-none !bg-transparent font-black" />
+                </div>
+                <div class="pt-4 border-t border-slate-200 flex justify-between items-center">
+                   <span class="font-black text-slate-900 uppercase text-[10px] tracking-widest">Total Nilai Pembelian</span>
+                   <span class="text-xl font-black text-slate-900 tracking-tighter">IDR {{ fmtNumber(Number(form.baseAmount) + Number(form.taxAmount)) }}</span>
                 </div>
              </div>
           </div>
-
-          <div class="fixed bottom-0 left-0 w-full bg-white p-6 border-t flex justify-end gap-3 rounded-t-[2rem] shadow-2xl">
-             <Button label="Batal" severity="secondary" text @click="drawerOpen = false" class="font-black text-[10px] uppercase" />
-             <Button label="Proses Faktur" icon="pi pi-save" class="p-button-rounded font-black text-[10px] uppercase px-8 p-button-success" @click="save" :loading="saving" />
-          </div>
        </div>
-    </Drawer>
+
+       <template #footer>
+          <div class="flex gap-3 justify-end w-full">
+             <Button label="Batalkan" severity="secondary" text @click="drawerOpen = false" class="text-[10px] font-black uppercase" />
+             <Button label="Simpan Faktur" icon="pi pi-check-circle" class="p-button-rounded p-button-success font-black text-[10px] uppercase shadow-lg px-8" @click="save" :loading="saving" />
+          </div>
+       </template>
+    </Dialog>
 
   </div>
 </template>

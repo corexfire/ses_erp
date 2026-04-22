@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP Module Integration Map</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface2: #22263a;
+            --border: #2e3350;
+            --accent: #5b6af0;
+            --accent2: #38bdf8;
+            --text: #e2e8f0;
+            --muted: #8892b0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a1d27, #12152a);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .logo {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        header h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .badges {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-size: 0.68rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 99px;
+        }
+
+        .badge-red {
+            background: rgba(239, 68, 68, .15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, .3);
+        }
+
+        .badge-yellow {
+            background: rgba(245, 158, 11, .15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, .3);
+        }
+
+        .badge-green {
+            background: rgba(34, 197, 94, .15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, .3);
+        }
+
+        .legend-bar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 28px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        .legend-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+        }
+
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            scrollbar-width: none;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            padding: 13px 16px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--muted);
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all .2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text);
+        }
+
+        .tab-btn.active {
+            color: var(--accent2);
+            border-bottom-color: var(--accent2);
+        }
+
+        .content {
+            padding: 24px 20px;
+        }
+
+        .diagram-section {
+            display: none;
+        }
+
+        .diagram-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 18px;
+        }
+
+        .section-header h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .section-header p {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        .diagram-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .diagram-card h3 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent2);
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 14px;
+        }
+
+        .checklist-group {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .cg-header {
+            background: var(--surface2);
+            padding: 9px 14px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .grp-badge {
+            font-size: 0.63rem;
+            padding: 2px 7px;
+            border-radius: 99px;
+            font-weight: 700;
+        }
+
+        .ci {
+            padding: 8px 14px;
+            font-size: 0.74rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+            display: flex;
+            gap: 8px;
+            line-height: 1.5;
+        }
+
+        .ci:last-child {
+            border-bottom: none;
+        }
+
+        table.phase-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        table.phase-table th {
+            background: var(--surface2);
+            padding: 9px 14px;
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        table.phase-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+            vertical-align: top;
+        }
+
+        table.phase-table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">🗺️</div>
+        <div>
+            <h1>ERP Module Integration Map</h1>
+            <p>Peta Relasi Lengkap Antar Modul — API &amp; Frontend Integration v1.0</p>
+        </div>
+        <div class="badges">
+            <span class="badge badge-red">🔴 KRITIS</span>
+            <span class="badge badge-yellow">🟡 PENTING</span>
+            <span class="badge badge-green">🟢 OPSIONAL</span>
+        </div>
+    </header>
+
+    <div class="legend-bar">
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#ef4444"></div>Kritis — wajib sebelum go-live
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#f59e0b"></div>Penting — sebelum full launch
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#22c55e"></div>Opsional — enhancement
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#38bdf8"></div>→ Satu arah
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#a78bfa"></div>↔ Dua arah
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#fbbf24"></div>⚡ Auto-trigger
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('overview')">🗄️ Overview</button>
+        <button class="tab-btn" onclick="showTab('crm')">👥 CRM</button>
+        <button class="tab-btn" onclick="showTab('sales')">🛒 Sales</button>
+        <button class="tab-btn" onclick="showTab('ecom')">🌐 E-Commerce</button>
+        <button class="tab-btn" onclick="showTab('pos')">🏪 POS</button>
+        <button class="tab-btn" onclick="showTab('procurement')">📋 Procurement</button>
+        <button class="tab-btn" onclick="showTab('inventory')">📦 Inventory</button>
+        <button class="tab-btn" onclick="showTab('manufacturing')">⚙️ Manufacturing</button>
+        <button class="tab-btn" onclick="showTab('finance')">💰 Finance</button>
+        <button class="tab-btn" onclick="showTab('tax')">🧾 Tax</button>
+        <button class="tab-btn" onclick="showTab('hris')">🪪 HRIS</button>
+        <button class="tab-btn" onclick="showTab('logistics')">🚚 Logistics</button>
+        <button class="tab-btn" onclick="showTab('project')">📁 Project</button>
+        <button class="tab-btn" onclick="showTab('support')">🔧 Support</button>
+        <button class="tab-btn" onclick="showTab('fullchain')">🔗 Full Chain</button>
+        <button class="tab-btn" onclick="showTab('checklist')">✅ Checklist</button>
+    </div>
+
+    <div class="content">
+
+        <!-- ======== OVERVIEW ======== -->
+        <div id="tab-overview" class="diagram-section active">
+            <div class="section-header">
+                <h2>🗄️ Overview — Core Master Data Hub</h2>
+                <p>Core adalah fondasi semua modul. Semua modul bergantung ke Core.</p>
+            </div>
+            <div class="diagram-card">
+                <h3>Core Master Data ke Semua Modul</h3>
+                <div class="mermaid" id="d-overview-1">
+                    flowchart TD
+                    CORE["CORE MASTER DATA"]
+                    CORE --> CRM["CRM"]
+                    CORE --> SALES["Sales"]
+                    CORE --> PROC["Procurement"]
+                    CORE --> INV["Inventory"]
+                    CORE --> MFG["Manufacturing"]
+                    CORE --> FIN["Finance"]
+                    CORE --> TAX["Tax"]
+                    CORE --> HRIS["HRIS"]
+                    CORE --> POS["POS Retail"]
+                    CORE --> ECOM["E-Commerce"]
+                    CORE --> LOG["Logistics"]
+                    CORE --> PROJ["Project"]
+                    CORE --> CONST["Construction"]
+                    CORE --> QMS["QMS"]
+                    CORE --> FSM["FSM"]
+                    CORE --> RENT["Rental"]
+                    CORE --> BI["BI dan AI"]
+                    style CORE fill:#1e2a4a,stroke:#5b6af0,stroke-width:3px,color:#e2e8f0
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>Peta Alur Modul Utama</h3>
+                <div class="mermaid" id="d-overview-2">
+                    flowchart LR
+                    MKT["Marketing"] --> CRM2["CRM"]
+                    CRM2 --> SQ["Quotation"]
+                    ECOM2["E-Commerce"] --> SO["Sales Order"]
+                    POS2["POS"] --> SI["Sales Invoice"]
+                    SQ --> SO
+                    SO --> DO["Delivery Order"]
+                    SO --> SI
+                    SO --> MFG2["Manufacturing"]
+                    SO --> PR["PR"]
+                    DO --> WH["Inventory"]
+                    DO --> LOG2["Logistics"]
+                    GRN["GRN"] --> PO["PO"]
+                    PO --> GRN
+                    SI --> AR["AR"]
+                    SI --> TAX2["Tax"]
+                    AR --> GL["GL Journal"]
+                    AP["AP"] --> GL
+                    GRN --> AP
+                    MFG2 --> WH
+                    MFG2 --> GL
+                    QMS2["QMS"] --> GRN
+                    HRIS2["HRIS Payroll"] --> GL
+                    HRIS2 --> TAX2
+                    PROJ2["Project"] --> SI
+                    PROJ2 --> GL
+                    TAX2 --> GL
+                    WH --> GRN
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== CRM ======== -->
+        <div id="tab-crm" class="diagram-section">
+            <div class="section-header">
+                <h2>👥 CRM — Customer Relationship Management</h2>
+                <p>Lead, Opportunity, Customer Service, Marketing Campaign</p>
+            </div>
+            <div class="diagram-card">
+                <h3>CRM Flow dan Relasi ke Modul Lain</h3>
+                <div class="mermaid" id="d-crm-1">
+                    flowchart TD
+                    MKT["Marketing Campaign"] --> LEAD["CRM Lead"]
+                    MKT -->|"Konsumsi anggaran"| BUDGET["Finance Budget Control"]
+                    LEAD --> OPP["CRM Opportunity"]
+                    OPP -->|"Auto-populate customer dan item"| SQ["Sales Quotation"]
+                    CS["Customer Service"] -->|"Trigger retur"| SRET["Sales Return"]
+                    CS -->|"Dispatch teknisi"| FSM_C["FSM Work Order"]
+                    CS -->|"Non-conformance"| QMS_C["QMS NCR"]
+                    CS --> LEAD
+                    LEAD <-->|"Sinkronisasi"| ECOM_C["E-Commerce Account"]
+                        LEAD <-->|"Poin pelanggan"| POS_C["POS Loyalty Member"]
+                            FIN_AR["Finance AR Aging"] <-->|"Saldo piutang di CRM"| LEAD
+                                style LEAD fill:#1e2a4a,stroke:#5b6af0,stroke-width:2px,color:#e2e8f0
+                                style OPP fill:#1e3a2a,stroke:#22c55e,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== SALES ======== -->
+        <div id="tab-sales" class="diagram-section">
+            <div class="section-header">
+                <h2>🛒 Sales and Distribution</h2>
+                <p>Quotation ke Order ke Delivery ke Invoice ke Receipt ke Return</p>
+            </div>
+            <div class="diagram-card">
+                <h3>Sales Full Cycle</h3>
+                <div class="mermaid" id="d-sales-1">
+                    flowchart TD
+                    CRM_O["CRM Opportunity"] -->|"Customer dan item"| SQ2["Sales Quotation"]
+                    PRICE["Sales Pricing"] -->|"Harga dan diskon"| SQ2
+                    SQ2 --> APPR["Approval Workflow"]
+                    APPR -->|"Approved"| SO2["Sales Order"]
+                    SO2 -->|"Trigger DO"| DO2["Delivery Order"]
+                    SO2 -->|"Reservasi stok"| PICK["Inventory Picking"]
+                    SO2 -->|"Trigger invoice"| SI2["Sales Invoice"]
+                    SO2 -->|"MTO trigger"| MTO["Manufacturing Work Order"]
+                    SO2 -->|"Drop-ship"| DROP["Procurement PR"]
+                    DO2 -->|"Stock deduction auto"| INV2["Inventory Stock"]
+                    DO2 --> LOG3["Logistics Fleet dan Route"]
+                    DO2 -->|"Trigger setelah DO"| SI2
+                    SI2 -->|"Auto-post AR"| AR2["Finance AR"]
+                    SI2 -->|"Auto-post GL"| JE2["GL Journal Dr AR Cr Revenue"]
+                    SI2 -->|"Generate e-Faktur"| TAX3["Tax Faktur Pajak Keluaran"]
+                    CR["Customer Receipt"] -->|"Update outstanding"| SI2
+                    CR -->|"Dr Bank Cr AR"| BANK["Finance Bank"]
+                    style SO2 fill:#1e2a4a,stroke:#5b6af0,stroke-width:2px,color:#e2e8f0
+                    style SI2 fill:#2a1e3a,stroke:#a78bfa,stroke-width:2px,color:#e2e8f0
+                    style AR2 fill:#3a1e1e,stroke:#ef4444,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>Sales Return dan Commission</h3>
+                <div class="mermaid" id="d-sales-2">
+                    flowchart LR
+                    SR["Sales Return"] -->|"Barang masuk kembali"| INVRTN["Inventory GRN Retur"]
+                    SR -->|"Credit note auto"| ARN["AR Credit Note"]
+                    SR -->|"Reversal GL"| JER["GL Reversal Journal"]
+                    SR -->|"Faktur retur"| TAXR["Tax Faktur Retur"]
+                    COMM["Sales Commission"] -->|"Komponen gaji"| PAYROLL["HRIS Payroll"]
+                    COMM -->|"Beban komisi"| JE_C["GL Journal Beban Komisi"]
+                    RECUR["Recurring Billing"] -->|"Auto-generate"| SI_R["Sales Invoice"]
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== E-COMMERCE ======== -->
+        <div id="tab-ecom" class="diagram-section">
+            <div class="section-header">
+                <h2>🌐 E-Commerce and Omnichannel</h2>
+                <p>Marketplace, Webstore, sinkronisasi stok real-time</p>
+            </div>
+            <div class="diagram-card">
+                <h3>E-Commerce dan Omnichannel Flow</h3>
+                <div class="mermaid" id="d-ecom-1">
+                    flowchart TD
+                    MKT_P["Tokopedia Shopee Lazada"] -->|"Pull orders"| AGG["Omnichannel Order Aggregator"]
+                    WEB["Webstore"] -->|"Orders"| AGG
+                    WEB <-->|"Product catalog"| STOCK["Inventory Stock"]
+                        WEB <-->|"Harga konsisten"| PRICE_E["Sales Pricing"]
+                            WEB -->|"Registrasi customer baru"| CRM_E["CRM Customer"]
+                            AGG -->|"Auto-create SO"| SO_E["Sales Order"]
+                            SO_E --> PICK_E["Picking and Packing"]
+                            PICK_E --> LOG_E["Logistics DO"]
+                            LOG_E --> SI_E["Sales Invoice"]
+                            SI_E --> AR_E["Finance AR"]
+                            SI_E -->|"e-Faktur"| TAX_E["Tax Faktur Pajak"]
+                            STOCK <-->|"Real-time sync"| POS_S["POS Stock"]
+                                MKT_P <-->|"Sinkronisasi stok"| STOCK
+                                    style AGG fill:#1e2a4a,stroke:#38bdf8,stroke-width:2px,color:#e2e8f0
+                                    style STOCK fill:#1e3a2a,stroke:#22c55e,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== POS ======== -->
+        <div id="tab-pos" class="diagram-section">
+            <div class="section-header">
+                <h2>🏪 POS Retail</h2>
+                <p>Terminal kasir, shift management, split payment, loyalty</p>
+            </div>
+            <div class="diagram-card">
+                <h3>POS Transaction Flow</h3>
+                <div class="mermaid" id="d-pos-1">
+                    flowchart TD
+                    POS_T["POS Terminal Transaksi"]
+                    POS_T -->|"Kurangi stok real-time"| INV_P["Inventory Stock"]
+                    POS_T -->|"Auto-generate invoice"| SI_P["Sales Invoice"]
+                    POS_T -->|"Auto-post pembayaran"| CR_P["Finance Customer Receipt"]
+                    POS_T -->|"Generate e-Faktur"| TAX_P["Tax Faktur Keluaran"]
+                    POS_T -->|"Auto-post GL"| JE_P["GL Journal Entry"]
+                    POS_T --> LOYAL["Loyalty and Rewards"]
+                    LOYAL <-->|"Poin dan redemption"| CRM_P["CRM Customer"]
+                        LOYAL <-->|"Poin cross-channel"| ECOM_P["E-Commerce Account"]
+                            style POS_T fill:#1e2a4a,stroke:#5b6af0,stroke-width:3px,color:#e2e8f0
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>Shift Management dan Split Payment</h3>
+                <div class="mermaid" id="d-pos-2">
+                    flowchart LR
+                    SHIFT["Shift Management"] --> CASH["Finance Cash Account"]
+                    SHIFT --> JE_SHIFT["GL Journal Cash per Shift"]
+                    SHIFT -->|"Rekonsiliasi kas"| RECON["Cash Reconciliation"]
+                    SPLIT["Split Payment Processing"] -->|"Multi-metode bayar"| BANK_P["Finance Bank dan Cash"]
+                    SPLIT --> SI_P2["Sales Invoice Alokasi Bayar"]
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== PROCUREMENT ======== -->
+        <div id="tab-procurement" class="diagram-section">
+            <div class="section-header">
+                <h2>📋 Procurement — Rantai Pembelian</h2>
+                <p>PR ke RFQ ke PO ke GRN ke 3-Way Match ke Invoice ke Payment</p>
+            </div>
+            <div class="diagram-card">
+                <h3>Procurement Full Flow</h3>
+                <div class="mermaid" id="d-proc-1">
+                    flowchart TD
+                    INV_T["Inventory Planning Reorder Point"] -->|"Reorder trigger"| PR["Purchase Requisition"]
+                    MRP["Manufacturing MRP"] -->|"Material requirement"| PR
+                    CONST_M["Construction Material Request"] -->|"Material request"| PR
+                    PR --> APPR_P["Approval Workflow"]
+                    APPR_P -->|"Approved"| RFQ["Request for Quotation"]
+                    RFQ -->|"Send ke supplier"| SUPP["Supplier Management"]
+                    SUPP -->|"Award"| PO["Purchase Order"]
+                    RFQ -->|"Konversi award ke PO"| PO
+                    PO -->|"Trigger penerimaan"| GRN["Goods Receipt Note"]
+                    PO -->|"Untuk validasi"| MATCH["3-Way Match PO GRN Invoice"]
+                    GRN -->|"QC wajib"| QC["QMS QC Inspection"]
+                    GRN -->|"Lokasi bin"| PUT["Putaway Gudang"]
+                    GRN -->|"FIFO Avg LIFO"| VAL["Inventory Valuation"]
+                    GRN -->|"Auto-post GL"| JE_PB["GL Journal Dr Expense Cr AP"]
+                    GRN -->|"Trigger validasi"| MATCH
+                    PI["Purchase Invoice"] -->|"Validasi"| MATCH
+                    MATCH -->|"AP diposting"| FIN_AP["Finance AP Utang Dagang"]
+                    PI -->|"Auto-post AP"| FIN_AP
+                    PI -->|"Auto-post GL"| JE_PB
+                    PI -->|"Generate faktur masukan"| TAX_M["Tax Faktur Masukan"]
+                    PI -->|"Pembayaran vendor"| VP["Vendor Payment"]
+                    VP -->|"Update outstanding"| FIN_AP
+                    VP -->|"Dr AP Cr Bank"| BANK_V["Finance Bank"]
+                    style PO fill:#1e2a4a,stroke:#5b6af0,stroke-width:2px,color:#e2e8f0
+                    style MATCH fill:#3a2a1e,stroke:#f59e0b,stroke-width:2px,color:#e2e8f0
+                    style GRN fill:#1e3a2a,stroke:#22c55e,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>Landed Cost dan Purchase Return</h3>
+                <div class="mermaid" id="d-proc-2">
+                    flowchart LR
+                    LANDED["Landed Cost Voucher"] -->|"Alokasi biaya ke PO"| PI_L["Purchase Invoice"]
+                    LANDED -->|"Tambah HPP inventory"| VAL_L["Inventory Valuation"]
+                    LANDED -->|"Auto-post"| JE_L["GL Journal Entry"]
+                    PRETN["Purchase Return"] -->|"Kurangi stok"| STOCK_D["Inventory Stock"]
+                    PRETN -->|"Auto-post debit note"| AP_DN["Finance AP Debit Note"]
+                    PRETN -->|"Faktur retur masukan"| TAX_RM["Tax Faktur Retur Masukan"]
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== INVENTORY ======== -->
+        <div id="tab-inventory" class="diagram-section">
+            <div class="section-header">
+                <h2>📦 Inventory and Warehouse Management</h2>
+                <p>Item Master, Stock, GRN, Valuation, Planning, Opname</p>
+            </div>
+            <div class="diagram-card">
+                <h3>Inventory Integration Map</h3>
+                <div class="mermaid" id="d-inv-1">
+                    flowchart TD
+                    ITEM["Item Master"] <-->|"Master sharing"| STOCK["Stock Management"]
+                        DO_I["Sales DO"] -->|"Kurangi stok auto"| STOCK
+                        POS_I["POS Transaction"] -->|"Kurangi stok auto"| STOCK
+                        MFG_I["Manufacturing Konsumsi Bahan"] -->|"Kurangi stok"| STOCK
+                        GRN_I["GRN Goods Receipt"] -->|"Tambah stok"| STOCK
+                        XFER["Transfer Antar Gudang"] --> STOCK
+                        STOCK -->|"Trigger reorder"| PLAN["Inventory Planning"]
+                        PLAN -->|"Auto-create PR"| PR_I["Procurement PR"]
+                        AI_F["AI Demand Forecast"] -->|"Forecast input"| PLAN
+                        AI_F -->|"MPS input"| MPS["Manufacturing MPS"]
+                        ECOM_I["E-Commerce"] <-->|"Real-time sync"| STOCK
+                            GRN_I -->|"QC wajib"| QC_I["QMS QC Inspection"]
+                            QC_I -->|"QC gagal buka NCR"| QMS_I["QMS NCR"]
+                            GRN_I -->|"Putaway strategy"| PUT["Putaway Lokasi Bin"]
+                            GRN_I -->|"FIFO Avg LIFO"| VAL_I["Inventory Valuation"]
+                            GRN_I -->|"Auto-post GL"| JE_I["GL Journal Dr Inventory Cr Clearing"]
+                            GRN_I -->|"Trigger validasi"| MATCH_I["3-Way Match"]
+                            VAL_I -->|"COGS posting"| JE_I
+                            OPNAME["Stock Opname"] -->|"Finalisasi"| ADJ["Stock Adjustment"]
+                            ADJ -->|"Selisih posting"| JE_ADJ["GL Journal Selisih Stok"]
+                            BATCH["Batch dan Serial Tracking"] <-->|"Traceability"| QMS_I
+                                style STOCK fill:#1e2a4a,stroke:#38bdf8,stroke-width:3px,color:#e2e8f0
+                                style ITEM fill:#1e3a2a,stroke:#22c55e,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== MANUFACTURING ======== -->
+        <div id="tab-manufacturing" class="diagram-section">
+            <div class="section-header">
+                <h2>⚙️ Manufacturing and QMS</h2>
+                <p>BOM ke MRP ke Work Order ke Production ke Costing ke Finance</p>
+            </div>
+            <div class="diagram-card">
+                <h3>Manufacturing Flow</h3>
+                <div class="mermaid" id="d-mfg-1">
+                    flowchart TD
+                    BOM["Bill of Materials"] <-->|"Master item"| ITEM_M["Item Master"]
+                        BOM -->|"Kalkulasi kebutuhan"| MRP_M["MRP Material Requirement Planning"]
+                        BOM -->|"Explode BOM"| WO["Work Order"]
+                        BOM -->|"HPP produk"| COST_B["Production Costing HPP"]
+                        MPS_M["MPS Master Production Schedule"] -->|"Generate WO"| WO
+                        MRP_M -->|"Shortage buat PR"| PR_M["Procurement PR"]
+                        SO_M["Sales Order MTO"] -->|"MTO demand"| MPS_M
+                        AI_M["AI Demand Forecast"] -->|"Forecast"| MPS_M
+                        WO -->|"Konsumsi bahan auto"| CONS["Inventory Material Consumption"]
+                        WO --> SFC["Shop Floor Control Eksekusi"]
+                        WO -->|"Downtime info"| MAINT["Maintenance TPM"]
+                        WO --> COST_B
+                        SFC -->|"Produksi selesai"| FG["Inventory Finished Goods"]
+                        SFC -->|"WIP posting GL"| JE_WIP["GL Dr WIP Cr Material Labor OH"]
+                        FG -->|"FG posting GL"| JE_FG["GL Dr FG Cr WIP"]
+                        COST_B <-->|"HPP barang jadi"| VAL_M["Inventory Valuation"]
+                            COST_B -->|"Actual vs standard"| VAR["Variance Report"]
+                            LABOR["HRIS Payroll Labor Cost"] -->|"Alokasi per WO"| COST_B
+                            VAR --> JE_VAR["GL Variance Journal"]
+                            MAINT -->|"Spare part request"| PR_SPARE["Procurement PR Spare Part"]
+                            MAINT -->|"Biaya maintenance"| FIN_MAINT["GL Maintenance Expense"]
+                            style WO fill:#1e2a4a,stroke:#5b6af0,stroke-width:2px,color:#e2e8f0
+                            style BOM fill:#1e3a2a,stroke:#22c55e,stroke-width:2px,color:#e2e8f0
+                            style COST_B fill:#3a2a1e,stroke:#f59e0b,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>QMS — Quality Management System</h3>
+                <div class="mermaid" id="d-mfg-2">
+                    flowchart LR
+                    GRN_Q["GRN Penerimaan Barang"] -->|"QC wajib"| QC_R["QC on Receipt"]
+                    QC_R -->|"Gagal buka NCR"| NCR["NCR Non-Conformance"]
+                    NCR -->|"Tindak lanjut"| CAPA["CAPA Management"]
+                    NCR -->|"Barang ditolak"| PRETN_Q["Purchase Return"]
+                    QC_R -->|"Akumulasi scoring"| SQR["Supplier Quality Rating"]
+                    SQR -->|"Filter blacklist"| RFQ_Q["RFQ Supplier"]
+                    CAL_Q["Calibration Schedule"] <-->|"Validasi alat ukur"| MFG_Q["Manufacturing QC"]
+                        SOP["SOP dan ISO Docs"] -->|"Training material"| LMS["HRIS LMS"]
+                        HSE["HSE Checklist Construction"] -->|"Safety finding ke NCR"| NCR
+                        style NCR fill:#3a1e1e,stroke:#ef4444,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== FINANCE ======== -->
+        <div id="tab-finance" class="diagram-section">
+            <div class="section-header">
+                <h2>💰 Finance and Accounting</h2>
+                <p>GL Hub, AR, AP, Bank Reconciliation, Fixed Asset, Budgeting, Period Closing</p>
+            </div>
+            <div class="diagram-card">
+                <h3>General Ledger — Auto Posting dari Semua Modul</h3>
+                <div class="mermaid" id="d-fin-1">
+                    flowchart LR
+                    GL["GENERAL LEDGER HUB"]
+                    SI_F["Sales Invoice Dr AR Cr Revenue PPN"] -->|"Auto-post"| GL
+                    CR_F["Customer Receipt Dr Bank Cr AR"] -->|"Auto-post"| GL
+                    SR_F["Sales Return Dr Revenue Cr AR"] -->|"Auto-post"| GL
+                    PI_F["Purchase Invoice Dr Expense Cr AP PPN"] -->|"Auto-post"| GL
+                    VP_F["Vendor Payment Dr AP Cr Bank"] -->|"Auto-post"| GL
+                    GRN_F["GRN Dr Inventory Cr GR Clearing"] -->|"Auto-post"| GL
+                    OPN_F["Stock Opname Inventory Adjustment"] -->|"Auto-post"| GL
+                    WO_F["Work Order Dr WIP FG Cr Material Labor"] -->|"Auto-post"| GL
+                    DEP_F["Asset Depreciation Dr Dep Cr Accum"] -->|"Periodik"| GL
+                    PAY_F["Payroll Dr Salary Cr Bank PPh BPJS"] -->|"Auto-post"| GL
+                    POS_F["POS Transaction Dr Cash Cr Revenue PPN"] -->|"Auto-post"| GL
+                    LC_F["Landed Cost Dr Inventory Cr AP"] -->|"Auto-post"| GL
+                    MAINT_F["Maintenance Dr Expense Cr AP"] -->|"Auto-post"| GL
+                    RENT_F["Rental Revenue Dr AR Cr Revenue"] -->|"Periodik"| GL
+                    style GL fill:#1e2a4a,stroke:#5b6af0,stroke-width:3px,color:#e2e8f0
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>AR dan AP Aging</h3>
+                <div class="mermaid" id="d-fin-2">
+                    flowchart LR
+                    SI_AR["Sales Invoice"] --> AR_AG["AR Aging Report"]
+                    CR_AR["Customer Receipt"] -->|"Kurangi outstanding"| AR_AG
+                    AR_AG -->|"Auto-reminder threshold"| CRM_DC["CRM Debt Collection"]
+                    PI_AP["Purchase Invoice"] --> AP_AG["AP Aging Report"]
+                    VP_AP["Vendor Payment"] -->|"Kurangi outstanding"| AP_AG
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>Bank Reconciliation, Fixed Asset, Budgeting, Period Closing</h3>
+                <div class="mermaid" id="d-fin-3">
+                    flowchart TD
+                    BSTMT["Bank Statement Import API"] --> BRECON["Bank Reconciliation Auto Match"]
+                    BCR["Customer Receipt"] --> BRECON
+                    BVP["Vendor Payment"] --> BRECON
+                    BPCASH["Petty Cash"] --> BRECON
+                    APRO["Procurement PO Beli Aset"] -->|"Registrasi aset"| ADEP["Depreciation Periodik"]
+                    ADEP -->|"Auto-post GL"| JE_DEP["GL Journal Entry"]
+                    CC["Cost Center"] --> BC["Budget Control Blokir Jika Over"]
+                    FACT["Finance Actual Journal"] --> BC
+                    BC <-->|"Sinkronisasi anggaran"| PROJ_B["Project Budget"]
+                        LOCK["GL Lock Tutup Periode"] --> RPT["Financial Reporting Neraca LR Arus Kas"]
+                        LOCK --> PPN_C["Tax PPN Masa Validasi Sebelum Close"]
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== TAX ======== -->
+        <div id="tab-tax" class="diagram-section">
+            <div class="section-header">
+                <h2>🧾 Indonesia Tax Management</h2>
+                <p>PPN, PPh 21 TER, e-Faktur, e-Bupot, ID Billing, Tax Equalization</p>
+            </div>
+            <div class="diagram-card">
+                <h3>PPN — Faktur Keluaran dan Masukan</h3>
+                <div class="mermaid" id="d-tax-1">
+                    flowchart TD
+                    SI_T["Sales Invoice"] -->|"Auto-generate"| FK["Faktur Keluaran e-Faktur"]
+                    POS_T2["POS Transaction"] -->|"Auto-generate"| FK
+                    RENT_T["Rental Invoice"] -->|"Auto-generate"| FK
+                    SR_T["Sales Return"] -->|"Auto-generate"| FRK["Faktur Retur Keluaran"]
+                    PI_T["Purchase Invoice"] -->|"Auto-capture"| FM["Faktur Masukan"]
+                    PR_T["Purchase Return"] -->|"Auto-generate"| FRM["Faktur Retur Masukan"]
+                    NSFP["NSFP Nomor Seri Faktur Pajak"] <-->|"Alokasi nomor urut"| FK
+                        FK --> PPN_M["PPN Masa Summary Keluaran minus Masukan"]
+                        FM --> PPN_M
+                        FRK --> PPN_M
+                        FRM --> PPN_M
+                        PPN_M -->|"Validasi sebelum close"| PERIOD_T["Finance Period Closing"]
+                        PPN_M -->|"Generate kode billing"| ID_B["ID Billing Kode Setoran"]
+                        PPN_M -->|"Auto-post hutang PPN"| GL_TAX["GL Hutang PPN"]
+                        style FK fill:#1e3a2a,stroke:#22c55e,stroke-width:2px,color:#e2e8f0
+                        style PPN_M fill:#3a2a1e,stroke:#f59e0b,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>PPh — Withholding Tax dan e-Bupot</h3>
+                <div class="mermaid" id="d-tax-2">
+                    flowchart LR
+                    PAYROLL_T["HRIS Payroll"] -->|"Auto-hitung"| PPH21["PPh 21 TER Calculation"]
+                    PPH21 -->|"Auto-generate"| BK["Bukti Potong 1721-A1"]
+                    BK -->|"Upload DJP"| EBUPOT["e-Bupot Unifikasi"]
+                    VP_T["Vendor Payment PPh 23 dan 4 ayat 2"] -->|"Auto-generate bukti potong"| EBUPOT2["Bukti Potong
+                    PPh 23 4 ayat 2"]
+                    EBUPOT -->|"Auto-post hutang"| JE_TAX["GL Hutang Pajak PPh"]
+                    EBUPOT2 -->|"Auto-post hutang"| JE_TAX
+                    PPH21 -->|"Generate kode billing"| ID_BILLING2["ID Billing Setoran PPh"]
+                    EQUALIZE["Tax Equalization Fiskal vs Komersial"] <-->|"Rekonsiliasi fiskal"| GL_FIN["Finance GL"]
+                        style PPH21 fill:#1e2a4a,stroke:#38bdf8,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== HRIS ======== -->
+        <div id="tab-hris" class="diagram-section">
+            <div class="section-header">
+                <h2>🪪 HRIS and Payroll</h2>
+                <p>Employee, Attendance, Payroll, Expense, KPI, Tax PPh 21</p>
+            </div>
+            <div class="diagram-card">
+                <h3>HRIS Full Integration Map</h3>
+                <div class="mermaid" id="d-hris-1">
+                    flowchart TD
+                    ATS["Recruitment ATS"] -->|"Karyawan baru"| EMP["Employee Database"]
+                    EMP <-->|"Satu identitas login"| USR["User Management Core"]
+                        EMP <-->|"Konfigurasi iuran"| BPJS_C["BPJS Configuration"]
+                            EMP --> PAY["PAYROLL ENGINE"]
+                            EMP --> ESS["HRIS ESS Self Service"]
+                            SHIFT_H["Shift Management"] -->|"Jadwal kerja"| ATT["Attendance"]
+                            ATT -->|"Data kehadiran"| PAY
+                            KPI["KPI and Performance"] -->|"Bonus dan insentif"| PAY
+                            COMM_H["Sales Commission"] -->|"Komponen komisi"| PAY
+                            EXP["Expense Claims"] -->|"Reimburse"| PAY
+                            PAY -->|"Auto-post GL"| JE_H["GL Dr Salary Cr Bank PPh BPJS"]
+                            PAY -->|"Instruksi pembayaran gaji"| BANK_H["Finance Bank Transfer"]
+                            PAY -->|"Auto-hitung dan potong"| PPH21_H["Tax PPh 21 TER"]
+                            PAY -->|"Iuran BPJS"| BPJS_H["BPJS Iuran Kesehatan dan TK"]
+                            PPH21_H -->|"Auto-generate"| BK_H["Bukti Potong 1721-A1"]
+                            BK_H -->|"Upload DJP"| EBUPOT_H["e-Bupot Unifikasi"]
+                            EXP -->|"Auto-post"| JE_EXP["GL Expense Journal"]
+                            EXP -->|"Reimbursement"| PR_EXP["Finance Payment Request"]
+                            EXP -->|"Alokasi cost center"| CC_EXP["Finance Cost Center"]
+                            PROJ_KPI["Project Task Completion"] -->|"Data produktivitas"| KPI
+                            style PAY fill:#1e2a4a,stroke:#5b6af0,stroke-width:3px,color:#e2e8f0
+                            style EMP fill:#1e3a2a,stroke:#22c55e,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== LOGISTICS ======== -->
+        <div id="tab-logistics" class="diagram-section">
+            <div class="section-header">
+                <h2>🚚 Logistics and Supply Chain</h2>
+                <p>Delivery Order, Fleet, Route Optimization, Digital POD, FSM, Rental</p>
+            </div>
+            <div class="diagram-card">
+                <h3>Logistics Flow</h3>
+                <div class="mermaid" id="d-log-1">
+                    flowchart LR
+                    DO_L["Delivery Order Sales"] -->|"Trigger pengiriman"| FLEET["Fleet Management"]
+                    DO_L -->|"Packing dan kitting"| PACK["Packing"]
+                    FLEET <-->|"Optimasi rute"| ROUTE["Route Optimization"]
+                        FLEET <-->|"Koordinasi teknisi"| FSM_L["FSM Fleet"]
+                            POD["Digital POD Proof of Delivery"] -->|"Kurangi stok saat POD"| INV_L["Inventory Stock"]
+                            POD -->|"Trigger invoice setelah deliver"| SI_L["Sales Invoice"]
+                            DO_L -->|"Biaya kirim ke GL"| JE_L["GL Biaya Pengiriman"]
+                            DO_L -->|"Jika kena PPN jasa kirim"| TAX_L["Tax Faktur Keluaran"]
+                            style DO_L fill:#1e2a4a,stroke:#38bdf8,stroke-width:2px,color:#e2e8f0
+                            style POD fill:#1e3a2a,stroke:#22c55e,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>FSM Field Service Management dan Rental</h3>
+                <div class="mermaid" id="d-log-2">
+                    flowchart LR
+                    CRM_F["CRM Customer Service"] -->|"Trigger dari komplain"| WO_F["FSM Work Order"]
+                    SPARE["Inventory Spare Parts"] <-->|"Alokasi dan konsumsi"| WO_F
+                        WO_F --> HAND["Handover Selesai"]
+                        HAND -->|"Tagihan jasa"| SI_F2["Sales Invoice"]
+                        WO_F -->|"Biaya field service"| JE_F["GL Biaya FSM"]
+                        GPS_F["GPS Tracking"] <-->|"Koordinasi"| WO_F
+                            RC["Rental Contracts"] -->|"Tagihan periodik"| SI_R["Sales Invoice Recurring"]
+                            SI_R -->|"Piutang sewa"| AR_R["Finance AR"]
+                            RC <-->|"Jadwal perawatan"| TPM_R["Manufacturing TPM"]
+                                RC <-->|"Penyusutan aset sewaan"| DEP_R["Finance Fixed Asset"]
+                                    RC -->|"Revenue sewa"| JE_R["GL Revenue"]
+                                    RC -->|"PPN jasa sewa"| TAX_R2["Tax Faktur Keluaran"]
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== PROJECT ======== -->
+        <div id="tab-project" class="diagram-section">
+            <div class="section-header">
+                <h2>📁 Project and Construction Management</h2>
+                <p>Tender, Progress Billing, Cost Control, S-Curve, Subcontractor</p>
+            </div>
+            <div class="diagram-card">
+                <h3>Project Management Flow</h3>
+                <div class="mermaid" id="d-proj-1">
+                    flowchart TD
+                    TENDER["Tender and Contract Management"] -->|"Inisiasi proyek"| PROJ_M["Master Project"]
+                    PROJ_M --> TASK["Task Management Kanban"]
+                    PROJ_M --> TEAM["Project Teams dari HRIS Employee"]
+                    PROJ_M --> MBUD["Master Budget Anggaran Proyek"]
+                    PROJ_M --> COST_P["Cost Control Aktual vs Budget"]
+                    PB["Progress Billing Tagihan per Termin"] -->|"Auto-create invoice"| SI_P2["Sales Invoice"]
+                    PB -->|"Piutang proyek"| AR_P["Finance AR"]
+                    PB -->|"PPN jasa"| TAX_P2["Tax Faktur Pajak"]
+                    JE_P2["GL Actual filter project id"] -->|"Actual vs budget"| COST_P
+                    PO_P["Procurement PO Komitmen"] -->|"Komitmen budget"| COST_P
+                    PAYROLL_P["HRIS Payroll Labor Cost"] -->|"Labor cost per proyek"| COST_P
+                    COST_P -->|"Alert over budget"| BUDG_P["Finance Budget Control"]
+                    MBUD <-->|"Sinkronisasi anggaran"| BUDG_P
+                        style PROJ_M fill:#1e2a4a,stroke:#5b6af0,stroke-width:2px,color:#e2e8f0
+                        style PB fill:#3a2a1e,stroke:#f59e0b,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>Construction Management</h3>
+                <div class="mermaid" id="d-proj-2">
+                    flowchart LR
+                    MR["Material Request"] -->|"Auto-create PR"| PR_C["Procurement PR"]
+                    SITE["Site Management"] <-->|"Stok per site"| INV_C["Inventory Multi Site"]
+                        SUB["Subcontractor Management"] -->|"SPK subkon"| PO_C["Procurement PO"]
+                        SUB -->|"Hutang subkon auto"| AP_C["Finance AP"]
+                        SUB -->|"Potong PPh jasa konstruksi"| PPH_C["Tax PPh Pasal 4 Ayat 2"]
+                        SCURVE["S-Curve Progress Tracking"] <-->|"Persen complete ke billing"| PB_C["Progress Billing"]
+                            HSE2["HSE Checklist Safety"] -->|"Safety finding"| NCR_C["QMS NCR"]
+                            SITE -->|"Arsip gambar drawing"| DMS_C["DMS Document Management"]
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== SUPPORT ======== -->
+        <div id="tab-support" class="diagram-section">
+            <div class="section-header">
+                <h2>🔧 Support Modules</h2>
+                <p>DMS, Audit Trail, Business Intelligence, Asset, Risk, ESG, GRC</p>
+            </div>
+            <div class="diagram-card">
+                <h3>Support Module Integration</h3>
+                <div class="mermaid" id="d-sup-1">
+                    flowchart LR
+                    ALLMOD["Semua Modul ERP"]
+                    ALLMOD -->|"Auto-lampir dokumen final"| DMS["DMS Document Management"]
+                    ALLMOD -->|"Log semua transaksi"| AUDIT["Audit Trail"]
+                    ALLMOD -->|"Feed data ke BI"| BI_S["Business Intelligence Data Warehouse"]
+                    ALLMOD <-->|"Satu sumber kebenaran"| ASSET_S["Asset Management Finance Fixed Asset"]
+                        ALLMOD -->|"Risk reserve"| RISK["Risk Management GRC"]
+                        ALLMOD -->|"Emisi dan konsumsi"| ESG["Sustainability ESG"]
+                        AUDIT -->|"Data compliance"| GRC["Compliance and Audit"]
+                        style BI_S fill:#1e2a4a,stroke:#38bdf8,stroke-width:2px,color:#e2e8f0
+                        style ALLMOD fill:#2a1e3a,stroke:#a78bfa,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== FULL CHAIN ======== -->
+        <div id="tab-fullchain" class="diagram-section">
+            <div class="section-header">
+                <h2>🔗 Full ERP Integration Chain</h2>
+                <p>Diagram end-to-end seluruh modul dalam satu view</p>
+            </div>
+            <div class="diagram-card">
+                <h3>Full ERP Flow — Sales Procurement Operations Finance HR</h3>
+                <div class="mermaid" id="d-full-1">
+                    flowchart TB
+                    CORE_F["CORE MASTER DATA"]
+
+                    MKT_F["Marketing"] --> CRM_F2["CRM"]
+                    CRM_F2 --> SQ_F["Quotation"]
+                    ECOM_F["E-Commerce"] --> SO_F["Sales Order"]
+                    POS_F2["POS"] --> SI_F3["Sales Invoice"]
+                    POS_F2 --> INV_F["Inventory"]
+                    POS_F2 --> GL_F["GL Journal HUB"]
+
+                    SQ_F --> SO_F
+                    SO_F --> DO_F["Delivery Order"]
+                    SO_F --> SI_F3
+                    SO_F --> MFG_F["Manufacturing"]
+                    SO_F --> PR_F["PR"]
+                    DO_F --> INV_F
+                    DO_F --> LOG_F["Logistics"]
+                    SI_F3 --> AR_F["AR"]
+                    SI_F3 --> GL_F
+                    SI_F3 --> TAX_F2["Tax PPN dan PPh"]
+                    CR_F2["Customer Receipt"] --> AR_F
+                    CR_F2 --> GL_F
+
+                    PR_F --> PO_F["PO"]
+                    PO_F --> GRN_F2["GRN"]
+                    GRN_F2 --> INV_F
+                    GRN_F2 --> GL_F
+                    PI_F2["Purchase Invoice"] --> AP_F["AP"]
+                    PI_F2 --> GL_F
+                    PI_F2 --> TAX_F2
+                    VP_F2["Vendor Payment"] --> AP_F
+                    VP_F2 --> GL_F
+
+                    MFG_F --> INV_F
+                    MFG_F --> GL_F
+                    QMS_F["QMS"] --> INV_F
+                    QMS_F --> PR_F
+
+                    HRIS_F["HRIS Payroll"] --> GL_F
+                    HRIS_F --> TAX_F2
+                    PROJ_F["Project"] --> SI_F3
+                    PROJ_F --> GL_F
+
+                    GL_F --> RPT_F["Reports dan BI"]
+                    AR_F --> RPT_F
+                    AP_F --> RPT_F
+                    TAX_F2 --> RPT_F
+
+                    CORE_F --> SO_F
+                    CORE_F --> PO_F
+                    CORE_F --> GL_F
+                    CORE_F --> HRIS_F
+
+                    style CORE_F fill:#1e2a4a,stroke:#5b6af0,stroke-width:3px,color:#e2e8f0
+                    style GL_F fill:#3a1e1e,stroke:#ef4444,stroke-width:3px,color:#e2e8f0
+                    style SO_F fill:#1e3a2a,stroke:#22c55e,stroke-width:2px,color:#e2e8f0
+                    style PO_F fill:#2a1e3a,stroke:#a78bfa,stroke-width:2px,color:#e2e8f0
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>API Critical Path — Sales Cycle</h3>
+                <div class="mermaid" id="d-full-2">
+                    flowchart LR
+                    A1["POST /sales/quotation"] --> A2["PATCH /quotation/approve"]
+                    A2 --> A3["POST /sales/order"]
+                    A3 --> A4["PATCH /order/approve"]
+                    A4 --> A5["POST /sales/delivery-order"]
+                    A5 --> A6["PATCH /delivery-order/confirm"]
+                    A6 --> A7["POST /sales/invoice"]
+                    A7 --> A8["POST /finance/customer-receipt"]
+                    A7 -->|"Jika ada retur"| A9["POST /sales/return"]
+                </div>
+            </div>
+            <div class="diagram-card">
+                <h3>API Critical Path — Procurement Cycle</h3>
+                <div class="mermaid" id="d-full-3">
+                    flowchart LR
+                    B1["POST /procurement/requisition"] --> B2["POST /procurement/rfq"]
+                    B2 --> B3["POST /procurement/purchase-order"]
+                    B3 --> B4["PATCH /purchase-order/approve"]
+                    B4 --> B5["POST /inventory/goods-receipt"]
+                    B5 --> B6["PATCH /goods-receipt/confirm"]
+                    B6 --> B7["GET /three-way-match"]
+                    B7 --> B8["POST /procurement/invoice"]
+                    B8 --> B9["POST /tax/faktur-masukan"]
+                    B9 --> B10["POST /finance/vendor-payment"]
+                </div>
+            </div>
+        </div>
+
+        <!-- ======== CHECKLIST ======== -->
+        <div id="tab-checklist" class="diagram-section">
+            <div class="section-header">
+                <h2>✅ Checklist Integrasi dan Fase Implementasi</h2>
+                <p>Prioritas Grup A Kritis, B Penting, C Opsional</p>
+            </div>
+
+            <div class="diagram-card">
+                <h3>Roadmap Fase Implementasi</h3>
+                <table class="phase-table">
+                    <thead>
+                        <tr>
+                            <th>Fase</th>
+                            <th>Modul</th>
+                            <th>Target</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge badge-red">Fase 1 — Foundasi</span></td>
+                            <td>Core Master Data, COA, Tax Config, User dan Permission</td>
+                            <td>Sebelum dev modul lain</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-red">Fase 2 — Transaksi Inti</span></td>
+                            <td>Sales Cycle, Procurement Cycle, Inventory, Finance GL</td>
+                            <td>Sprint 1–3</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-red">Fase 3 — Tax dan Payroll</span></td>
+                            <td>Indonesia Tax (PPN, PPh, e-Faktur, e-Bupot), HRIS Payroll</td>
+                            <td>Sprint 3–4</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-yellow">Fase 4 — Operasional</span></td>
+                            <td>Manufacturing, WMS Advanced, POS, E-Commerce, Logistics</td>
+                            <td>Sprint 4–6</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-yellow">Fase 5 — Extended</span></td>
+                            <td>CRM, Project, Construction, FSM, Rental, QMS</td>
+                            <td>Sprint 6–9</td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge badge-green">Fase 6 — Intelligence</span></td>
+                            <td>BI, AI Forecast, ESG, GRC, Audit</td>
+                            <td>Sprint 9–12</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="diagram-card">
+                <h3>🔴 Grup A — Checklist Kritis (Wajib Sebelum Go-Live)</h3>
+                <div class="checklist-grid">
+                    <div class="checklist-group">
+                        <div class="cg-header">A1. Core Master Data <span class="grp-badge badge-red">KRITIS</span>
+                        </div>
+                        <div class="ci">☐ <span>A1.1 GET /core/company-profile digunakan semua modul header
+                                dokumen</span></div>
+                        <div class="ci">☐ <span>A1.2 Branch/Location — filter branch_id di semua endpoint
+                                transaksi</span></div>
+                        <div class="ci">☐ <span>A1.3 Currency — currency_id + exchange_rate di SO, PO, Invoice,
+                                Payment</span></div>
+                        <div class="ci">☐ <span>A1.4 Fiscal Year — GET /core/fiscal-year/active untuk Finance dan
+                                Payroll</span></div>
+                        <div class="ci">☐ <span>A1.5 COA — account_id sebagai FK di semua tabel journal entry</span>
+                        </div>
+                        <div class="ci">☐ <span>A1.6 Tax Config — tax_code_id di Item Master, Invoice, Payroll</span>
+                        </div>
+                        <div class="ci">☐ <span>A1.7 Role dan Permission — middleware ACL aktif + frontend route
+                                guard</span></div>
+                        <div class="ci">☐ <span>A1.8 Workflow — approval flow di SO, PO, Payment, Payroll</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">A2. Sales ke Finance Chain <span
+                                class="grp-badge badge-red">KRITIS</span></div>
+                        <div class="ci">☐ <span>A2.1 Quotation ke SO konversi tanpa re-input customer dan item</span>
+                        </div>
+                        <div class="ci">☐ <span>A2.2 SO ke DO auto-create; DO referensi sales_order_id</span></div>
+                        <div class="ci">☐ <span>A2.3 DO confirm ke inventory stock berkurang otomatis</span></div>
+                        <div class="ci">☐ <span>A2.4 Sales Invoice ke GL: Dr AR / Cr Revenue + PPN Keluaran</span></div>
+                        <div class="ci">☐ <span>A2.5 Sales Invoice ke e-Faktur auto-generate dengan NSFP</span></div>
+                        <div class="ci">☐ <span>A2.6 Customer Receipt ke update payment_status dan amount_paid di
+                                Invoice</span></div>
+                        <div class="ci">☐ <span>A2.7 Customer Receipt ke GL: Dr Bank / Cr AR</span></div>
+                        <div class="ci">☐ <span>A2.8 Sales Return ke reversal AR + Journal + Faktur Retur</span></div>
+                        <div class="ci">☐ <span>A2.9 Frontend: Status badge SO — Draft ke Approved ke DO ke Invoiced ke
+                                Paid</span></div>
+                        <div class="ci">☐ <span>A2.10 Frontend: Invoice tampilkan linked DO, SO, Faktur Pajak</span>
+                        </div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">A3. Procurement ke Finance <span
+                                class="grp-badge badge-red">KRITIS</span></div>
+                        <div class="ci">☐ <span>A3.1 PR ke RFQ konversi tanpa re-input</span></div>
+                        <div class="ci">☐ <span>A3.2 RFQ award ke PO konversi</span></div>
+                        <div class="ci">☐ <span>A3.3 PO receive ke GRN auto-create</span></div>
+                        <div class="ci">☐ <span>A3.4 GRN confirm ke tambah stok di Inventory</span></div>
+                        <div class="ci">☐ <span>A3.5 GRN ke GL: Dr GR Clearing / Cr AP</span></div>
+                        <div class="ci">☐ <span>A3.6 3-Way Match — validasi PO lebih besar sama dengan GRN lebih besar
+                                sama dengan Invoice</span></div>
+                        <div class="ci">☐ <span>A3.7 Purchase Invoice ke GL: Dr Inventory / Cr AP + PPN Masukan</span>
+                        </div>
+                        <div class="ci">☐ <span>A3.8 Purchase Invoice ke Faktur Masukan auto-capture</span></div>
+                        <div class="ci">☐ <span>A3.9 Vendor Payment ke update AP outstanding + GL Dr AP / Cr Bank</span>
+                        </div>
+                        <div class="ci">☐ <span>A3.10 Frontend: PO detail ke GRN list, 3-Way Match, Invoice, payment
+                                status</span></div>
+                        <div class="ci">☐ <span>A3.11 Landed Cost ke adjust unit_cost di GRN / Inventory
+                                Valuation</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">A4. Inventory ke Finance <span class="grp-badge badge-red">KRITIS</span>
+                        </div>
+                        <div class="ci">☐ <span>A4.1 GRN ke GL dengan mapping akun dari metode valuasi FIFO/Avg</span>
+                        </div>
+                        <div class="ci">☐ <span>A4.2 Stock adjustment opname ke GL selisih stok</span></div>
+                        <div class="ci">☐ <span>A4.3 Stock Opname finalize ke update qty + Journal selisih</span></div>
+                        <div class="ci">☐ <span>A4.4 Inventory Valuation konsisten dengan GL Inventory account
+                                balance</span></div>
+                        <div class="ci">☐ <span>A4.5 Frontend: Stock card tampilkan historical movement per
+                                sumber</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">A5. Tax Management <span class="grp-badge badge-red">KRITIS</span></div>
+                        <div class="ci">☐ <span>A5.1 NSFP pool — nomor seri dikonsumsi urut saat generate faktur</span>
+                        </div>
+                        <div class="ci">☐ <span>A5.2 Faktur Keluaran auto-generate dari Sales Invoice, validasi
+                                NPWP</span></div>
+                        <div class="ci">☐ <span>A5.3 Faktur Masukan auto-capture dari Purchase Invoice</span></div>
+                        <div class="ci">☐ <span>A5.4 PPN Masa — summary keluaran dikurangi masukan per masa pajak</span>
+                        </div>
+                        <div class="ci">☐ <span>A5.5 PPN Masa rekonsiliasi dengan GL PPN Keluaran dan Masukan selisih
+                                nol</span></div>
+                        <div class="ci">☐ <span>A5.6 e-Bupot — bukti potong PPh 21/23/4(2) dari Payroll dan Vendor
+                                Payment</span></div>
+                        <div class="ci">☐ <span>A5.7 PPh 21 metode TER; validasi golongan TER per employee</span></div>
+                        <div class="ci">☐ <span>A5.8 ID Billing — generate kode billing setoran PPh/PPN masa</span>
+                        </div>
+                        <div class="ci">☐ <span>A5.9 Frontend: Tax dashboard per masa — PPN, e-Bupot, ID Billing</span>
+                        </div>
+                        <div class="ci">☐ <span>A5.10 Tax Equalization — rekonsiliasi fiskal vs komersial beda tetap dan
+                                waktu</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">A6. HRIS ke Finance ke Tax <span
+                                class="grp-badge badge-red">KRITIS</span></div>
+                        <div class="ci">☐ <span>A6.1 Payroll finalize ke GL: Dr Salary / Cr Bank + PPh21 + BPJS</span>
+                        </div>
+                        <div class="ci">☐ <span>A6.2 Payroll ke PPh 21 TER per karyawan</span></div>
+                        <div class="ci">☐ <span>A6.3 Payroll ke Bukti Potong 1721-A1 per akhir tahun</span></div>
+                        <div class="ci">☐ <span>A6.4 Payroll ke e-Bupot Unifikasi upload ke DJP</span></div>
+                        <div class="ci">☐ <span>A6.5 Payroll ke BPJS contribution: Kesehatan + TK (JKK, JKM, JHT,
+                                JP)</span></div>
+                        <div class="ci">☐ <span>A6.6 Attendance terhubung ke Payroll mempengaruhi gaji pokok dan
+                                tunjangan</span></div>
+                        <div class="ci">☐ <span>A6.7 Sales Commission ke Payroll komponen variable; tampil di
+                                payslip</span></div>
+                        <div class="ci">☐ <span>A6.8 Expense approved ke GL Journal + Payment Request</span></div>
+                        <div class="ci">☐ <span>A6.9 Frontend: Payslip breakdown — gaji, tunjangan, PPh 21, BPJS,
+                                komisi</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">A7. Manufacturing ke Inventory ke Finance <span
+                                class="grp-badge badge-red">KRITIS</span></div>
+                        <div class="ci">☐ <span>A7.1 Work Order ke explode BOM ke reservasi material
+                                allocated_qty</span></div>
+                        <div class="ci">☐ <span>A7.2 Material issue ke stock kurang + GL: Dr WIP / Cr Raw
+                                Material</span></div>
+                        <div class="ci">☐ <span>A7.3 Finish goods ke tambah FG + GL: Dr FG / Cr WIP</span></div>
+                        <div class="ci">☐ <span>A7.4 Production Costing — actual vs standard; variance ke Journal</span>
+                        </div>
+                        <div class="ci">☐ <span>A7.5 Labor cost dari Payroll alokasi per WO via timesheet/cost
+                                center</span></div>
+                        <div class="ci">☐ <span>A7.6 MRP shortage ke auto-create Purchase Requisition</span></div>
+                        <div class="ci">☐ <span>A7.7 Frontend: WO detail — BOM actual, WIP status, cost
+                                accumulation</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">A8. E-Commerce dan POS <span class="grp-badge badge-red">KRITIS</span>
+                        </div>
+                        <div class="ci">☐ <span>A8.1 Marketplace ke Omnichannel ke SO auto-create dengan source
+                                marketplace</span></div>
+                        <div class="ci">☐ <span>A8.2 Stock sync real-time ke semua marketplace channel</span></div>
+                        <div class="ci">☐ <span>A8.3 POS ke Invoice + Receipt + Stock dalam satu atomic
+                                transaction</span></div>
+                        <div class="ci">☐ <span>A8.4 POS ke Faktur Keluaran non-NPWP / NPWP 000</span></div>
+                        <div class="ci">☐ <span>A8.5 POS Shift closing ke rekonsiliasi kas + GL Journal</span></div>
+                        <div class="ci">☐ <span>A8.6 Loyalty poin dari POS dan bisa diredeem di POS dan
+                                E-Commerce</span></div>
+                        <div class="ci">☐ <span>A8.7 Frontend POS: offline-capable; sync saat koneksi pulih</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">A9. Project dan Construction ke Finance <span
+                                class="grp-badge badge-red">KRITIS</span></div>
+                        <div class="ci">☐ <span>A9.1 Progress Billing ke Sales Invoice + Faktur Pajak</span></div>
+                        <div class="ci">☐ <span>A9.2 Material Request ke Procurement PR auto-create</span></div>
+                        <div class="ci">☐ <span>A9.3 Subcontractor payment ke Vendor Payment + e-Bupot PPh 4 ayat
+                                2</span></div>
+                        <div class="ci">☐ <span>A9.4 Project Cost Control dari actuals GL filter project_id</span></div>
+                        <div class="ci">☐ <span>A9.5 S-Curve persen complete terhubung ke Progress Billing amount</span>
+                        </div>
+                        <div class="ci">☐ <span>A9.6 Frontend: Project dashboard — persen complete, budget vs actual,
+                                cashflow</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <h3>🟡 Grup B — Penting dan 🟢 Grup C — Opsional</h3>
+                <div class="checklist-grid">
+                    <div class="checklist-group">
+                        <div class="cg-header">B1. CRM ke Sales <span class="grp-badge badge-yellow">PENTING</span>
+                        </div>
+                        <div class="ci">☐ <span>B1.1 CRM Customer sync dengan Sales Customer Master tidak
+                                duplikat</span></div>
+                        <div class="ci">☐ <span>B1.2 Opportunity ke Quotation: semua field ter-carry over</span></div>
+                        <div class="ci">☐ <span>B1.3 Customer Portal: lihat outstanding invoice dan status
+                                pengiriman</span></div>
+                        <div class="ci">☐ <span>B1.4 Komplain ke trigger Sales Return atau FSM Work Order</span></div>
+                        <div class="ci">☐ <span>B1.5 Finance AR Aging visible di CRM Customer detail 360-degree
+                                view</span></div>
+                        <div class="ci">☐ <span>B1.6 Marketing Campaign budget terhubung ke Finance Budget
+                                Control</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">B2. Inventory Advanced <span
+                                class="grp-badge badge-yellow">PENTING</span></div>
+                        <div class="ci">☐ <span>B2.1 Batch dan Serial tracking end-to-end: GRN ke DO ke Invoice</span>
+                        </div>
+                        <div class="ci">☐ <span>B2.2 QC on Receipt: GRN tidak final jika QC status pending</span></div>
+                        <div class="ci">☐ <span>B2.3 QC failed ke auto-create NCR di QMS</span></div>
+                        <div class="ci">☐ <span>B2.4 Putaway rules: FEFO/FIFO/Fixed location</span></div>
+                        <div class="ci">☐ <span>B2.5 AI Demand Forecast ke auto-create PR saat stok proyeksi kurang dari
+                                reorder</span></div>
+                        <div class="ci">☐ <span>B2.6 Multi-location inventory: stok per gudang per branch
+                                terkonsolidasi</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">B3. Finance Advanced <span class="grp-badge badge-yellow">PENTING</span>
+                        </div>
+                        <div class="ci">☐ <span>B3.1 Inter-Company: posting di dua entity intercompany
+                                elimination</span></div>
+                        <div class="ci">☐ <span>B3.2 Budget Control: PO/Journal terblokir jika over budget per cost
+                                center</span></div>
+                        <div class="ci">☐ <span>B3.3 Period Closing: lock transaksi; hanya superadmin bisa buka</span>
+                        </div>
+                        <div class="ci">☐ <span>B3.4 Bank Reconciliation: auto-match bank statement vs GL</span></div>
+                        <div class="ci">☐ <span>B3.5 Debt Collection: auto-reminder ke CRM berdasarkan aging
+                                threshold</span></div>
+                        <div class="ci">☐ <span>B3.6 Asset: pembelian dari PO ke auto-registrasi ke Fixed Asset</span>
+                        </div>
+                        <div class="ci">☐ <span>B3.7 Depreciation: auto-run periodik bulanan ke Journal Entry</span>
+                        </div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">B4. QMS Integration <span class="grp-badge badge-yellow">PENTING</span>
+                        </div>
+                        <div class="ci">☐ <span>B4.1 Supplier Quality Rating akumulasi otomatis dari GRN QC
+                                result</span></div>
+                        <div class="ci">☐ <span>B4.2 Supplier Rating di bawah threshold ke warning di RFQ/PO</span>
+                        </div>
+                        <div class="ci">☐ <span>B4.3 NCR ke CAPA workflow dengan deadline tracking</span></div>
+                        <div class="ci">☐ <span>B4.4 Calibration schedule ke reminder sebelum expired; alat expired
+                                tidak valid</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">B5. Logistics Integration <span
+                                class="grp-badge badge-yellow">PENTING</span></div>
+                        <div class="ci">☐ <span>B5.1 DO Sales ke push ke Logistics dengan produk, qty, alamat
+                                tujuan</span></div>
+                        <div class="ci">☐ <span>B5.2 Digital POD ke update DO Delivered ke trigger Invoice jika belum
+                                dibuat</span></div>
+                        <div class="ci">☐ <span>B5.3 Route Optimization: multi-DO satu rute; output manifest
+                                kendaraan</span></div>
+                        <div class="ci">☐ <span>B5.4 Shipping cost ke Landed Cost atau biaya pengiriman di Sales
+                                Invoice</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">B6. Support Module <span class="grp-badge badge-yellow">PENTING</span>
+                        </div>
+                        <div class="ci">☐ <span>B6.1 DMS: semua dokumen final PO, Invoice, Kontrak terlampir
+                                otomatis</span></div>
+                        <div class="ci">☐ <span>B6.2 Audit Trail: perubahan data keuangan ter-log user +
+                                timestamp</span></div>
+                        <div class="ci">☐ <span>B6.3 BI: semua modul feed data untuk reporting cross-modul</span></div>
+                        <div class="ci">☐ <span>B6.4 Asset Management satu sumber kebenaran dengan Finance Fixed
+                                Asset</span></div>
+                    </div>
+                    <div class="checklist-group">
+                        <div class="cg-header">Grup C — Enhancement <span class="grp-badge badge-green">OPSIONAL</span>
+                        </div>
+                        <div class="ci">☐ <span>C1 ESG/Sustainability dari Finance emisi dari produksi dan
+                                logistik</span></div>
+                        <div class="ci">☐ <span>C2 Risk Management GRC dengan Finance Budget reserve risiko</span></div>
+                        <div class="ci">☐ <span>C3 LMS dari QMS SOP/ISO training terhubung ke prosedur mutu</span></div>
+                        <div class="ci">☐ <span>C4 GPS Work Order FSM dengan Logistics Fleet koordinasi teknisi</span>
+                        </div>
+                        <div class="ci">☐ <span>C5 Calibration Management ke Manufacturing QC validasi alat ukur</span>
+                        </div>
+                        <div class="ci">☐ <span>C6 Fiscal Printer Integration POS ke Faktur fisik tercetak
+                                otomatis</span></div>
+                        <div class="ci">☐ <span>C7 Vendor Portal: supplier upload invoice ke auto-capture Purchase
+                                Invoice</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end content -->
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            themeVariables: {
+                background: '#1a1d27',
+                primaryColor: '#1e2a4a',
+                primaryTextColor: '#e2e8f0',
+                primaryBorderColor: '#5b6af0',
+                lineColor: '#8892b0',
+                secondaryColor: '#2a1e3a',
+                tertiaryColor: '#1e3a2a',
+                edgeLabelBackground: '#22263a',
+                clusterBkg: '#12152a',
+                clusterBorder: '#2e3350',
+                titleColor: '#38bdf8',
+                fontFamily: 'Segoe UI, system-ui, sans-serif',
+                fontSize: '13px'
+            },
+            flowchart: { curve: 'basis', padding: 16, htmlLabels: true },
+            securityLevel: 'loose'
+        });
+
+        var rendered = {};
+
+        function renderTab(tabId) {
+            if (rendered[tabId]) return;
+            rendered[tabId] = true;
+            var section = document.getElementById('tab-' + tabId);
+            var nodes = section.querySelectorAll('.mermaid');
+            if (nodes.length > 0) {
+                mermaid.run({ nodes: nodes });
+            }
+        }
+
+        function showTab(name) {
+            document.querySelectorAll('.diagram-section').forEach(function (s) { s.classList.remove('active'); });
+            document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+            document.getElementById('tab-' + name).classList.add('active');
+            event.currentTarget.classList.add('active');
+            renderTab(name);
+        }
+
+        window.addEventListener('load', function () {
+            renderTab('overview');
+        });
+    </script>
+</body>
+
+</html>

@@ -9,19 +9,53 @@ export declare class CustomerReceiptController {
     list(req: FastifyRequest & {
         user: AuthUser;
     }, status?: string): Promise<{
-        receipts: {
+        receipts: ({
+            customer: {
+                id: string;
+                email: string | null;
+                tenantId: string;
+                name: string;
+                isActive: boolean;
+                createdAt: Date;
+                npwp: string | null;
+                phone: string | null;
+                address1: string | null;
+                address2: string | null;
+                city: string | null;
+                province: string | null;
+                postalCode: string | null;
+                countryCode: string | null;
+                updatedAt: Date;
+                code: string;
+                nik: string | null;
+                taxAddress: string | null;
+            };
+            invoice: {
+                id: string;
+                tenantId: string;
+                createdAt: Date;
+                updatedAt: Date;
+                code: string;
+                status: import("prisma/generated").$Enums.SalesDocStatus;
+                customerId: string;
+                notes: string | null;
+                orderId: string | null;
+                invoiceDate: Date;
+            } | null;
+        } & {
             id: string;
             tenantId: string;
             createdAt: Date;
             status: string;
+            customerId: string;
             notes: string | null;
-            customerCode: string;
+            invoiceId: string | null;
             amount: import("@prisma/client-runtime-utils").Decimal;
             receiptDate: Date;
             reference: string | null;
             receiptNo: string;
             paymentMethod: string;
-        }[];
+        })[];
     }>;
     get(req: FastifyRequest & {
         user: AuthUser;
@@ -31,8 +65,9 @@ export declare class CustomerReceiptController {
             tenantId: string;
             createdAt: Date;
             status: string;
+            customerId: string;
             notes: string | null;
-            customerCode: string;
+            invoiceId: string | null;
             amount: import("@prisma/client-runtime-utils").Decimal;
             receiptDate: Date;
             reference: string | null;
@@ -45,19 +80,21 @@ export declare class CustomerReceiptController {
     }, body: {
         receiptNo: string;
         receiptDate: string;
-        customerCode: string;
+        customerId: string;
         amount: number;
         paymentMethod: string;
         reference?: string;
         notes?: string;
+        invoiceId?: string;
     }): Promise<{
         receipt: {
             id: string;
             tenantId: string;
             createdAt: Date;
             status: string;
+            customerId: string;
             notes: string | null;
-            customerCode: string;
+            invoiceId: string | null;
             amount: import("@prisma/client-runtime-utils").Decimal;
             receiptDate: Date;
             reference: string | null;

@@ -9,6 +9,7 @@ import { CostController } from './cost.controller';
 import { TaskCategoryController } from './task-category.controller';
 import { ProjectBudgetController } from './budget.controller';
 import { ProjectSiteController } from './site-master.controller';
+import { ProjectExpansionController } from './expansion.controller';
 
 @Module({
   providers: [AuditService],
@@ -21,6 +22,7 @@ import { ProjectSiteController } from './site-master.controller';
     TaskCategoryController,
     ProjectBudgetController,
     ProjectSiteController,
+    ProjectExpansionController,
   ],
 })
 export class ProjectModule {}

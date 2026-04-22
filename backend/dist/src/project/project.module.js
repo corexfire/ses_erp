@@ -17,6 +17,7 @@ const cost_controller_1 = require("./cost.controller");
 const task_category_controller_1 = require("./task-category.controller");
 const budget_controller_1 = require("./budget.controller");
 const site_master_controller_1 = require("./site-master.controller");
+const expansion_controller_1 = require("./expansion.controller");
 let ProjectModule = class ProjectModule {
 };
 exports.ProjectModule = ProjectModule;
@@ -32,6 +33,7 @@ exports.ProjectModule = ProjectModule = __decorate([
             task_category_controller_1.TaskCategoryController,
             budget_controller_1.ProjectBudgetController,
             site_master_controller_1.ProjectSiteController,
+            expansion_controller_1.ProjectExpansionController,
         ],
     })
 ], ProjectModule);

@@ -231,7 +231,7 @@
           </div>
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="claimDialog = false">✕</button>
         </div>
-        <div class="p-6 space-y-4">
+        <div class="p-4 space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
               <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Kategori <span class="text-red-500">*</span></label>

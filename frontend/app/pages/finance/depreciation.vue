@@ -8,7 +8,7 @@
       <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-teal-100/50"></div>
       
       <div class="relative text-slate-900 border-none">
@@ -35,7 +35,7 @@
     <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up uppercase tracking-tighter">
       
       <!-- Ledger Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-teal-200/10 rounded-full blur-3xl text-slate-900"></div>
         
         <div class="relative flex items-center gap-4 text-slate-900">
@@ -54,6 +54,23 @@
           
           <Button icon="pi pi-refresh" severity="secondary" text rounded @click="load" :loading="loading" class="h-10 w-10 text-slate-400 hover:text-teal-600 bg-white border shadow-sm" />
         </div>
+      </div>
+
+      <!-- Category Tabs (Premium Glassmorphism) -->
+      <div class="px-8 py-4 bg-white border-b border-slate-50 flex items-center gap-2 overflow-x-auto custom-scrollbar no-scrollbar scroll-smooth">
+          <button 
+            v-for="cat in categories" 
+            :key="cat"
+            @click="activeTab = cat"
+            :class="[
+                activeTab === cat 
+                    ? 'bg-teal-600 text-white shadow-lg shadow-teal-100 scale-105' 
+                    : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+            ]"
+            class="px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 border-none whitespace-nowrap"
+          >
+            {{ cat.replace('_', ' ') }}
+          </button>
       </div>
 
       <div class="overflow-x-auto custom-scrollbar">
@@ -76,17 +93,8 @@
               </td>
             </tr>
 
-            <template v-for="group in groupedLogs" v-else :key="group.category">
-                <!-- Group Header -->
-                <tr class="bg-slate-900 text-white">
-                   <td colspan="6" class="px-8 py-3 text-[9px] font-black uppercase tracking-[0.3em] flex items-center gap-3">
-                      <i class="pi pi-folder-open text-teal-400"></i> Kategori: {{ group.category }} 
-                      <span class="text-teal-600">/</span> 
-                      <span class="text-slate-400">{{ group.items.length }} Records Terdeteksi</span>
-                   </td>
-                </tr>
-
-                <tr v-for="d in group.items" :key="d.id" class="transition-all hover:bg-teal-50/20 group border-l-4 border-l-transparent hover:border-l-teal-400 text-slate-900 border-none shadow-none">
+            <template v-else>
+                <tr v-for="d in filteredLogs" :key="d.id" class="transition-all hover:bg-teal-50/20 group border-l-4 border-l-transparent hover:border-l-teal-400 text-slate-900 border-none shadow-none">
                   <td class="px-8 py-6 align-middle border-none">
                     <div class="flex items-center gap-4">
                        <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
@@ -125,7 +133,7 @@
                 </tr>
             </template>
 
-            <tr v-if="!loading && groupedLogs.length === 0">
+            <tr v-if="!loading && filteredLogs.length === 0">
               <td colspan="6" class="py-32 text-center text-slate-500 block text-slate-900 border-none shadow-none">
                  <div class="text-6xl mb-4 opacity-10">📜</div>
                  <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Buku audit masih bersih. Belum ada catatan penyusutan yang dibukukan.</div>
@@ -137,7 +145,7 @@
     </div>
 
     <!-- ═══════════════════════════════════ EXPORT SETTINGS DIALOG ══════════════════════════════════ -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all text-slate-900 border-none">
       <div class="relative w-full max-w-md bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white border-b-[12px] border-b-teal-900">
         <!-- Header -->
         <div class="p-8 border-b border-slate-100 bg-teal-50 flex justify-between items-center relative overflow-hidden">
@@ -155,7 +163,7 @@
         </div>
 
         <div class="p-8 space-y-8 bg-white text-slate-900">
-           <div class="p-6 bg-slate-900 text-white rounded-[2rem] flex flex-col justify-center relative overflow-hidden group">
+           <div class="p-4 bg-slate-900 text-white rounded-[2rem] flex flex-col justify-center relative overflow-hidden group">
                <div class="absolute right-[-10px] top-[-10px] opacity-10 group-hover:scale-110 transition-transform"><i class="pi pi-chart-pie text-5xl"></i></div>
                <h4 class="text-[8px] font-black text-teal-400 uppercase tracking-widest leading-none mb-1 italic">Total Akumulasi Terdeteksi</h4>
                <div class="text-2xl font-black tabular-nums tracking-tighter">{{ formatRupiah(totalDepreciation) }}</div>
@@ -166,11 +174,11 @@
               <div class="space-y-4">
                  <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 italic">Pilih Format Keluaran</label>
                  <div class="grid grid-cols-2 gap-4">
-                    <div class="p-6 rounded-2xl border-2 border-teal-600 bg-teal-50 flex flex-col items-center gap-3 cursor-pointer group transition-all">
+                    <div class="p-4 rounded-2xl border-2 border-teal-600 bg-teal-50 flex flex-col items-center gap-3 cursor-pointer group transition-all">
                        <i class="pi pi-file-pdf text-2xl text-teal-700 group-hover:scale-110 transition-transform"></i>
                        <span class="text-[9px] font-black text-teal-800 uppercase tracking-widest">Dokumen PDF</span>
                     </div>
-                    <div class="p-6 rounded-2xl border-2 border-slate-100 bg-slate-50 flex flex-col items-center gap-3 cursor-pointer group transition-all opacity-40 grayscale">
+                    <div class="p-4 rounded-2xl border-2 border-slate-100 bg-slate-50 flex flex-col items-center gap-3 cursor-pointer group transition-all opacity-40 grayscale">
                        <i class="pi pi-file-excel text-2xl text-slate-400"></i>
                        <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest">Laporan Excel</span>
                     </div>
@@ -199,6 +207,7 @@ const showMsg = (refVar: any, msg: string) => { refVar.value = msg; setTimeout((
 const search = ref('');
 const loading = ref(false);
 const dialogOpen = ref(false);
+const activeTab = ref('ALL');
 
 const assets = ref<any[]>([]);
 const depreciationLogs = ref<any[]>([]);
@@ -207,29 +216,30 @@ const totalDepreciation = computed(() => {
     return depreciationLogs.value.reduce((sum, item) => sum + Number(item.depreciationAmount), 0);
 });
 
-const groupedLogs = computed(() => {
-   let list = depreciationLogs.value;
-   if(search.value) {
-      const q = search.value.toLowerCase();
-      list = list.filter(x => 
-         x.asset?.assetNo?.toLowerCase().includes(q) || 
-         x.asset?.name?.toLowerCase().includes(q) ||
-         x.notes?.toLowerCase().includes(q)
-      );
-   }
+const categories = computed(() => {
+    const cats = [...new Set(depreciationLogs.value.map(l => l.asset?.category))].filter(Boolean).sort();
+    return ['ALL', ...cats];
+});
 
-   // Grouping by Category
-   const groups: Record<string, any[]> = {};
-   list.forEach(item => {
-      const cat = item.asset?.category || 'UNCLASSIFIED';
-      if(!groups[cat]) groups[cat] = [];
-      groups[cat].push(item);
-   });
+const filteredLogs = computed(() => {
+    let list = depreciationLogs.value;
+    
+    // Tab Filter
+    if (activeTab.value !== 'ALL') {
+        list = list.filter(item => item.asset?.category === activeTab.value);
+    }
 
-   return Object.keys(groups).map(cat => ({
-      category: cat,
-      items: groups[cat]
-   })).sort((a, b) => a.category.localeCompare(b.category));
+    // Search Filter
+    if(search.value) {
+       const q = search.value.toLowerCase();
+       list = list.filter(x => 
+          x.asset?.assetNo?.toLowerCase().includes(q) || 
+          x.asset?.name?.toLowerCase().includes(q) ||
+          x.notes?.toLowerCase().includes(q)
+       );
+    }
+
+    return list;
 });
 
 const formatRupiah = (val: number | string) => {

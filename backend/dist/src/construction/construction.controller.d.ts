@@ -61,9 +61,9 @@ export declare class ConstructionController {
                 endDate: Date | null;
                 status: string;
                 actualCost: import("@prisma/client-runtime-utils").Decimal | null;
+                projectId: string;
                 teamId: string | null;
                 level: number;
-                projectId: string;
                 taskCode: string;
                 taskName: string;
                 parentTaskId: string | null;
@@ -75,7 +75,7 @@ export declare class ConstructionController {
                 tags: string | null;
                 categoryId: string | null;
             } | null;
-            siteManager: {
+            hseOfficer: {
                 id: string;
                 email: string;
                 tenantId: string;
@@ -92,7 +92,7 @@ export declare class ConstructionController {
                 hireDate: Date | null;
                 salary: import("@prisma/client-runtime-utils").Decimal | null;
             } | null;
-            hseOfficer: {
+            siteManager: {
                 id: string;
                 email: string;
                 tenantId: string;
@@ -124,8 +124,8 @@ export declare class ConstructionController {
                 tenantId: string;
                 createdAt: Date;
                 category: string | null;
-                dailyReportId: string;
                 fileId: string;
+                dailyReportId: string;
                 caption: string | null;
             }[];
             subcontractors: {
@@ -135,6 +135,7 @@ export declare class ConstructionController {
                 subcontractorName: string;
                 workerCount: number;
                 workDescription: string;
+                subcontractorId: string | null;
             }[];
         } & {
             id: string;
@@ -143,10 +144,10 @@ export declare class ConstructionController {
             updatedAt: Date;
             status: string;
             issues: string | null;
+            projectId: string;
             approvedBy: string | null;
             approvedAt: Date | null;
             submittedBy: string | null;
-            projectId: string;
             wbsTaskId: string | null;
             progressPercent: import("@prisma/client-runtime-utils").Decimal | null;
             reportDate: Date;
@@ -191,8 +192,8 @@ export declare class ConstructionController {
             tenantId: string;
             createdAt: Date;
             category: string | null;
-            dailyReportId: string;
             fileId: string;
+            dailyReportId: string;
             caption: string | null;
         }[];
         subcontractors: {
@@ -202,6 +203,7 @@ export declare class ConstructionController {
             subcontractorName: string;
             workerCount: number;
             workDescription: string;
+            subcontractorId: string | null;
         }[];
     } & {
         id: string;
@@ -210,10 +212,10 @@ export declare class ConstructionController {
         updatedAt: Date;
         status: string;
         issues: string | null;
+        projectId: string;
         approvedBy: string | null;
         approvedAt: Date | null;
         submittedBy: string | null;
-        projectId: string;
         wbsTaskId: string | null;
         progressPercent: import("@prisma/client-runtime-utils").Decimal | null;
         reportDate: Date;
@@ -250,8 +252,8 @@ export declare class ConstructionController {
             tenantId: string;
             createdAt: Date;
             category: string | null;
-            dailyReportId: string;
             fileId: string;
+            dailyReportId: string;
             caption: string | null;
         }[];
         subcontractors: {
@@ -261,6 +263,7 @@ export declare class ConstructionController {
             subcontractorName: string;
             workerCount: number;
             workDescription: string;
+            subcontractorId: string | null;
         }[];
     } & {
         id: string;
@@ -269,10 +272,10 @@ export declare class ConstructionController {
         updatedAt: Date;
         status: string;
         issues: string | null;
+        projectId: string;
         approvedBy: string | null;
         approvedAt: Date | null;
         submittedBy: string | null;
-        projectId: string;
         wbsTaskId: string | null;
         progressPercent: import("@prisma/client-runtime-utils").Decimal | null;
         reportDate: Date;

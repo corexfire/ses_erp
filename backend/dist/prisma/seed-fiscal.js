@@ -19,6 +19,14 @@ async function seedFiscal(prisma, tenantId) {
             startDate: new Date('2025-01-01T00:00:00Z'),
             endDate: new Date('2025-12-31T23:59:59Z'),
             isClosed: false,
+            isActive: false
+        },
+        {
+            code: 'FY2026',
+            name: 'Fiscal Year 2026',
+            startDate: new Date('2026-01-01T00:00:00Z'),
+            endDate: new Date('2026-12-31T23:59:59Z'),
+            isClosed: false,
             isActive: true
         }
     ];

@@ -10,6 +10,17 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import {
+  IsArray,
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
 import type { AuthUser } from '../../auth/auth.types';
@@ -27,37 +38,146 @@ const isDeliveryOrderStatus = (value?: string): value is DeliveryOrderStatus =>
   Boolean(value) && deliveryOrderStatusSet.has(value as DeliveryOrderStatus);
 
 export class GenerateDeliveryOrderDto {
+  @IsArray()
+  @IsString({ each: true })
   shipmentIds!: string[];
+
+  @IsDateString()
+  @IsNotEmpty()
   plannedShipDate!: string;
+
+  @IsString()
+  @IsNotEmpty()
   warehouseId!: string;
+
+  @IsString()
+  @IsOptional()
+  @IsEnum(['URGENT', 'HIGH', 'NORMAL', 'LOW'])
   priority?: DeliveryPriority;
+}
+
+export class CreateDeliveryOrderItemDto {
+  @IsString()
+  @IsOptional()
+  itemId?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  description!: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  orderedQty!: number;
+
+  @IsString()
+  @IsOptional()
+  uomCode?: string;
+
+  @IsNumber()
+  @IsOptional()
+  unitPrice?: number;
+
+  @IsString()
+  @IsOptional()
+  batchNo?: string;
+
+  @IsString()
+  @IsOptional()
+  serialNo?: string;
 }
 
 export class CreateDeliveryOrderDto {
+  @IsString()
+  @IsOptional()
   code?: string;
+
+  @IsString()
+  @IsOptional()
   shipmentId?: string;
+
+  @IsString()
+  @IsOptional()
   salesOrderId?: string;
+
+  @IsString()
+  @IsNotEmpty()
   customerId!: string;
+
+  @IsString()
+  @IsNotEmpty()
   warehouseId!: string;
+
+  @IsDateString()
+  @IsOptional()
   plannedShipDate?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsEnum(['URGENT', 'HIGH', 'NORMAL', 'LOW'])
   priority?: DeliveryPriority;
+
+  @IsString()
+  @IsOptional()
   deliveryAddress1?: string;
+
+  @IsString()
+  @IsOptional()
   deliveryAddress2?: string;
+
+  @IsString()
+  @IsOptional()
   deliveryCity?: string;
+
+  @IsString()
+  @IsOptional()
   deliveryProvince?: string;
+
+  @IsString()
+  @IsOptional()
   deliveryPostalCode?: string;
+
+  @IsString()
+  @IsOptional()
   deliveryNotes?: string;
-  items!: { itemId?: string; description: string; orderedQty: number; uomCode?: string; unitPrice?: number; batchNo?: string; serialNo?: string }[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateDeliveryOrderItemDto)
+  items!: CreateDeliveryOrderItemDto[];
 }
 
 export class UpdateDeliveryOrderDto {
+  @IsDateString()
+  @IsOptional()
   plannedShipDate?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsEnum(['URGENT', 'HIGH', 'NORMAL', 'LOW'])
   priority?: DeliveryPriority;
+
+  @IsString()
+  @IsOptional()
   deliveryAddress1?: string;
+
+  @IsString()
+  @IsOptional()
   deliveryAddress2?: string;
+
+  @IsString()
+  @IsOptional()
   deliveryCity?: string;
+
+  @IsString()
+  @IsOptional()
   deliveryProvince?: string;
+
+  @IsString()
+  @IsOptional()
   deliveryPostalCode?: string;
+
+  @IsString()
+  @IsOptional()
   deliveryNotes?: string;
 }
 
@@ -128,7 +248,10 @@ export class DeliveryController {
     // Validate shipments
     const shipments = await this.prisma.shipment.findMany({
       where: {
-        id: { in: body.shipmentIds },
+        OR: [
+          { id: { in: body.shipmentIds } },
+          { code: { in: body.shipmentIds } },
+        ],
         tenantId: req.user.tenantId!,
         status: 'CREATED',
       },
@@ -404,6 +527,39 @@ export class DeliveryController {
       tenantId: req.user.tenantId!,
       actorUserId: req.user.id,
       action: 'CANCEL',
+      entity: 'DeliveryOrder',
+      entityId: id,
+      metadata: { code: existing.code },
+    });
+
+    return { deliveryOrder: updated };
+  }
+
+  @Post(':id/delivered')
+  @RequirePermissions('logistics.delivery.manage')
+  async markDelivered(
+    @Req() req: FastifyRequest & { user: AuthUser },
+    @Param('id') id: string,
+  ) {
+    const existing = await this.prisma.deliveryOrder.findFirst({
+      where: { id, tenantId: req.user.tenantId! },
+      select: { id: true, code: true, status: true },
+    });
+    if (!existing) throw new NotFoundException('Delivery order not found');
+
+    if (existing.status !== 'IN_TRANSIT' && existing.status !== 'RELEASED') {
+      throw new Error('Can only mark as delivered if in transit or released');
+    }
+
+    const updated = await this.prisma.deliveryOrder.update({
+      where: { id },
+      data: { status: 'DELIVERED', actualDeliveredAt: new Date() },
+    });
+
+    await this.audit.log({
+      tenantId: req.user.tenantId!,
+      actorUserId: req.user.id,
+      action: 'DELIVER',
       entity: 'DeliveryOrder',
       entityId: id,
       metadata: { code: existing.code },

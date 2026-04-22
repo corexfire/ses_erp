@@ -17,9 +17,9 @@ export declare class BillingController {
             description: string | null;
             updatedAt: Date;
             status: string;
+            projectId: string;
             claimNo: string;
             claimDate: Date;
-            projectId: string;
             progressPercent: import("@prisma/client-runtime-utils").Decimal;
             attachmentUrl: string | null;
         }[];
@@ -34,9 +34,9 @@ export declare class BillingController {
             description: string | null;
             updatedAt: Date;
             status: string;
+            projectId: string;
             claimNo: string;
             claimDate: Date;
-            projectId: string;
             progressPercent: import("@prisma/client-runtime-utils").Decimal;
             attachmentUrl: string | null;
         };
@@ -51,9 +51,9 @@ export declare class BillingController {
             status: string;
             period: string | null;
             invoiceNo: string | null;
+            projectId: string;
             grossAmount: import("@prisma/client-runtime-utils").Decimal;
             claimDate: Date;
-            projectId: string;
             progressPercent: import("@prisma/client-runtime-utils").Decimal;
             progressClaimId: string;
             retentionPercent: import("@prisma/client-runtime-utils").Decimal;
@@ -90,9 +90,9 @@ export declare class BillingController {
             status: string;
             period: string | null;
             invoiceNo: string | null;
+            projectId: string;
             grossAmount: import("@prisma/client-runtime-utils").Decimal;
             claimDate: Date;
-            projectId: string;
             progressPercent: import("@prisma/client-runtime-utils").Decimal;
             progressClaimId: string;
             retentionPercent: import("@prisma/client-runtime-utils").Decimal;
@@ -112,9 +112,9 @@ export declare class BillingController {
             description: string | null;
             updatedAt: Date;
             status: string;
+            projectId: string;
             claimNo: string;
             claimDate: Date;
-            projectId: string;
             progressPercent: import("@prisma/client-runtime-utils").Decimal;
             attachmentUrl: string | null;
         }[];

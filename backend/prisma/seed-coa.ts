@@ -19,6 +19,7 @@ export async function seedCoa(prisma: PrismaClient, tenantId: string) {
     { code: '1-1110-02', name: 'Kas Kecil (Petty Cash) - Jakarta', type: AccountType.ASSET, isPosting: true, parentCode: '1-1110-00' },
     { code: '1-1110-03', name: 'Kas Kecil (Petty Cash) - Surabaya', type: AccountType.ASSET, isPosting: true, parentCode: '1-1110-00' },
     { code: '1-1110-04', name: 'Kas Kecil (Petty Cash) - Medan', type: AccountType.ASSET, isPosting: true, parentCode: '1-1110-00' },
+    { code: '1-1110-05', name: 'Kas Kecil (Petty Cash) - Operations', type: AccountType.ASSET, isPosting: true, parentCode: '1-1110-00' },
     
     { code: '1-1120-00', name: 'BANK (BANK ACCOUNTS)', type: AccountType.ASSET, isPosting: false, parentCode: '1-1100-00' },
     { code: '1-1120-01', name: 'Bank BCA IDR - 0012345678', type: AccountType.ASSET, isPosting: true, parentCode: '1-1120-00' },
@@ -55,6 +56,11 @@ export async function seedCoa(prisma: PrismaClient, tenantId: string) {
     { code: '1-1520-00', name: 'PPh 22 Dibayar Dimuka', type: AccountType.ASSET, isPosting: true, parentCode: '1-1500-00' },
     { code: '1-1530-00', name: 'PPh 23 Dibayar Dimuka', type: AccountType.ASSET, isPosting: true, parentCode: '1-1500-00' },
     { code: '1-1540-00', name: 'PPh 25 Dibayar Dimuka', type: AccountType.ASSET, isPosting: true, parentCode: '1-1500-00' },
+    
+    // 1.1.5 Inter-Company Receivables
+    { code: '1-1600-00', name: 'PIUTANG ANTAR CABANG', type: AccountType.ASSET, isPosting: false, parentCode: '1-1000-00' },
+    { code: '1-1610-00', name: 'Piutang Cabang Surabaya', type: AccountType.ASSET, isPosting: true, parentCode: '1-1600-00' },
+    { code: '1-1620-00', name: 'Piutang Cabang Medan', type: AccountType.ASSET, isPosting: true, parentCode: '1-1600-00' },
 
     // 1.2 FIXED ASSETS
     { code: '1-2000-00', name: 'AKTIVA TETAP (FIXED ASSETS)', type: AccountType.ASSET, isPosting: false, parentCode: '1-0000-00' },
@@ -96,6 +102,11 @@ export async function seedCoa(prisma: PrismaClient, tenantId: string) {
     { code: '2-1320-00', name: 'Hutang PPh 21 (Karyawan)', type: AccountType.LIABILITY, isPosting: true, parentCode: '2-1300-00' },
     { code: '2-1330-00', name: 'Hutang PPh 23 (Vendor Services)', type: AccountType.LIABILITY, isPosting: true, parentCode: '2-1300-00' },
     { code: '2-1340-00', name: 'Hutang PPh 25/29 (Badan)', type: AccountType.LIABILITY, isPosting: true, parentCode: '2-1300-00' },
+
+    // 2.1.4 Inter-Company Payables
+    { code: '2-1400-00', name: 'HUTANG ANTAR CABANG', type: AccountType.LIABILITY, isPosting: false, parentCode: '2-1000-00' },
+    { code: '2-1410-00', name: 'Hutang Cabang Surabaya', type: AccountType.LIABILITY, isPosting: true, parentCode: '2-1400-00' },
+    { code: '2-1420-00', name: 'Hutang Cabang Medan', type: AccountType.LIABILITY, isPosting: true, parentCode: '2-1400-00' },
     
     // 2.2 LONG TERM
     { code: '2-2000-00', name: 'KEWAJIBAN JANGKA PANJANG', type: AccountType.LIABILITY, isPosting: false, parentCode: '2-0000-00' },

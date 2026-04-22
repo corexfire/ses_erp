@@ -3,7 +3,7 @@
     <!-- Header (Premium Sourcing Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-teal-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-teal-400">Sourcing Core</span>
@@ -21,8 +21,8 @@
     </div>
 
     <!-- Dynamic Sourcing KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-teal-600 text-white shadow-xl flex flex-col justify-between border border-teal-500 transition-all hover:bg-teal-700 group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-teal-600 text-white shadow-xl flex flex-col justify-between border border-teal-500 transition-all hover:bg-teal-700 group">
         <div class="text-[10px] font-black uppercase text-teal-200 tracking-[0.2em] mb-4 opacity-80">Total Tender Aktif</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ rfqs.length }}</h3>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Peserta Bidding (Suppliers)</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-indigo-700 tracking-tighter leading-none">{{ rfqs.reduce((a,c) => a + (c.vendors?.length || 0), 0) }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Anggaran Pengadaan</div>
         <div class="flex flex-col items-start">
            <div class="flex items-center gap-1">
@@ -50,7 +50,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-teal-600 tracking-[0.2em] mb-4">Efisiensi Sourcing</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-teal-700 tracking-tighter leading-none">12.5%</h3>
@@ -60,112 +60,105 @@
     </div>
 
     <!-- Sourcing Ledger (Premium Grid) -->
-    <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
-      <!-- Controls Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
-        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-teal-200/20 rounded-full blur-3xl"></div>
-        
-        <div class="relative flex items-center gap-4">
-           <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-teal-400 shadow-xl"><i class="pi pi-megaphone text-xl"></i></div>
-           <div>
-              <h3 class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em] leading-none mb-1">Daftar Tender Aktif</h3>
-              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono">Request For Quotation Ledger</p>
-           </div>
-        </div>
+    <PanelCard
+      title="Daftar Tender Aktif"
+      subtitle="Request For Quotation Ledger"
+      icon="pi pi-megaphone"
+      theme="teal"
+      search-placeholder="Cari Kode RFQ / Judul..."
+      v-model:search="search"
+      :loading="loading"
+      @refresh="load"
+    >
+      <template #filters>
+        <select v-model="statusFilter" class="bg-transparent text-[10px] font-black uppercase tracking-widest text-slate-500 pr-8 outline-none cursor-pointer hover:text-teal-600 transition-colors">
+          <option value="">Semua Status</option>
+          <option value="DRAFT">Draft</option>
+          <option value="PUBLISHED">Published (Live)</option>
+          <option value="CLOSED_BID">Evaluasi</option>
+          <option value="AWARDED">Pemenang Ditetapkan</option>
+          <option value="CANCELLED">Dibatalkan</option>
+        </select>
+      </template>
 
-        <div class="relative flex items-center gap-3">
-          <div class="flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm p-1">
-            <i class="pi pi-search px-3 text-slate-300 text-xs"></i>
-            <InputText v-model="search" placeholder="Cari Kode RFQ / Judul..." class="border-none bg-transparent text-[11px] h-9 w-64 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" @keyup.enter="load" />
-            <div class="h-6 w-[1px] bg-slate-100 mx-2"></div>
-            <select v-model="statusFilter" class="bg-transparent text-[10px] font-black uppercase tracking-widest text-slate-500 pr-8 outline-none cursor-pointer hover:text-teal-600 transition-colors">
-              <option value="">Semua Status</option>
-              <option value="DRAFT">Draft</option>
-              <option value="PUBLISHED">Published (Live)</option>
-              <option value="CLOSED_BID">Evaluasi</option>
-              <option value="AWARDED">Pemenang Ditetapkan</option>
-              <option value="CANCELLED">Dibatalkan</option>
-            </select>
-          </div>
-          <Button icon="pi pi-refresh" severity="secondary" rounded text @click="load" :loading="loading" class="h-10 w-10 text-slate-400 hover:text-teal-600 transition-all shadow-sm bg-white" />
-        </div>
-      </div>
+      <template #table>
+        <PanelTable
+          :items="filteredRfqs"
+          :columns="columns"
+          :loading="loading"
+          hover-border-color="border-l-teal-400"
+          loading-text="Mensinkronisasi data sourcing..."
+          empty-text="Belum ada dokumen RFQ yang diaktifkan."
+          @row-click="openView"
+        >
+          <template #col-document="{ item }">
+            <div>
+               <div class="font-black text-slate-900 text-[13px] tracking-tight leading-none mb-2 group-hover:text-teal-700 transition-colors uppercase">{{ item.code }}</div>
+               <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none flex items-center gap-1.5"><i class="pi pi-calendar-plus text-teal-400"></i> Terbit: {{ formatDate(item.issueDate) }}</div>
+            </div>
+          </template>
 
-      <!-- RFQ Table -->
-      <div class="overflow-x-auto custom-scrollbar">
-        <table class="w-full text-sm">
-          <thead class="bg-white text-left font-bold border-b border-slate-50">
-            <tr>
-              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-48">Dokumen RFQ</th>
-              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Judul Tender & Periode</th>
-              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center w-32 border-l border-slate-50">Items</th>
-              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center w-40 border-l border-slate-50">Vendor Bid</th>
-              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-center w-44 border-l border-slate-50">Status Bidding</th>
-              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-40 border-l border-slate-50">Aksi</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-50">
-             <tr v-if="loading">
-              <td colspan="6" class="py-24 text-center">
-                <i class="pi pi-spinner pi-spin text-4xl text-teal-500 opacity-20"></i>
-                <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-teal-600">Mensinkronisasi data sourcing...</div>
-              </td>
-            </tr>
-            
-            <tr v-for="rfq in filteredRfqs" v-else :key="rfq.id" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent hover:border-l-teal-400" @click="openView(rfq)">
-              <td class="px-8 py-6 align-middle">
-                <div>
-                   <div class="font-black text-slate-900 text-[13px] tracking-tight leading-none mb-2 group-hover:text-teal-700 transition-colors uppercase">{{ rfq.code }}</div>
-                   <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none flex items-center gap-1.5"><i class="pi pi-calendar-plus text-teal-400"></i> Terbit: {{ formatDate(rfq.issueDate) }}</div>
-                </div>
-              </td>
-              
-              <td class="px-6 py-6 align-middle border-l border-slate-50">
-                 <div class="font-black text-slate-700 text-[11px] uppercase tracking-tight line-clamp-1 mb-2">{{ rfq.title || 'Pengadaan Reguler' }}</div>
-                 <div class="flex items-center gap-3">
-                    <div class="text-[9px] font-black text-rose-500 bg-rose-50 px-2 py-0.5 rounded border border-rose-100 uppercase tracking-widest">Batas: {{ formatDate(rfq.closingDate) }}</div>
-                    <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">{{ rfq.department }}</div>
-                 </div>
-              </td>
+          <template #col-title="{ item }">
+             <div class="font-black text-slate-700 text-[11px] uppercase tracking-tight line-clamp-1 mb-2">{{ item.title || 'Pengadaan Reguler' }}</div>
+             <div class="flex items-center gap-3">
+                <div class="text-[9px] font-black text-rose-500 bg-rose-50 px-2 py-0.5 rounded border border-rose-100 uppercase tracking-widest">Batas: {{ formatDate(item.closingDate) }}</div>
+                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">{{ item.department }}</div>
+             </div>
+          </template>
 
-              <td class="px-6 py-6 align-middle text-center border-l border-slate-50 bg-slate-50/20 group-hover:bg-slate-100/30 transition-colors shrink-0">
-                 <div class="text-sm font-black text-slate-900">{{ rfq.items?.length || 0 }}</div>
-                 <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Jenis Barang</p>
-              </td>
+          <template #col-items="{ item }">
+             <div class="text-sm font-black text-slate-900">{{ item.items?.length || 0 }}</div>
+             <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mt-0.5">Jenis Barang</p>
+          </template>
 
-              <td class="px-6 py-6 align-middle text-center border-l border-slate-50 bg-indigo-50/5 group-hover:bg-indigo-50/20 transition-colors text-indigo-700">
-                 <div class="flex items-center justify-center gap-2">
-                    <i class="pi pi-users text-xs"></i>
-                    <span class="text-sm font-black">{{ rfq.vendors?.length || 0 }}</span>
-                 </div>
-                 <p class="text-[8px] font-black uppercase tracking-widest mt-0.5">Supplier Kuotasi</p>
-              </td>
+          <template #col-bids="{ item }">
+             <div class="flex items-center justify-center gap-2 text-indigo-700">
+                <i class="pi pi-users text-xs"></i>
+                <span class="text-sm font-black">{{ item.vendors?.length || 0 }}</span>
+             </div>
+             <p class="text-[8px] font-black uppercase tracking-widest mt-0.5 text-slate-400">Supplier Kuotasi</p>
+          </template>
 
-              <td class="px-6 py-6 align-middle text-center border-l border-slate-50 relative overflow-hidden">
-                 <div class="absolute left-0 bottom-0 w-2 h-full bg-teal-400 opacity-20 transition-all group-hover:w-full"></div>
-                 <div class="relative z-10 space-y-2">
-                    <span class="inline-flex rounded-xl px-4 py-1.5 text-[9px] font-black tracking-[0.2em] border w-40 flex items-center justify-center shadow-sm backdrop-blur-sm" :class="getStatusStyle(rfq.status)">
-                       {{ standardizeStatus(rfq).replace('_', ' ') }}
-                    </span>
-                    <div v-if="standardizeStatus(rfq) === 'PUBLISHED'" class="text-[8px] font-black text-emerald-600 uppercase tracking-widest animate-pulse leading-none flex items-center justify-center gap-1"><i class="pi pi-bolt"></i> Live Bidding</div>
-                 </div>
-              </td>
+          <template #col-status="{ item }">
+             <div class="space-y-2 py-2">
+                <span class="inline-flex rounded-xl px-4 py-1.5 text-[9px] font-black tracking-[0.2em] border w-40 flex items-center justify-center shadow-sm backdrop-blur-sm" :class="getStatusStyle(item.status)">
+                   {{ standardizeStatus(item).replace('_', ' ') }}
+                </span>
+                <div v-if="standardizeStatus(item) === 'PUBLISHED'" class="text-[8px] font-black text-emerald-600 uppercase tracking-widest animate-pulse leading-none flex items-center justify-center gap-1"><i class="pi pi-bolt"></i> Live Bidding</div>
+             </div>
+          </template>
 
-              <td class="px-8 py-6 align-middle text-right border-l border-slate-50">
-                 <Button label="Sourcing Hub" size="small" rounded outlined class="text-[10px] px-6 font-black py-2.5 h-10 border-slate-200 text-slate-600 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all uppercase tracking-widest" />
-              </td>
-            </tr>
-            
-            <tr v-if="!loading && filteredRfqs.length === 0">
-              <td colspan="6" class="py-32 text-center text-slate-500">
-                 <i class="pi pi-megaphone text-6xl text-slate-100 mb-4 block"></i>
-                 <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Belum ada dokumen RFQ yang diaktifkan.</div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+          <template #col-actions="{ item }">
+             <div class="flex items-center justify-end gap-2" @click.stop>
+                <Button 
+                  v-tooltip.top="'Lihat Detail'"
+                  icon="pi pi-eye" 
+                  text 
+                  rounded 
+                  class="text-slate-400 hover:text-indigo-600 h-10 w-10 transition-all" 
+                  @click="openView(item)" 
+                />
+                <Button 
+                  v-tooltip.top="'Kelola Sourcing Hub'"
+                  icon="pi pi-bolt" 
+                  text 
+                  rounded 
+                  class="text-teal-500 hover:bg-teal-50 h-10 w-10 transition-all shadow-sm border border-teal-100" 
+                  @click="openView(item)" 
+                />
+                <Button 
+                  v-tooltip.top="'Batalkan RFQ'"
+                  icon="pi pi-trash" 
+                  text 
+                  rounded 
+                  class="text-rose-400 hover:text-rose-600 h-10 w-10 transition-all" 
+                  v-if="item.status === 'DRAFT'"
+                />
+             </div>
+          </template>
+        </PanelTable>
+      </template>
+    </PanelCard>
 
     <!-- Dialog Sourcing Hub (Universal Centered Style) -->
     <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md transition-all">
@@ -173,7 +166,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-teal-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-megaphone text-3xl font-black"></i>
             </div>
@@ -210,7 +203,7 @@
                     <input type="text" v-model="form.department" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-white shadow-xl outline-none focus:ring-4 focus:ring-teal-400 transition-all uppercase" :readonly="isReadonly" />
                  </div>
 
-                 <div class="grid grid-cols-2 gap-6">
+                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-3">
                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] block px-1 leading-none">Tgl Terbit</label>
                        <input type="date" v-model="form.issueDate" class="w-full h-14 border-none rounded-2xl px-6 text-[13px] font-black text-slate-900 bg-white shadow-xl outline-none focus:ring-4 focus:ring-teal-400 transition-all" :readonly="isReadonly" />
@@ -223,7 +216,7 @@
 
                  <div class="space-y-3">
                     <label class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] block px-1 leading-none">Catatan Strategis</label>
-                    <textarea v-model="form.notes" rows="6" class="w-full border-none rounded-[2rem] p-6 text-[13px] font-black text-slate-900 bg-white shadow-xl outline-none focus:ring-4 focus:ring-teal-400 transition-all resize-none" placeholder="Sebutkan target budget, syarat kualitas..." :readonly="isReadonly"></textarea>
+                    <textarea v-model="form.notes" rows="6" class="w-full border-none rounded-[2rem] p-4 text-[13px] font-black text-slate-900 bg-white shadow-xl outline-none focus:ring-4 focus:ring-teal-400 transition-all resize-none" placeholder="Sebutkan target budget, syarat kualitas..." :readonly="isReadonly"></textarea>
                  </div>
 
                  <div class="mt-4 p-8 bg-amber-900 text-white rounded-[2rem] border-4 border-white shadow-2xl relative overflow-hidden group/decision">
@@ -301,13 +294,13 @@
                       <Button v-if="!isReadonly" label="Undang Supplier" icon="pi pi-user-plus" size="small" rounded outlined class="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:bg-indigo-50 px-6 h-10 border border-indigo-100" />
                    </div>
 
-                   <div class="grid grid-cols-1 gap-6">
+                   <div class="grid grid-cols-1 gap-4">
                       <div v-for="v in form.vendors" :key="v.id" class="p-8 rounded-[2rem] border-2 bg-white relative group overflow-hidden transition-all hover:shadow-2xl hover:-translate-y-1" :class="v.bidAmount ? 'border-indigo-100 hover:border-indigo-400' : 'border-slate-100 bg-slate-50/50'">
                          <!-- Dynamic Corner Indicator (Winner / Best Price) -->
                          <div v-if="v.bidAmount && (vIdx(v)===0)" class="absolute right-[-45px] top-[20px] bg-emerald-500 text-white text-[10px] font-black px-12 py-2 rotate-45 transform shadow-lg uppercase tracking-widest z-10">TERMURAH</div>
                          
                          <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-                            <div class="flex items-center gap-6">
+                            <div class="flex items-center gap-4">
                                <div class="w-20 h-20 rounded-[1.5rem] flex items-center justify-center font-black text-2xl shadow-xl transition-transform group-hover:rotate-6" :class="v.bidAmount ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-400'">
                                   {{ (v.supplierName || 'V').charAt(0).toUpperCase() }}
                                </div>
@@ -320,7 +313,7 @@
                                </div>
                             </div>
 
-                            <div class="bg-slate-50 p-6 rounded-[1.5rem] border border-slate-100 text-right min-w-[240px] group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-colors">
+                            <div class="bg-slate-50 p-4 rounded-[1.5rem] border border-slate-100 text-right min-w-[240px] group-hover:bg-indigo-50 group-hover:border-indigo-100 transition-colors">
                                <div class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Nilai Penawaran (Total)</div>
                                <div v-if="v.bidAmount" class="text-3xl font-black font-mono text-indigo-700 tracking-tighter flex items-center justify-end">
                                   <span class="text-xs mr-2 text-indigo-300 italic">RP</span>{{ formatCurrency(v.bidAmount) }}
@@ -351,10 +344,20 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 const api = useApi();
 const auth = useAuthStore();
 
 const canManage = computed(() => auth.hasPermission('procurement.rfq.manage') || true); // Dev fallback
+
+const columns = [
+  { key: 'document', header: 'Dokumen RFQ', width: 'w-48' },
+  { key: 'title', header: 'Judul Tender & Periode' },
+  { key: 'items', header: 'Items', align: 'center' as const, width: 'w-32', borderLeft: true },
+  { key: 'bids', header: 'Vendor Bid', align: 'center' as const, width: 'w-40', borderLeft: true },
+  { key: 'status', header: 'Status Bidding', align: 'center' as const, width: 'w-44', borderLeft: true, hoverBg: 'bg-teal-400' },
+  { key: 'actions', header: 'Aksi', align: 'right' as const, width: 'w-48', borderLeft: true }
+];
 
 const rfqs = ref<any[]>([]);
 const search = ref('');
@@ -468,7 +471,7 @@ function openCreate() {
   form.title = '';
   form.department = '';
   form.notes = '';
-  form.issueDate = new Date().toISOString().split('T')[0];
+  form.issueDate = new Date().toISOString().split('T')[0] || '';
   form.closingDate = '';
   form.lines = [];
   form.vendors = [];

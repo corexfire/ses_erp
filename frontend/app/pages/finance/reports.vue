@@ -5,7 +5,7 @@
       <i class="pi pi-check-circle text-xl"></i> {{ success }}
     </div>
     
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-violet-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-violet-100/50"></div>
       
       <div class="relative">
@@ -29,7 +29,7 @@
     </div>
 
     <!-- Analytics Board (KPI Cards) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mx-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mx-6">
         <!-- Net Profit Card -->
         <div class="bg-slate-900 rounded-[2rem] p-8 shadow-xl relative overflow-hidden group transition-all hover:translate-y-[-5px]">
            <div class="absolute right-[-20px] top-[-20px] opacity-10 group-hover:scale-125 transition-transform duration-700 text-violet-500"><i class="pi pi-chart-line text-[140px]"></i></div>
@@ -334,23 +334,23 @@
               </div>
 
               <!-- Aging Summary Matrix -->
-              <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-                  <div class="rounded-3xl p-6 bg-emerald-900 text-white shadow-xl flex flex-col justify-between group transition-all hover:translate-y-[-5px]">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+                  <div class="rounded-3xl p-4 bg-emerald-900 text-white shadow-xl flex flex-col justify-between group transition-all hover:translate-y-[-5px]">
                      <div class="text-[8px] font-black uppercase tracking-[0.3em] text-emerald-400 mb-2 leading-none uppercase italic">Belum Jatuh Tempo</div>
                      <div class="text-2xl font-black font-mono tabular-nums tracking-tighter">{{formatRupiah(agingSummary.current)}}</div>
                      <div class="mt-4 text-[7px] font-black text-emerald-500 uppercase tracking-widest opacity-60">Status Liquid / Aman</div>
                   </div>
-                  <div class="rounded-3xl p-6 bg-amber-500 text-white shadow-xl flex flex-col justify-between group transition-all hover:translate-y-[-5px]">
+                  <div class="rounded-3xl p-4 bg-amber-500 text-white shadow-xl flex flex-col justify-between group transition-all hover:translate-y-[-5px]">
                      <div class="text-[8px] font-black uppercase tracking-[0.3em] text-amber-900 mb-2 leading-none uppercase italic opacity-70">Terlambat 1 - 30 Hari</div>
                      <div class="text-2xl font-black font-mono tabular-nums tracking-tighter text-amber-950">{{formatRupiah(agingSummary.days30)}}</div>
                      <div class="mt-4 text-[7px] font-black text-amber-800 uppercase tracking-widest opacity-60">Status Warning Needed</div>
                   </div>
-                  <div class="rounded-3xl p-6 bg-orange-600 text-white shadow-xl flex flex-col justify-between group transition-all hover:translate-y-[-5px]">
+                  <div class="rounded-3xl p-4 bg-orange-600 text-white shadow-xl flex flex-col justify-between group transition-all hover:translate-y-[-5px]">
                      <div class="text-[8px] font-black uppercase tracking-[0.3em] text-orange-200 mb-2 leading-none uppercase italic opacity-70">Terlambat 31 - 90 Hari</div>
                      <div class="text-2xl font-black font-mono tabular-nums tracking-tighter">{{formatRupiah(agingSummary.days60)}}</div>
                      <div class="mt-4 text-[7px] font-black text-orange-200 uppercase tracking-widest opacity-60">Status Action Required</div>
                   </div>
-                  <div class="rounded-3xl p-6 bg-rose-600 text-white shadow-xl flex flex-col justify-between group transition-all hover:translate-y-[-5px]">
+                  <div class="rounded-3xl p-4 bg-rose-600 text-white shadow-xl flex flex-col justify-between group transition-all hover:translate-y-[-5px]">
                      <div class="text-[8px] font-black uppercase tracking-[0.3em] text-rose-200 mb-2 leading-none uppercase italic opacity-70">Kritis > 90 Hari</div>
                      <div class="text-2xl font-black font-mono tabular-nums tracking-tighter">{{formatRupiah(agingSummary.over90)}}</div>
                      <div class="mt-4 text-[7px] font-black text-rose-200 uppercase tracking-widest opacity-60">Status Bad Debt Threat</div>
@@ -399,12 +399,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ ANALYTICS CONFIG DIALOG ══════════════════════════════════ -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-2xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-violet-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-violet-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-violet-700 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-violet-200">
                <i class="pi pi-cog text-3xl font-black"></i>
             </div>
@@ -439,11 +439,11 @@
               <div class="space-y-4">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 italic">Pilih Format Keluaran (Export Format)</label>
                   <div class="grid grid-cols-2 gap-4">
-                      <div @click="exportFormat = 'pdf'" :class="exportFormat === 'pdf' ? 'bg-violet-600 text-white shadow-xl shadow-violet-100 border-violet-600' : 'bg-slate-50 text-slate-400 border-slate-50'" class="p-6 rounded-2xl border-2 cursor-pointer transition-all flex items-center gap-4 group">
+                      <div @click="exportFormat = 'pdf'" :class="exportFormat === 'pdf' ? 'bg-violet-600 text-white shadow-xl shadow-violet-100 border-violet-600' : 'bg-slate-50 text-slate-400 border-slate-50'" class="p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center gap-4 group">
                           <i class="pi pi-file-pdf text-xl"></i>
                           <div class="text-[10px] font-black uppercase tracking-widest">Dokumen PDF</div>
                       </div>
-                      <div @click="exportFormat = 'excel'" :class="exportFormat === 'excel' ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-100 border-emerald-600' : 'bg-slate-50 text-slate-400 border-slate-50'" class="p-6 rounded-2xl border-2 cursor-pointer transition-all flex items-center gap-4 group">
+                      <div @click="exportFormat = 'excel'" :class="exportFormat === 'excel' ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-100 border-emerald-600' : 'bg-slate-50 text-slate-400 border-slate-50'" class="p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center gap-4 group">
                           <i class="pi pi-file-excel text-xl"></i>
                           <div class="text-[10px] font-black uppercase tracking-widest">Laporan Excel</div>
                       </div>
@@ -466,11 +466,11 @@
 <script setup lang="ts">
 const api = useApi();
 const auth = useAuthStore();
+const route = useRoute();
 
 const success = ref('');
 const showMsg = (refVar: any, msg: string) => { refVar.value = msg; setTimeout(() => { refVar.value = null; }, 3000); };
 
-const activeTab = ref('pl');
 const tabs = [
   { id: 'pl', label: 'Profit & Loss', icon: 'pi pi-chart-line' },
   { id: 'bs', label: 'Balance Sheet', icon: 'pi pi-building' },
@@ -478,6 +478,15 @@ const tabs = [
   { id: 'gl', label: 'Buku Besar (GL)', icon: 'pi pi-book' },
   { id: 'ag', label: 'AR/AP Aging', icon: 'pi pi-clock' },
 ];
+
+const activeTab = ref('pl');
+
+// Deep linking handle
+watch(() => route.query.tab, (newTab) => {
+  if (newTab && tabs.some(t => t.id === newTab)) {
+    activeTab.value = newTab as string;
+  }
+}, { immediate: true });
 
 const asOfDate = ref(new Date().toISOString().slice(0, 10));
 const loading = ref(false);
@@ -509,47 +518,53 @@ const loadAll = async () => {
     loading.value = true;
     if(costCenters.value.length === 0) await loadDeps();
 
+    const query = `?asOfDate=${asOfDate.value}${filterCostCenter.value ? `&costCenterId=${filterCostCenter.value}` : ''}`;
+    
+    // Use an array of report configs to simplify loading and error handling
+    const reportConfigs = [
+        { key: 'pl', endpoint: `/finance/reports/profit-loss?endDate=${asOfDate.value}`, setterPath: 'profitLoss', dataKey: 'profitLoss' },
+        { key: 'bs', endpoint: `/finance/reports/balance-sheet${query}`, setterPath: 'balanceSheetObj', dataKey: 'balanceSheet' },
+        { key: 'tb', endpoint: `/finance/reports/trial-balance${query}`, setterPath: 'trialBalanceArr', dataKey: 'trialBalance' },
+        { key: 'gl', endpoint: `/finance/reports/general-ledger${query}`, setterPath: 'glArr', dataKey: 'generalLedger' },
+        { key: 'ag', endpoint: `/finance/reports/aging${query}`, setterPath: 'agingArr', dataKey: 'agingData' }
+    ];
+
     try {
-        const query = `?asOfDate=${asOfDate.value}${filterCostCenter.value ? `&costCenterId=${filterCostCenter.value}` : ''}`;
-        
-        // Panggil berbarengan untuk efisiensi
-        const [plRes, bsRes, tbRes, glRes, agRes] = await Promise.all([
-            api.get(`/finance/reports/profit-loss?endDate=${asOfDate.value}`),
-            api.get(`/finance/reports/balance-sheet${query}`),
-            api.get(`/finance/reports/trial-balance${query}`),
-            api.get(`/finance/reports/general-ledger${query}`),
-            api.get(`/finance/reports/aging${query}`)
-        ]);
-
-        // Fix potential Axios response property issue with robust extraction
-        const plPayload: any = plRes.data || plRes;
-        if(plPayload?.profitLoss) profitLossObj.value = plPayload.profitLoss;
-
-        const bsPayload: any = bsRes.data || bsRes;
-        if(bsPayload?.balanceSheet) balanceSheetObj.value = bsPayload.balanceSheet;
-        
-        const tbPayload: any = tbRes.data || tbRes;
-        if(tbPayload?.trialBalance) {
-            trialBalanceArr.value = tbPayload.trialBalance;
-            trialBalanceTotal.value = { debit: tbPayload.totalDebit, credit: tbPayload.totalCredit };
-        }
-
-        const glPayload: any = glRes.data || glRes;
-        if(glPayload?.generalLedger) glArr.value = glPayload.generalLedger;
-
-        const agPayload: any = agRes.data || agRes;
-        if(agPayload?.agingData) {
-            agingArr.value = agPayload.agingData;
-            agingSummary.value = agPayload.summary;
-        }
+        await Promise.all(reportConfigs.map(async (config) => {
+            try {
+                const res = await api.get(config.endpoint);
+                const payload: any = res.data || res;
+                
+                if (config.key === 'pl') {
+                    if (payload?.profitLoss) profitLossObj.value = payload.profitLoss;
+                } else if (config.key === 'bs') {
+                    if (payload?.balanceSheet) balanceSheetObj.value = payload.balanceSheet;
+                } else if (config.key === 'tb') {
+                    if (payload?.trialBalance) {
+                        trialBalanceArr.value = payload.trialBalance;
+                        trialBalanceTotal.value = { debit: payload.totalDebit, credit: payload.totalCredit };
+                    }
+                } else if (config.key === 'gl') {
+                    if (payload?.generalLedger) glArr.value = payload.generalLedger;
+                } else if (config.key === 'ag') {
+                    if (payload?.agingData) {
+                        agingArr.value = payload.agingData;
+                        agingSummary.value = payload.summary;
+                    }
+                }
+            } catch (err: any) {
+                console.error(`Error loading report [${config.key}]:`, err);
+                // Optionally notify user about partial failure
+            }
+        }));
 
         if(dialogOpen.value) {
            dialogOpen.value = false;
            showMsg(success, 'Data Analitik Keuangan berhasil diregenerasi.');
         }
 
-    } catch(e) {
-        console.error('Failed loading reports', e);
+    } catch(e: any) {
+        console.error('Critical failure loading reports', e);
     } finally {
         loading.value = false;
     }

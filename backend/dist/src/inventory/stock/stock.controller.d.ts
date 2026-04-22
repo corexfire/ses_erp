@@ -69,13 +69,13 @@ export declare class StockController {
             description: string;
             uomCode: string | null;
             itemId: string | null;
+            warehouseId: string;
             moveType: import("prisma/generated").$Enums.StockMoveType;
             refType: string;
             refId: string;
             postingDate: Date;
             qtyIn: import("@prisma/client-runtime-utils").Decimal;
             qtyOut: import("@prisma/client-runtime-utils").Decimal;
-            warehouseId: string;
             binLocationId: string | null;
             batchId: string | null;
             serialId: string | null;

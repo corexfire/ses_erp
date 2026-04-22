@@ -3,7 +3,7 @@
     <!-- Header (Premium Opportunity style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-emerald-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">CRM Management</span>
@@ -28,9 +28,9 @@
     </div>
 
     <!-- KPI Stats Banners (Premium Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
        <!-- Pipeline Value Banner - High Contrast -->
-      <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
+      <div class="p-4 rounded-2xl bg-slate-900 text-white shadow-xl flex flex-col justify-between border border-slate-800 transition-all hover:bg-slate-950 group">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4 opacity-80">Total Pipeline Value</div>
         <div class="flex items-end justify-between">
           <h3 class="text-2xl font-black text-white tracking-tighter font-mono">{{ fmtRp(totalPipelineValue) }}</h3>
@@ -41,7 +41,7 @@
       </div>
 
       <!-- Proposal Banners -->
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-500 tracking-[0.2em] mb-4">Proposal Phase</div>
         <div class="flex items-end justify-between">
           <h3 class="text-4xl font-black text-amber-600 tracking-tighter">{{ countStage('PROPOSAL') }}</h3>
@@ -50,7 +50,7 @@
       </div>
       
       <!-- Negotiation Banners -->
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-blue-500 tracking-[0.2em] mb-4">Negotiation</div>
         <div class="flex items-end justify-between">
           <h3 class="text-4xl font-black text-blue-600 tracking-tighter">{{ countStage('NEGOTIATION') }}</h3>
@@ -59,7 +59,7 @@
       </div>
       
       <!-- Goal / Closed Won Banners -->
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-500 tracking-[0.2em] mb-4">Deals Won / Goal</div>
         <div class="flex items-end justify-between">
           <h3 class="text-4xl font-black text-emerald-600 tracking-tighter">{{ countStage('CLOSED_WON') }}</h3>
@@ -231,7 +231,7 @@
                 <input type="text" v-model="form.name" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-100 placeholder:italic" placeholder="e.g. Supply Agreement 2024 / Service Maintenance" />
               </div>
               
-              <div class="grid grid-cols-2 gap-6 border-t border-b border-dashed border-slate-200 py-8">
+              <div class="grid grid-cols-2 gap-4 border-t border-b border-dashed border-slate-200 py-8">
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-blue-500 uppercase tracking-widest block flex items-center gap-2"><i class="pi pi-building text-[10px]"></i> Bind to Customer</label>
                   <select v-model="form.customerId" class="w-full h-14 rounded-2xl border-none bg-blue-50/50 shadow-inner px-4 text-xs font-black text-blue-900 outline-none focus:ring-2 focus:ring-blue-100 appearance-none cursor-pointer">
@@ -248,7 +248,7 @@
                 </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-6">
+              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-emerald-600 uppercase tracking-widest block">Expected Deal Value (Rp)</label>
                   <input type="number" v-model="form.expectedValue" class="w-full h-14 rounded-2xl border-none bg-emerald-50/30 shadow-inner px-6 text-sm font-black text-emerald-700 focus:ring-2 focus:ring-emerald-100 placeholder:text-emerald-200" placeholder="0.00" />
@@ -268,7 +268,7 @@
               <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Sales Internal Justification</h4>
             </div>
             <div class="pl-11">
-              <textarea v-model="form.notes" rows="3" class="w-full rounded-2xl border-none bg-white shadow-inner p-6 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-emerald-100 resize-none placeholder:italic" placeholder="Internal notes, next actions, or decision makers..."></textarea>
+              <textarea v-model="form.notes" rows="3" class="w-full rounded-2xl border-none bg-white shadow-inner p-4 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-emerald-100 resize-none placeholder:italic" placeholder="Internal notes, next actions, or decision makers..."></textarea>
             </div>
           </div>
 

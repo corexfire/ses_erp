@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-blue-600 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-blue-600 relative overflow-hidden">
       <div class="absolute right-[-15px] top-[-10px] opacity-[0.03] pointer-events-none">
         <i class="pi pi-building text-[150px] text-blue-900"></i>
       </div>
@@ -126,7 +126,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-200 w-8 h-8 rounded-full font-bold" @click="dialogOpen = false">✕</button>
         </div>
         
-        <div class="p-6 space-y-5 flex-1">
+        <div class="p-4 space-y-5 flex-1">
           <div class="grid grid-cols-2 gap-4">
              <div class="space-y-1.5">
                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Kode <span class="text-red-500">*</span></label>
@@ -196,7 +196,7 @@
 
     <!-- Read-Only View Dialog -->
     <div v-if="viewDialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm" @click.self="viewDialogOpen = false">
-      <div class="w-full max-w-2xl rounded-2xl border bg-white p-6 shadow-2xl animate-fade-in-up">
+      <div class="w-full max-w-2xl rounded-2xl border bg-white p-4 shadow-2xl animate-fade-in-up">
         <div class="flex items-center justify-between pb-4 border-b">
           <div class="text-lg font-black text-slate-800 flex items-center gap-2">
             <i class="pi pi-briefcase text-blue-600"></i> Detail Setup Proyek: <span class="font-mono text-blue-600 ml-1">{{ viewingProject?.code }}</span>
@@ -204,7 +204,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors w-8 h-8 rounded-full font-bold flex items-center justify-center" @click="viewDialogOpen = false"><i class="pi pi-times text-sm"></i></button>
         </div>
 
-        <div class="mt-6 grid grid-cols-2 gap-6 text-sm">
+        <div class="mt-6 grid grid-cols-2 gap-4 text-sm">
           <div class="bg-slate-50 p-3 rounded-xl border">
             <div class="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Nama Proyek</div>
             <div class="font-bold text-slate-800">{{ viewingProject?.name }}</div>

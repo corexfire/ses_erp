@@ -1,27 +1,23 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
-      <div class="relative">
-        <div class="flex items-center gap-3 mb-2">
-           <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Identity & Access</span>
-           <span class="text-slate-300">/</span>
-           <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-emerald-600">Manajemen Pengguna</span>
+    <DashboardHero
+      title="User Management"
+      subtitle="Otorisasi dan manajemen identitas tenaga kerja lintas departemen."
+      category="Identity & Access"
+      category-sub="Manajemen Pengguna"
+      color="emerald"
+    >
+      <template #actions>
+        <div class="flex items-center gap-3">
+          <Button label="Registrasi Staff" icon="pi pi-user-plus" class="p-button-sm font-black text-xs px-6 bg-white/20 hover:bg-white/30 text-white border-white/20" @click="openNew" />
         </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">User <span class="text-emerald-600">Management</span></h1>
-        <p class="text-slate-500 text-sm font-medium uppercase italic tracking-tight italic">Otorisasi dan manajemen identitas tenaga kerja lintas departemen.</p>
-      </div>
-
-      <div class="flex items-center gap-3 relative">
-        <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="load" :loading="loading" />
-        <Button label="Registrasi Staff" icon="pi pi-user-plus" class="p-button-rounded p-button-success font-black text-xs shadow-lg shadow-emerald-100 px-6" @click="openNew" />
-      </div>
-    </div>
+      </template>
+    </DashboardHero>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -92,7 +88,7 @@
     <!-- Registration Dialog (Glass) -->
     <Dialog v-model:visible="registerDialogOpen" header="Registrasi Pengguna Baru" :modal="true" :dismissableMask="false" class="w-[500px] border-none shadow-2xl overflow-hidden glass-dialog">
        <div class="space-y-8 pt-4 px-2 pb-12 custom-scrollbar">
-          <div class="p-6 bg-emerald-50 border border-emerald-100 rounded-3xl flex items-center gap-4">
+          <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-3xl flex items-center gap-4">
              <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100">
                 <i class="pi pi-user-plus text-xl"></i>
              </div>
@@ -129,7 +125,7 @@
     <!-- Edit Dialog (Glass) -->
     <Dialog v-model:visible="editDialogOpen" header="Perbarui Profil Pengguna" :modal="true" :dismissableMask="false" class="w-[500px] border-none shadow-2xl overflow-hidden glass-dialog">
        <div class="space-y-8 pt-4 px-2 pb-12 custom-scrollbar">
-          <div class="p-6 bg-slate-50 border border-slate-200 rounded-3xl flex items-center gap-4">
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-3xl flex items-center gap-4">
              <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-600 shadow-sm border border-slate-200">
                 <i class="pi pi-user-edit text-xl"></i>
              </div>
@@ -162,7 +158,7 @@
     <!-- Assign Role Dialog (Glass) -->
     <Dialog v-model:visible="roleDialogOpen" header="Pengaturan Hak Akses" :modal="true" :dismissableMask="false" class="w-[500px] border-none shadow-2xl overflow-hidden glass-dialog">
        <div class="space-y-8 pt-4 px-2 pb-12 custom-scrollbar">
-          <div class="p-6 bg-blue-50 border border-blue-100 rounded-3xl flex items-center gap-4">
+          <div class="p-4 bg-blue-50 border border-blue-100 rounded-3xl flex items-center gap-4">
              <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-blue-600 shadow-sm border border-blue-100">
                 <i class="pi pi-key text-xl"></i>
              </div>
@@ -243,7 +239,7 @@ async function load() {
   loading.value = true;
   try {
     const res = await api.get('/core/users');
-    users.value = res.users || res.data?.users || [];
+    users.value = res.data?.users || res.data || [];
   } catch (e: any) {
     toast.add({ severity: 'error', summary: 'Load Failed', detail: e.message });
   } finally {
@@ -254,7 +250,7 @@ async function load() {
 async function loadRoles() {
   try {
     const res = await api.get('/core/roles');
-    availableRoles.value = res.roles || res.data?.roles || [];
+    availableRoles.value = res.data?.roles || res.data || [];
   } catch (e) {}
 }
 
@@ -312,7 +308,7 @@ async function handleAssignRole() {
     toast.add({ severity: 'success', summary: 'Role Assigned', detail: 'Hak akses berhasil ditambahkan.' });
     // Refresh targeted user data
     const refreshRes = await api.get('/core/users');
-    const updatedUsers = refreshRes.users || refreshRes.data?.users || [];
+    const updatedUsers = refreshRes.data?.users || refreshRes.data || [];
     users.value = updatedUsers;
     targetUserForRoles.value = updatedUsers.find((u: any) => u.id === targetUserForRoles.value.id);
     selectedRoleId.value = null;
@@ -328,7 +324,7 @@ async function handleRemoveRole(user: any, roleId: string) {
     await api.delete(`/core/users/${user.id}/roles/${roleId}`);
     toast.add({ severity: 'warn', summary: 'Role Revoked', detail: 'Hak akses telah dihapus.' });
     const refreshRes = await api.get('/core/users');
-    const updatedUsers = refreshRes.users || refreshRes.data?.users || [];
+    const updatedUsers = refreshRes.data?.users || refreshRes.data || [];
     users.value = updatedUsers;
     if (targetUserForRoles.value?.id === user.id) {
        targetUserForRoles.value = updatedUsers.find((u: any) => u.id === user.id);
@@ -350,7 +346,7 @@ function getInitials(name: string) { return name ? name.split(' ').map(n => n[0]
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 :deep(.p-datatable-thead > tr > th) {
   background: transparent !important;
   font-size: 10px !important;

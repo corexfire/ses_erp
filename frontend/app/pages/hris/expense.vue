@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-amber-500 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-amber-500 relative overflow-hidden">
       <div class="absolute right-[-12px] top-[-12px] opacity-5 pointer-events-none">
         <i class="pi pi-receipt text-[150px] text-amber-900"></i>
       </div>
@@ -155,7 +155,7 @@
           </div>
         </div>
 
-        <div class="p-6 space-y-6 flex-1">
+        <div class="p-4 space-y-6 flex-1">
           <!-- Pemohon -->
           <div class="bg-slate-50 border rounded-xl p-4 flex items-center gap-3">
             <div class="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm text-white shrink-0"
@@ -170,7 +170,7 @@
           </div>
 
           <!-- Nominal -->
-          <div class="text-center rounded-xl p-6 border-2 border-dashed" :style="{ borderColor: categoryMeta(detailClaim.category).color + '40', backgroundColor: categoryMeta(detailClaim.category).bg }">
+          <div class="text-center rounded-xl p-4 border-2 border-dashed" :style="{ borderColor: categoryMeta(detailClaim.category).color + '40', backgroundColor: categoryMeta(detailClaim.category).bg }">
             <div class="text-[10px] font-black uppercase tracking-widest" :style="{ color: categoryMeta(detailClaim.category).color }">Nominal Klaim ({{ detailClaim.category }})</div>
             <div class="text-4xl font-black font-mono mt-2" :style="{ color: categoryMeta(detailClaim.category).color }">{{ fmtRpScale(detailClaim.amount) }}</div>
           </div>
@@ -218,7 +218,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="formDialog = false">✕</button>
         </div>
         
-        <div class="p-6 space-y-4">
+        <div class="p-4 space-y-4">
           <div class="bg-amber-50 text-amber-800 text-xs p-3 rounded-lg border border-amber-200 mb-2">
             <i class="pi pi-info-circle"></i> Ini adalah Form Pembuatan via Panel Admin. Digunakan jika karyawan tidak dapat mengakses ESS.
           </div>

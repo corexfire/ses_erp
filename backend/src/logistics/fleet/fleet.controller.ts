@@ -21,6 +21,8 @@ import { PrismaService } from '../../prisma/prisma.service';
 import type { FleetVehicle, VehicleOwnershipType, VehicleStatus } from '../../../prisma/generated/client';
 import { CreateFleetVehicleDto } from './dto/create-fleet-vehicle.dto';
 import { UpdateFleetVehicleDto } from './dto/update-fleet-vehicle.dto';
+import { CreateVehicleMaintenanceDto, UpdateVehicleMaintenanceDto } from './dto/maintenance.dto';
+import { CreateVehicleDocumentDto, UpdateVehicleDocumentDto } from './dto/document.dto';
 
 const vehicleOwnershipTypeSet = new Set<VehicleOwnershipType>(['OWNED', 'LEASED', 'THIRD_PARTY']);
 const isVehicleOwnershipType = (value?: string): value is VehicleOwnershipType =>
@@ -213,5 +215,214 @@ export class FleetController {
     });
 
     return { vehicle: updated };
+  }
+
+  // --- MAINTENANCE & DOCUMENTS ---
+  @Get(':id/maintenance')
+  @RequirePermissions('logistics.fleet.read')
+  async listMaintenance(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
+    const logs = await this.prisma.vehicleMaintenance.findMany({
+      where: { vehicleId: id, tenantId: req.user.tenantId! },
+      orderBy: { nextServiceAt: 'asc' },
+    });
+    return { logs };
+  }
+
+  @Post(':id/maintenance')
+  @RequirePermissions('logistics.fleet.manage')
+  async createMaintenance(
+    @Req() req: FastifyRequest & { user: AuthUser },
+    @Param('id') id: string,
+    @Body() body: CreateVehicleMaintenanceDto,
+  ) {
+    const log = await this.prisma.vehicleMaintenance.create({
+      data: {
+        tenantId: req.user.tenantId!,
+        vehicleId: id,
+        maintenanceType: body.maintenanceType,
+        description: body.description,
+        kmInterval: body.kmInterval,
+        dateInterval: body.dateInterval,
+        lastServiceAt: body.lastServiceAt ? new Date(body.lastServiceAt) : undefined,
+        nextServiceAt: body.nextServiceAt ? new Date(body.nextServiceAt) : undefined,
+        cost: body.cost,
+        vendorId: body.vendorId,
+        status: body.status || 'SCHEDULED',
+      },
+    });
+
+    await this.audit.log({
+      tenantId: req.user.tenantId!,
+      actorUserId: req.user.id,
+      action: 'CREATE',
+      entity: 'VehicleMaintenance',
+      entityId: log.id,
+      metadata: { vehicleId: id, type: body.maintenanceType },
+    });
+
+    return { log };
+  }
+
+  @Patch('maintenance/:logId')
+  @RequirePermissions('logistics.fleet.manage')
+  async updateMaintenance(
+    @Req() req: FastifyRequest & { user: AuthUser },
+    @Param('logId') logId: string,
+    @Body() body: UpdateVehicleMaintenanceDto,
+  ) {
+    const exists = await this.prisma.vehicleMaintenance.findFirst({
+      where: { id: logId, tenantId: req.user.tenantId! },
+    });
+    if (!exists) throw new NotFoundException('Maintenance log not found');
+
+    const updated = await this.prisma.vehicleMaintenance.update({
+      where: { id: logId },
+      data: {
+        ...(body.maintenanceType && { maintenanceType: body.maintenanceType }),
+        ...(body.description !== undefined && { description: body.description }),
+        ...(body.kmInterval !== undefined && { kmInterval: body.kmInterval }),
+        ...(body.dateInterval !== undefined && { dateInterval: body.dateInterval }),
+        ...(body.lastServiceAt && { lastServiceAt: new Date(body.lastServiceAt) }),
+        ...(body.nextServiceAt && { nextServiceAt: new Date(body.nextServiceAt) }),
+        ...(body.cost !== undefined && { cost: body.cost }),
+        ...(body.vendorId !== undefined && { vendorId: body.vendorId }),
+        ...(body.status && { status: body.status }),
+      },
+    });
+
+    await this.audit.log({
+      tenantId: req.user.tenantId!,
+      actorUserId: req.user.id,
+      action: 'UPDATE',
+      entity: 'VehicleMaintenance',
+      entityId: logId,
+    });
+
+    return { log: updated };
+  }
+
+  @Delete('maintenance/:logId')
+  @RequirePermissions('logistics.fleet.manage')
+  async deleteMaintenance(
+    @Req() req: FastifyRequest & { user: AuthUser },
+    @Param('logId') logId: string,
+  ) {
+    const exists = await this.prisma.vehicleMaintenance.findFirst({
+      where: { id: logId, tenantId: req.user.tenantId! },
+    });
+    if (!exists) throw new NotFoundException('Maintenance log not found');
+
+    await this.prisma.vehicleMaintenance.delete({ where: { id: logId } });
+
+    await this.audit.log({
+      tenantId: req.user.tenantId!,
+      actorUserId: req.user.id,
+      action: 'DELETE',
+      entity: 'VehicleMaintenance',
+      entityId: logId,
+    });
+
+    return { success: true };
+  }
+
+  @Get(':id/documents')
+  @RequirePermissions('logistics.fleet.read')
+  async listDocuments(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
+    const documents = await this.prisma.vehicleDocument.findMany({
+      where: { vehicleId: id, tenantId: req.user.tenantId! },
+      orderBy: { expiryDate: 'asc' },
+    });
+    return { documents };
+  }
+
+  @Post(':id/documents')
+  @RequirePermissions('logistics.fleet.manage')
+  async createDocument(
+    @Req() req: FastifyRequest & { user: AuthUser },
+    @Param('id') id: string,
+    @Body() body: CreateVehicleDocumentDto,
+  ) {
+    const document = await this.prisma.vehicleDocument.create({
+      data: {
+        tenantId: req.user.tenantId!,
+        vehicleId: id,
+        documentType: body.documentType,
+        documentNumber: body.documentNumber,
+        issueDate: body.issueDate ? new Date(body.issueDate) : undefined,
+        expiryDate: body.expiryDate ? new Date(body.expiryDate) : undefined,
+        status: body.status || 'ACTIVE',
+        notes: body.notes,
+      },
+    });
+
+    await this.audit.log({
+      tenantId: req.user.tenantId!,
+      actorUserId: req.user.id,
+      action: 'CREATE',
+      entity: 'VehicleDocument',
+      entityId: document.id,
+      metadata: { vehicleId: id, type: body.documentType },
+    });
+
+    return { document };
+  }
+
+  @Patch('documents/:docId')
+  @RequirePermissions('logistics.fleet.manage')
+  async updateDocument(
+    @Req() req: FastifyRequest & { user: AuthUser },
+    @Param('docId') docId: string,
+    @Body() body: UpdateVehicleDocumentDto,
+  ) {
+    const exists = await this.prisma.vehicleDocument.findFirst({
+      where: { id: docId, tenantId: req.user.tenantId! },
+    });
+    if (!exists) throw new NotFoundException('Document not found');
+
+    const updated = await this.prisma.vehicleDocument.update({
+      where: { id: docId },
+      data: {
+        ...(body.documentType && { documentType: body.documentType }),
+        ...(body.documentNumber && { documentNumber: body.documentNumber }),
+        ...(body.issueDate && { issueDate: new Date(body.issueDate) }),
+        ...(body.expiryDate && { expiryDate: new Date(body.expiryDate) }),
+        ...(body.status && { status: body.status }),
+        ...(body.notes !== undefined && { notes: body.notes }),
+      },
+    });
+
+    await this.audit.log({
+      tenantId: req.user.tenantId!,
+      actorUserId: req.user.id,
+      action: 'UPDATE',
+      entity: 'VehicleDocument',
+      entityId: docId,
+    });
+
+    return { document: updated };
+  }
+
+  @Delete('documents/:docId')
+  @RequirePermissions('logistics.fleet.manage')
+  async deleteDocument(
+    @Req() req: FastifyRequest & { user: AuthUser },
+    @Param('docId') docId: string,
+  ) {
+    const exists = await this.prisma.vehicleDocument.findFirst({
+      where: { id: docId, tenantId: req.user.tenantId! },
+    });
+    if (!exists) throw new NotFoundException('Document not found');
+
+    await this.prisma.vehicleDocument.delete({ where: { id: docId } });
+
+    await this.audit.log({
+      tenantId: req.user.tenantId!,
+      actorUserId: req.user.id,
+      action: 'DELETE',
+      entity: 'VehicleDocument',
+      entityId: docId,
+    });
+
+    return { success: true };
   }
 }

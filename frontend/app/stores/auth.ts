@@ -5,6 +5,7 @@ export type AuthUser = {
   id: string;
   tenantId: string;
   email: string;
+  isSuperAdmin: boolean;
 };
 
 export const useAuthStore = defineStore('auth', {
@@ -17,7 +18,10 @@ export const useAuthStore = defineStore('auth', {
   }),
   getters: {
     isAuthenticated: (state) => Boolean(state.user),
-    hasPermission: (state) => (key: string) => state.permissions.includes(key),
+    hasPermission: (state) => (key: string) => {
+      if (state.user?.isSuperAdmin) return true;
+      return state.permissions.includes(key);
+    },
   },
   actions: {
     async restoreSession() {

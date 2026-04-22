@@ -1,86 +1,118 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
-      <div class="relative">
-        <div class="flex items-center gap-3 mb-2">
-           <span class="px-3 py-1 bg-indigo-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">General Ledger</span>
-           <span class="text-slate-300">/</span>
-           <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-indigo-600">Bagan Akun (COA)</span>
-        </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Chart Of <span class="text-indigo-600">Accounts</span></h1>
-        <p class="text-slate-500 text-sm font-medium uppercase italic tracking-tight italic">Struktur hierarki akun keuangan untuk klasifikasi transaksi dan pelaporan fiskal.</p>
-      </div>
+    <DashboardHero
+      title="Chart Of"
+      title-accent="Accounts"
+      description="Struktur hierarki akun keuangan untuk klasifikasi transaksi dan pelaporan fiskal."
+      category="General Ledger"
+      category-sub="Bagan Akun (COA)"
+      color="indigo"
 
-      <div class="flex items-center gap-3 relative">
-        <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="load" :loading="loading" />
-        <Button label="Registrasi Akun" icon="pi pi-plus-circle" class="p-button-rounded p-button-indigo font-black text-xs shadow-lg shadow-indigo-100 px-6" @click="openNew" />
-      </div>
-    </div>
+    >
+      <template #actions>
+        <div class="flex items-center gap-3">
+          <Button label="Registrasi Akun" icon="pi pi-plus-circle" class="p-button-sm font-black text-xs px-6 bg-white/20 hover:bg-white/30 text-white border-white/20" @click="openNew" />
+        </div>
+      </template>
+    </DashboardHero>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-          <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-             <i :class="[s.icon, 'text-6xl']"></i>
-          </div>
-          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ s.label }}</p>
-          <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ s.value }}</h3>
-          <div class="flex items-center gap-2 mt-2">
-             <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-full', s.color]">{{ s.sub }}</span>
-          </div>
-       </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <MiniStatsCard
+          v-for="s in stats"
+          :key="s.label"
+          :label="s.label"
+          :value="s.value"
+          :icon="s.icon"
+          :sub="s.sub"
+          :sub-color="s.theme"
+          :icon-color="s.theme"
+       />
     </div>
 
     <!-- Main Content: COA TreeTable -->
-    <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:border-indigo-300 transition-all duration-500">
-       <TreeTable :value="treeData" class="p-treetable-sm w-full font-medium" :loading="loading" scrollable scrollHeight="800px">
-          <Column field="code" header="KODE AKUN" :expander="true" class="pl-8 w-64">
-             <template #body="{ node }">
-                <div class="flex items-center gap-2">
-                   <span :class="['text-[11px] font-black font-mono tracking-tighter italic px-2 py-0.5 rounded-lg border', node.data.isPosting ? 'bg-slate-50 text-slate-900 border-slate-200' : 'bg-indigo-50 text-indigo-900 border-indigo-100']">
-                      {{ node.data.code }}
-                   </span>
-                </div>
-             </template>
-          </Column>
-          <Column field="name" header="NAMA AKUN / DESKRIPSI">
-             <template #body="{ node }">
-                <div class="flex items-center gap-3">
-                   <div v-if="!node.data.isPosting" class="w-1.5 h-6 bg-indigo-500 rounded-full mr-1"></div>
-                   <span :class="['text-[12px] uppercase tracking-tight', node.data.isPosting ? 'font-bold text-slate-600' : 'font-black text-slate-900']">
-                      {{ node.data.name }}
-                   </span>
-                </div>
-             </template>
-          </Column>
-          <Column field="type" header="KLASIFIKASI" class="w-40">
-             <template #body="{ node }">
-                <span :class="['text-[9px] font-black uppercase tracking-[0.15em]', getTypeColor(node.data.type)]">
-                   {{ node.data.type }}
-                </span>
-             </template>
-          </Column>
-          <Column header="LEVEL" class="w-32">
-             <template #body="{ node }">
-                <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', node.data.isPosting ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-900 text-white']">
-                   {{ node.data.isPosting ? 'Detail (Posting)' : 'Header (Summary)' }}
-                </span>
-             </template>
-          </Column>
-          <Column class="text-right pr-8 w-24">
-             <template #body="{ node }">
-                <Button icon="pi pi-ban" severity="danger" text rounded size="small" v-if="node.data.isActive" @click="deactivate(node.data)" v-tooltip.top="'Deactivate Account'" />
-             </template>
-          </Column>
-       </TreeTable>
-    </div>
+    <!-- Main Content: COA TreeTable -->
+    <PanelCard
+      title="Bagan Akun Keuangan"
+      subtitle="Hierarki pengelompokan transaksi untuk pelaporan neraca dan laba rugi."
+      icon="pi pi-sitemap"
+      theme="indigo"
+      :show-search="false"
+      :show-refresh="false"
+      flat-controls
+    >
+       <template #filters>
+          <SelectButton 
+            v-model="activeTab" 
+            :options="tabOptions" 
+            optionLabel="label" 
+            optionValue="value" 
+            :allowEmpty="false" 
+            :pt="{
+               root: { class: 'bg-slate-100/80 p-1 rounded-2xl border border-slate-200/50 flex gap-1 shadow-inner' },
+               pcbutton: ({ context }: any) => ({
+                 root: {
+                   class: [
+                     '!border-none !rounded-xl transition-all duration-300 px-4 py-2',
+                     context.active ? '!bg-white !text-indigo-600 shadow-sm' : '!bg-transparent !text-slate-500 hover:!bg-white/50'
+                   ]
+                 }
+               })
+            }"
+          >
+            <template #option="slotProps">
+               <div class="flex items-center gap-2">
+                  <i :class="[slotProps.option.icon, 'text-[10px]']"></i>
+                  <span class="text-[9px] font-black uppercase tracking-[0.2em]">{{ slotProps.option.label }}</span>
+               </div>
+            </template>
+          </SelectButton>
+       </template>
+
+       <template #table>
+          <PanelTreeTable
+            :value="treeData"
+            :columns="coaColumns"
+            :loading="loading"
+            hover-border-color="border-l-indigo-400"
+          >
+            <template #col-code="{ data }">
+               <span :class="['text-[11px] font-black font-mono tracking-tighter italic px-2 py-0.5 rounded-lg border', data.isPosting ? 'bg-slate-50 text-slate-900 border-slate-200' : 'bg-indigo-50 text-indigo-900 border-indigo-100']">
+                  {{ data.code }}
+               </span>
+            </template>
+            <template #col-name="{ data }">
+               <div class="flex items-center gap-3">
+                  <div v-if="!data.isPosting" class="w-1.5 h-6 bg-indigo-500 rounded-full mr-1"></div>
+                  <span :class="['text-[12px] uppercase tracking-tight', data.isPosting ? 'font-bold text-slate-600' : 'font-black text-slate-900']">
+                     {{ data.name }}
+                  </span>
+               </div>
+            </template>
+            <template #col-type="{ data }">
+               <span :class="['text-[9px] font-black uppercase tracking-[0.15em]', getTypeColor(data.type)]">
+                  {{ data.type }}
+               </span>
+            </template>
+            <template #col-level="{ data }">
+               <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', data.isPosting ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-900 text-white']">
+                  {{ data.isPosting ? 'Detail (Posting)' : 'Header (Summary)' }}
+               </span>
+            </template>
+            <template #col-actions="{ data }">
+               <div class="flex gap-2 justify-end">
+                  <Button icon="pi pi-ban" severity="danger" text rounded size="small" v-if="data.isActive" @click="deactivate(data)" v-tooltip.top="'Deactivate Account'" />
+               </div>
+            </template>
+          </PanelTreeTable>
+       </template>
+    </PanelCard>
 
     <!-- Management Dialog (Glass) -->
     <Dialog v-model:visible="dialogOpen" header="Registrasi Akun Baru" :modal="true" :dismissableMask="false" class="w-[600px] border-none shadow-2xl overflow-hidden glass-dialog">
        <div class="space-y-8 pt-4 px-2 pb-12 custom-scrollbar">
-          <div class="p-6 bg-indigo-50 border border-indigo-100 rounded-3xl flex items-center gap-4">
+          <div class="p-4 bg-indigo-50 border border-indigo-100 rounded-3xl flex items-center gap-4">
              <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
                 <i class="pi pi-book text-xl"></i>
              </div>
@@ -113,7 +145,7 @@
                 </div>
              </div>
 
-             <div class="p-6 bg-slate-50 border border-slate-200 rounded-3xl flex items-center justify-between">
+             <div class="p-4 bg-slate-50 border border-slate-200 rounded-3xl flex items-center justify-between">
                 <div>
                    <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Posting Status</p>
                    <p class="text-[9px] font-bold text-slate-400 uppercase">Dapat digunakan dalam entri jurnal transaksi.</p>
@@ -174,17 +206,31 @@ const treeData = computed(() => {
 });
 
 const stats = computed(() => [
-  { label: 'Total Struktur Akun', value: accounts.value.length, sub: 'COA Hierarchy', icon: 'pi pi-book', color: 'bg-indigo-50 text-indigo-600' },
-  { label: 'Akun Posting', value: accounts.value.filter(a => a.isPosting).length, sub: 'Ready for Entry', icon: 'pi pi-check-square', color: 'bg-emerald-50 text-emerald-600' },
-  { label: 'Kategori Aktiva', value: accounts.value.filter(a => a.type === 'ASSET').length, sub: 'Balance Sheet', icon: 'pi pi-briefcase', color: 'bg-blue-50 text-blue-600' },
-  { label: 'Kategori Beban', value: accounts.value.filter(a => a.type === 'EXPENSE').length, sub: 'Income Statement', icon: 'pi pi-minus-circle', color: 'bg-rose-50 text-rose-600' }
+  { label: 'Total Struktur Akun', value: accounts.value.length, sub: 'COA Hierarchy', icon: 'pi pi-book', theme: 'indigo' as const },
+  { label: 'Akun Posting', value: accounts.value.filter(a => a.isPosting).length, sub: 'Ready for Entry', icon: 'pi pi-check-square', theme: 'emerald' as const },
+  { label: 'Kategori Aktiva', value: accounts.value.filter(a => a.type === 'ASSET').length, sub: 'Balance Sheet', icon: 'pi pi-briefcase', theme: 'blue' as const },
+  { label: 'Kategori Beban', value: accounts.value.filter(a => a.type === 'EXPENSE').length, sub: 'Income Statement', icon: 'pi pi-minus-circle', theme: 'rose' as const }
 ]);
+
+const coaColumns = [
+  { key: 'code', header: 'KODE AKUN', expander: true, width: '320px' },
+  { key: 'name', header: 'NAMA AKUN / DESKRIPSI' },
+  { key: 'type', header: 'KLASIFIKASI', width: '200px', borderLeft: true },
+  { key: 'level', header: 'LEVEL', width: '200px', borderLeft: true },
+  { key: 'actions', header: 'AKSI', align: 'right' as const, width: '100px', borderLeft: true }
+];
+
+const tabOptions = [
+  { label: 'Struktur Akun', value: 'master', icon: 'pi pi-sitemap' }
+];
+
+const activeTab = ref('master');
 
 async function load() {
   loading.value = true;
   try {
     const res = await api.get('/core/chart-of-accounts');
-    accounts.value = res.accounts || res.data?.accounts || [];
+    accounts.value = res.data?.accounts || res.data || [];
   } catch (e: any) {
     toast.add({ severity: 'error', summary: 'Load Failed', detail: e.message });
   } finally {
@@ -235,7 +281,7 @@ function getTypeColor(type: string) {
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 :deep(.p-datatable-thead > tr > th) {
   background: transparent !important;
   font-size: 10px !important;

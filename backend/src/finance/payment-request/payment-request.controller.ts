@@ -23,6 +23,12 @@ export class PaymentRequestController {
 
     const requests = await this.prisma.paymentRequest.findMany({
       where,
+      include: {
+        requester: { select: { id: true, name: true, email: true } },
+        supplier: { select: { id: true, name: true, code: true } },
+        project: { select: { id: true, name: true, code: true } },
+        invoice: { select: { id: true, code: true, balanceDue: true } },
+      },
       orderBy: { requestDate: 'desc' },
     });
     return { requests };
@@ -33,23 +39,49 @@ export class PaymentRequestController {
   async get(@Req() req: FastifyRequest & { user: AuthUser }, @Param('id') id: string) {
     const request = await this.prisma.paymentRequest.findFirst({
       where: { id, tenantId: req.user.tenantId! },
+      include: {
+        requester: { select: { id: true, name: true, email: true } },
+        supplier: { select: { id: true, name: true, code: true } },
+        project: { select: { id: true, name: true, code: true } },
+        invoice: { select: { id: true, code: true, balanceDue: true } },
+      },
     });
     return { request };
   }
 
   @Post()
   @RequirePermissions('finance.paymentRequest.create')
-  async create(@Req() req: FastifyRequest & { user: AuthUser }, @Body() body: { requestNo: string; requestDate: string; requesterId: string; description: string; amount: number }) {
+  async create(
+    @Req() req: FastifyRequest & { user: AuthUser },
+    @Body() body: {
+      requestNo: string;
+      requestDate: string;
+      requesterId?: string;
+      supplierId?: string;
+      projectId?: string;
+      invoiceId?: string;
+      description: string;
+      amount: number;
+    }
+  ) {
     const request = await this.prisma.paymentRequest.create({
       data: {
         tenantId: req.user.tenantId!,
         requestNo: body.requestNo,
         requestDate: new Date(body.requestDate),
-        requesterId: body.requesterId,
+        requesterId: body.requesterId || req.user.id,
+        supplierId: body.supplierId,
+        projectId: body.projectId,
+        invoiceId: body.invoiceId,
         description: body.description,
         amount: body.amount,
         status: 'PENDING',
         approvalStatus: 'PENDING',
+      },
+      include: {
+        requester: { select: { name: true } },
+        supplier: { select: { name: true } },
+        project: { select: { name: true } },
       },
     });
     await this.audit.log({ tenantId: req.user.tenantId!, actorUserId: req.user.id, action: 'CREATE', entity: 'PaymentRequest', entityId: request.id, metadata: { request } });

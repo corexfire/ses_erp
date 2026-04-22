@@ -206,4 +206,71 @@ export declare class SalesInvoicesController {
             }[];
         };
     }>;
+    listBillableDos(req: FastifyRequest & {
+        user: AuthUser;
+    }): Promise<{
+        deliveryOrders: ({
+            customer: {
+                id: string;
+                email: string | null;
+                tenantId: string;
+                name: string;
+                isActive: boolean;
+                createdAt: Date;
+                npwp: string | null;
+                phone: string | null;
+                address1: string | null;
+                address2: string | null;
+                city: string | null;
+                province: string | null;
+                postalCode: string | null;
+                countryCode: string | null;
+                updatedAt: Date;
+                code: string;
+                nik: string | null;
+                taxAddress: string | null;
+            };
+            items: {
+                id: string;
+                tenantId: string;
+                description: string;
+                lineNo: number;
+                uomCode: string | null;
+                unitPrice: import("@prisma/client-runtime-utils").Decimal;
+                itemId: string | null;
+                deliveryOrderId: string;
+                orderedQty: import("@prisma/client-runtime-utils").Decimal;
+                pickedQty: import("@prisma/client-runtime-utils").Decimal;
+                packedQty: import("@prisma/client-runtime-utils").Decimal;
+                shippedQty: import("@prisma/client-runtime-utils").Decimal;
+                deliveredQty: import("@prisma/client-runtime-utils").Decimal;
+                batchNo: string | null;
+                serialNo: string | null;
+            }[];
+        } & {
+            id: string;
+            tenantId: string;
+            createdAt: Date;
+            priority: import("prisma/generated").$Enums.DeliveryPriority;
+            updatedAt: Date;
+            code: string;
+            status: import("prisma/generated").$Enums.DeliveryOrderStatus;
+            customerId: string;
+            shipmentId: string | null;
+            salesOrderId: string | null;
+            warehouseId: string;
+            tripPlanId: string | null;
+            plannedShipDate: Date | null;
+            actualShipDate: Date | null;
+            deliveryAddress1: string | null;
+            deliveryAddress2: string | null;
+            deliveryCity: string | null;
+            deliveryProvince: string | null;
+            deliveryPostalCode: string | null;
+            deliveryNotes: string | null;
+            actualDeliveredAt: Date | null;
+            podToken: string | null;
+            podTokenExpiry: Date | null;
+        })[];
+    }>;
 }

@@ -35,9 +35,9 @@ export declare class ProjectSiteController {
         province: string | null;
         updatedAt: Date;
         status: string;
+        projectId: string;
         contactName: string | null;
         address: string | null;
-        projectId: string;
         siteCode: string;
         gpsCoords: string | null;
         contactPhone: string | null;
@@ -71,10 +71,10 @@ export declare class ProjectSiteController {
             updatedAt: Date;
             status: string;
             issues: string | null;
+            projectId: string;
             approvedBy: string | null;
             approvedAt: Date | null;
             submittedBy: string | null;
-            projectId: string;
             wbsTaskId: string | null;
             progressPercent: import("@prisma/client-runtime-utils").Decimal | null;
             reportDate: Date;
@@ -102,9 +102,9 @@ export declare class ProjectSiteController {
         province: string | null;
         updatedAt: Date;
         status: string;
+        projectId: string;
         contactName: string | null;
         address: string | null;
-        projectId: string;
         siteCode: string;
         gpsCoords: string | null;
         contactPhone: string | null;
@@ -120,9 +120,9 @@ export declare class ProjectSiteController {
         province: string | null;
         updatedAt: Date;
         status: string;
+        projectId: string;
         contactName: string | null;
         address: string | null;
-        projectId: string;
         siteCode: string;
         gpsCoords: string | null;
         contactPhone: string | null;
@@ -138,9 +138,9 @@ export declare class ProjectSiteController {
         province: string | null;
         updatedAt: Date;
         status: string;
+        projectId: string;
         contactName: string | null;
         address: string | null;
-        projectId: string;
         siteCode: string;
         gpsCoords: string | null;
         contactPhone: string | null;
@@ -156,9 +156,9 @@ export declare class ProjectSiteController {
         province: string | null;
         updatedAt: Date;
         status: string;
+        projectId: string;
         contactName: string | null;
         address: string | null;
-        projectId: string;
         siteCode: string;
         gpsCoords: string | null;
         contactPhone: string | null;

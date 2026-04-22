@@ -98,8 +98,8 @@ export declare class GrnsController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            supplierId: string | null;
             warehouseId: string;
+            supplierId: string | null;
             receiptDate: Date;
             purchaseOrderId: string | null;
             purchaseInvoiceId: string | null;
@@ -232,8 +232,8 @@ export declare class GrnsController {
                 qty: import("@prisma/client-runtime-utils").Decimal;
                 uomCode: string | null;
                 itemId: string | null;
-                serialNo: string | null;
                 warehouseId: string;
+                serialNo: string | null;
                 binLocationId: string | null;
                 batchCode: string | null;
                 grnId: string;
@@ -259,8 +259,8 @@ export declare class GrnsController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            supplierId: string | null;
             warehouseId: string;
+            supplierId: string | null;
             receiptDate: Date;
             purchaseOrderId: string | null;
             purchaseInvoiceId: string | null;
@@ -277,8 +277,8 @@ export declare class GrnsController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            supplierId: string | null;
             warehouseId: string;
+            supplierId: string | null;
             receiptDate: Date;
             purchaseOrderId: string | null;
             purchaseInvoiceId: string | null;
@@ -295,8 +295,8 @@ export declare class GrnsController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            supplierId: string | null;
             warehouseId: string;
+            supplierId: string | null;
             receiptDate: Date;
             purchaseOrderId: string | null;
             purchaseInvoiceId: string | null;
@@ -313,8 +313,8 @@ export declare class GrnsController {
             code: string;
             status: import("prisma/generated").$Enums.InventoryDocStatus;
             notes: string | null;
-            supplierId: string | null;
             warehouseId: string;
+            supplierId: string | null;
             receiptDate: Date;
             purchaseOrderId: string | null;
             purchaseInvoiceId: string | null;

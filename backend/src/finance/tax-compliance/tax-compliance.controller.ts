@@ -227,16 +227,17 @@ export class PpnMasaController {
   @Get()
   @RequirePermissions('finance.tax.ppnMasa.read')
   async summary(@Req() req: FastifyRequest & { user: AuthUser }, @Query('period') period: string) {
-    const [year, month] = period.split('-').map(Number);
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 0, 23, 59, 59);
+    const [yearStr, monthStr] = period.split('-');
+    const year = parseInt(yearStr);
+    const validStatuses: any[] = ['POSTED', 'VERIFIED', 'REPLACEMENT'];
 
     const outputInvoices = await this.prisma.taxInvoice.findMany({
       where: {
         tenantId: req.user.tenantId!,
         invoiceType: 'OUTPUT',
-        invoiceDate: { gte: startDate, lte: endDate },
-        status: 'POSTED',
+        taxYear: year,
+        taxPeriod: monthStr,
+        status: { in: validStatuses },
       },
     });
 
@@ -244,8 +245,9 @@ export class PpnMasaController {
       where: {
         tenantId: req.user.tenantId!,
         invoiceType: 'INPUT',
-        invoiceDate: { gte: startDate, lte: endDate },
-        status: 'POSTED',
+        taxYear: year,
+        taxPeriod: monthStr,
+        status: { in: validStatuses },
       },
     });
 

@@ -12,8 +12,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WarehouseController = exports.CreateStagingLoadDto = exports.CreateWavePickingDto = void 0;
+exports.WarehouseController = exports.UpdateStagingLoadDto = exports.CreateStagingLoadDto = exports.CreateWavePickingDto = void 0;
 const common_1 = require("@nestjs/common");
+const class_validator_1 = require("class-validator");
 const jwt_auth_guard_1 = require("../../auth/jwt-auth.guard");
 const permissions_decorator_1 = require("../../auth/permissions.decorator");
 const permissions_guard_1 = require("../../auth/permissions.guard");
@@ -26,12 +27,68 @@ class CreateWavePickingDto {
     notes;
 }
 exports.CreateWavePickingDto = CreateWavePickingDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateWavePickingDto.prototype, "warehouseId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateWavePickingDto.prototype, "plannedDate", void 0);
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsString)({ each: true }),
+    __metadata("design:type", Array)
+], CreateWavePickingDto.prototype, "deliveryOrderIds", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateWavePickingDto.prototype, "notes", void 0);
 class CreateStagingLoadDto {
     waveId;
     tripPlanId;
     warehouseId;
 }
 exports.CreateStagingLoadDto = CreateStagingLoadDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateStagingLoadDto.prototype, "waveId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateStagingLoadDto.prototype, "tripPlanId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateStagingLoadDto.prototype, "warehouseId", void 0);
+class UpdateStagingLoadDto {
+    waveId;
+    tripPlanId;
+    warehouseId;
+}
+exports.UpdateStagingLoadDto = UpdateStagingLoadDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateStagingLoadDto.prototype, "waveId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateStagingLoadDto.prototype, "tripPlanId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateStagingLoadDto.prototype, "warehouseId", void 0);
 let WarehouseController = class WarehouseController {
     prisma;
     audit;
@@ -171,8 +228,12 @@ let WarehouseController = class WarehouseController {
             where.status = status;
         const stagings = await this.prisma.stagingLoad.findMany({
             where,
-            include: { warehouse: true },
-            orderBy: { createdAt: 'desc' },
+            include: {
+                warehouse: true,
+                tripPlan: true,
+                wavePicking: true,
+            },
+            orderBy: [{ createdAt: 'desc' }],
             take: 200,
         });
         return { stagings };
@@ -211,10 +272,39 @@ let WarehouseController = class WarehouseController {
         });
         return { staging: updated };
     }
+    async updateStaging(req, id, body) {
+        const staging = await this.prisma.stagingLoad.findFirst({
+            where: { id, tenantId: req.user.tenantId },
+            select: { id: true, code: true },
+        });
+        if (!staging)
+            throw new common_1.NotFoundException('Staging load not found');
+        const updated = await this.prisma.stagingLoad.update({
+            where: { id },
+            data: {
+                ...(body.waveId !== undefined && { waveId: body.waveId }),
+                ...(body.tripPlanId !== undefined && { tripPlanId: body.tripPlanId }),
+                ...(body.warehouseId !== undefined && { warehouseId: body.warehouseId }),
+            },
+        });
+        await this.audit.log({
+            tenantId: req.user.tenantId,
+            actorUserId: req.user.id,
+            action: 'UPDATE',
+            entity: 'StagingLoad',
+            entityId: id,
+            metadata: { code: staging.code, ...body },
+        });
+        return { staging: updated };
+    }
     async getStaging(req, id) {
         const staging = await this.prisma.stagingLoad.findFirst({
             where: { id, tenantId: req.user.tenantId },
-            include: { warehouse: true },
+            include: {
+                warehouse: true,
+                tripPlan: true,
+                wavePicking: true,
+            },
         });
         if (!staging)
             throw new common_1.NotFoundException('Staging load not found');
@@ -316,6 +406,16 @@ __decorate([
     __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], WarehouseController.prototype, "confirmStaging", null);
+__decorate([
+    (0, common_1.Patch)('staging/:id'),
+    (0, permissions_decorator_1.RequirePermissions)('logistics.warehouse.execute'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Param)('id')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, UpdateStagingLoadDto]),
+    __metadata("design:returntype", Promise)
+], WarehouseController.prototype, "updateStaging", null);
 __decorate([
     (0, common_1.Get)('staging/:id'),
     (0, permissions_decorator_1.RequirePermissions)('logistics.warehouse.read'),

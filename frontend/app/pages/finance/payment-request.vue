@@ -8,7 +8,7 @@
       <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-amber-100/50"></div>
       
       <div class="relative">
@@ -35,7 +35,7 @@
     <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up">
       
       <!-- Ledger Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-amber-200/10 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -149,12 +149,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ REQUEST FORM DIALOG ══════════════════════════════════ -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-2xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-amber-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-amber-700 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-amber-200">
                <i class="pi pi-send text-3xl font-black"></i>
             </div>
@@ -170,15 +170,15 @@
 
         <div class="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar bg-slate-50/30 pb-32">
            <!-- Budget Status & Caution -->
-           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="p-6 bg-amber-50 border border-amber-100 rounded-[2rem] flex items-start gap-4">
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 bg-amber-50 border border-amber-100 rounded-[2rem] flex items-start gap-4">
                  <i class="pi pi-exclamation-circle text-amber-500 text-xl mt-1"></i>
                  <div>
                     <h4 class="text-[11px] font-black text-amber-800 uppercase tracking-widest">Verifikasi Otorisasi</h4>
                     <p class="text-[10px] font-bold text-amber-500 uppercase mt-1 leading-relaxed opacity-80">Permohonan dana akan memerlukan tanda tangan manager divisi sebelum pencairan dilakukan oleh kasir utama.</p>
                  </div>
               </div>
-              <div class="p-6 bg-slate-900 text-white rounded-[2rem] flex flex-col justify-center relative overflow-hidden group">
+              <div class="p-4 bg-slate-900 text-white rounded-[2rem] flex flex-col justify-center relative overflow-hidden group">
                  <div class="absolute right-[-10px] top-[-10px] opacity-10 group-hover:scale-110 transition-transform"><i class="pi pi-chart-line text-6xl"></i></div>
                  <h4 class="text-[8px] font-black text-amber-500 uppercase tracking-widest leading-none mb-1">Status Saldo Anggaran</h4>
                  <div class="text-xl font-black tabular-nums tracking-tighter">{{ formatRupiah(85000000) }}</div>

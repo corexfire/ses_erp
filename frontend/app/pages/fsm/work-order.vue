@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-slate-50 text-slate-900 overflow-hidden relative">
     <!-- Header / Navigation Bar -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-6 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-4 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       
       <div class="relative flex items-center gap-4">
@@ -136,7 +136,7 @@
              </div>
 
              <!-- Field Details Row -->
-             <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-8 pt-8 border-t border-slate-100">
+             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 pt-8 border-t border-slate-100">
                <div class="space-y-1">
                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
                    <i class="pi pi-user text-[10px] text-indigo-500"></i> Kontak PIC
@@ -303,7 +303,7 @@
 
         <div class="p-8 space-y-10 overflow-y-auto custom-scrollbar pb-32">
           <!-- Order Context -->
-          <div class="p-6 bg-slate-50 border border-slate-100 rounded-3xl">
+          <div class="p-4 bg-slate-50 border border-slate-100 rounded-3xl">
              <div class="flex items-center gap-3 mb-2">
                 <span class="px-2 py-0.5 bg-indigo-600 text-white text-[9px] font-black uppercase tracking-widest rounded">{{ selectedWorkOrder?.serviceOrder?.code }}</span>
                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em]">Target Assignment</span>
@@ -510,7 +510,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .custom-scrollbar::-webkit-scrollbar {
   width: 4px;
 }

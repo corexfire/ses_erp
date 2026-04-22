@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-amber-500 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-amber-500 relative overflow-hidden">
       <div class="absolute right-[-12px] top-[-12px] opacity-5 pointer-events-none">
         <i class="pi pi-wallet text-[140px] text-amber-900"></i>
       </div>
@@ -56,7 +56,7 @@
     </div>
 
     <!-- ===== TAB: ACCOUNTS ===== -->
-    <div v-if="activeTab === 'accounts'" class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+    <div v-if="activeTab === 'accounts'" class="grid grid-cols-1 lg:grid-cols-5 gap-4">
       <!-- Account cards -->
       <div class="lg:col-span-2 space-y-3">
         <!-- Filter pills -->
@@ -262,7 +262,7 @@
           </div>
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="createDialog = false">✕</button>
         </div>
-        <div class="p-6 space-y-4">
+        <div class="p-4 space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
               <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Tipe Kas <span class="text-red-500">*</span></label>
@@ -303,7 +303,7 @@
           </div>
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="txnDialog = false">✕</button>
         </div>
-        <div class="p-6 space-y-4">
+        <div class="p-4 space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
               <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Jenis <span class="text-red-500">*</span></label>
@@ -356,7 +356,7 @@
           </div>
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="replenishDialog = false">✕</button>
         </div>
-        <div class="p-6 space-y-4">
+        <div class="p-4 space-y-4">
           <div class="space-y-1.5">
             <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Akun Kas Kecil <span class="text-red-500">*</span></label>
             <select v-model="repForm.cashAccountId" class="w-full border rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 outline-none focus:border-amber-500">

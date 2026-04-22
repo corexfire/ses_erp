@@ -128,7 +128,7 @@ export async function seedSupportAssets(prisma: PrismaClient, tenantId: string) 
         assetNo: data.assetNo,
         name: data.name,
         category: data.category,
-        purchaseDate: new Date(),
+        purchaseDate: new Date('2023-01-01'),
         purchaseCost: data.purchaseCost,
         usefulLife: data.usefulLife,
         salvageValue: 0,

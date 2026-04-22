@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 left-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -ml-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -24,8 +24,8 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -98,67 +98,73 @@
        </DataTable>
     </div>
 
-    <!-- New/Edit Drawer -->
-    <Drawer v-model:visible="drawerOpen" :header="editingId ? 'Edit Catatan PPh 21' : 'Penyesuaian PPh 21 Baru'" position="right" class="w-[500px]">
-       <div class="space-y-8 pt-4 px-4 overflow-y-auto pb-20">
-          <div class="p-6 rounded-3xl bg-amber-50 border border-amber-100 flex items-start gap-4">
+    <!-- New/Edit Dialog -->
+    <Dialog v-model:visible="drawerOpen" :header="editingId ? 'Edit Catatan PPh 21' : 'Penyesuaian PPh 21 Baru'" modal class="w-full max-w-2xl overflow-hidden !rounded-xl" :pt="{
+       header: { class: 'p-8 border-b border-slate-100' },
+       content: { class: 'p-8 pb-10 max-h-[70vh] overflow-y-auto' },
+       footer: { class: 'p-8 border-t border-slate-100 bg-slate-50/50' }
+    }">
+       <div class="space-y-8">
+          <div class="p-4 rounded-[2rem] bg-amber-50 border border-amber-100 flex items-start gap-4">
              <i class="pi pi-exclamation-triangle text-amber-600 mt-1"></i>
              <div class="space-y-1">
-                <p class="text-[11px] font-black text-amber-900 uppercase">Entri Pajak Manual</p>
+                <p class="text-[11px] font-black text-amber-900 uppercase tracking-widest">Entri Pajak Manual</p>
                 <p class="text-[10px] text-amber-700 leading-relaxed font-medium">Gunakan formulir ini hanya untuk penyesuaian manual atau pajak gaji non-standar. Penggajian otomatis akan menyinkronkan data ke modul ini setelah finalisasi bulanan.</p>
              </div>
           </div>
 
           <div class="space-y-4">
              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs">1</div>
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs font-black">1</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Personel & Waktu</h4>
              </div>
              <div class="space-y-1">
-                <label class="text-[10px] font-black text-slate-400 uppercase">Nama Karyawan / Subjek</label>
-                <InputText v-model="form.taxpayerName" class="w-full rounded-xl" />
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Nama Karyawan / Subjek</label>
+                <InputText v-model="form.taxpayerName" class="w-full !rounded-2xl !p-3 border-slate-200" />
              </div>
              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">Tanggal Transaksi</label>
-                   <InputText v-model="form.transDate" type="date" class="w-full rounded-xl" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Tanggal Transaksi</label>
+                   <InputText v-model="form.transDate" type="date" class="w-full !rounded-2xl !p-3 border-slate-200" />
                 </div>
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">Nomor NPWP</label>
-                   <InputText v-model="form.npwp" class="w-full rounded-xl" placeholder="00.000.000.0-000.000" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Nomor NPWP</label>
+                   <InputText v-model="form.npwp" class="w-full !rounded-2xl !p-3 border-slate-200 font-mono" placeholder="00.000.000.0-000.000" />
                 </div>
              </div>
           </div>
 
-          <div class="space-y-4 p-6 rounded-3xl bg-slate-50 border border-slate-100">
+          <div class="space-y-4 p-4 rounded-[2rem] bg-slate-50 border border-slate-100">
              <div class="flex items-center gap-3 mb-2">
-                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs">2</div>
+                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-black">2</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Perhitungan Penghasilan</h4>
              </div>
              <div class="space-y-4">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-500 uppercase">Penghasilan Bruto</label>
-                   <InputNumber v-model="form.grossAmount" mode="currency" currency="IDR" locale="id-ID" class="w-full" @input="calcTax" />
+                   <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-2">Penghasilan Bruto</label>
+                   <InputNumber v-model="form.grossAmount" mode="currency" currency="IDR" locale="id-ID" class="w-full" pt:input:class="!rounded-2xl !p-3 border-slate-200 font-black" @input="calcTax" />
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                    <div class="space-y-1">
-                      <label class="text-[10px] font-black text-slate-500 uppercase">Tarif TER (%)</label>
-                      <InputNumber v-model="form.rate" class="w-full" :minFractionDigits="1" @input="calcTax" />
+                      <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-2">Tarif TER (%)</label>
+                      <InputNumber v-model="form.rate" class="w-full" pt:input:class="!rounded-2xl !p-3 border-slate-200 font-black" :minFractionDigits="1" @input="calcTax" />
                    </div>
                    <div class="space-y-1 text-right">
-                      <label class="text-[10px] font-black text-slate-500 uppercase">Nilai Pajak</label>
-                      <p class="text-lg font-black text-amber-700 mt-2">IDR {{ fmtNumber(form.taxAmount) }}</p>
+                      <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest pr-2">Nilai Pajak</label>
+                      <p class="text-2xl font-black text-amber-700 tracking-tighter mt-1">IDR {{ fmtNumber(form.taxAmount) }}</p>
                    </div>
                 </div>
              </div>
           </div>
-
-          <div class="fixed bottom-0 left-0 w-full bg-white p-6 border-t flex justify-end gap-3 rounded-t-[2rem] shadow-2xl">
-             <Button label="Batal" severity="secondary" text @click="drawerOpen = false" class="font-black text-[10px] uppercase" />
-             <Button label="Posting PPh 21" icon="pi pi-check" class="p-button-rounded font-black text-[10px] uppercase px-8 p-button-warning" @click="save" :loading="saving" />
-          </div>
        </div>
-    </Drawer>
+
+       <template #footer>
+          <div class="flex gap-3 justify-end w-full">
+             <Button label="Batalkan" severity="secondary" text @click="drawerOpen = false" class="text-[10px] font-black uppercase" />
+             <Button label="Posting PPh 21" icon="pi pi-check-circle" class="p-button-rounded font-black text-[10px] uppercase shadow-lg shadow-amber-100 p-button-warning px-8" @click="save" :loading="saving" />
+          </div>
+       </template>
+    </Dialog>
 
   </div>
 </template>

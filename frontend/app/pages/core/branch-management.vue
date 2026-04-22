@@ -1,94 +1,90 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
-      <div class="relative">
-        <div class="flex items-center gap-3 mb-2">
-           <span class="px-3 py-1 bg-indigo-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Core Infrastructure</span>
-           <span class="text-slate-300">/</span>
-           <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-indigo-600">Enterprise Branches</span>
+    <DashboardHero
+      title="Manajemen"
+      title-accent="Cabang"
+      subtitle="Registrasi dan monitoring operasional kantor cabang, gudang, maupun titik distribusi nasional."
+      category="Core Infrastructure"
+      category-sub="Enterprise Branches"
+      color="stone"
+    >
+      <template #actions>
+        <div class="flex items-center gap-3">         
+          <Button label="Tambah Cabang" icon="pi pi-plus" class="p-button-sm font-black text-xs px-6 bg-white/20 hover:bg-white/30 text-white border-white/20"  @click="openNew" />
         </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Manajemen <span class="text-indigo-600">Cabang</span></h1>
-        <p class="text-slate-500 text-sm font-medium uppercase italic tracking-tight italic">Registrasi dan monitoring operasional kantor cabang, gudang, maupun titik distribusi nasional.</p>
-      </div>
-
-      <div class="flex items-center gap-3 relative">
-        <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="load" :loading="loading" />
-        <Button label="Tambah Cabang" icon="pi pi-plus" class="p-button-rounded font-black text-xs shadow-lg shadow-indigo-100 px-6" @click="openNew" />
-      </div>
-    </div>
+      </template>
+    </DashboardHero>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-          <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-             <i :class="[s.icon, 'text-6xl']"></i>
-          </div>
-          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ s.label }}</p>
-          <h3 class="text-2xl font-black text-slate-900">{{ s.value }}</h3>
-          <div class="flex items-center gap-2 mt-2">
-             <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-full', s.color]">{{ s.sub }}</span>
-          </div>
-       </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <MiniStatsCard
+          v-for="s in stats"
+          :key="s.label"
+          :label="s.label"
+          :value="s.value"
+          :icon="s.icon"
+          :sub="s.sub"
+          :sub-color="s.theme"
+          :icon-color="s.theme"
+       />
     </div>
 
     <!-- Main List Area -->
-    <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:border-indigo-300 transition-all duration-500">
-       <div class="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/10">
-          <div>
-             <h2 class="text-[13px] font-black text-slate-900 uppercase tracking-widest">Daftar Titik Operasional</h2>
-             <p class="text-xs text-slate-500 font-medium">Monitoring status keaktifan dan dataset administratif cabang.</p>
-          </div>
-          <div class="flex items-center gap-3">
-             <span class="p-input-icon-left">
-                <i class="pi pi-search text-slate-400"></i>
-                <InputText v-model="q" placeholder="Cari Kode/Nama..." class="p-inputtext-sm rounded-xl border-slate-200 w-64 font-bold text-xs" @input="load" />
-             </span>
-          </div>
-       </div>
-
-       <DataTable :value="branches" dataKey="id" class="p-datatable-sm w-full" :loading="loading">
-          <Column field="code" header="KODE" class="pl-8">
-             <template #body="{ data }">
-                <span class="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 font-mono italic">
-                   {{ data.code }}
-                </span>
-             </template>
-          </Column>
-          <Column header="NAMA CABANG">
-             <template #body="{ data }">
-                <div class="flex flex-col">
-                   <span class="text-[12px] font-black text-slate-800 uppercase tracking-tight">{{ data.name }}</span>
-                   <span class="text-[9px] font-bold text-slate-400 italic">{{ data.email || 'no-email@ses.local' }}</span>
-                </div>
-             </template>
-          </Column>
-          <Column header="LOKASI">
-             <template #body="{ data }">
-                <div class="flex items-center gap-2">
-                   <i class="pi pi-map-marker text-[10px] text-indigo-400"></i>
-                   <span class="text-[11px] font-bold text-slate-700 uppercase">{{ data.city }}, {{ data.province }}</span>
-                </div>
-             </template>
-          </Column>
-          <Column header="STATUS">
-             <template #body="{ data }">
-                <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', data.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400']">
-                   {{ data.isActive ? 'Active' : 'Deactivated' }}
-                </span>
-             </template>
-          </Column>
-          <Column class="text-right pr-8">
-             <template #body="{ data }">
-                <div class="flex gap-2 justify-end">
-                   <Button icon="pi pi-pencil" severity="secondary" rounded text @click="edit(data)" />
-                   <Button icon="pi pi-trash" severity="danger" rounded text @click="deactivate(data)" v-if="data.isActive" />
-                </div>
-             </template>
-          </Column>
-       </DataTable>
-    </div>
+    <PanelCard
+      title="Daftar Titik Operasional"
+      subtitle="Monitoring status keaktifan dan dataset administratif cabang."
+      icon="pi pi-building"
+      theme="stone"
+      v-model:search="q"
+      :loading="loading"
+      @refresh="load"
+      :show-filter="false"
+      search-placeholder="Cari Kode/Nama..."
+    >
+      <template #table>
+         <PanelTable
+            :items="branches"
+            :columns="branchColumns"
+            :loading="loading"
+            hover-border-color="border-l-indigo-400"
+            loading-text="Mensinkronisasi basis data cabang..."
+            empty-text="Belum ada titik operasional yang terdaftar."
+            @row-click="edit"
+         >
+            <template #col-code="{ item }">
+               <span class="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 font-mono italic">
+                  {{ item.code }}
+               </span>
+            </template>
+            <template #col-name="{ item }">
+               <div class="flex flex-col">
+                  <span class="text-[12px] font-black text-slate-800 uppercase tracking-tight">{{ item.name }}</span>
+                  <span class="text-[9px] font-bold text-slate-400 italic">{{ item.email || 'no-email@ses.local' }}</span>
+               </div>
+            </template>
+            <template #col-location="{ item }">
+               <div class="flex items-center gap-2">
+                  <i class="pi pi-map-marker text-[10px] text-indigo-400"></i>
+                  <span class="text-[11px] font-bold text-slate-700 uppercase">{{ item.city }}, {{ item.province }}</span>
+               </div>
+            </template>
+            <template #col-status="{ item }">
+               <div class="py-2">
+                  <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', item.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400']">
+                     {{ item.isActive ? 'Active' : 'Deactivated' }}
+                  </span>
+               </div>
+            </template>
+            <template #col-actions="{ item }">
+               <div class="flex gap-2 justify-end" @click.stop>
+                  <Button icon="pi pi-pencil" severity="secondary" rounded text @click="edit(item)" />
+                  <Button icon="pi pi-trash" severity="danger" rounded text @click="deactivate(item)" v-if="item.isActive" />
+               </div>
+            </template>
+         </PanelTable>
+      </template>
+    </PanelCard>
 
     <!-- Management Dialog -->
     <Dialog v-model:visible="drawerOpen" :header="editingId ? 'Edit Detail Cabang' : 'Registrasi Cabang Baru'" :modal="true" :dismissableMask="false" class="w-[700px] border-none shadow-2xl overflow-hidden glass-dialog">
@@ -206,17 +202,25 @@ const form = ref<any>({
 });
 
 const stats = computed(() => [
-  { label: 'Total Enterprise Branches', value: branches.value.length, sub: 'Global Units', icon: 'pi pi-building', color: 'bg-indigo-50 text-indigo-600' },
-  { label: 'Cabang Aktif', value: branches.value.filter(b => b.isActive).length, sub: 'Operational', icon: 'pi pi-check-circle', color: 'bg-emerald-50 text-emerald-600' },
-  { label: 'Wilayah Tercover', value: new Set(branches.value.map(b => b.province)).size, sub: 'Provinces', icon: 'pi pi-map', color: 'bg-blue-50 text-blue-600' },
-  { label: 'Rata-rata Kapasitas', value: 'High', sub: 'Infrastructure', icon: 'pi pi-chart-bar', color: 'bg-slate-50 text-slate-500' }
+  { label: 'Total Enterprise Branches', value: branches.value.length, sub: 'Global Units', icon: 'pi pi-building', theme: 'indigo' as const },
+  { label: 'Cabang Aktif', value: branches.value.filter(b => b.isActive).length, sub: 'Operational', icon: 'pi pi-check-circle', theme: 'emerald' as const },
+  { label: 'Wilayah Tercover', value: new Set(branches.value.map(b => b.province)).size, sub: 'Provinces', icon: 'pi pi-map', theme: 'blue' as const },
+  { label: 'Rata-rata Kapasitas', value: 'High', sub: 'Infrastructure', icon: 'pi pi-chart-bar', theme: 'slate' as const }
 ]);
+
+const branchColumns = [
+  { key: 'code', header: 'KODE', width: 'w-40' },
+  { key: 'name', header: 'NAMA CABANG' },
+  { key: 'location', header: 'LOKASI', borderLeft: true },
+  { key: 'status', header: 'STATUS', align: 'center' as const, width: 'w-40', borderLeft: true, hoverBg: 'bg-indigo-400' },
+  { key: 'actions', header: 'AKSI', align: 'right' as const, width: 'w-40', borderLeft: true }
+];
 
 async function load() {
   loading.value = true;
   try {
     const res = await api.get('/core/branches', { params: { q: q.value } });
-    branches.value = res.branches || res.data?.branches || res.data || [];
+    branches.value = res.data?.branches || res.data || [];
   } catch (e: any) {
     toast.add({ severity: 'error', summary: 'Gagal Memuat', detail: e.message });
   } finally {
@@ -272,7 +276,7 @@ function resetForm() {
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 :deep(.p-datatable-thead > tr > th) {
   background: transparent !important;
   font-size: 10px !important;

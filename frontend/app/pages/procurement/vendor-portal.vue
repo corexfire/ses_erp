@@ -3,7 +3,7 @@
     <!-- Header (Premium Connectivity Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-teal-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-teal-400">Connectivity Core</span>
@@ -17,8 +17,8 @@
     </div>
 
     <!-- Dynamic Portal KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-teal-600 text-white shadow-xl flex flex-col justify-between border border-teal-500 transition-all hover:bg-teal-700 group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-teal-600 text-white shadow-xl flex flex-col justify-between border border-teal-500 transition-all hover:bg-teal-700 group">
         <div class="text-[10px] font-black uppercase text-teal-200 tracking-[0.2em] mb-4 opacity-80">Total Rekanan Pemasok</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ summary.totalSuppliers || 0 }}</h3>
@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-teal-600 tracking-[0.2em] mb-4">Akses Portal Diberikan</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-teal-700 tracking-tighter leading-none">{{ summary.portalUsers || 0 }}</h3>
@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Tingkat Adopsi B2B</div>
         <div class="flex flex-col items-start gap-1">
           <h3 class="text-4xl font-black text-indigo-700 tracking-tighter leading-none">{{ Math.round((summary.portalUsers / (summary.totalSuppliers || 1)) * 100) }}<span class="text-xl text-indigo-300 ml-1">%</span></h3>
@@ -44,7 +44,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl flex flex-col justify-between transition-all hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-xl flex flex-col justify-between transition-all hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl group-hover:bg-teal-500/20 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em] mb-4 relative z-10">Aktivitas Telemetri (24j)</div>
         <div class="flex items-end justify-between relative z-10">
@@ -234,7 +234,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-teal-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-teal-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-send text-3xl font-black"></i>
             </div>

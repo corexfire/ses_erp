@@ -3,7 +3,7 @@
     <!-- Header (Premium CRM Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-blue-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-blue-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">CRM Management</span>
@@ -28,9 +28,9 @@
     </div>
 
     <!-- KPI Overview Banners (Premium Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in-up">
       <!-- Total Leads -->
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Total Active Leads</div>
         <div class="flex items-end justify-between">
           <h3 class="text-4xl font-black text-slate-900 tracking-tighter">{{ leads.filter(l => l.status !== 'WON' && l.status !== 'LOST').length }}</h3>
@@ -39,7 +39,7 @@
       </div>
       
       <!-- New Leads -->
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-sky-500 tracking-[0.2em] mb-4">New / Baru</div>
         <div class="flex items-end justify-between">
           <h3 class="text-4xl font-black text-sky-600 tracking-tighter">{{ countStatus('NEW') }}</h3>
@@ -48,7 +48,7 @@
       </div>
       
       <!-- Contacted -->
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-500 tracking-[0.2em] mb-4">Contacted</div>
         <div class="flex items-end justify-between">
           <h3 class="text-4xl font-black text-amber-600 tracking-tighter">{{ countStatus('CONTACTED') }}</h3>
@@ -57,7 +57,7 @@
       </div>
       
       <!-- Qualified -->
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-500 tracking-[0.2em] mb-4">Qualified</div>
         <div class="flex items-end justify-between">
           <h3 class="text-4xl font-black text-emerald-600 tracking-tighter">{{ countStatus('QUALIFIED') }}</h3>
@@ -66,7 +66,7 @@
       </div>
       
       <!-- Converted (WON) Banner - High Contrast -->
-      <div class="p-6 rounded-2xl bg-indigo-900 text-white shadow-xl flex flex-col justify-between border border-indigo-800 transition-all hover:bg-indigo-950 group">
+      <div class="p-4 rounded-2xl bg-indigo-900 text-white shadow-xl flex flex-col justify-between border border-indigo-800 transition-all hover:bg-indigo-950 group">
         <div class="text-[10px] font-black uppercase text-indigo-300 tracking-[0.2em] mb-4 opacity-80">Conversion Success</div>
         <div class="flex items-end justify-between">
           <h3 class="text-4xl font-black text-white tracking-tighter font-mono">{{ countStatus('WON') }} <span class="text-xs uppercase font-sans text-indigo-400">Won</span></h3>
@@ -258,7 +258,7 @@
                 <input type="text" v-model="form.name" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-6 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-100 placeholder:italic" placeholder="Contoh: PT. Abadi Jaya / Budi Santoso" />
               </div>
               
-              <div class="grid grid-cols-2 gap-6">
+              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Email Address</label>
                   <input type="email" v-model="form.email" class="w-full h-14 rounded-2xl border-none bg-white shadow-inner px-5 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300" placeholder="mail@example.com" />
@@ -283,7 +283,7 @@
               <h4 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Justifikasi & Audit Notes</h4>
             </div>
             <div class="pl-11">
-              <textarea v-model="form.notes" rows="4" class="w-full rounded-2xl border-none bg-white shadow-inner p-6 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-blue-100 resize-none placeholder:italic" placeholder="Tambahkan deskripsi kebutuhan prospek atau latar belakang interaksi..."></textarea>
+              <textarea v-model="form.notes" rows="4" class="w-full rounded-2xl border-none bg-white shadow-inner p-4 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-blue-100 resize-none placeholder:italic" placeholder="Tambahkan deskripsi kebutuhan prospek atau latar belakang interaksi..."></textarea>
             </div>
           </div>
 

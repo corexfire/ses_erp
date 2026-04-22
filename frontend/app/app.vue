@@ -1,7 +1,9 @@
 <template>
-  <Toast />
-  <ConfirmDialog />
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <div id="app-root">
+    <Toast />
+    <ConfirmDialog />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </div>
 </template>

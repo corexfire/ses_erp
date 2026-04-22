@@ -42,11 +42,36 @@ let PayrollController = class PayrollController {
         return { run };
     }
     async create(req, body) {
-        const grossPay = body.basicSalary + (body.allowances || 0);
-        const netPay = grossPay - (body.deductions || 0) - (body.taxAmount || 0);
+        const tenantId = req.user.tenantId;
+        const [year, month] = body.period.split('-').map(Number);
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0, 23, 59, 59);
+        const approvedOvertime = await this.prisma.overtimeRequest.findMany({
+            where: {
+                tenantId,
+                employeeId: body.employeeId,
+                status: 'APPROVED',
+                date: { gte: startDate, lte: endDate }
+            }
+        });
+        const totalOtHours = approvedOvertime.reduce((sum, ot) => sum + Number(ot.hours), 0);
+        const otPay = Math.round(totalOtHours * (body.basicSalary / 173) * 1.5);
+        const installments = await this.prisma.loanInstallment.findMany({
+            where: {
+                tenantId,
+                loan: { employeeId: body.employeeId },
+                status: 'UNPAID',
+                dueDate: { gte: startDate, lte: endDate }
+            }
+        });
+        const loanDeduction = installments.reduce((sum, inst) => sum + Number(inst.amount), 0);
+        const totalAllowances = (body.allowances || 0) + otPay;
+        const totalDeductions = (body.deductions || 0) + loanDeduction;
+        const grossPay = body.basicSalary + totalAllowances;
+        const netPay = grossPay - totalDeductions - (body.taxAmount || 0);
         const existing = await this.prisma.payrollRun.findFirst({
             where: {
-                tenantId: req.user.tenantId,
+                tenantId,
                 employeeId: body.employeeId,
                 period: body.period,
             }
@@ -56,8 +81,8 @@ let PayrollController = class PayrollController {
                 where: { id: existing.id },
                 data: {
                     basicSalary: body.basicSalary,
-                    allowances: body.allowances || 0,
-                    deductions: body.deductions || 0,
+                    allowances: totalAllowances,
+                    deductions: totalDeductions,
                     grossPay,
                     netPay,
                     taxAmount: body.taxAmount || 0,
@@ -69,12 +94,12 @@ let PayrollController = class PayrollController {
         }
         const run = await this.prisma.payrollRun.create({
             data: {
-                tenantId: req.user.tenantId,
+                tenantId,
                 employeeId: body.employeeId,
                 period: body.period,
                 basicSalary: body.basicSalary,
-                allowances: body.allowances || 0,
-                deductions: body.deductions || 0,
+                allowances: totalAllowances,
+                deductions: totalDeductions,
                 grossPay,
                 netPay,
                 taxAmount: body.taxAmount || 0,

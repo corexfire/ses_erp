@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-blue-600 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-blue-600 relative overflow-hidden">
       <!-- Decorative background icon -->
       <div class="absolute right-[-20px] top-[-20px] opacity-5 pointer-events-none">
         <i class="pi pi-wallet text-[150px] text-blue-900"></i>
@@ -165,7 +165,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 w-8 h-8 rounded-full font-bold transition-colors shadow-inner" @click="showDialog = false">✕</button>
         </div>
 
-        <div class="p-6 overflow-auto flex-1 space-y-5">
+        <div class="p-4 overflow-auto flex-1 space-y-5">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-5 px-1">
              <div class="space-y-1">
                 <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">No. Invoice AR</label>
@@ -234,7 +234,7 @@
           <button class="text-emerald-500 hover:text-emerald-700 bg-white shadow-sm w-8 h-8 rounded-full font-bold transition-colors" @click="receiveDialog = false">✕</button>
         </div>
         
-        <div class="p-6 space-y-4 bg-white">
+        <div class="p-4 space-y-4 bg-white">
            <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 text-center mb-2">
               <div class="text-[10px] uppercase font-bold text-blue-600 tracking-wider">Mencairkan Tagihan</div>
               <div class="font-mono font-black text-blue-900 mt-1">{{ activeInvoiceNo }}</div>

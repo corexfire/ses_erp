@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "./generated"
+  provider      = "prisma-client-js"
+  output        = "./generated"
+  binaryTargets = ["native"]
 }
 
 datasource db {
@@ -8,238 +9,269 @@ datasource db {
 }
 
 model Tenant {
-  id                          String                      @id @default(cuid())
-  name                        String                      @unique
-  createdAt                   DateTime                    @default(now())
-  periods                     AccountingPeriod[]
-  warehouseZones              WarehouseZone[]
-  approvalHistories           ApprovalHistory[]
-  assetDisposals              AssetDisposal[]
-  attendances                 Attendance[]
-  bankAccounts                BankAccount[]
-  bankReconciliations         BankReconciliation[]
-  bankTransactions            BankTransaction[]
-  billOfMaterials             BillOfMaterials[]
-  billOfMaterialsItems        BillOfMaterialsItem[]
-  binLocations                BinLocation[]
-  bomOperations               BomOperation[]
-  branches                    Branch[]
-  budgets                     Budget[]
-  calibrationLogs             CalibrationLog[]
-  capaReports                 Capa[]
-  carriers                    Carrier[]
-  cashAccounts                CashAccount[]
-  cashTransactions            CashTransaction[]
-  coaAccounts                 CoaAccount[]
-  commissionEntries           CommissionEntry[]
-  commissionSchemes           CommissionScheme[]
-  companyProfile              CompanyProfile?
-  costCenters                 CostCenter[]
-  costCenterAllocations       CostCenterAllocation[]
-  courses                     Course[]
-  courseEnrollments           CourseEnrollment[]
-  currencies                  Currency[]
-  customers                   Customer[]
-  customerInvoices            CustomerInvoice[]
-  customerInvoiceLines        CustomerInvoiceLine[]
-  customerInvoicePayments     CustomerInvoicePayment[]
-  portalActivities            CustomerPortalActivity[]
-  portalUsers                 CustomerPortalUser[]
-  customerReceipts            CustomerReceipt[]
-  delegations                 Delegation[]
-  deliveryExceptions          DeliveryException[]
-  deliveryOrders              DeliveryOrder[]
-  deliveryOrderItems          DeliveryOrderItem[]
-  discountRules               DiscountRule[]
-  employees                   Employee[]
-  equipment                   Equipment[]
-  exchangeRates               ExchangeRate[]
-  expenseClaims               ExpenseClaim[]
-  fiscalYears                 FiscalYear[]
-  fixedAssets                 FixedAsset[]
-  fixedAssetDepreciations     FixedAssetDepreciation[]
-  fleetVehicles               FleetVehicle[]
-  marketplaceChannels         MarketplaceChannel[]
-  marketplaceListings         MarketplaceListing[]
-  marketplaceSyncLogs         MarketplaceSyncLog[]
-  fsmHandovers                FsmHandover[]
-  fsmServiceAppointments      FsmServiceAppointment[]
-  fsmServiceOrders            FsmServiceOrder[]
-  fsmServiceOrderItems        FsmServiceOrderItem[]
-  fsmServiceReports           FsmServiceReport[]
-  fsmSparePartCompatibilities FsmSparePartCompatibility[]
-  goodsIssueItems             GoodsIssueItem[]
-  goodsIssues                 GoodsIssueNote[]
-  goodsReceiptItems           GoodsReceiptItem[]
-  goodsReceipts               GoodsReceiptNote[]
-  idBillings                  IdBilling[]
-  inProcessQcs                InProcessQc[]
-  interCompanyTransactions    InterCompanyTransaction[]
-  inventoryForecasts          InventoryForecast[]
-  items                       Item[]
-  itemBarcodes                ItemBarcode[]
-  batches                     ItemBatch[]
-  itemGroups                  ItemGroup[]
-  serials                     ItemSerial[]
-  itemUoms                    ItemUom[]
-  journalEntries              JournalEntry[]
-  journalEntryLines           JournalEntryLine[]
-  kpiEvaluations              KpiEvaluation[]
-  landedCostAllocations       LandedCostAllocation[]
-  landedCosts                 LandedCostVoucher[]
-  leads                       Lead[]
-  logisticsDrivers            LogisticsDriver[]
-  maintenanceLogs             MaintenanceLog[]
-  maintenanceLogParts         MaintenanceLogPart[]
-  maintenanceRequests         MaintenanceRequest[]
-  maintenanceSchedules        MaintenanceSchedule[]
-  maintenanceTasks            MaintenanceTask[]
-  campaigns                   MarketingCampaign[]
-  mrpRuns                     MrpRun[]
-  mrpSuggestions              MrpSuggestion[]
-  nonConformanceReports       NonConformanceReport[]
-  notificationChannelConfigs  NotificationChannelConfig[]
-  notificationLogs            NotificationLog[]
-  notificationPreferences     NotificationPreference[]
-  notificationSchedules       NotificationSchedule[]
-  notificationTemplates       NotificationTemplate[]
-  nsfpRanges                  NsfpRange[]
-  opportunities               Opportunity[]
-  organizationUnits           OrganizationUnit[]
-  packings                    Packing[]
-  packingItems                PackingItem[]
-  packingLists                PackingList[]
-  paymentRequests             PaymentRequest[]
-  payrollRuns                 PayrollRun[]
-  pettyCashReplenishments     PettyCashReplenishment[]
-  pickings                    Picking[]
-  pickingItems                PickingItem[]
-  pphWithholdings             PphWithholding[]
-  priceLists                  PriceList[]
-  priceListItems              PriceListItem[]
-  priceRules                  PriceRule[]
-  productionCosts             ProductionCost[]
-  productionCostDetails       ProductionCostDetail[]
-  productionIssues            ProductionIssue[]
-  productionIssueItems        ProductionIssueItem[]
-  productionReceipts          ProductionReceipt[]
-  profitCenters               ProfitCenter[]
-  progressClaims              ProgressClaim[]
-  progressInvoices            ProgressInvoice[]
-  proofOfDeliveries           ProofOfDelivery[]
-  purchaseInvoices            PurchaseInvoice[]
-  purchaseInvoiceItems        PurchaseInvoiceItem[]
-  purchaseOrders              PurchaseOrder[]
-  purchaseOrderItems          PurchaseOrderItem[]
-  purchaseRequisitions        PurchaseRequisition[]
-  purchaseRequisitionItems    PurchaseRequisitionItem[]
-  purchaseReturns             PurchaseReturn[]
-  purchaseReturnItems         PurchaseReturnItem[]
-  putaways                    Putaway[]
-  putawayItems                PutawayItem[]
-  qcInspections               QcInspection[]
-  qcInspectionItems           QcInspectionItem[]
-  qualityDocuments            QualityDocument[]
-  supportDocuments            SupportDocument[]
-  supportCompliances          SupportCompliance[]
-  supportKpis                 SupportKpi[]
-  supportSustainability       SupportSustainability[]
-  recruitmentCandidates       RecruitmentCandidate[]
-  rentalBillings              RentalBilling[]
-  rentalContracts             RentalContract[]
-  rentalMaintenances          RentalMaintenance[]
-  rfqs                        Rfq[]
-  rfqItems                    RfqItem[]
-  rfqVendors                  RfqVendor[]
-  roles                       Role[]
-  routeTemplates              RouteTemplate[]
-  activities                  SalesActivity[]
-  salesInvoices               SalesInvoice[]
-  salesInvoiceItems           SalesInvoiceItem[]
-  salesOrders                 SalesOrder[]
-  salesOrderItems             SalesOrderItem[]
-  salesQuotations             SalesQuotation[]
-  salesQuotationItems         SalesQuotationItem[]
-  salesReturns                SalesReturn[]
-  salesReturnItems            SalesReturnItem[]
-  salesSubscriptions          SalesSubscription[]
-  tickets                     ServiceTicket[]
-  shifts                      Shift[]
-  shipments                   Shipment[]
-  shopFloorLogs               ShopFloorLog[]
-  shopFloorTimers             ShopFloorTimer[]
-  stagingLoads                StagingLoad[]
-  stockBalances               StockBalance[]
-  stockCounts                 StockCount[]
-  stockCountItems             StockCountItem[]
-  stockLedgers                StockLedger[]
-  stockTransfers              StockTransfer[]
-  stockTransferItems          StockTransferItem[]
-  suppliers                   Supplier[]
-  supplierInvoices            SupplierInvoice[]
-  supplierInvoiceLines        SupplierInvoiceLine[]
-  supplierInvoicePayments     SupplierInvoicePayment[]
-  supplierRatings             SupplierRating[]
-  taxCodes                    TaxCode[]
-  taxEqualizations            TaxEqualization[]
-  taxInvoices                 TaxInvoice[]
-  teams                       Team[]
-  teamMembers                 TeamMember[]
-  threeWayMatchings           ThreeWayMatching[]
-  transporters                Transporter[]
-  tripCheckpoints             TripCheckpoint[]
-  tripCosts                   TripCost[]
-  tripPlans                   TripPlan[]
-  uoms                        Uom[]
-  uomConversions              UomConversion[]
-  users                       User[]
-  valuationLayers             ValuationLayer[]
-  vendorPayments              VendorPayment[]
-  vendorActivities            VendorPortalActivity[]
-  vendorPortals               VendorPortalUser[]
-  warehouses                  Warehouse[]
-  wavePickings                WavePicking[]
-  workOrders                  WorkOrder[]
-  workOrderComponents         WorkOrderComponent[]
-  workOrderOperations         WorkOrderOperation[]
-  workflowDefinitions         WorkflowDefinition[]
-  workflowInstances           WorkflowInstance[]
-  workflowRules               WorkflowRule[]
-  workflowSteps               WorkflowStep[]
+  id                               String                            @id @default(cuid())
+  name                             String                            @unique
+  createdAt                        DateTime                          @default(now())
+  periods                          AccountingPeriod[]
+  approvalHistories                ApprovalHistory[]
+  assetDisposals                   AssetDisposal[]
+  attendances                      Attendance[]
+  bankAccounts                     BankAccount[]
+  bankReconciliations              BankReconciliation[]
+  bankTransactions                 BankTransaction[]
+  billOfMaterials                  BillOfMaterials[]
+  billOfMaterialsItems             BillOfMaterialsItem[]
+  binLocations                     BinLocation[]
+  bomOperations                    BomOperation[]
+  branches                         Branch[]
+  budgets                          Budget[]
+  calibrationLogs                  CalibrationLog[]
+  capaReports                      Capa[]
+  carriers                         Carrier[]
+  cashAccounts                     CashAccount[]
+  cashTransactions                 CashTransaction[]
+  coaAccounts                      CoaAccount[]
+  commissionEntries                CommissionEntry[]
+  commissionSchemes                CommissionScheme[]
+  companyProfile                   CompanyProfile?
+  constructionDrawings             ConstructionDrawing[]
+  constructionMaterialRequests     ConstructionMaterialRequest[]
+  constructionMaterialRequestItems ConstructionMaterialRequestItem[]
+  costCenters                      CostCenter[]
+  costCenterAllocations            CostCenterAllocation[]
+  courses                          Course[]
+  courseEnrollments                CourseEnrollment[]
+  currencies                       Currency[]
+  customers                        Customer[]
+  customerInvoices                 CustomerInvoice[]
+  customerInvoiceLines             CustomerInvoiceLine[]
+  customerInvoicePayments          CustomerInvoicePayment[]
+  portalActivities                 CustomerPortalActivity[]
+  portalUsers                      CustomerPortalUser[]
+  customerReceipts                 CustomerReceipt[]
+  delegations                      Delegation[]
+  deliveryExceptions               DeliveryException[]
+  deliveryOrders                   DeliveryOrder[]
+  deliveryOrderItems               DeliveryOrderItem[]
+  disciplinaryActions              DisciplinaryAction[]
+  discountRules                    DiscountRule[]
+  employees                        Employee[]
+  employeeDocuments                EmployeeDocument[]
+  employeeLoans                    EmployeeLoan[]
+  employeeMovements                EmployeeMovement[]
+  employeeTerminations             EmployeeTermination[]
+  equipment                        Equipment[]
+  exchangeRates                    ExchangeRate[]
+  expenseClaims                    ExpenseClaim[]
+  fiscalYears                      FiscalYear[]
+  fixedAssets                      FixedAsset[]
+  fixedAssetDepreciations          FixedAssetDepreciation[]
+  fleetVehicles                    FleetVehicle[]
+  fsmHandovers                     FsmHandover[]
+  fsmServiceAppointments           FsmServiceAppointment[]
+  fsmServiceOrders                 FsmServiceOrder[]
+  fsmServiceOrderItems             FsmServiceOrderItem[]
+  fsmServiceReports                FsmServiceReport[]
+  fsmSparePartCompatibilities      FsmSparePartCompatibility[]
+  goodsIssueItems                  GoodsIssueItem[]
+  goodsIssues                      GoodsIssueNote[]
+  goodsReceiptItems                GoodsReceiptItem[]
+  goodsReceipts                    GoodsReceiptNote[]
+  hseIncidents                     HseIncident[]
+  hseInspections                   HseInspection[]
+  idBillings                       IdBilling[]
+  inProcessQcs                     InProcessQc[]
+  interCompanyTransactions         InterCompanyTransaction[]
+  inventoryForecasts               InventoryForecast[]
+  items                            Item[]
+  itemBarcodes                     ItemBarcode[]
+  batches                          ItemBatch[]
+  itemGroups                       ItemGroup[]
+  serials                          ItemSerial[]
+  itemUoms                         ItemUom[]
+  journalEntries                   JournalEntry[]
+  journalEntryLines                JournalEntryLine[]
+  kpiEvaluations                   KpiEvaluation[]
+  landedCostAllocations            LandedCostAllocation[]
+  landedCosts                      LandedCostVoucher[]
+  leads                            Lead[]
+  leaveBalances                    LeaveBalance[]
+  leaveRequests                    LeaveRequest[]
+  loanInstallments                 LoanInstallment[]
+  logisticsDrivers                 LogisticsDriver[]
+  successionPlans                  SuccessionPlan[]
+  successionCandidates             SuccessionCandidate[]
+  maintenanceLogs                  MaintenanceLog[]
+  maintenanceLogParts              MaintenanceLogPart[]
+  maintenanceRequests              MaintenanceRequest[]
+  maintenanceSchedules             MaintenanceSchedule[]
+  maintenanceTasks                 MaintenanceTask[]
+  campaigns                        MarketingCampaign[]
+  marketplaceChannels              MarketplaceChannel[]
+  marketplaceListings              MarketplaceListing[]
+  marketplaceSyncLogs              MarketplaceSyncLog[]
+  mrpRuns                          MrpRun[]
+  mrpSuggestions                   MrpSuggestion[]
+  nonConformanceReports            NonConformanceReport[]
+  notificationChannelConfigs       NotificationChannelConfig[]
+  notificationLogs                 NotificationLog[]
+  notificationPreferences          NotificationPreference[]
+  notificationSchedules            NotificationSchedule[]
+  notificationTemplates            NotificationTemplate[]
+  nsfpRanges                       NsfpRange[]
+  opportunities                    Opportunity[]
+  organizationUnits                OrganizationUnit[]
+  overtimeRequests                 OvertimeRequest[]
+  packings                         Packing[]
+  packingItems                     PackingItem[]
+  packingLists                     PackingList[]
+  paymentRequests                  PaymentRequest[]
+  payrollRuns                      PayrollRun[]
+  pettyCashReplenishments          PettyCashReplenishment[]
+  pickings                         Picking[]
+  pickingItems                     PickingItem[]
+  pphWithholdings                  PphWithholding[]
+  priceLists                       PriceList[]
+  priceListItems                   PriceListItem[]
+  priceRules                       PriceRule[]
+  printFormats                     PrintFormat[]
+  productionCosts                  ProductionCost[]
+  productionCostDetails            ProductionCostDetail[]
+  productionIssues                 ProductionIssue[]
+  productionIssueItems             ProductionIssueItem[]
+  productionReceipts               ProductionReceipt[]
+  profitCenters                    ProfitCenter[]
+  progressClaims                   ProgressClaim[]
+  progressInvoices                 ProgressInvoice[]
+  projectIssues                    ProjectIssue[]
+  projectChangeOrders              ProjectChangeOrder[]
+  projectTaskDependencies          TaskDependency[]
+  proofOfDeliveries                ProofOfDelivery[]
+  purchaseInvoices                 PurchaseInvoice[]
+  purchaseInvoiceItems             PurchaseInvoiceItem[]
+  purchaseOrders                   PurchaseOrder[]
+  purchaseOrderItems               PurchaseOrderItem[]
+  purchaseRequisitions             PurchaseRequisition[]
+  purchaseRequisitionItems         PurchaseRequisitionItem[]
+  purchaseReturns                  PurchaseReturn[]
+  purchaseReturnItems              PurchaseReturnItem[]
+  putaways                         Putaway[]
+  putawayItems                     PutawayItem[]
+  qcInspections                    QcInspection[]
+  qcInspectionItems                QcInspectionItem[]
+  qualityDocuments                 QualityDocument[]
+  recruitmentCandidates            RecruitmentCandidate[]
+  rentalBillings                   RentalBilling[]
+  rentalContracts                  RentalContract[]
+  rentalMaintenances               RentalMaintenance[]
+  rfqs                             Rfq[]
+  rfqItems                         RfqItem[]
+  rfqVendors                       RfqVendor[]
+  roles                            Role[]
+  routeTemplates                   RouteTemplate[]
+  activities                       SalesActivity[]
+  salesInvoices                    SalesInvoice[]
+  salesInvoiceItems                SalesInvoiceItem[]
+  salesOrders                      SalesOrder[]
+  salesOrderItems                  SalesOrderItem[]
+  salesQuotations                  SalesQuotation[]
+  salesQuotationItems              SalesQuotationItem[]
+  salesReturns                     SalesReturn[]
+  salesReturnItems                 SalesReturnItem[]
+  salesSubscriptions               SalesSubscription[]
+  tickets                          ServiceTicket[]
+  shifts                           Shift[]
+  shipments                        Shipment[]
+  shopFloorLogs                    ShopFloorLog[]
+  shopFloorTimers                  ShopFloorTimer[]
+  stagingLoads                     StagingLoad[]
+  stockBalances                    StockBalance[]
+  stockCounts                      StockCount[]
+  stockCountItems                  StockCountItem[]
+  stockLedgers                     StockLedger[]
+  stockTransfers                   StockTransfer[]
+  stockTransferItems               StockTransferItem[]
+  subcontractors                   Subcontractor[]
+  suppliers                        Supplier[]
+  supplierInvoices                 SupplierInvoice[]
+  supplierInvoiceLines             SupplierInvoiceLine[]
+  supplierInvoicePayments          SupplierInvoicePayment[]
+  supplierRatings                  SupplierRating[]
+  supportCompliances               SupportCompliance[]
+  supportDocuments                 SupportDocument[]
+  supportKpis                      SupportKpi[]
+  supportSustainability            SupportSustainability[]
+  systemConfigs                    SystemConfig[]
+  taxCodes                         TaxCode[]
+  taxEqualizations                 TaxEqualization[]
+  taxInvoices                      TaxInvoice[]
+  teams                            Team[]
+  teamMembers                      TeamMember[]
+  threeWayMatchings                ThreeWayMatching[]
+  timesheetEntries                 TimesheetEntry[]
+  transporters                     Transporter[]
+  tripCheckpoints                  TripCheckpoint[]
+  tripCosts                        TripCost[]
+  tripPlans                        TripPlan[]
+  uoms                             Uom[]
+  uomConversions                   UomConversion[]
+  users                            User[]
+  valuationLayers                  ValuationLayer[]
+  vendorPayments                   VendorPayment[]
+  vendorActivities                 VendorPortalActivity[]
+  vendorPortals                    VendorPortalUser[]
+  warehouses                       Warehouse[]
+  warehouseZones                   WarehouseZone[]
+  wavePickings                     WavePicking[]
+  workOrders                       WorkOrder[]
+  workOrderComponents              WorkOrderComponent[]
+  workOrderOperations              WorkOrderOperation[]
+  workflowDefinitions              WorkflowDefinition[]
+  workflowInstances                WorkflowInstance[]
+  workflowRules                    WorkflowRule[]
+  workflowSteps                    WorkflowStep[]
+  projectDefects                   ProjectDefect[]
+  projectRFIs                      ProjectRFI[]
+  projectEquipmentLogs             ProjectEquipmentLog[]
+  projectWeatherLogs               ProjectWeatherLog[]
+  projectSiteInventories           ProjectSiteInventory[]
 }
 
 model User {
-  id                           String                   @id @default(cuid())
+  id                           String                        @id @default(cuid())
   tenantId                     String
-  email                        String                   @unique
+  email                        String                        @unique
   name                         String?
   passwordHash                 String
-  isActive                     Boolean                  @default(true)
-  createdAt                    DateTime                 @default(now())
-  isSuperAdmin                 Boolean                  @default(false)
+  isActive                     Boolean                       @default(true)
+  createdAt                    DateTime                      @default(now())
+  isSuperAdmin                 Boolean                       @default(false)
   approvalHistories            ApprovalHistory[]
-  assignedCapas                Capa[]                   @relation("CapaAssignee")
-  commissionEntries            CommissionEntry[]        @relation("UserToCommissionEntry")
-  delegatedFrom                Delegation[]             @relation("DelegationFrom")
-  delegatedTo                  Delegation[]             @relation("DelegationTo")
-  fsmHandovers                 FsmHandover[]            @relation("HandoverTechnician")
-  assignedFsmAppointments      FsmServiceAppointment[]  @relation("AppointmentTechnician")
+  assignedCapas                Capa[]                        @relation("CapaAssignee")
+  commissionEntries            CommissionEntry[]             @relation("UserToCommissionEntry")
+  constructionMaterialRequests ConstructionMaterialRequest[] @relation("MRRequestedBy")
+  delegatedFrom                Delegation[]                  @relation("DelegationFrom")
+  delegatedTo                  Delegation[]                  @relation("DelegationTo")
+  fsmHandovers                 FsmHandover[]                 @relation("HandoverTechnician")
+  assignedFsmAppointments      FsmServiceAppointment[]       @relation("AppointmentTechnician")
   assignedLeads                Lead[]
-  assignedNcrs                 NonConformanceReport[]   @relation("NcrAssignee")
-  reportedNcrs                 NonConformanceReport[]   @relation("NcrReporter")
-  notificationLogs             NotificationLog[]        @relation("NotificationRecipient")
+  assignedNcrs                 NonConformanceReport[]        @relation("NcrAssignee")
+  reportedNcrs                 NonConformanceReport[]        @relation("NcrReporter")
+  notificationLogs             NotificationLog[]             @relation("NotificationRecipient")
   notificationPreferences      NotificationPreference[]
-  createdNotificationSchedules NotificationSchedule[]   @relation("NotificationScheduleCreator")
-  ownedOpportunities           Opportunity[]            @relation("OpportunityOwner")
+  createdNotificationSchedules NotificationSchedule[]        @relation("NotificationScheduleCreator")
+  ownedOpportunities           Opportunity[]                 @relation("OpportunityOwner")
+  paymentRequests              PaymentRequest[]
   ownedQualityDocuments        QualityDocument[]
-  assignedActivities           SalesActivity[]          @relation("ActivityAssignee")
-  assignedTickets              ServiceTicket[]          @relation("TicketAssignee")
-  tenant                       Tenant                   @relation(fields: [tenantId], references: [id])
-  roles                        UserRole[]
-  workflowInstances            WorkflowInstance[]       @relation("WorkflowInstanceAssignee")
-  assignedTasks                WbsTask[]                @relation("TaskAssignee")
+  assignedActivities           SalesActivity[]               @relation("ActivityAssignee")
+  assignedTickets              ServiceTicket[]               @relation("TicketAssignee")
   teams                        TeamMember[]
-  managedWarehouses            Warehouse[]              @relation(name: "WarehouseManager")
+  tenant                       Tenant                        @relation(fields: [tenantId], references: [id])
+  roles                        UserRole[]
+  managedWarehouses            Warehouse[]                   @relation("WarehouseManager")
+  assignedTasks                WbsTask[]                     @relation("TaskAssignee")
+  projectIssues                ProjectIssue[]
+  workflowInstances            WorkflowInstance[]            @relation("WorkflowInstanceAssignee")
 }
 
 model Lead {
@@ -284,7 +316,9 @@ model Customer {
   nik                String?
   taxAddress         String?
   tenant             Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  standaloneInvoices CustomerInvoice[]
   portalUsers        CustomerPortalUser[]
+  receipts           CustomerReceipt[]
   deliveryOrders     DeliveryOrder[]
   discountRules      DiscountRule[]
   fsmHandovers       FsmHandover[]
@@ -409,6 +443,7 @@ model SalesInvoice {
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   commissionEntries CommissionEntry[]
+  receipts          CustomerReceipt[]
   customer          Customer           @relation(fields: [customerId], references: [id])
   order             SalesOrder?        @relation(fields: [orderId], references: [id])
   tenant            Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
@@ -577,8 +612,8 @@ model Carrier {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  shipments    Shipment[]
   packingLists PackingList[]
+  shipments    Shipment[]
 
   @@unique([tenantId, code])
   @@index([tenantId, isActive])
@@ -639,36 +674,39 @@ model CommissionEntry {
 }
 
 model Supplier {
-  id               String              @id @default(cuid())
-  tenantId         String
-  code             String
-  name             String
-  email            String?
-  phone            String?
-  address1         String?
-  address2         String?
-  city             String?
-  province         String?
-  postalCode       String?
-  countryCode      String?             @default("ID")
-  isActive         Boolean             @default(true)
-  createdAt        DateTime            @default(now())
-  updatedAt        DateTime            @updatedAt
-  bankAccount      String?
-  bankName         String?
-  npwp             String?
-  paymentTerms     String?
-  vendorGroup      String?
-  goodsReceipts    GoodsReceiptNote[]
-  landedCosts      LandedCostVoucher[]
-  purchaseInvoices PurchaseInvoice[]
-  purchaseOrders   PurchaseOrder[]
-  purchaseReturns  PurchaseReturn[]
-  rfqVendors       RfqVendor[]
-  tenant           Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  ratings          SupplierRating[]
-  tripCosts        TripCost[]
-  portalUsers      VendorPortalUser[]
+  id                 String              @id @default(cuid())
+  tenantId           String
+  code               String
+  name               String
+  email              String?
+  phone              String?
+  address1           String?
+  address2           String?
+  city               String?
+  province           String?
+  postalCode         String?
+  countryCode        String?             @default("ID")
+  isActive           Boolean             @default(true)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  bankAccount        String?
+  bankName           String?
+  npwp               String?
+  paymentTerms       String?
+  vendorGroup        String?
+  goodsReceipts      GoodsReceiptNote[]
+  landedCosts        LandedCostVoucher[]
+  paymentRequests    PaymentRequest[]
+  purchaseInvoices   PurchaseInvoice[]
+  purchaseOrders     PurchaseOrder[]
+  purchaseReturns    PurchaseReturn[]
+  rfqVendors         RfqVendor[]
+  tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  standaloneInvoices SupplierInvoice[]
+  ratings            SupplierRating[]
+  tripCosts          TripCost[]
+  payments           VendorPayment[]
+  portalUsers        VendorPortalUser[]
 
   @@unique([tenantId, code])
   @@index([tenantId, isActive])
@@ -845,12 +883,14 @@ model PurchaseInvoice {
   taxFacturNumber   String?
   goodsReceipts     GoodsReceiptNote[]
   landedCosts       LandedCostVoucher[]
+  paymentRequests   PaymentRequest[]
   order             PurchaseOrder?        @relation(fields: [orderId], references: [id])
   supplier          Supplier              @relation(fields: [supplierId], references: [id])
   tenant            Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   items             PurchaseInvoiceItem[]
   returns           PurchaseReturn[]
   threeWayMatchings ThreeWayMatching[]
+  payments          VendorPayment[]
 
   @@unique([tenantId, code])
   @@index([tenantId, status])
@@ -896,8 +936,8 @@ model LandedCostVoucher {
   allocations         LandedCostAllocation[]
   invoice             PurchaseInvoice?       @relation(fields: [invoiceId], references: [id])
   order               PurchaseOrder?         @relation(fields: [orderId], references: [id])
-  supplier            Supplier?              @relation(fields: [supplierId], references: [id])
   receipt             GoodsReceiptNote?      @relation(fields: [receiptId], references: [id])
+  supplier            Supplier?              @relation(fields: [supplierId], references: [id])
   tenant              Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, code])
@@ -985,61 +1025,62 @@ model ItemGroup {
 }
 
 model Item {
-  id                       String                      @id @default(cuid())
-  tenantId                 String
-  code                     String
-  name                     String
-  description              String?
-  itemGroupId              String?
-  baseUomCode              String?
-  trackingType             ItemTrackingType            @default(NONE)
-  valuationMethod          ValuationMethod             @default(MOVING_AVERAGE)
-  reorderPoint             Decimal?                    @db.Decimal(18, 4)
-  reorderQty               Decimal?                    @db.Decimal(18, 4)
-  isActive                 Boolean                     @default(true)
-  createdAt                DateTime                    @default(now())
-  updatedAt                DateTime                    @updatedAt
-  isPurchaseItem           Boolean                     @default(true)
-  isSalesItem              Boolean                     @default(true)
-  purchaseTaxCodeId        String?
-  salesTaxCodeId           String?
-  brand                    String?
-  isSparePart              Boolean                     @default(false)
-  manufacturer             String?
-  oemPartNumber            String?
-  billOfMaterials          BillOfMaterials[]
-  billOfMaterialsItems     BillOfMaterialsItem[]
-  deliveryOrderItems       DeliveryOrderItem[]
-  fsmServiceOrderItems     FsmServiceOrderItem[]
-  fsmCompatibilities       FsmSparePartCompatibility[]
-  goodsIssueItems          GoodsIssueItem[]
-  goodsReceiptItems        GoodsReceiptItem[]
-  inventoryForecasts       InventoryForecast[]
-  itemGroup                ItemGroup?                  @relation(fields: [itemGroupId], references: [id])
-  tenant                   Tenant                      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  barcodes                 ItemBarcode[]
-  batches                  ItemBatch[]
-  serials                  ItemSerial[]
-  uoms                     ItemUom[]
-  maintenanceParts         MaintenanceLogPart[]
-  mrpSuggestions           MrpSuggestion[]
-  nonConformanceReports    NonConformanceReport[]
-  packingItems             PackingItem[]
-  pickingItems             PickingItem[]
-  productionIssueItems     ProductionIssueItem[]
-  putawayItems             PutawayItem[]
-  qcInspectionItems        QcInspectionItem[]
-  salesInvoiceItems        SalesInvoiceItem[]
-  salesOrderItems          SalesOrderItem[]
-  salesReturnItems         SalesReturnItem[]
-  stockBalances            StockBalance[]
-  stockCountItems          StockCountItem[]
-  stockLedgers             StockLedger[]
-  stockTransferItems       StockTransferItem[]
-  valuationLayers          ValuationLayer[]
-  workOrdersAsFinishedGood WorkOrder[]                 @relation("FinishedGood")
-  marketplaceListings      MarketplaceListing[]
-  workOrderComponents      WorkOrderComponent[]
+  id                               String                            @id @default(cuid())
+  tenantId                         String
+  code                             String
+  name                             String
+  description                      String?
+  itemGroupId                      String?
+  baseUomCode                      String?
+  trackingType                     ItemTrackingType                  @default(NONE)
+  valuationMethod                  ValuationMethod                   @default(MOVING_AVERAGE)
+  reorderPoint                     Decimal?                          @db.Decimal(18, 4)
+  reorderQty                       Decimal?                          @db.Decimal(18, 4)
+  isActive                         Boolean                           @default(true)
+  createdAt                        DateTime                          @default(now())
+  updatedAt                        DateTime                          @updatedAt
+  isPurchaseItem                   Boolean                           @default(true)
+  isSalesItem                      Boolean                           @default(true)
+  purchaseTaxCodeId                String?
+  salesTaxCodeId                   String?
+  brand                            String?
+  isSparePart                      Boolean                           @default(false)
+  manufacturer                     String?
+  oemPartNumber                    String?
+  billOfMaterials                  BillOfMaterials[]
+  billOfMaterialsItems             BillOfMaterialsItem[]
+  constructionMaterialRequestItems ConstructionMaterialRequestItem[]
+  deliveryOrderItems               DeliveryOrderItem[]
+  fsmServiceOrderItems             FsmServiceOrderItem[]
+  fsmCompatibilities               FsmSparePartCompatibility[]
+  goodsIssueItems                  GoodsIssueItem[]
+  goodsReceiptItems                GoodsReceiptItem[]
+  inventoryForecasts               InventoryForecast[]
+  itemGroup                        ItemGroup?                        @relation(fields: [itemGroupId], references: [id])
+  tenant                           Tenant                            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  barcodes                         ItemBarcode[]
+  batches                          ItemBatch[]
+  serials                          ItemSerial[]
+  uoms                             ItemUom[]
+  maintenanceParts                 MaintenanceLogPart[]
+  marketplaceListings              MarketplaceListing[]
+  mrpSuggestions                   MrpSuggestion[]
+  nonConformanceReports            NonConformanceReport[]
+  packingItems                     PackingItem[]
+  pickingItems                     PickingItem[]
+  productionIssueItems             ProductionIssueItem[]
+  putawayItems                     PutawayItem[]
+  qcInspectionItems                QcInspectionItem[]
+  salesInvoiceItems                SalesInvoiceItem[]
+  salesOrderItems                  SalesOrderItem[]
+  salesReturnItems                 SalesReturnItem[]
+  stockBalances                    StockBalance[]
+  stockCountItems                  StockCountItem[]
+  stockLedgers                     StockLedger[]
+  stockTransferItems               StockTransferItem[]
+  valuationLayers                  ValuationLayer[]
+  workOrdersAsFinishedGood         WorkOrder[]                       @relation("FinishedGood")
+  workOrderComponents              WorkOrderComponent[]
 
   @@unique([tenantId, code])
   @@index([tenantId, isActive])
@@ -1076,28 +1117,21 @@ model ItemBarcode {
 }
 
 model Warehouse {
-  id        String   @id @default(cuid())
-  tenantId  String
-  code      String
-  name      String
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // New Fields
-  type           WarehouseType @default(GENERAL)
-  address1       String?
-  city           String?
-  province       String?
-  postalCode     String?
-  managerId      String?
-  capacityWeight Decimal?      @db.Decimal(18, 4)
-  capacityVolume Decimal?      @db.Decimal(18, 4)
-
-  // Relations
-  manager User?           @relation(name: "WarehouseManager", fields: [managerId], references: [id])
-  zones   WarehouseZone[]
-
+  id                 String             @id @default(cuid())
+  tenantId           String
+  code               String
+  name               String
+  isActive           Boolean            @default(true)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  type               WarehouseType      @default(GENERAL)
+  address1           String?
+  city               String?
+  province           String?
+  postalCode         String?
+  managerId          String?
+  capacityWeight     Decimal?           @db.Decimal(18, 4)
+  capacityVolume     Decimal?           @db.Decimal(18, 4)
   binLocations       BinLocation[]
   deliveryOrders     DeliveryOrder[]
   goodsIssueItems    GoodsIssueItem[]
@@ -1114,7 +1148,9 @@ model Warehouse {
   stockLedgers       StockLedger[]
   stockTransfersFrom StockTransfer[]    @relation("TransferFromWarehouse")
   stockTransfersTo   StockTransfer[]    @relation("TransferToWarehouse")
+  manager            User?              @relation("WarehouseManager", fields: [managerId], references: [id])
   tenant             Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  zones              WarehouseZone[]
   wavePickings       WavePicking[]
   workOrders         WorkOrder[]
 
@@ -1202,10 +1238,10 @@ model GoodsReceiptNote {
   supplier          Supplier?           @relation(fields: [supplierId], references: [id])
   tenant            Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   warehouse         Warehouse           @relation(fields: [warehouseId], references: [id])
+  landedCosts       LandedCostVoucher[]
   putaways          Putaway[]
   qcInspections     QcInspection[]
   threeWayMatchings ThreeWayMatching[]
-  landedCosts       LandedCostVoucher[]
 
   @@unique([tenantId, code])
   @@index([tenantId, status])
@@ -1838,12 +1874,68 @@ model CompanyProfile {
   province    String?
   postalCode  String?
   countryCode String?  @default("ID")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  companySize String?  @default("KECIL")
   latitude    Float?
   longitude   Float?
-  companySize String?  @default("KECIL") // KECIL, MENENGAH, BESAR
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model SystemConfig {
+  id          String   @id @default(cuid())
+  tenantId    String
+  key         String
+  group       String
+  value       String
+  description String?
+  status      String   @default("ACTIVE")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, key])
+  @@index([tenantId, group])
+}
+
+model PrintFormat {
+  id                  String   @id @default(cuid())
+  tenantId            String
+  name                String
+  docType             String
+  module              String
+  paperSize           String   @default("A4")
+  orientation         String   @default("PORTRAIT")
+  fontFamily          String   @default("Inter")
+  margin              String   @default("NORMAL")
+  accentColor         String   @default("#7c3aed")
+  secondaryColor      String   @default("#4f46e5")
+  footerText          String?
+  status              String   @default("ACTIVE")
+  isDefault           Boolean  @default(false)
+  showLogo            Boolean  @default(true)
+  showShippingAddress Boolean  @default(false)
+  showTax             Boolean  @default(true)
+  showDiscount        Boolean  @default(false)
+  showNotes           Boolean  @default(true)
+  showSignature       Boolean  @default(true)
+  showBankInfo        Boolean  @default(true)
+  showQrCode          Boolean  @default(false)
+  usageCount          Int      @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  barcodeType         String?
+  formatType          String   @default("DOCUMENT")
+  height              Float?
+  showBarcode         Boolean  @default(false)
+  showItemCode        Boolean  @default(false)
+  showPrice           Boolean  @default(false)
+  width               Float?
+  tenant              Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, name])
+  @@index([tenantId, docType])
+  @@index([tenantId, module])
 }
 
 model Branch {
@@ -1974,11 +2066,11 @@ model CoaAccount {
   isActive     Boolean       @default(true)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+  bankAccounts BankAccount[]
+  cashAccounts CashAccount[]
   parent       CoaAccount?   @relation("CoaParent", fields: [parentId], references: [id])
   children     CoaAccount[]  @relation("CoaParent")
   tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  bankAccounts BankAccount[]
-  cashAccounts CashAccount[]
 
   @@unique([tenantId, code])
 }
@@ -2054,25 +2146,27 @@ model JournalEntryLine {
 }
 
 model SupplierInvoice {
-  id           String                   @id @default(cuid())
-  tenantId     String
-  invoiceNo    String
-  supplierCode String
-  invoiceDate  DateTime
-  dueDate      DateTime?
-  status       String                   @default("OPEN")
-  description  String?
-  totalAmount  Decimal                  @default(0) @db.Decimal(18, 4)
-  taxAmount    Decimal                  @default(0) @db.Decimal(18, 4)
-  paidAmount   Decimal                  @default(0) @db.Decimal(18, 4)
-  createdAt    DateTime                 @default(now())
-  updatedAt    DateTime                 @updatedAt
-  tenant       Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  lines        SupplierInvoiceLine[]
-  payments     SupplierInvoicePayment[]
+  id          String                   @id @default(cuid())
+  tenantId    String
+  invoiceNo   String
+  invoiceDate DateTime
+  dueDate     DateTime?
+  status      String                   @default("OPEN")
+  description String?
+  totalAmount Decimal                  @default(0) @db.Decimal(18, 4)
+  taxAmount   Decimal                  @default(0) @db.Decimal(18, 4)
+  paidAmount  Decimal                  @default(0) @db.Decimal(18, 4)
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  supplierId  String
+  supplier    Supplier                 @relation(fields: [supplierId], references: [id])
+  tenant      Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  lines       SupplierInvoiceLine[]
+  payments    SupplierInvoicePayment[]
 
   @@unique([tenantId, invoiceNo])
   @@index([tenantId, status])
+  @@index([tenantId, supplierId])
 }
 
 model SupplierInvoiceLine {
@@ -2107,25 +2201,27 @@ model SupplierInvoicePayment {
 }
 
 model CustomerInvoice {
-  id           String                   @id @default(cuid())
-  tenantId     String
-  invoiceNo    String
-  customerCode String
-  invoiceDate  DateTime
-  dueDate      DateTime?
-  status       String                   @default("OPEN")
-  description  String?
-  totalAmount  Decimal                  @default(0) @db.Decimal(18, 4)
-  taxAmount    Decimal                  @default(0) @db.Decimal(18, 4)
-  paidAmount   Decimal                  @default(0) @db.Decimal(18, 4)
-  createdAt    DateTime                 @default(now())
-  updatedAt    DateTime                 @updatedAt
-  tenant       Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  lines        CustomerInvoiceLine[]
-  payments     CustomerInvoicePayment[]
+  id          String                   @id @default(cuid())
+  tenantId    String
+  invoiceNo   String
+  invoiceDate DateTime
+  dueDate     DateTime?
+  status      String                   @default("OPEN")
+  description String?
+  totalAmount Decimal                  @default(0) @db.Decimal(18, 4)
+  taxAmount   Decimal                  @default(0) @db.Decimal(18, 4)
+  paidAmount  Decimal                  @default(0) @db.Decimal(18, 4)
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+  customerId  String
+  customer    Customer                 @relation(fields: [customerId], references: [id])
+  tenant      Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  lines       CustomerInvoiceLine[]
+  payments    CustomerInvoicePayment[]
 
   @@unique([tenantId, invoiceNo])
   @@index([tenantId, status])
+  @@index([tenantId, customerId])
 }
 
 model CustomerInvoiceLine {
@@ -2174,28 +2270,23 @@ model FixedAsset {
   notes               String?
   createdAt           DateTime                 @default(now())
   updatedAt           DateTime                 @updatedAt
+  brand               String?
+  model               String?
+  serialNumber        String?                  @map("serial_number")
+  locationId          String?                  @map("location_id")
+  custodianId         String?                  @map("custodian_id")
+  warrantyExpiry      DateTime?                @map("warranty_expiry")
+  insurancePolicy     String?                  @map("insurance_policy")
+  insuranceExpiry     DateTime?                @map("insurance_expiry")
+  lastMaintenanceDate DateTime?                @map("last_maintenance_date")
+  nextMaintenanceDate DateTime?                @map("next_maintenance_date")
   disposals           AssetDisposal[]
+  custodian           Employee?                @relation(fields: [custodianId], references: [id])
+  location            ProjectSite?             @relation(fields: [locationId], references: [id])
   tenant              Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   depreciationEntries FixedAssetDepreciation[]
   rentalContracts     RentalContract[]
   rentalMaintenances  RentalMaintenance[]
-
-  // ERP Besar Expansion
-  brand        String?
-  model        String?
-  serialNumber String? @map("serial_number")
-  locationId   String? @map("location_id")
-  custodianId  String? @map("custodian_id")
-
-  // Lifecycle & Support
-  warrantyExpiry      DateTime? @map("warranty_expiry")
-  insurancePolicy     String?   @map("insurance_policy")
-  insuranceExpiry     DateTime? @map("insurance_expiry")
-  lastMaintenanceDate DateTime? @map("last_maintenance_date")
-  nextMaintenanceDate DateTime? @map("next_maintenance_date")
-
-  location  ProjectSite? @relation(fields: [locationId], references: [id])
-  custodian Employee?    @relation(fields: [custodianId], references: [id])
 
   @@unique([tenantId, assetNo])
 }
@@ -2216,25 +2307,24 @@ model FixedAssetDepreciation {
 }
 
 model SupportDocument {
-  id            String    @id @default(cuid())
+  id            String            @id @default(cuid())
   tenantId      String
   code          String
   title         String
   description   String?
-  category      String // LEGAL, HR, TECHNICAL, OPERATIONAL, etc.
-  version       String    @default("1.0")
-  status        String    @default("DRAFT") // DRAFT, UNDER_REVIEW, PUBLISHED, ARCHIVED
+  category      String
+  version       String            @default("1.0")
+  status        String            @default("DRAFT")
   authorId      String?
   departmentId  String?
   effectiveDate DateTime?
   expiryDate    DateTime?
   fileUrl       String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  author     Employee?         @relation("DocumentAuthor", fields: [authorId], references: [id])
-  department OrganizationUnit? @relation(fields: [departmentId], references: [id])
-  tenant     Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  author        Employee?         @relation("DocumentAuthor", fields: [authorId], references: [id])
+  department    OrganizationUnit? @relation(fields: [departmentId], references: [id])
+  tenant        Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, code, version])
   @@index([tenantId, category])
@@ -2242,30 +2332,29 @@ model SupportDocument {
 }
 
 model SupportCompliance {
-  id            String    @id @default(cuid())
+  id            String            @id @default(cuid())
   tenantId      String
   code          String
   title         String
-  type          String // CERTIFICATION, PERMIT, REGISTRATION, ACCREDITATION
-  category      String // HSE, LEGAL, FINANCIAL, TECHNICAL, QUALITY
-  issuingBody   String? // e.g., Kemenaker, ISO, OJK
-  status        String    @default("ACTIVE") // ACTIVE, EXPIRED, RENEWAL_IN_PROGRESS, ARCHIVED
+  type          String
+  category      String
+  issuingBody   String?
+  status        String            @default("ACTIVE")
   effectiveDate DateTime?
   expiryDate    DateTime?
   lastAuditDate DateTime?
   nextAuditDate DateTime?
-  riskLevel     String    @default("MEDIUM") // LOW, MEDIUM, HIGH, CRITICAL
-  ownerId       String? // Coordinating Employee
+  riskLevel     String            @default("MEDIUM")
+  ownerId       String?
   departmentId  String?
-  documentId    String? // Reference to SupportDocument (ID)
+  documentId    String?
   description   String?
   notes         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  owner      Employee?         @relation("ComplianceOwner", fields: [ownerId], references: [id])
-  department OrganizationUnit? @relation("ComplianceDept", fields: [departmentId], references: [id])
-  tenant     Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  department    OrganizationUnit? @relation("ComplianceDept", fields: [departmentId], references: [id])
+  owner         Employee?         @relation("ComplianceOwner", fields: [ownerId], references: [id])
+  tenant        Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, code])
   @@index([tenantId, type])
@@ -2277,42 +2366,40 @@ model SupportKpi {
   tenantId    String
   code        String
   name        String
-  category    String // ASSET, COMPLIANCE, DOCUMENT, HSE
-  period      String // 2024-Q1, 2024-M3
+  category    String
+  period      String
   targetValue Decimal  @db.Decimal(18, 4)
   actualValue Decimal  @default(0) @db.Decimal(18, 4)
-  unit        String // PERCENT, COUNT, CURRENCY
+  unit        String
   status      String   @default("ON_TRACK")
   notes       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, code, period])
   @@index([tenantId, category])
 }
 
 model SupportSustainability {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   tenantId     String
   code         String
-  type         String // EMISSION, ENERGY, WATER, WASTE, SOCIAL, GOVERNANCE
-  indicator    String // kWh, tCO2e, m3, Training Hours, etc.
-  period       String // 2024-Q1, 2024-03
-  value        Decimal  @db.Decimal(18, 4)
-  target       Decimal  @db.Decimal(18, 4)
+  type         String
+  indicator    String
+  period       String
+  value        Decimal   @db.Decimal(18, 4)
+  target       Decimal   @db.Decimal(18, 4)
   unit         String
-  status       String   @default("DRAFT") // DRAFT, SUBMITTED, VERIFIED
+  status       String    @default("DRAFT")
   recordedById String?
   verifiedById String?
   description  String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  recordedBy Employee? @relation("SupportSustRecorded", fields: [recordedById], references: [id])
-  verifiedBy Employee? @relation("SupportSustVerified", fields: [verifiedById], references: [id])
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  recordedBy   Employee? @relation("SupportSustRecorded", fields: [recordedById], references: [id])
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  verifiedBy   Employee? @relation("SupportSustVerified", fields: [verifiedById], references: [id])
 
   @@unique([tenantId, code])
   @@index([tenantId, type, period])
@@ -2330,8 +2417,8 @@ model BankAccount {
   coaAccountId    String?
   createdAt       DateTime             @default(now())
   updatedAt       DateTime             @updatedAt
-  tenant          Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   coaAccount      CoaAccount?          @relation(fields: [coaAccountId], references: [id])
+  tenant          Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   reconciliations BankReconciliation[]
   transactions    BankTransaction[]
 
@@ -2368,8 +2455,8 @@ model CashAccount {
   coaAccountId            String?
   createdAt               DateTime                 @default(now())
   updatedAt               DateTime                 @updatedAt
-  tenant                  Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   coaAccount              CoaAccount?              @relation(fields: [coaAccountId], references: [id])
+  tenant                  Tenant                   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   transactions            CashTransaction[]
   pettyCashReplenishments PettyCashReplenishment[]
 
@@ -2485,53 +2572,75 @@ model PettyCashReplenishment {
 }
 
 model CustomerReceipt {
-  id            String   @id @default(cuid())
+  id            String        @id @default(cuid())
   tenantId      String
   receiptNo     String
   receiptDate   DateTime
-  customerCode  String
-  amount        Decimal  @db.Decimal(18, 4)
+  amount        Decimal       @db.Decimal(18, 4)
   paymentMethod String
   reference     String?
   notes         String?
-  status        String   @default("POSTED")
-  createdAt     DateTime @default(now())
-  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  status        String        @default("POSTED")
+  createdAt     DateTime      @default(now())
+  customerId    String
+  invoiceId     String?
+  customer      Customer      @relation(fields: [customerId], references: [id])
+  invoice       SalesInvoice? @relation(fields: [invoiceId], references: [id])
+  tenant        Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, receiptNo])
+  @@index([tenantId, customerId])
+  @@index([tenantId, invoiceId])
 }
 
 model VendorPayment {
-  id            String   @id @default(cuid())
+  id            String           @id @default(cuid())
   tenantId      String
   paymentNo     String
   paymentDate   DateTime
-  supplierCode  String
-  amount        Decimal  @db.Decimal(18, 4)
+  amount        Decimal          @db.Decimal(18, 4)
   paymentMethod String
   reference     String?
   notes         String?
-  status        String   @default("POSTED")
-  createdAt     DateTime @default(now())
-  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  status        String           @default("POSTED")
+  createdAt     DateTime         @default(now())
+  invoiceId     String?
+  supplierId    String
+  invoice       PurchaseInvoice? @relation(fields: [invoiceId], references: [id])
+  supplier      Supplier         @relation(fields: [supplierId], references: [id])
+  tenant        Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, paymentNo])
+  @@index([tenantId, supplierId])
+  @@index([tenantId, invoiceId])
 }
 
 model PaymentRequest {
-  id             String   @id @default(cuid())
+  id             String           @id @default(cuid())
   tenantId       String
   requestNo      String
   requestDate    DateTime
   requesterId    String
   description    String
-  amount         Decimal  @db.Decimal(18, 4)
-  status         String   @default("PENDING")
-  approvalStatus String   @default("PENDING")
-  createdAt      DateTime @default(now())
-  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  amount         Decimal          @db.Decimal(18, 4)
+  status         String           @default("PENDING")
+  approvalStatus String           @default("PENDING")
+  createdAt      DateTime         @default(now())
+  invoiceId      String?
+  projectId      String?
+  supplierId     String?
+  updatedAt      DateTime         @updatedAt
+  invoice        PurchaseInvoice? @relation(fields: [invoiceId], references: [id])
+  project        Project?         @relation(fields: [projectId], references: [id])
+  requester      User             @relation(fields: [requesterId], references: [id])
+  supplier       Supplier?        @relation(fields: [supplierId], references: [id])
+  tenant         Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, requestNo])
+  @@index([tenantId, requesterId])
+  @@index([tenantId, supplierId])
+  @@index([tenantId, projectId])
+  @@index([tenantId, invoiceId])
 }
 
 model AssetDisposal {
@@ -3310,39 +3419,47 @@ model IdBilling {
 }
 
 model Employee {
-  id                String             @id @default(cuid())
-  tenantId          String
-  employeeNo        String
-  firstName         String
-  lastName          String?
-  email             String
-  phone             String?
-  department        String?
-  position          String?
-  hireDate          DateTime?
-  status            String             @default("ACTIVE")
-  salary            Decimal?           @db.Decimal(18, 4)
-  managerId         String?
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  attendances       Attendance[]
-  courseEnrollments CourseEnrollment[]
-  manager           Employee?          @relation("ManagerReports", fields: [managerId], references: [id])
-  reports           Employee[]         @relation("ManagerReports")
-
-  // Construction Site Roles
-  siteReportsManaged DailyReport[] @relation("SiteManagerReports")
-  hseReportsManaged  DailyReport[] @relation("HseOfficerReports")
-
+  id                     String                  @id @default(cuid())
+  tenantId               String
+  employeeNo             String
+  firstName              String
+  lastName               String?
+  email                  String
+  phone                  String?
+  department             String?
+  position               String?
+  hireDate               DateTime?
+  status                 String                  @default("ACTIVE")
+  salary                 Decimal?                @db.Decimal(18, 4)
+  managerId              String?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  attendances            Attendance[]
+  courseEnrollments      CourseEnrollment[]
+  hseReportsManaged      DailyReport[]           @relation("HseOfficerReports")
+  siteReportsManaged     DailyReport[]           @relation("SiteManagerReports")
+  disciplinaryActions    DisciplinaryAction[]
+  manager                Employee?               @relation("ManagerReports", fields: [managerId], references: [id])
+  reports                Employee[]              @relation("ManagerReports")
   tenant                 Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  documents              EmployeeDocument[]
+  loans                  EmployeeLoan[]
+  movements              EmployeeMovement[]
+  terminations           EmployeeTermination[]
   expenseClaims          ExpenseClaim[]
-  kpiEvaluations         KpiEvaluation[]
-  payrollRuns            PayrollRun[]
   managedAssets          FixedAsset[]
-  authoredDocs           SupportDocument[]       @relation("DocumentAuthor")
+  kpiEvaluations         KpiEvaluation[]
+  leaveBalances          LeaveBalance[]
+  leaveRequests          LeaveRequest[]
+  overtimeRequests       OvertimeRequest[]
+  payrollRuns            PayrollRun[]
   complianceOwned        SupportCompliance[]     @relation("ComplianceOwner")
+  authoredDocs           SupportDocument[]       @relation("DocumentAuthor")
   recordedSustainability SupportSustainability[] @relation("SupportSustRecorded")
   verifiedSustainability SupportSustainability[] @relation("SupportSustVerified")
+  timesheetEntries       TimesheetEntry[]
+  incumbentPlans         SuccessionPlan[]        @relation("Incumbent")
+  successionPotential    SuccessionCandidate[]
 
   @@unique([tenantId, employeeNo])
   @@index([tenantId, department])
@@ -3359,9 +3476,9 @@ model OrganizationUnit {
   createdAt         DateTime            @default(now())
   parent            OrganizationUnit?   @relation("OrgHierarchy", fields: [parentId], references: [id])
   children          OrganizationUnit[]  @relation("OrgHierarchy")
-  documents         SupportDocument[]
-  complianceRecords SupportCompliance[] @relation("ComplianceDept")
   tenant            Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  complianceRecords SupportCompliance[] @relation("ComplianceDept")
+  documents         SupportDocument[]
 
   @@unique([tenantId, code])
 }
@@ -3373,9 +3490,9 @@ model Team {
   description String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   members     TeamMember[]
   tasks       WbsTask[]    @relation("TeamTasks")
-  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, name])
 }
@@ -3387,8 +3504,8 @@ model TeamMember {
   userId   String
   role     String @default("MEMBER")
   team     Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, teamId, userId])
 }
@@ -3624,6 +3741,7 @@ model TripPlan {
   routeTemplate      RouteTemplate?      @relation(fields: [routeTemplateId], references: [id])
   tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   vehicle            FleetVehicle?       @relation(fields: [vehicleId], references: [id])
+  stagingLoads       StagingLoad[]
 
   @@unique([tenantId, code])
   @@index([tenantId, status])
@@ -3778,6 +3896,7 @@ model WavePicking {
   updatedAt      DateTime          @updatedAt
   tenant         Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   warehouse      Warehouse         @relation(fields: [warehouseId], references: [id])
+  stagingLoads   StagingLoad[]
 
   @@unique([tenantId, code])
   @@index([tenantId, status])
@@ -3785,48 +3904,46 @@ model WavePicking {
 }
 
 model StagingLoad {
-  id          String    @id @default(cuid())
+  id          String       @id @default(cuid())
   tenantId    String
   code        String
   waveId      String?
   tripPlanId  String?
   warehouseId String
-  status      String    @default("PENDING")
+  status      String       @default("PENDING")
   loadedAt    DateTime?
   notes       String?
-  createdAt   DateTime  @default(now())
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  createdAt   DateTime     @default(now())
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tripPlan    TripPlan?    @relation(fields: [tripPlanId], references: [id])
+  warehouse   Warehouse    @relation(fields: [warehouseId], references: [id])
+  wavePicking WavePicking? @relation(fields: [waveId], references: [id])
 
   @@unique([tenantId, code])
   @@index([tenantId, status])
 }
 
 model PackingList {
-  id              String   @id @default(cuid())
+  id              String         @id @default(cuid())
   tenantId        String
   code            String
-  deliveryOrderId String?  @unique
+  deliveryOrderId String?        @unique
   warehouseId     String
   packingDate     DateTime
-  status          String   @default("DRAFT")
+  status          String         @default("DRAFT")
   packedBy        String?
   notes           String?
-
-  // New Logistical Fields
-  totalWeight  Decimal? @db.Decimal(18, 4)
-  totalVolume  Decimal? @db.Decimal(18, 4)
-  packageCount Int?     @default(1)
-  shippingMark String?
-  sealNumber   String?
-  carrierId    String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  deliveryOrder DeliveryOrder? @relation(fields: [deliveryOrderId], references: [id])
-  carrier       Carrier?       @relation(fields: [carrierId], references: [id])
-  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  totalWeight     Decimal?       @db.Decimal(18, 4)
+  totalVolume     Decimal?       @db.Decimal(18, 4)
+  packageCount    Int?           @default(1)
+  shippingMark    String?
+  sealNumber      String?
+  carrierId       String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  carrier         Carrier?       @relation(fields: [carrierId], references: [id])
+  deliveryOrder   DeliveryOrder? @relation(fields: [deliveryOrderId], references: [id])
+  tenant          Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, code])
   @@index([tenantId, status])
@@ -4034,70 +4151,88 @@ model KitAssembly {
 }
 
 model Project {
-  id               String              @id @default(cuid())
-  tenantId         String
-  code             String
-  name             String
-  customerId       String?
-  description      String?
-  contractId       String?
-  startDate        DateTime?
-  endDate          DateTime?
-  totalBudget      Decimal?            @map("total_budget") @db.Decimal(18, 4)
-  status           String              @default("DRAFT")
-  createdAt        DateTime            @default(now()) @map("created_at")
-  updatedAt        DateTime            @updatedAt @map("updated_at")
-  retentionRate    Decimal?            @default(5) @map("retention_rate") @db.Decimal(5, 2)
-  downPaymentTotal Decimal?            @default(0) @map("down_payment_total") @db.Decimal(18, 4)
-  dpRecoveryRate   Decimal?            @default(0) @map("dp_recovery_rate") @db.Decimal(5, 2)
-  billingType      String              @default("PROGRESS") @map("billing_type")
-  dailyReports     DailyReport[]
-  progressClaims   ProgressClaim[]
-  progressInvoices ProgressInvoice[]
-  customer         Customer?           @relation(fields: [customerId], references: [id])
-  budgets          ProjectBudget[]
-  commitments      ProjectCommitment[]
-  tenders          Tender[]
-  wbsTasks         WbsTask[]
-  sites            ProjectSite[]
+  id                   String                        @id @default(cuid())
+  tenantId             String
+  code                 String
+  name                 String
+  customerId           String?
+  description          String?
+  contractId           String?
+  startDate            DateTime?
+  endDate              DateTime?
+  totalBudget          Decimal?                      @map("total_budget") @db.Decimal(18, 4)
+  status               String                        @default("DRAFT")
+  createdAt            DateTime                      @default(now()) @map("created_at")
+  updatedAt            DateTime                      @updatedAt @map("updated_at")
+  retentionRate        Decimal?                      @default(5) @map("retention_rate") @db.Decimal(5, 2)
+  downPaymentTotal     Decimal?                      @default(0) @map("down_payment_total") @db.Decimal(18, 4)
+  dpRecoveryRate       Decimal?                      @default(0) @map("dp_recovery_rate") @db.Decimal(5, 2)
+  billingType          String                        @default("PROGRESS") @map("billing_type")
+  constructionDrawings ConstructionDrawing[]
+  materialRequests     ConstructionMaterialRequest[]
+  dailyReports         DailyReport[]
+  hseIncidents         HseIncident[]
+  hseInspections       HseInspection[]
+  paymentRequests      PaymentRequest[]
+  progressClaims       ProgressClaim[]
+  progressInvoices     ProgressInvoice[]
+  customer             Customer?                     @relation(fields: [customerId], references: [id])
+  budgets              ProjectBudget[]
+  commitments          ProjectCommitment[]
+  sites                ProjectSite[]
+  tenders              Tender[]
+  wbsTasks             WbsTask[]
+  issues               ProjectIssue[]
+  changeOrders         ProjectChangeOrder[]
+  defects              ProjectDefect[]
+  rfis                 ProjectRFI[]
+  equipmentLogs        ProjectEquipmentLog[]
+  weatherLogs          ProjectWeatherLog[]
+  siteInventories      ProjectSiteInventory[]
 
   @@unique([tenantId, code])
   @@index([tenantId, status])
 }
 
 model WbsTask {
-  id             String              @id @default(cuid())
-  tenantId       String
-  projectId      String
-  taskCode       String
-  taskName       String
-  description    String?
-  priority       String              @default("MEDIUM")
-  parentTaskId   String?
-  assigneeId     String?
-  teamId         String?
-  level          Int                 @default(0)
-  plannedWeight  Float               @default(0)
-  plannedCost    Decimal?            @db.Decimal(18, 4)
-  actualProgress Float?
-  actualCost     Decimal?            @db.Decimal(18, 4)
-  startDate      DateTime?
-  endDate        DateTime?
-  status         String              @default("PENDING")
-  taskType       String              @default("TASK")
-  tags           String?
-  createdAt      DateTime            @default(now())
-  budgets        ProjectBudget[]
-  commitments    ProjectCommitment[]
-  budgetLines    ProjectBudgetLine[]
-  parentTask     WbsTask?            @relation("WbsTaskHierarchy", fields: [parentTaskId], references: [id])
-  childTasks     WbsTask[]           @relation("WbsTaskHierarchy")
-  project        Project             @relation(fields: [projectId], references: [id])
-  assignee       User?               @relation("TaskAssignee", fields: [assigneeId], references: [id])
-  team           Team?               @relation("TeamTasks", fields: [teamId], references: [id])
-  dailyReports   DailyReport[]
-  categoryId     String?
-  category       WbsTaskCategory?    @relation(fields: [categoryId], references: [id])
+  id                   String                        @id @default(cuid())
+  tenantId             String
+  projectId            String
+  taskCode             String
+  taskName             String
+  description          String?
+  priority             String                        @default("MEDIUM")
+  parentTaskId         String?
+  assigneeId           String?
+  teamId               String?
+  level                Int                           @default(0)
+  plannedWeight        Float                         @default(0)
+  plannedCost          Decimal?                      @db.Decimal(18, 4)
+  actualProgress       Float?
+  actualCost           Decimal?                      @db.Decimal(18, 4)
+  startDate            DateTime?
+  endDate              DateTime?
+  status               String                        @default("PENDING")
+  taskType             String                        @default("TASK")
+  tags                 String?
+  createdAt            DateTime                      @default(now())
+  categoryId           String?
+  constructionDrawings ConstructionDrawing[]
+  materialRequests     ConstructionMaterialRequest[]
+  dailyReports         DailyReport[]
+  budgets              ProjectBudget[]
+  budgetLines          ProjectBudgetLine[]
+  commitments          ProjectCommitment[]
+  assignee             User?                         @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  category             WbsTaskCategory?              @relation(fields: [categoryId], references: [id])
+  successorTasks       TaskDependency[]              @relation("Predecessor")
+  predecessorTasks     TaskDependency[]              @relation("Successor")
+  parentTask           WbsTask?                      @relation("WbsTaskHierarchy", fields: [parentTaskId], references: [id])
+  childTasks           WbsTask[]                     @relation("WbsTaskHierarchy")
+  project              Project                       @relation(fields: [projectId], references: [id])
+  team                 Team?                         @relation("TeamTasks", fields: [teamId], references: [id])
+  defects              ProjectDefect[]
+  rfis                 ProjectRFI[]
 
   @@unique([tenantId, projectId, taskCode])
   @@index([tenantId, projectId])
@@ -4120,42 +4255,39 @@ model WbsTaskCategory {
 }
 
 model ProjectBudget {
-  id          String  @id @default(cuid())
-  tenantId    String
-  projectId   String
-  wbsTaskId   String?
-  budgetNo    String  @default("BUD-000")
-  status      String  @default("DRAFT")
-  description String?
-  totalAmount Decimal @default(0) @db.Decimal(18, 4)
-  revNo       Int     @default(0)
-
-  allocatedBudget Decimal  @db.Decimal(18, 4)
-  committedAmount Decimal? @db.Decimal(18, 4)
-
-  createdAt DateTime            @default(now())
-  project   Project             @relation(fields: [projectId], references: [id])
-  wbsTask   WbsTask?            @relation(fields: [wbsTaskId], references: [id])
-  lines     ProjectBudgetLine[]
+  id              String              @id @default(cuid())
+  tenantId        String
+  projectId       String
+  wbsTaskId       String?
+  budgetNo        String              @default("BUD-000")
+  status          String              @default("DRAFT")
+  description     String?
+  totalAmount     Decimal             @default(0) @db.Decimal(18, 4)
+  revNo           Int                 @default(0)
+  allocatedBudget Decimal             @db.Decimal(18, 4)
+  committedAmount Decimal?            @db.Decimal(18, 4)
+  createdAt       DateTime            @default(now())
+  project         Project             @relation(fields: [projectId], references: [id])
+  wbsTask         WbsTask?            @relation(fields: [wbsTaskId], references: [id])
+  lines           ProjectBudgetLine[]
 
   @@index([tenantId, projectId])
 }
 
 model ProjectBudgetLine {
-  id           String   @id @default(cuid())
+  id           String        @id @default(cuid())
   tenantId     String
   budgetId     String
   wbsTaskId    String?
-  costCategory String // MATERIAL, LABOR, EQUIP, SUBCO, OTHER
+  costCategory String
   description  String
-  unitPrice    Decimal  @db.Decimal(18, 4)
-  qty          Decimal  @db.Decimal(18, 4)
-  totalAmount  Decimal  @db.Decimal(18, 4)
+  unitPrice    Decimal       @db.Decimal(18, 4)
+  qty          Decimal       @db.Decimal(18, 4)
+  totalAmount  Decimal       @db.Decimal(18, 4)
   uom          String?
-  createdAt    DateTime @default(now())
-
-  budget  ProjectBudget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
-  wbsTask WbsTask?      @relation(fields: [wbsTaskId], references: [id])
+  createdAt    DateTime      @default(now())
+  budget       ProjectBudget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+  wbsTask      WbsTask?      @relation(fields: [wbsTaskId], references: [id])
 
   @@index([tenantId, budgetId])
 }
@@ -4220,49 +4352,48 @@ model ContractTermijn {
 }
 
 model DailyReport {
-  id                String    @id @default(cuid())
+  id                String             @id @default(cuid())
   tenantId          String
   projectId         String
   reportDate        DateTime
-  morningWeather    String?   @map("morning_weather")
-  afternoonWeather  String?   @map("afternoon_weather")
-  eveningWeather    String?   @map("evening_weather")
-  manpowerSummary   String?   @map("manpower_summary")
-  equipmentSummary  String?   @map("equipment_summary")
-  materialSummary   String?   @map("material_summary")
-  workSummary       String?   @map("work_summary")
-  progressPercent   Decimal?  @default(0) @map("progress_percent") @db.Decimal(5, 2)
+  morningWeather    String?            @map("morning_weather")
+  afternoonWeather  String?            @map("afternoon_weather")
+  eveningWeather    String?            @map("evening_weather")
+  manpowerSummary   String?            @map("manpower_summary")
+  equipmentSummary  String?            @map("equipment_summary")
+  materialSummary   String?            @map("material_summary")
+  workSummary       String?            @map("work_summary")
+  progressPercent   Decimal?           @default(0) @map("progress_percent") @db.Decimal(5, 2)
   issues            String?
-  safetySummary     String?   @map("safety_summary")
-  incidentSummary   String?   @map("incident_summary")
-  visitorSummary    String?   @map("visitor_summary")
-  ownerInstructions String?   @map("owner_instructions")
-  status            String    @default("DRAFT")
-  submittedBy       String?   @map("submitted_by")
-  approvedBy        String?   @map("approved_by")
-  approvedAt        DateTime? @map("approved_at")
-  wbsTaskId         String?   @map("wbs_task_id")
-  siteManagerId     String?   @map("site_manager_id")
-  hseOfficerId      String?   @map("hse_officer_id")
-  siteId            String?   @map("site_id")
-  createdAt         DateTime  @default(now()) @map("created_at")
-  updatedAt         DateTime  @updatedAt @map("updated_at")
-
-  project        Project            @relation(fields: [projectId], references: [id])
-  wbsTask        WbsTask?           @relation(fields: [wbsTaskId], references: [id])
-  siteManager    Employee?          @relation("SiteManagerReports", fields: [siteManagerId], references: [id])
-  hseOfficer     Employee?          @relation("HseOfficerReports", fields: [hseOfficerId], references: [id])
-  site           ProjectSite?       @relation(fields: [siteId], references: [id])
-  resources      ResourceUsage[]
-  photos         SitePhoto[]
-  subcontractors SubcontractorLog[]
+  safetySummary     String?            @map("safety_summary")
+  incidentSummary   String?            @map("incident_summary")
+  visitorSummary    String?            @map("visitor_summary")
+  ownerInstructions String?            @map("owner_instructions")
+  status            String             @default("DRAFT")
+  submittedBy       String?            @map("submitted_by")
+  approvedBy        String?            @map("approved_by")
+  approvedAt        DateTime?          @map("approved_at")
+  wbsTaskId         String?            @map("wbs_task_id")
+  siteManagerId     String?            @map("site_manager_id")
+  hseOfficerId      String?            @map("hse_officer_id")
+  siteId            String?            @map("site_id")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  hseOfficer        Employee?          @relation("HseOfficerReports", fields: [hseOfficerId], references: [id])
+  project           Project            @relation(fields: [projectId], references: [id])
+  site              ProjectSite?       @relation(fields: [siteId], references: [id])
+  siteManager       Employee?          @relation("SiteManagerReports", fields: [siteManagerId], references: [id])
+  wbsTask           WbsTask?           @relation(fields: [wbsTaskId], references: [id])
+  resources         ResourceUsage[]
+  photos            SitePhoto[]
+  subcontractors    SubcontractorLog[]
 
   @@unique([tenantId, projectId, reportDate])
   @@index([tenantId, projectId])
 }
 
 model ProjectSite {
-  id           String   @id @default(cuid())
+  id           String        @id @default(cuid())
   tenantId     String
   projectId    String
   siteCode     String
@@ -4270,16 +4401,15 @@ model ProjectSite {
   address      String?
   city         String?
   province     String?
-  gpsCoords    String? // LAT, LON
+  gpsCoords    String?
   contactName  String?
   contactPhone String?
-  status       String   @default("ACTIVE")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  project      Project       @relation(fields: [projectId], references: [id])
+  status       String        @default("ACTIVE")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   dailyReports DailyReport[]
   fixedAssets  FixedAsset[]
+  project      Project       @relation(fields: [projectId], references: [id])
 
   @@unique([tenantId, siteCode])
   @@index([tenantId, projectId])
@@ -4291,34 +4421,121 @@ model SitePhoto {
   dailyReportId String
   fileId        String
   caption       String?
-  category      String? // 'PROGRESS', 'SAFETY', 'MATERIAL', 'ISSUE'
+  category      String?
   createdAt     DateTime    @default(now())
   dailyReport   DailyReport @relation(fields: [dailyReportId], references: [id], onDelete: Cascade)
 }
 
 model SubcontractorLog {
-  id                String      @id @default(cuid())
+  id                String         @id @default(cuid())
   tenantId          String
   dailyReportId     String
   subcontractorName String
   workerCount       Int
   workDescription   String
-  dailyReport       DailyReport @relation(fields: [dailyReportId], references: [id], onDelete: Cascade)
+  subcontractorId   String?
+  dailyReport       DailyReport    @relation(fields: [dailyReportId], references: [id], onDelete: Cascade)
+  subcontractor     Subcontractor? @relation(fields: [subcontractorId], references: [id])
+}
+
+model Subcontractor {
+  id          String             @id @default(cuid())
+  tenantId    String
+  code        String
+  name        String
+  category    String?
+  contactName String?
+  email       String?
+  phone       String?
+  address     String?
+  taxId       String?
+  isActive    Boolean            @default(true)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  tenant      Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  logs        SubcontractorLog[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId, category])
 }
 
 model ResourceUsage {
-  id            String   @id @default(cuid())
+  id            String      @id @default(cuid())
   tenantId      String
   dailyReportId String
   resourceType  String
   quantity      Int
   unit          String?
   notes         String?
-  createdAt     DateTime @default(now())
-
-  dailyReport DailyReport @relation(fields: [dailyReportId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  dailyReport   DailyReport @relation(fields: [dailyReportId], references: [id], onDelete: Cascade)
 
   @@index([dailyReportId])
+}
+
+model ConstructionDrawing {
+  id           String    @id @default(cuid())
+  tenantId     String
+  projectId    String
+  wbsTaskId    String?
+  code         String
+  title        String
+  category     String?
+  discipline   String?
+  revision     String    @default("0")
+  revisionDate DateTime?
+  status       String    @default("APPROVED")
+  fileId       String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  project      Project   @relation(fields: [projectId], references: [id])
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  wbsTask      WbsTask?  @relation(fields: [wbsTaskId], references: [id])
+
+  @@unique([tenantId, projectId, code, revision])
+  @@index([projectId, discipline])
+}
+
+model HseIncident {
+  id           String   @id @default(cuid())
+  tenantId     String
+  projectId    String
+  incidentDate DateTime
+  type         String
+  severity     String
+  location     String?
+  description  String
+  rootCause    String?  @map("root_cause")
+  actionTaken  String?  @map("action_taken")
+  reportedBy   String?  @map("reported_by")
+  status       String   @default("OPEN")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  attachments  Json?
+  project      Project  @relation(fields: [projectId], references: [id])
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, projectId])
+}
+
+model HseInspection {
+  id             String   @id @default(cuid())
+  tenantId       String
+  projectId      String
+  inspectionDate DateTime
+  type           String
+  score          Decimal? @db.Decimal(5, 2)
+  summary        String?
+  findings       String?
+  status         String   @default("COMPLETED")
+  inspectorId    String?  @map("inspector_id")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  attachments    Json?
+  project        Project  @relation(fields: [projectId], references: [id])
+  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, projectId])
 }
 
 model ProgressInvoice {
@@ -4918,11 +5135,343 @@ model WarehouseZone {
   isActive    Boolean       @default(true)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  bins        BinLocation[]
   tenant      Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   warehouse   Warehouse     @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
-  bins        BinLocation[]
 
   @@unique([tenantId, warehouseId, code])
+}
+
+model MarketplaceChannel {
+  id           String               @id @default(cuid())
+  tenantId     String
+  code         String
+  name         String
+  type         String
+  iconUrl      String?
+  apiEndpoint  String?
+  clientId     String?
+  clientSecret String?
+  isActive     Boolean              @default(true)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  tenant       Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  listings     MarketplaceListing[]
+  syncLogs     MarketplaceSyncLog[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId, isActive])
+  @@index([tenantId, type])
+}
+
+model MarketplaceListing {
+  id                   String               @id @default(cuid())
+  tenantId             String
+  channelId            String
+  itemId               String?
+  productName          String
+  productSku           String
+  marketplaceProductId String?
+  marketplaceUrl       String?
+  sellingPrice         Decimal              @db.Decimal(18, 2)
+  stockQty             Int
+  syncStock            Boolean              @default(true)
+  syncPrice            Boolean              @default(true)
+  syncStatus           String               @default("PENDING")
+  lastSyncAt           DateTime?
+  lastSyncError        String?
+  isActive             Boolean              @default(true)
+  notes                String?
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  channel              MarketplaceChannel   @relation(fields: [channelId], references: [id])
+  item                 Item?                @relation(fields: [itemId], references: [id])
+  tenant               Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  syncLogs             MarketplaceSyncLog[]
+
+  @@index([tenantId, channelId])
+  @@index([tenantId, syncStatus])
+  @@index([tenantId, itemId])
+}
+
+model MarketplaceSyncLog {
+  id        String             @id @default(cuid())
+  tenantId  String
+  listingId String
+  channelId String
+  syncType  String
+  status    String
+  message   String?
+  details   String?
+  createdAt DateTime           @default(now())
+  channel   MarketplaceChannel @relation(fields: [channelId], references: [id])
+  listing   MarketplaceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  tenant    Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, listingId])
+  @@index([tenantId, channelId])
+  @@index([tenantId, createdAt])
+}
+
+model ConstructionMaterialRequest {
+  id            String                            @id @default(cuid())
+  tenantId      String
+  code          String
+  projectId     String
+  wbsTaskId     String?
+  requestDate   DateTime
+  status        String                            @default("DRAFT")
+  priority      String                            @default("NORMAL")
+  notes         String?
+  requestedById String
+  createdAt     DateTime                          @default(now())
+  updatedAt     DateTime                          @updatedAt
+  project       Project                           @relation(fields: [projectId], references: [id])
+  requestedBy   User                              @relation("MRRequestedBy", fields: [requestedById], references: [id])
+  tenant        Tenant                            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  wbsTask       WbsTask?                          @relation(fields: [wbsTaskId], references: [id])
+  items         ConstructionMaterialRequestItem[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId, projectId])
+  @@index([tenantId, status])
+}
+
+model ConstructionMaterialRequestItem {
+  id           String                      @id @default(cuid())
+  tenantId     String
+  requestId    String
+  itemId       String?
+  description  String
+  quantity     Decimal                     @db.Decimal(18, 4)
+  uomCode      String?
+  requiredDate DateTime?
+  notes        String?
+  item         Item?                       @relation(fields: [itemId], references: [id])
+  request      ConstructionMaterialRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  tenant       Tenant                      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, requestId])
+}
+
+model LeaveRequest {
+  id           String   @id @default(cuid())
+  tenantId     String
+  employeeId   String
+  leaveType    String
+  startDate    DateTime
+  endDate      DateTime
+  reason       String?
+  status       String   @default("PENDING")
+  approvedById String?
+  createdAt    DateTime @default(now())
+  employee     Employee @relation(fields: [employeeId], references: [id])
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model LeaveBalance {
+  id         String   @id @default(cuid())
+  tenantId   String
+  employeeId String
+  leaveType  String
+  allowance  Int
+  used       Int      @default(0)
+  period     String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model OvertimeRequest {
+  id           String   @id @default(cuid())
+  tenantId     String
+  employeeId   String
+  date         DateTime
+  hours        Decimal  @db.Decimal(4, 2)
+  reason       String?
+  status       String   @default("PENDING")
+  approvedById String?
+  createdAt    DateTime @default(now())
+  employee     Employee @relation(fields: [employeeId], references: [id])
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model EmployeeLoan {
+  id           String            @id @default(cuid())
+  tenantId     String
+  employeeId   String
+  amount       Decimal           @db.Decimal(18, 4)
+  reason       String?
+  status       String            @default("PENDING")
+  createdAt    DateTime          @default(now())
+  employee     Employee          @relation(fields: [employeeId], references: [id])
+  tenant       Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  installments LoanInstallment[]
+}
+
+model LoanInstallment {
+  id       String       @id @default(cuid())
+  tenantId String
+  loanId   String
+  amount   Decimal      @db.Decimal(18, 4)
+  dueDate  DateTime
+  paidDate DateTime?
+  status   String       @default("UNPAID")
+  loan     EmployeeLoan @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  tenant   Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model EmployeeMovement {
+  id            String   @id @default(cuid())
+  tenantId      String
+  employeeId    String
+  type          String
+  fromDept      String?
+  toDept        String?
+  fromPos       String?
+  toPos         String?
+  effectiveDate DateTime
+  reason        String?
+  createdAt     DateTime @default(now())
+  employee      Employee @relation(fields: [employeeId], references: [id])
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model DisciplinaryAction {
+  id         String    @id @default(cuid())
+  tenantId   String
+  employeeId String
+  type       String
+  issueDate  DateTime
+  expiryDate DateTime?
+  reason     String?
+  status     String    @default("ACTIVE")
+  createdAt  DateTime  @default(now())
+  employee   Employee  @relation(fields: [employeeId], references: [id])
+  tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model EmployeeDocument {
+  id         String    @id @default(cuid())
+  tenantId   String
+  employeeId String
+  name       String
+  fileUrl    String
+  type       String
+  expiryDate DateTime?
+  createdAt  DateTime  @default(now())
+  employee   Employee  @relation(fields: [employeeId], references: [id])
+  tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model TimesheetEntry {
+  id          String   @id @default(cuid())
+  tenantId    String
+  employeeId  String
+  date        DateTime
+  hours       Decimal  @db.Decimal(4, 2)
+  description String?
+  project     String?
+  createdAt   DateTime @default(now())
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model EmployeeTermination {
+  id                    String   @id @default(cuid())
+  tenantId              String
+  employeeId            String
+  terminationDate       DateTime
+  reason                String
+  type                  String
+  severanceAmount       Decimal  @default(0) @db.Decimal(18, 4)
+  servicePayAmount      Decimal  @default(0) @db.Decimal(18, 4)
+  compensationPayAmount Decimal  @default(0) @db.Decimal(18, 4)
+  totalAmount           Decimal  @db.Decimal(18, 4)
+  status                String   @default("PENDING")
+  notes                 String?
+  createdAt             DateTime @default(now())
+  employee              Employee @relation(fields: [employeeId], references: [id])
+  tenant                Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model SuccessionPlan {
+  id           String                @id @default(cuid())
+  tenantId     String
+  positionName String
+  department   String?
+  incumbentId  String?
+  priority     String                @default("MEDIUM")
+  status       String                @default("ACTIVE")
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  incumbent    Employee?             @relation("Incumbent", fields: [incumbentId], references: [id])
+  tenant       Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  candidates   SuccessionCandidate[]
+}
+
+model SuccessionCandidate {
+  id               String         @id @default(cuid())
+  tenantId         String
+  planId           String
+  employeeId       String
+  readiness        String
+  potentialScore   Int            @default(3)
+  performanceScore Int            @default(3)
+  gapAnalysis      String?
+  createdAt        DateTime       @default(now())
+  employee         Employee       @relation(fields: [employeeId], references: [id])
+  plan             SuccessionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  tenant           Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model TaskDependency {
+  id             String   @id @default(cuid())
+  tenantId       String
+  predecessorId  String
+  successorId    String
+  dependencyType String   @default("FS")
+  lag            Int      @default(0)
+  createdAt      DateTime @default(now())
+  predecessor    WbsTask  @relation("Predecessor", fields: [predecessorId], references: [id], onDelete: Cascade)
+  successor      WbsTask  @relation("Successor", fields: [successorId], references: [id], onDelete: Cascade)
+  tenant         Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+}
+
+model ProjectIssue {
+  id           String    @id @default(cuid())
+  tenantId     String
+  projectId    String
+  title        String
+  description  String?
+  type         String    @default("ISSUE")
+  severity     String    @default("MEDIUM")
+  status       String    @default("OPEN")
+  assignedToId String?
+  dueDate      DateTime?
+  resolvedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  project      Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  assignee     User?     @relation(fields: [assignedToId], references: [id])
+}
+
+model ProjectChangeOrder {
+  id             String    @id @default(cuid())
+  tenantId       String
+  projectId      String
+  orderNo        String
+  title          String
+  description    String?
+  amountChange   Decimal   @default(0) @db.Decimal(18, 4)
+  scheduleImpact Int       @default(0)
+  status         String    @default("DRAFT")
+  approvedById   String?
+  approvedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  project        Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 }
 
 enum AccountType {
@@ -5297,73 +5846,218 @@ enum BinType {
   STAGE
 }
 
-model MarketplaceChannel {
-  id           String               @id @default(cuid())
+model ProjectDefect {
+  id          String    @id @default(cuid())
+  tenantId    String
+  projectId   String
+  wbsTaskId   String?
+  title       String
+  description String?
+  severity    String    @default("MEDIUM")
+  status      String    @default("OPEN")
+  assignedTo  String?
+  raisedBy    String?
+  resolvedAt  DateTime?
+  photos      String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  project     Project   @relation(fields: [projectId], references: [id])
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  wbsTask     WbsTask?  @relation(fields: [wbsTaskId], references: [id])
+
+  @@index([tenantId, projectId])
+}
+
+model ProjectRFI {
+  id             String    @id @default(cuid())
+  tenantId       String
+  projectId      String
+  wbsTaskId      String?
+  rfiNo          String
+  subject        String
+  description    String?
+  requestedDate  DateTime
+  neededByDate   DateTime?
+  status         String    @default("DRAFT")
+  assignedToUser String?
+  isUrgent       Boolean   @default(false)
+  attachments    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  project        Project   @relation(fields: [projectId], references: [id])
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  wbsTask        WbsTask?  @relation(fields: [wbsTaskId], references: [id])
+
+  @@unique([tenantId, rfiNo])
+  @@index([tenantId, projectId])
+}
+
+model ProjectEquipmentLog {
+  id              String   @id @default(cuid())
+  tenantId        String
+  projectId       String
+  equipmentName   String
+  operatorName    String?
+  hoursOperated   Float    @default(0)
+  fuelConsumption Float    @default(0)
+  logDate         DateTime
+  notes           String?
+  createdAt       DateTime @default(now())
+  project         Project  @relation(fields: [projectId], references: [id])
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, projectId, logDate])
+}
+
+model ProjectWeatherLog {
+  id                 String   @id @default(cuid())
+  tenantId           String
+  projectId          String
+  logDate            DateTime
+  morningCondition   String
+  afternoonCondition String
+  eveningCondition   String
+  impactDescription  String?
+  isSignificantDelay Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  project            Project  @relation(fields: [projectId], references: [id])
+  tenant             Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, projectId, logDate])
+}
+
+model ProjectSiteInventory {
+  id              String   @id @default(cuid())
+  tenantId        String
+  projectId       String
+  materialName    String
+  sku             String?
+  quantityIn      Decimal  @default(0) @db.Decimal(18, 4)
+  quantityOut     Decimal  @default(0) @db.Decimal(18, 4)
+  balance         Decimal  @default(0) @db.Decimal(18, 4)
+  uom             String?
+  transactionDate DateTime
+  notes           String?
+  createdAt       DateTime @default(now())
+  project         Project  @relation(fields: [projectId], references: [id])
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, projectId])
+}
+
+// ==========================================
+// POINT OF SALE (POS) MODULE
+// ==========================================
+
+model PosShift {
+  id           String    @id @default(cuid())
   tenantId     String
-  code         String
-  name         String
-  type         String
-  iconUrl      String?
-  apiEndpoint  String?
-  clientId     String?
-  clientSecret String?
-  isActive     Boolean              @default(true)
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
-  tenant       Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  listings     MarketplaceListing[]
-  syncLogs     MarketplaceSyncLog[]
+  userId       String
+  terminalId   String
+  startTime    DateTime  @default(now())
+  endTime      DateTime?
+  startingCash Decimal   @default(0) @db.Decimal(18, 4)
+  endingCash   Decimal   @default(0) @db.Decimal(18, 4)
+  status       String    @default("OPEN")
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  @@unique([tenantId, code])
-  @@index([tenantId, isActive])
-  @@index([tenantId, type])
+  transactions PosTransaction[]
+
+  @@index([tenantId, userId, status])
 }
 
-model MarketplaceListing {
-  id                   String               @id @default(cuid())
-  tenantId             String
-  channelId            String
-  itemId               String?
-  productName          String
-  productSku           String
-  marketplaceProductId String?
-  marketplaceUrl       String?
-  sellingPrice         Decimal              @db.Decimal(18, 2)
-  stockQty             Int
-  syncStock            Boolean              @default(true)
-  syncPrice            Boolean              @default(true)
-  syncStatus           String               @default("PENDING")
-  lastSyncAt           DateTime?
-  lastSyncError        String?
-  isActive             Boolean              @default(true)
-  notes                String?
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
-  tenant               Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  channel              MarketplaceChannel   @relation(fields: [channelId], references: [id])
-  item                 Item?                @relation(fields: [itemId], references: [id])
-  syncLogs             MarketplaceSyncLog[]
+model PosTransaction {
+  id                  String   @id @default(cuid())
+  tenantId            String
+  shiftId             String
+  transactionId       String?
+  receiptNo           String
+  totalAmount         Decimal  @default(0) @db.Decimal(18, 4)
+  taxAmount           Decimal  @default(0) @db.Decimal(18, 4)
+  paymentMethod       String
+  splitPayments       Json?
+  status              String   @default("COMPLETED")
+  loyaltyPointsEarned Int      @default(0)
+  loyaltyPointsUsed   Int      @default(0)
+  createdAt           DateTime @default(now())
 
-  @@index([tenantId, channelId])
-  @@index([tenantId, syncStatus])
-  @@index([tenantId, itemId])
+  shift PosShift @relation(fields: [shiftId], references: [id])
+
+  @@index([tenantId, receiptNo])
+  @@index([shiftId])
 }
 
-model MarketplaceSyncLog {
-  id        String             @id @default(cuid())
-  tenantId  String
-  listingId String
-  channelId String
-  syncType  String
-  status    String
-  message   String?
-  details   String?
-  createdAt DateTime           @default(now())
-  tenant    Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  listing   MarketplaceListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  channel   MarketplaceChannel @relation(fields: [channelId], references: [id])
+model PosLoyaltyMember {
+  id            String   @id @default(cuid())
+  tenantId      String
+  customerId    String
+  pointsBalance Int      @default(0)
+  tier          String   @default("BRONZE")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  @@index([tenantId, listingId])
-  @@index([tenantId, channelId])
-  @@index([tenantId, createdAt])
+  @@unique([tenantId, customerId])
+  @@index([tenantId, tier])
+}
+
+model PosFiscalRecord {
+  id            String   @id @default(cuid())
+  tenantId      String
+  transactionId String   @unique
+  fiscalCode    String   @unique
+  taxAmount     Decimal  @db.Decimal(18, 4)
+  reportedAt    DateTime @default(now())
+  status        String   @default("SYNCED")
+
+  @@index([tenantId, status])
+}
+
+// ==========================================
+// E-COMMERCE OMNICHANNEL MODULE
+// ==========================================
+
+model EcommerceStoreConfig {
+  id           String   @id @default(cuid())
+  tenantId     String
+  storeName    String
+  domain       String?  @unique
+  theme        String   @default("light")
+  primaryColor String   @default("#4f46e5")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([tenantId])
+}
+
+model EcommerceOrder {
+  id                String   @id @default(cuid())
+  tenantId          String
+  channel           String
+  extOrderId        String
+  extOrderStatus    String
+  customerName      String
+  totalAmount       Decimal  @db.Decimal(18, 4)
+  paymentStatus     String   @default("UNPAID")
+  fulfillmentStatus String   @default("PENDING")
+  orderDate         DateTime @default(now())
+  syncedAt          DateTime @default(now())
+
+  @@unique([tenantId, channel, extOrderId])
+  @@index([tenantId, channel, orderDate])
+}
+
+model EcommerceStockSync {
+  id           String   @id @default(cuid())
+  tenantId     String
+  itemId       String
+  channel      String
+  availableQty Decimal  @db.Decimal(18, 4)
+  syncStatus   String   @default("SUCCESS")
+  errorMessage String?
+  syncedAt     DateTime @default(now())
+
+  @@index([tenantId, itemId, channel])
 }

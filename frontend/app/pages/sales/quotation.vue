@@ -3,7 +3,7 @@
     <!-- Header (Premium Sales Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-blue-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Revenue Core</span>
@@ -122,7 +122,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b bg-white flex justify-between items-center shrink-0 relative overflow-hidden" :class="form.status === 'ACCEPTED' ? 'border-b-emerald-100' : 'border-b-blue-100'">
           <div class="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700" :class="form.status === 'ACCEPTED' ? 'bg-emerald-50' : 'bg-blue-50'"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-slate-900 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-file-edit text-3xl animate-pulse" :class="form.status === 'ACCEPTED' ? 'text-emerald-400' : 'text-blue-400'"></i>
             </div>
@@ -425,10 +425,10 @@ function openCreate() {
   form.id = '';
   form.code = 'SQ-NEW';
   form.customerId = mockCustomers.value[0]?.id || '';
-  form.issueDate = new Date().toISOString().split('T')[0];
+  form.issueDate = (new Date().toISOString().split('T')[0]) || '';
   
   let d = new Date(); d.setDate(d.getDate() + 14); // default 14 days valid
-  form.expiryDate = d.toISOString().split('T')[0];
+  form.expiryDate = (d.toISOString().split('T')[0]) || '';
   
   form.notes = '';
   form.status = 'DRAFT';
@@ -443,7 +443,7 @@ function openView(r: any) {
   
   form.id = r.id;
   form.code = r.code;
-  form.customerId = r.customerId || mockCustomers.value[0]?.id;
+  form.customerId = r.customerId || mockCustomers.value[0]?.id || '';
   form.issueDate = r.issueDate?.split('T')[0] || '';
   form.expiryDate = r.expiryDate?.split('T')[0] || '';
   form.notes = r.notes || '';
@@ -506,7 +506,7 @@ const statusBadgeClasses = (s: string, exp: string) => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .animate-fade-in-up { 
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
 }

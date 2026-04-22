@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-blue-600 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-blue-600 relative overflow-hidden">
       <div class="absolute right-[-15px] top-[-15px] opacity-5 pointer-events-none">
         <i class="pi pi-building-columns text-[150px] text-blue-900"></i>
       </div>
@@ -56,7 +56,7 @@
     </div>
 
     <!-- Account Cards + Details split view -->
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
       <!-- Left: Account List -->
       <div class="lg:col-span-2 space-y-3">
         <div v-if="loading" class="bg-white border rounded-xl p-8 text-center text-slate-400">
@@ -193,7 +193,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="createDialog = false">✕</button>
         </div>
 
-        <div class="p-6 space-y-4">
+        <div class="p-4 space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
               <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Bank <span class="text-red-500">*</span></label>
@@ -245,7 +245,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="txnDialog = false">✕</button>
         </div>
 
-        <div class="p-6 space-y-4">
+        <div class="p-4 space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
               <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Tipe <span class="text-red-500">*</span></label>

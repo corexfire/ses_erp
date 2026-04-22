@@ -46,6 +46,7 @@
               <td class="px-3 py-2 text-right">
                 <div class="inline-flex gap-2">
                   <Button label="View" size="small" severity="secondary" @click="openView(staging)" />
+                  <Button v-if="canExecute && (staging.status === 'PENDING' || staging.status === 'CONFIRMED')" label="Edit" size="small" severity="secondary" @click="openEdit(staging)" />
                   <Button v-if="canExecute && staging.status === 'PENDING'" label="Confirm" size="small" @click="confirmStaging(staging)" />
                   <Button v-if="canExecute && staging.status === 'CONFIRMED'" label="Load" size="small" @click="loadVehicle(staging)" />
                 </div>
@@ -66,10 +67,10 @@
       <div class="text-sm text-emerald-700">{{ success }}</div>
     </div>
 
-    <!-- Create Staging Dialog -->
+    <!-- Create/Edit Staging Dialog -->
     <div v-if="createDialogOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4">
       <div class="w-full max-w-lg rounded-xl border bg-white p-5 shadow-xl">
-        <div class="text-sm font-semibold">Create Staging Load</div>
+        <div class="text-sm font-semibold">{{ form.id ? 'Edit Staging Load' : 'Create Staging Load' }}</div>
 
         <div class="mt-4 space-y-4">
           <div class="space-y-2">
@@ -83,6 +84,7 @@
             <div class="text-xs text-slate-600">Wave Picking (optional)</div>
             <select v-model="form.waveId" class="h-10 w-full rounded-md border px-2 text-sm">
               <option value="">Select wave (optional)</option>
+              <option v-if="waves.length === 0" disabled value="">No waves found</option>
               <option v-for="w in waves" :key="w.id" :value="w.id">{{ w.code }}</option>
             </select>
           </div>
@@ -90,6 +92,7 @@
             <div class="text-xs text-slate-600">Trip Plan (optional)</div>
             <select v-model="form.tripPlanId" class="h-10 w-full rounded-md border px-2 text-sm">
               <option value="">Select trip (optional)</option>
+              <option v-if="trips.length === 0" disabled value="">No available trips found</option>
               <option v-for="t in trips" :key="t.id" :value="t.id">{{ t.code }}</option>
             </select>
           </div>
@@ -139,6 +142,7 @@
 
 <script setup lang="ts">
 const api = useApi()
+const auth = useAuthStore()
 
 const canRead = computed(() => auth.hasPermission('logistics.warehouse.read'))
 const canExecute = computed(() => auth.hasPermission('logistics.warehouse.execute'))
@@ -159,6 +163,7 @@ const viewDialogOpen = ref(false)
 const viewingStaging = ref<any>(null)
 
 const form = reactive({
+  id: '',
   warehouseId: '',
   waveId: '',
   tripPlanId: '',
@@ -200,8 +205,10 @@ async function loadWaves() {
 
 async function loadTrips() {
   try {
-    const res = await api.get('/logistics/trips', { params: { status: 'READY' } })
-    trips.value = res.data.trips || res.data.data || []
+    const res = await api.get('/logistics/trips')
+    const allTrips = res.data.trips || res.data.data || []
+    // Filter for non-completed/non-canceled trips that still need staging
+    trips.value = allTrips.filter((t: any) => ['PLANNED', 'READY', 'DISPATCHED'].includes(t.status))
   } catch (e) {
     console.error('Failed to load trips', e)
   }
@@ -212,12 +219,19 @@ async function saveStaging() {
   error.value = ''
   success.value = ''
   try {
-    await api.post('/logistics/staging', {
+    const payload = {
       warehouseId: form.warehouseId,
-      waveId: form.waveId || undefined,
-      tripPlanId: form.tripPlanId || undefined,
-    })
-    success.value = 'Staging created'
+      waveId: form.waveId || null,
+      tripPlanId: form.tripPlanId || null,
+    }
+
+    if (form.id) {
+      await api.patch(`/logistics/staging/${form.id}`, payload)
+      success.value = 'Staging updated'
+    } else {
+      await api.post('/logistics/staging', payload)
+      success.value = 'Staging created'
+    }
     createDialogOpen.value = false
     load()
   } catch (e: any) {
@@ -252,9 +266,21 @@ async function loadVehicle(staging: any) {
 }
 
 function openCreate() {
+  form.id = ''
   form.warehouseId = ''
   form.waveId = ''
   form.tripPlanId = ''
+  loadWarehouses()
+  loadWaves()
+  loadTrips()
+  createDialogOpen.value = true
+}
+
+function openEdit(staging: any) {
+  form.id = staging.id
+  form.warehouseId = staging.warehouseId
+  form.waveId = staging.waveId || ''
+  form.tripPlanId = staging.tripPlanId || ''
   loadWarehouses()
   loadWaves()
   loadTrips()

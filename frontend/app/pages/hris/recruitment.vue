@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-rose-500 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-rose-500 relative overflow-hidden">
       <div class="absolute right-[-12px] top-[-12px] opacity-5 pointer-events-none">
         <i class="pi pi-briefcase text-[150px] text-rose-900"></i>
       </div>
@@ -247,7 +247,7 @@
           </div>
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="formDialog = false">✕</button>
         </div>
-        <div class="p-6 space-y-4 overflow-y-auto max-h-[70vh]">
+        <div class="p-4 space-y-4 overflow-y-auto max-h-[70vh]">
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
               <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">No. Kandidat <span class="text-red-500">*</span></label>

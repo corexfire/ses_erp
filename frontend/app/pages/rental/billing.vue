@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- ═══════════════════════════════════ HEADER (Premium Finance Engine) ══════════════════════════════════ -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-sky-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-sky-100/50"></div>
       
       <div class="relative">
@@ -29,9 +29,9 @@
     </div>
 
     <!-- Financial Telemetry (High-Contrast Sky Blue) -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mx-6 mb-8 animate-fade-in-up">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mx-6 mb-8 animate-fade-in-up">
        <!-- Unpaid (Strongest Alert) -->
-       <div class="p-6 rounded-2xl bg-sky-950 text-white shadow-xl shadow-sky-100 flex flex-col justify-between transition-all hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-sky-950 text-white shadow-xl shadow-sky-100 flex flex-col justify-between transition-all hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden group">
           <div class="absolute right-0 bottom-0 opacity-10 -mr-4 -mb-4 group-hover:scale-110 transition-transform">
              <i class="pi pi-clock text-9xl"></i>
           </div>
@@ -46,7 +46,7 @@
        </div>
 
        <!-- Overdue -->
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
           <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Jatuh Tempo (Overdue)</div>
           <div class="flex items-end justify-between">
              <h3 class="text-3xl font-black text-rose-600 tracking-tighter leading-none">{{ loading ? '—' : formatCurrency(summary.overdue) }}</h3>
@@ -55,7 +55,7 @@
        </div>
 
        <!-- Paid -->
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
           <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Total Terkoleksi</div>
           <div class="flex items-end justify-between">
              <h3 class="text-3xl font-black text-emerald-600 tracking-tighter leading-none">{{ loading ? '—' : formatCurrency(summary.paid) }}</h3>
@@ -64,7 +64,7 @@
        </div>
 
        <!-- Count -->
-       <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group border-dashed">
+       <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group border-dashed">
           <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Volume Invoice</div>
           <div class="flex items-end justify-between">
              <h3 class="text-3xl font-black text-slate-700 tracking-tighter leading-none">{{ loading ? '—' : (summary.count || 0) }}</h3>
@@ -80,7 +80,7 @@
     <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up">
       
       <!-- Ledger Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-sky-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -196,12 +196,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ CREATE/EDIT BILLING DIALOG ══════════════════════════════════ -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-4xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-sky-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-sky-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-sky-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-sky-100">
                <i class="pi pi-receipt text-3xl font-black"></i>
             </div>
@@ -294,7 +294,7 @@
           <!-- Sec 3: Narrative -->
           <div class="space-y-4">
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Catatan Keuangan & Rekonsiliasi Faktur</label>
-            <textarea v-model="form.notes" rows="4" class="w-full p-6 rounded-[2rem] bg-slate-50 border-2 border-slate-50 text-sm font-medium text-slate-700 outline-none focus:border-sky-500 focus:bg-white transition-all shadow-inner" placeholder="Tuliskan keterangan tambahan untuk bagian finance atau detail pembayaran..."></textarea>
+            <textarea v-model="form.notes" rows="4" class="w-full p-4 rounded-[2rem] bg-slate-50 border-2 border-slate-50 text-sm font-medium text-slate-700 outline-none focus:border-sky-500 focus:bg-white transition-all shadow-inner" placeholder="Tuliskan keterangan tambahan untuk bagian finance atau detail pembayaran..."></textarea>
           </div>
         </div>
 

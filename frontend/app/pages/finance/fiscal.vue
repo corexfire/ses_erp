@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-violet-600 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-violet-600 relative overflow-hidden">
       <div class="absolute right-4 top-4 opacity-5 pointer-events-none">
         <i class="pi pi-calendar text-[140px] text-violet-900"></i>
       </div>
@@ -190,7 +190,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="createDialogOpen = false">✕</button>
         </div>
 
-        <div class="p-6 space-y-5 overflow-auto">
+        <div class="p-4 space-y-5 overflow-auto">
           <!-- Quick fill buttons -->
           <div class="space-y-2">
             <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Isi Otomatis (Quick Fill)</label>

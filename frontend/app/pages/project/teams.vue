@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 opacity-50"></div>
       
       <div class="relative">
@@ -30,8 +30,8 @@
     </div>
 
     <!-- Stats Row -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
@@ -139,9 +139,9 @@
 
     <!-- MEMBER MANAGEMENT DIALOG -->
     <Dialog v-model:visible="memberDialogOpen" :header="`Manage Members: ${activeTeam?.name}`" modal class="w-[700px] p-fluid rounded-xl overflow-hidden">
-       <div class="space-y-8 p-6">
+       <div class="space-y-8 p-4">
           <!-- Add New Member -->
-          <div class="p-6 bg-slate-50 rounded-xl border border-slate-100 space-y-4">
+          <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 space-y-4">
              <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400">Tambah Anggota dari Database Employee</h4>
              <div class="flex gap-4 items-end">
                 <div class="flex-1 space-y-1">
@@ -375,7 +375,7 @@ function formatDate(d: string) {
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .p-button-indigo { @apply bg-indigo-900 border-indigo-900 text-white hover:bg-slate-900; }
 :deep(.p-datatable-header) { background: transparent !important; }
 :deep(.p-avatar) { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }

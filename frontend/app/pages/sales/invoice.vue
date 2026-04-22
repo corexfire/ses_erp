@@ -3,7 +3,7 @@
     <!-- Header (Premium Finance Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-emerald-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Finance Core</span>
@@ -20,9 +20,9 @@
     </div>
 
     <!-- High-Contrast KPI Banners (Premium style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up">
        <!-- Primary engagement banner -->
-      <div class="p-6 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-800 transition-all hover:bg-emerald-900 group">
+      <div class="p-4 rounded-2xl bg-emerald-950 text-white shadow-xl flex flex-col justify-between border border-emerald-800 transition-all hover:bg-emerald-900 group">
         <div class="text-[10px] font-black uppercase text-emerald-400 tracking-[0.2em] mb-4 opacity-80">Total Piutang Aktif</div>
         <div class="flex items-end justify-between">
           <h3 class="text-2xl font-black text-white tracking-tighter leading-none">Rp {{ formatCurrency(docs.filter(x => x.status === 'APPROVED').reduce((a,c) => a + calculateGrandTotal(c), 0)) }}</h3>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Piutang Jatuh Tempo</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-rose-700 tracking-tighter leading-none">{{ docs.filter(x => isOverdue(x.invoiceDate, x.status)).length }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Draft/Belum Jurnal</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-slate-300 tracking-tighter leading-none">{{ docs.filter(x => x.status === 'DRAFT').length }}</h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Lunas (Paid / AR Zero)</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-emerald-600 tracking-tighter leading-none">{{ docs.filter(x => x.status === 'CLOSED').length }}</h3>
@@ -158,7 +158,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b bg-white flex justify-between items-center shrink-0 relative overflow-hidden" :class="activeDoc?.status === 'CLOSED' ? 'border-b-emerald-100' : 'border-b-slate-100'">
           <div class="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700" :class="activeDoc?.status === 'CLOSED' ? 'bg-emerald-50' : 'bg-slate-50'"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-slate-900 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-receipt text-3xl animate-pulse" :class="activeDoc?.status === 'CLOSED' ? 'text-emerald-400' : 'text-emerald-500'"></i>
             </div>
@@ -238,7 +238,7 @@
                           </div>
                        </div>
                        <div class="flex items-center gap-3">
-                          <Button v-if="!isReadonly" label="Sync dari SO/DO" icon="pi pi-download" size="small" class="h-10 px-6 rounded-xl bg-slate-100 border-none text-slate-600 text-[10px] font-black uppercase hover:bg-slate-200 transition-all font-bold" />
+                           <Button v-if="!isReadonly" label="Sync dari SO/DO" icon="pi pi-download" size="small" class="h-10 px-6 rounded-xl bg-slate-100 border-none text-slate-600 text-[10px] font-black uppercase hover:bg-slate-200 transition-all font-bold" @click="openSync" />
                           <Button v-if="!isReadonly" label="Tambah Item Jasa" icon="pi pi-plus" size="small" class="h-10 px-6 rounded-xl bg-slate-900 border-none text-white text-[10px] font-black uppercase shadow-lg hover:scale-105 transition-all font-bold" @click="addLine" />
                        </div>
                     </div>
@@ -330,12 +330,46 @@
         </div>
       </div>
     </div>
+    <!-- Sync Select Dialog -->
+    <Dialog v-model:visible="syncDialogOpen" header="Select Billable Delivery Order" :modal="true" class="w-[600px] border-none shadow-2xl rounded-xl">
+       <template #header>
+          <div class="flex items-center gap-3">
+             <i class="pi pi-download text-emerald-500 text-xl"></i>
+             <div>
+                <h3 class="font-black text-slate-900 text-sm uppercase tracking-widest leading-none">Sync dari DO</h3>
+                <p class="text-[10px] text-slate-500 font-medium mt-1">Pilih pengiriman yang sudah selesai untuk ditagih.</p>
+             </div>
+          </div>
+       </template>
+       <div class="space-y-4 pt-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+          <div v-if="loadingDos" class="py-12 text-center">
+             <i class="pi pi-spinner pi-spin text-2xl text-emerald-500 opacity-20"></i>
+          </div>
+          <div v-else-if="billableDos.length === 0" class="py-12 text-center text-slate-400 text-[10px] font-black uppercase tracking-widest italic">
+             No billable delivery orders found.
+          </div>
+          <div v-for="d in billableDos" :key="d.id" class="p-4 rounded-xl border border-slate-100 hover:bg-emerald-50 cursor-pointer transition-all group" @click="applySync(d)">
+             <div class="flex justify-between items-start">
+                <div>
+                   <div class="text-[11px] font-black text-slate-900 uppercase group-hover:text-emerald-700">{{ d.code }}</div>
+                   <div class="text-[9px] font-bold text-slate-400 uppercase mt-0.5">{{ d.customer?.name }}</div>
+                </div>
+                <div class="text-right">
+                   <div class="text-[9px] font-black text-emerald-600">{{ formatDate(d.actualDeliveredAt || d.createdAt) }}</div>
+                   <div class="text-[8px] font-bold text-slate-400 uppercase mt-0.5">{{ d.items?.length || 0 }} Items</div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </Dialog>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useToast } from 'primevue/usetoast';
 const api = useApi();
 const auth = useAuthStore();
+const toast = useToast();
 
 const canManage = computed(() => auth.hasPermission('sales.invoice.manage') || true); 
 
@@ -346,8 +380,11 @@ const loading = ref(false);
 const saving = ref(false);
 
 const dialogOpen = ref(false);
+const syncDialogOpen = ref(false);
 const isReadonly = ref(true);
 const activeDoc = ref<any>(null);
+const billableDos = ref<any[]>([]);
+const loadingDos = ref(false);
 
 const form = reactive({
   id: '',
@@ -406,7 +443,7 @@ const calculateGrandTotal = (doc: any) => {
 }
 
 const statusMapper = (s: string) => {
-    if(s === 'APPROVED') return 'PIUTANG DIREKAM (UNPAID)';
+    if(s === 'SUBMITTED' || s === 'APPROVED') return 'PIUTANG DIREKAM (UNPAID)';
     if(s === 'CLOSED') return 'TAGIHAN TERLUNASI (PAID)';
     if(s === 'DRAFT') return 'VERIFIKASI FINANCE';
     if(s === 'VOID') return 'INVOICE DIBATALKAN';
@@ -416,8 +453,9 @@ const statusMapper = (s: string) => {
 const statusBadgeClasses = (s: string) => {
     if(s === 'CLOSED') return 'bg-emerald-50 text-emerald-600 border border-emerald-100';
     if(s === 'DRAFT') return 'bg-slate-50 text-slate-400 border border-slate-200';
+    if(s === 'SUBMITTED' || s === 'APPROVED') return 'bg-amber-50 text-amber-600 border border-amber-100';
     if(s === 'VOID') return 'bg-rose-50 text-rose-500 border border-rose-100 opacity-50';
-    return 'bg-amber-50 text-amber-600 border border-amber-100';
+    return 'bg-blue-50 text-blue-600 border border-blue-100';
 };
 
 const statusColor = (s: string) => {
@@ -471,7 +509,7 @@ function openCreate() {
   form.code = 'INV-NEW';
   form.customerId = mockCustomers.value[0]?.id || '';
   form.orderId = '';
-  form.invoiceDate = new Date().toISOString().split('T')[0];
+  form.invoiceDate = (new Date().toISOString().split('T')[0]) || '';
   form.status = 'DRAFT';
   form.notes = 'Termin normal (30 hari). Mohon ditransfer ke Bank BCA Cab ERP kami.';
   form.lines = [{ itemId: 'wms-key', desc: "Kopi Arabica dari DO Penyerahan...", qty: 10, unitPrice: 120000, discount: 0, uomCode: 'PCS' }];
@@ -489,7 +527,7 @@ function openView(r: any) {
   
   form.id = r.id;
   form.code = r.code;
-  form.customerId = r.customerId || mockCustomers.value[0]?.id;
+  form.customerId = r.customerId || mockCustomers.value[0]?.id || '';
   form.orderId = r.orderId || '';
   form.invoiceDate = r.invoiceDate?.split('T')[0] || '';
   form.notes = r.notes || '';
@@ -517,19 +555,88 @@ function removeLine(idx: number) {
 }
 
 async function saveAction(targetStatus: string) {
-  saving.value = true;
-  form.status = targetStatus;
-  
-  let msg = "Draft Faktur disimpan dengan aman.";
-  if(targetStatus === 'APPROVED') msg = "BERHASIL DI-POSTING! Hutang sah didirikan. Piutang Usaha (AR) perusahaan Anda bertambah dan mesin pembukuan Keuangan (*General Ledger*) bereaksi. Tagih debel ini sekarang!";
-  if(targetStatus === 'CLOSED') msg = "LUNAS (PAID) TERVERIFIKASI! Tagihan telah dicarikan ke Kas Tunai / Bank. Pemasukan laba murni telah terjadi.";
+  if (form.lines.length === 0) {
+    toast.add({ severity: 'warn', summary: 'Gagal', detail: 'Minimal harus ada 1 item tagihan.' });
+    return;
+  }
 
-  setTimeout(() => {
-    alert(msg);
+  saving.value = true;
+  try {
+    // Prepare payload (convert numbers to strings for server validation)
+    const payload = {
+      ...form,
+      items: form.lines.map(l => ({
+        description: l.desc,
+        qty: String(l.qty),
+        unitPrice: String(l.unitPrice),
+        discount: String(l.discount || 0),
+        uomCode: l.uomCode,
+        itemId: l.itemId
+      }))
+    };
+
+    let res;
+    if (form.id) {
+       res = await api.patch(`/sales/invoices/${form.id}`, payload);
+    } else {
+       res = await api.post('/sales/invoices', payload);
+    }
+
+    const invId = res.data?.invoice?.id || form.id;
+
+    // Handle Posting (Submit to Finance)
+    if (targetStatus === 'APPROVED' || targetStatus === 'SUBMITTED') {
+       const submitRes = await api.post(`/sales/invoices/${invId}/submit`);
+       const journalNo = submitRes.data?.invoice?.journalNo || 'Audit Entry Generated';
+       toast.add({ 
+          severity: 'success', 
+          summary: 'Invoice Ter-Posting', 
+          detail: `Jurnal Akuntansi ${journalNo} telah dicatat ke Buku Besar.` 
+       });
+    } else {
+       toast.add({ severity: 'success', summary: 'Berhasil', detail: 'Draft invoice telah disimpan.' });
+    }
+
     dialogOpen.value = false;
-    saving.value = false;
     load();
-  }, 1200);
+  } catch (e: any) {
+    toast.add({ severity: 'error', summary: 'Gagal Simpan/Posting', detail: e.message });
+  } finally {
+    saving.value = false;
+  }
+}
+
+async function openSync() {
+  loadingDos.value = true;
+  syncDialogOpen.value = true;
+  try {
+     const res = await api.get('/sales/invoices/billable-dos');
+     billableDos.value = res.data?.deliveryOrders || [];
+  } catch (e: any) {
+     toast.add({ severity: 'error', summary: 'Gagal', detail: 'Could not load delivered orders.' });
+  } finally {
+     loadingDos.value = false;
+  }
+}
+
+function applySync(doDoc: any) {
+   form.customerId = doDoc.customerId;
+   form.orderId = doDoc.salesOrderId || doDoc.orderId || '';
+   form.notes = `Berdasarkan DO: ${doDoc.code}. Tanggal kirim: ${formatDate(doDoc.actualShipDate)}.`;
+   
+   if (doDoc.items && doDoc.items.length > 0) {
+      form.lines = doDoc.items.map((x: any) => ({
+         itemId: x.itemId,
+         desc: x.description,
+         qty: Number(x.shippedQty || x.qty),
+         unitPrice: Number(x.unitPrice || 0),
+         discount: 0,
+         uomCode: x.uomCode
+      }));
+   }
+   
+   syncDialogOpen.value = false;
+   toast.add({ severity: 'info', summary: 'Sync Berhasil', detail: `Data dari ${doDoc.code} telah ditarik.` });
 }
 
 onMounted(() => {
@@ -537,7 +644,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .animate-fade-in-up { 
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
 }

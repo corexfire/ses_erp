@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- ═══════════════════════════════════ HEADER (Premium Maintenance Engine) ══════════════════════════════════ -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100/50"></div>
       
       <div class="relative">
@@ -29,9 +29,9 @@
     </div>
 
     <!-- Maintenance Telemetry (High-Contrast Slate/Indigo) -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mx-6 mb-8 animate-fade-in-up">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mx-6 mb-8 animate-fade-in-up">
        <!-- Scheduled -->
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
           <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Terjadwal (Scheduled)</div>
           <div class="flex items-end justify-between">
              <h3 class="text-3xl font-black text-slate-800 tracking-tighter leading-none">{{ loading ? '—' : (summary.scheduled || 0) }}</h3>
@@ -40,7 +40,7 @@
        </div>
 
        <!-- In Progress -->
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group border-l-4 border-l-blue-500">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group border-l-4 border-l-blue-500">
           <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Dalam Pengerjaan</div>
           <div class="flex items-end justify-between">
              <h3 class="text-3xl font-black text-blue-600 tracking-tighter leading-none">{{ loading ? '—' : (summary.inProgress || 0) }}</h3>
@@ -49,7 +49,7 @@
        </div>
 
        <!-- Completed -->
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
           <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4">Selesai (Arkif)</div>
           <div class="flex items-end justify-between">
              <h3 class="text-3xl font-black text-emerald-600 tracking-tighter leading-none">{{ loading ? '—' : (summary.completed || 0) }}</h3>
@@ -58,7 +58,7 @@
        </div>
 
        <!-- Finance Stats -->
-       <div class="p-6 rounded-2xl bg-slate-900 text-white shadow-xl shadow-slate-200 flex flex-col justify-between transition-all hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-slate-900 text-white shadow-xl shadow-slate-200 flex flex-col justify-between transition-all hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden group">
           <div class="absolute right-0 bottom-0 opacity-10 -mr-4 -mb-4 group-hover:scale-110 transition-transform">
              <i class="pi pi-chart-bar text-9xl"></i>
           </div>
@@ -77,7 +77,7 @@
     <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up">
       
       <!-- Ledger Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -195,12 +195,12 @@
     </div>
 
     <!-- ═══════════════════════════════════ CREATE/EDIT WORK ORDER DIALOG ══════════════════════════════════ -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-4xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-slate-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-slate-800 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-slate-200">
                <i class="pi pi-cog text-3xl font-black"></i>
             </div>

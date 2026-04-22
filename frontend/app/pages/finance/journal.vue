@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- ═══════════════════════════════════ HEADER (Premium Accounting Engine) ══════════════════════════════════ -->
     <div v-if="success" class="mx-6 mt-6 bg-emerald-50 text-emerald-700 p-4 rounded-2xl border border-emerald-200 text-sm font-black flex items-center gap-3 animate-fade-in-up">
       <i class="pi pi-check-circle text-xl"></i> {{ success }}
@@ -8,163 +8,134 @@
       <i class="pi pi-exclamation-triangle text-xl"></i> {{ error }}
     </div>
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500 group">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100/50"></div>
-      
-      <div class="relative">
-        <div class="flex items-center gap-3 mb-2">
-           <span class="px-3 py-1 bg-indigo-800 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-indigo-100">Inti Akuntansi & Buku Besar</span>
-           <span class="text-slate-300">/</span>
-           <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">General Ledger Journal Matrix</span>
-        </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Buku <span class="text-indigo-600 italic font-medium">Jurnal Umum</span></h1>
-        <p class="text-slate-500 text-sm font-medium max-w-2xl leading-relaxed mt-3 uppercase tracking-tight opacity-70">Pusat dokumentasi transaksi akuntansi berpasangan (*Double-Entry*), penyesuaian fiskal, penyusutan, dan pengakuan akrual periodik.</p>
-      </div>
-
-      <div class="flex items-center gap-3 relative">
-        <Button label="PENJURNALAN BARU" icon="pi pi-book" severity="primary" @click="openCreate"
-          class="h-14 px-8 rounded-[1.25rem] bg-indigo-800 border-none text-white font-black text-[10px] uppercase shadow-xl shadow-indigo-100 hover:scale-[1.05] active:scale-95 transition-all" />
-      </div>
-    </div>
+    
+      <DashboardHero
+        badge="Inti Akuntansi & Buku Besar"
+        badge-accent="General Ledger Journal Matrix"
+        title="Buku"
+        title-accent="Jurnal Umum"
+        description="Pusat dokumentasi transaksi akuntansi berpasangan (*Double-Entry*), penyesuaian fiskal, penyusutan, dan pengakuan akrual periodik."
+        color="indigo"
+      >
+        <template #actions>
+          <Button label="PENJURNALAN BARU" icon="pi pi-book" class="p-button-sm font-black text-[10px] uppercase px-8 bg-white/20 hover:bg-white/30 text-white border-white/20" @click="openCreate" />
+        </template>
+      </DashboardHero>
+    
 
     <!-- Main Double-Entry Matrix (High-Density Grid) -->
-    <div class="mx-6 mb-12 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm overflow-hidden animate-fade-in-up">
-      
-      <!-- Ledger Control Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
-        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-200/20 rounded-full blur-3xl"></div>
-        
-        <div class="relative flex items-center gap-4">
-           <div class="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-white shadow-xl transition-transform hover:rotate-6 shadow-slate-200"><i class="pi pi-book text-xl"></i></div>
-           <div>
-              <h3 class="text-[11px] font-black uppercase text-slate-800 tracking-[0.2em] leading-none mb-1">Log Jurnal Umum & Mutasi Saldo</h3>
-              <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest font-mono italic">Central Financial Ledger Record</p>
-           </div>
-        </div>
+    <!-- Main Double-Entry Matrix -->
+    <PanelCard
+      title="Log Jurnal Umum & Mutasi Saldo"
+      subtitle="Central Financial Ledger Record"
+      icon="pi pi-book"
+      theme="indigo"
+      v-model:search="search"
+      @refresh="load"
+    >
+       <template #filters>
+          <div class="flex items-center gap-4">
+             <SelectSearchableDropdown
+               v-model="status"
+               :options="statusOptions"
+               placeholder="Semua Status"
+               class="w-48"
+               size="xsmall"
+               @change="load"
+             />
 
-        <div class="relative flex items-center gap-4">
-          <div class="flex items-center bg-white rounded-2xl border border-slate-200 shadow-sm p-1">
-            <i class="pi pi-search px-3 text-slate-300 text-xs"></i>
-            <InputText v-model="search" placeholder="Cari Dokumen / Jurnal..." class="border-none bg-transparent text-[10px] h-9 w-48 font-black uppercase tracking-widest focus:ring-0 shadow-none outline-none" @keyup.enter="load" />
+             <div class="h-11 bg-white rounded-2xl border border-slate-200 p-1 flex items-center shadow-sm">
+                <button @click="setQuickFilter('this-month')" :class="quickFilter === 'this-month' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-indigo-600'" 
+                  class="px-4 h-full rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">Bulan Ini</button>
+                <button @click="setQuickFilter('last-month')" :class="quickFilter === 'last-month' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-indigo-600'" 
+                  class="px-4 h-full rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">Bulan Lalu</button>
+                <button v-if="quickFilter" @click="setQuickFilter('')" class="px-3 text-rose-500 hover:scale-110 transition-transform"><i class="pi pi-times-circle"></i></button>
+             </div>
           </div>
+       </template>
 
-          <select v-model="status" class="h-11 rounded-2xl border-slate-200 px-4 text-[9px] font-black uppercase tracking-widest text-slate-600 focus:border-indigo-500 outline-none bg-white shadow-sm transition-all" @change="load">
-            <option value="">Semua Status</option>
-            <option value="DRAFT">DRAFT (Belum Posting)</option>
-            <option value="POSTED">POSTED (Sudah Posting)</option>
-          </select>
-
-          <div class="h-11 bg-white rounded-2xl border border-slate-200 p-1 flex items-center shadow-sm">
-             <button @click="setQuickFilter('this-month')" :class="quickFilter === 'this-month' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-indigo-600'" 
-               class="px-4 h-full rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">Bulan Ini</button>
-             <button @click="setQuickFilter('last-month')" :class="quickFilter === 'last-month' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-indigo-600'" 
-               class="px-4 h-full rounded-xl text-[9px] font-black uppercase tracking-widest transition-all">Bulan Lalu</button>
-             <button v-if="quickFilter" @click="setQuickFilter('')" class="px-3 text-rose-500 hover:scale-110 transition-transform"><i class="pi pi-times-circle"></i></button>
-          </div>
-          
-          <Button icon="pi pi-filter" severity="secondary" text rounded class="h-10 w-10 text-slate-400 hover:text-indigo-600 bg-white border shadow-sm" />
-        </div>
-      </div>
-
-      <div class="overflow-x-auto custom-scrollbar">
-        <table class="w-full text-sm font-medium">
-          <thead class="bg-white text-left font-bold border-b border-slate-50 text-slate-900 uppercase">
-            <tr>
-              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] w-[280px]">Nomor Jurnal & Tipe</th>
-              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center">Tanggal Dokumen</th>
-              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50">Keterangan / Referensi</th>
-              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-right bg-slate-50/50">Debit (IDR)</th>
-              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-right bg-slate-50/50">Kredit (IDR)</th>
-              <th class="px-6 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] border-l border-slate-50 text-center">Status Jurnal</th>
-              <th class="px-8 py-5 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] text-right w-40 border-l border-slate-50">Opsi</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-50">
-            <tr v-if="loading">
-              <td colspan="7" class="py-24 text-center">
-                <i class="pi pi-spinner pi-spin text-4xl text-indigo-500 opacity-20"></i>
-                <div class="mt-4 text-[10px] font-black uppercase text-slate-400 tracking-widest text-indigo-600">Menganalisis buku besar jurnal...</div>
-              </td>
-            </tr>
+       <template #table>
+          <PanelTable
+            :items="filteredEntries"
+            :columns="journalColumns"
+            :loading="loading"
+            hover-border-color="border-l-indigo-400"
+          >
+            <template #col-entryNo="{ item }">
+               <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
+                     <i class="pi pi-book text-base"></i>
+                  </div>
+                  <div>
+                     <div class="font-mono text-[11px] font-black text-indigo-700 tracking-tight group-hover:text-indigo-900 transition-colors uppercase">
+                        {{ item.entryNo }}
+                     </div>
+                     <div class="mt-1 flex items-center gap-2">
+                       <div class="h-1 w-1 rounded-full bg-indigo-400"></div>
+                       <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest truncate max-w-[140px] italic">{{ item.journalType || 'GENERAL' }}</span>
+                     </div>
+                  </div>
+               </div>
+            </template>
             
-            <tr v-for="e in filteredEntries" v-else :key="e.id" class="transition-all hover:bg-slate-50/50 group border-l-4 border-l-transparent hover:border-l-indigo-400">
-              <td class="px-8 py-6 align-middle">
-                <div class="flex items-center gap-4">
-                   <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 shadow-inner group-hover:scale-110 transition-transform">
-                      <i class="pi pi-book text-lg"></i>
-                   </div>
-                   <div>
-                      <div class="font-mono text-[11px] font-black text-indigo-700 tracking-tight group-hover:text-indigo-900 transition-colors uppercase">
-                         {{ e.entryNo }}
-                      </div>
-                      <div class="mt-1 flex items-center gap-2">
-                        <div class="h-1.5 w-1.5 rounded-full bg-indigo-400"></div>
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest truncate max-w-[140px] italic">{{ e.journalType || 'GENERAL' }}</span>
-                      </div>
-                   </div>
-                </div>
-              </td>
-              
-              <td class="px-6 py-6 align-middle text-center border-l border-slate-50">
-                 <div class="text-[11px] font-black text-slate-700 tracking-tighter">{{ fmtDate(e.entryDate) }}</div>
-                 <div class="text-[8px] font-black text-slate-300 uppercase mt-1 tracking-widest">Post Date</div>
-              </td>
+            <template #col-entryDate="{ item }">
+               <div class="text-[11px] font-black text-slate-700 tracking-tighter">{{ fmtDate(item.entryDate) }}</div>
+               <div class="text-[8px] font-black text-slate-300 uppercase mt-1 tracking-widest">Post Date</div>
+            </template>
 
-              <td class="px-6 py-6 align-middle border-l border-slate-50">
-                 <div class="text-[11px] font-black text-slate-800 uppercase tracking-tight line-clamp-1 group-hover:text-indigo-600 transition-colors">{{ e.description ?? '- Tanpa Deskripsi -' }}</div>
-                 <div class="mt-1.5 flex items-center gap-2">
-                    <i class="pi pi-link text-[9px] text-slate-300"></i>
-                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">REF: {{ e.referenceNo || 'N/A' }}</span>
-                 </div>
-              </td>
+            <template #col-description="{ item }">
+               <div class="text-[11px] font-black text-slate-800 uppercase tracking-tight line-clamp-1 group-hover:text-indigo-600 transition-colors">{{ item.description ?? '- Tanpa Deskripsi -' }}</div>
+               <div class="mt-1.5 flex items-center gap-2">
+                  <i class="pi pi-link text-[9px] text-slate-300"></i>
+                  <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">REF: {{ item.referenceNo || 'N/A' }}</span>
+               </div>
+            </template>
 
-              <td class="px-6 py-6 align-middle border-l border-slate-50 text-right bg-slate-50/50 group-hover:bg-slate-100/50 transition-colors">
-                 <div class="font-black text-slate-800 text-sm tabular-nums tracking-tighter">{{ formatRupiah(e.totalDebit) }}</div>
-                 <div class="text-[8px] font-black text-emerald-600/40 font-mono mt-0.5 uppercase tracking-widest">Debit Entry</div>
-              </td>
+            <template #col-totalDebit="{ item }">
+               <div class="font-black text-slate-800 text-sm tabular-nums tracking-tighter">{{ formatRupiah(item.totalDebit) }}</div>
+               <div class="text-[8px] font-black text-emerald-600/40 font-mono mt-0.5 uppercase tracking-widest">Debit Entry</div>
+            </template>
 
-              <td class="px-6 py-6 align-middle border-l border-slate-50 text-right bg-slate-50/50 group-hover:bg-slate-100/50 transition-colors">
-                 <div class="font-black text-slate-800 text-sm tabular-nums tracking-tighter">{{ formatRupiah(e.totalCredit) }}</div>
-                 <div class="text-[8px] font-black text-rose-600/40 font-mono mt-0.5 uppercase tracking-widest">Credit Entry</div>
-              </td>
+            <template #col-totalCredit="{ item }">
+               <div class="font-black text-slate-800 text-sm tabular-nums tracking-tighter">{{ formatRupiah(item.totalCredit) }}</div>
+               <div class="text-[8px] font-black text-rose-600/40 font-mono mt-0.5 uppercase tracking-widest">Credit Entry</div>
+            </template>
 
-              <td class="px-6 py-6 align-middle text-center border-l border-slate-50">
-                 <span :class="[
-                   'inline-flex rounded-full px-4 py-1.5 text-[8px] font-black tracking-[0.2em] border shadow-sm uppercase group-hover:scale-105 transition-all outline-none',
-                   e.status === 'POSTED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'
-                 ]">
-                    <i :class="e.status === 'POSTED' ? 'pi pi-check-circle' : 'pi pi-clock'" class="mr-1.5"></i>
-                    {{ e.status }}
-                 </span>
-              </td>
-              
-              <td class="px-8 py-6 align-middle text-right border-l border-slate-50">
-                <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
-                  <Button v-if="e.status === 'DRAFT'" label="POSTING" icon="pi pi-upload" severity="info" size="small" rounded @click="post(e)"
+            <template #col-status="{ item }">
+               <span :class="[
+                 'inline-flex rounded-full px-4 py-1.5 text-[8px] font-black tracking-[0.2em] border shadow-sm uppercase group-hover:scale-105 transition-all outline-none',
+                 item.status === 'POSTED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'
+               ]">
+                  <i :class="item.status === 'POSTED' ? 'pi pi-check-circle' : 'pi pi-clock'" class="mr-1.5"></i>
+                  {{ item.status }}
+               </span>
+            </template>
+            
+            <template #col-actions="{ item }">
+               <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all scale-95 group-hover:scale-100">
+                  <Button v-if="item.status === 'DRAFT'" label="POSTING" icon="pi pi-upload" severity="info" size="small" rounded @click="post(item)"
                     class="h-10 px-4 bg-indigo-600 border-none text-white font-black text-[9px] uppercase shadow-lg shadow-indigo-100" />
                   <Button v-else icon="pi pi-search" rounded text class="h-10 w-10 text-slate-400 hover:text-indigo-600" />
-                </div>
-              </td>
-            </tr>
+               </div>
+            </template>
 
-            <tr v-if="!loading && filteredEntries.length === 0">
-              <td colspan="7" class="py-32 text-center text-slate-500">
-                 <div class="text-6xl mb-4 opacity-10">📖</div>
-                 <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Buku jurnal masih bersih. Tidak ada transaksi ditemukan.</div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+            <template #empty>
+               <div class="py-32 text-center text-slate-500">
+                  <div class="text-6xl mb-4 opacity-10">📖</div>
+                  <div class="text-[10px] font-black uppercase text-slate-300 tracking-[0.2em]">Buku jurnal masih bersih. Tidak ada transaksi ditemukan.</div>
+               </div>
+            </template>
+          </PanelTable>
+       </template>
+    </PanelCard>
 
     <!-- ═══════════════════════════════════ CREATE JOURNAL ENTRY DIALOG ══════════════════════════════════ -->
-    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md transition-all">
+    <div v-if="dialogOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md transition-all">
       <div class="relative w-full max-w-6xl max-h-[92vh] bg-white shadow-2xl flex flex-col overflow-hidden animate-scale-in rounded-[2.5rem] border-4 border-white text-slate-900 border-b-[12px] border-b-slate-900">
         <!-- Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-slate-800 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0 shadow-slate-200">
                <i class="pi pi-book text-3xl font-black"></i>
             </div>
@@ -270,13 +241,13 @@
         </div>
 
         <!-- Sticky Balance Indicator & Footer -->
-        <div class="p-8 border-t border-slate-100 bg-white shadow-[0_-20px_40px_rgba(0,0,0,0.02)] flex flex-wrap items-center justify-between gap-6 relative z-30">
+        <div class="p-8 border-t border-slate-100 bg-white shadow-[0_-20px_40px_rgba(0,0,0,0.02)] flex flex-wrap items-center justify-between gap-4 relative z-30">
            <!-- Balance Protocol -->
-           <div class="flex items-center gap-6 p-4 bg-slate-900 rounded-[1.5rem] shadow-2xl relative overflow-hidden group min-w-[450px]">
+           <div class="flex items-center gap-4 p-4 bg-slate-900 rounded-[1.5rem] shadow-2xl relative overflow-hidden group min-w-[450px]">
               <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:rotate-12 transition-transform">
                  <i class="pi pi-directions text-4xl text-white"></i>
               </div>
-              <div class="relative z-10 flex items-center gap-6">
+              <div class="relative z-10 flex items-center gap-4">
                  <div>
                     <div class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Debit</div>
                     <div class="text-xl font-black text-white tabular-nums tracking-tighter">{{ formatRupiah(totalDebit) }}</div>
@@ -480,7 +451,24 @@ const post = async (row: any) => {
   await load();
 };
 
-onMounted(async () => { await load(); });
+const statusOptions = [
+  { label: 'DRAFT (Belum Posting)', value: 'DRAFT' },
+  { label: 'POSTED (Sudah Posting)', value: 'POSTED' }
+];
+
+const journalColumns = [
+  { key: 'entryNo', header: 'Nomor Jurnal & Tipe', width: 'w-[280px]' },
+  { key: 'entryDate', header: 'Tanggal Dokumen', width: 'w-48', align: 'center' as const, borderLeft: true },
+  { key: 'description', header: 'Keterangan / Referensi', borderLeft: true },
+  { key: 'totalDebit', header: 'Debit (IDR)', width: 'w-48', align: 'right' as const, borderLeft: true },
+  { key: 'totalCredit', header: 'Kredit (IDR)', width: 'w-48', align: 'right' as const, borderLeft: true },
+  { key: 'status', header: 'Status Jurnal', width: 'w-48', align: 'center' as const, borderLeft: true },
+  { key: 'actions', header: 'Opsi', width: 'w-40', align: 'right' as const, borderLeft: true }
+];
+
+onMounted(() => {
+  load();
+});
 </script>
 
 <style scoped>

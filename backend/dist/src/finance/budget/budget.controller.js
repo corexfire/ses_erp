@@ -28,8 +28,10 @@ let BudgetController = class BudgetController {
     }
     async list(req, fiscalYear) {
         const where = { tenantId: req.user.tenantId };
-        if (fiscalYear)
-            where.fiscalYear = fiscalYear;
+        if (fiscalYear) {
+            where.fiscalYear = Number(fiscalYear);
+        }
+        console.log('Budget List Debug:', { tenantId: where.tenantId, fiscalYear: where.fiscalYear, rawFiscalYear: fiscalYear });
         const budgets = await this.prisma.budget.findMany({
             where,
             include: { costCenter: true },

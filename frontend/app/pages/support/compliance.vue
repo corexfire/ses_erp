@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-[#f8fafc]">
     
     <!-- ═══════════════════════════════════ HEADER ══════════════════════════════════ -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 m-6 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl transition-all duration-500">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 m-6 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl transition-all duration-500">
       <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl -mr-48 -mt-48 pointer-events-none"></div>
       
       <div class="relative">
@@ -22,8 +22,8 @@
     </div>
 
     <!-- Intelligence Ribbon -->
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mx-6 mb-8">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mx-6 mb-8">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl text-slate-900']"></i>
           </div>
@@ -43,7 +43,7 @@
 
         <!-- Tab Bar -->
         <div class="border-b border-slate-100 px-8 pt-6 pb-0 flex flex-col md:flex-row md:items-end gap-4">
-          <div class="flex gap-6">
+          <div class="flex gap-4">
             <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key"
               :class="['pb-4 text-[11px] font-black uppercase tracking-widest transition-all border-b-4',
                 activeTab === tab.key ? 'border-indigo-600 text-slate-900' : 'border-transparent text-slate-400 hover:text-slate-700']">
@@ -118,7 +118,7 @@
         
         <!-- Header -->
         <div class="flex items-center justify-between p-12 border-b border-slate-100 bg-slate-50/50 shrink-0">
-          <div class="flex items-center gap-6">
+          <div class="flex items-center gap-4">
             <div class="w-20 h-20 rounded-xl bg-indigo-600 flex items-center justify-center shadow-2xl shadow-indigo-200">
               <i class="pi pi-verified text-4xl text-white"></i>
             </div>
@@ -508,7 +508,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .cms-input {
   @apply w-full px-7 py-5 bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] text-[15px] font-bold text-slate-800 transition-all focus:bg-white focus:border-indigo-600 focus:outline-none placeholder:text-slate-300 shadow-sm shadow-slate-100/50;
 }

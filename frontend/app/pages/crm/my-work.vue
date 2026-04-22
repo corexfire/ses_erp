@@ -3,7 +3,7 @@
     <!-- Header (Premium CRM Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-indigo-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Sales & Support</span>
@@ -27,9 +27,9 @@
     <!-- MAIN DASHBOARD -->
     <div v-else class="space-y-8 animate-fade-in-up">
   <!-- KPI Overview Banners (Premium Style) -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     <!-- Active Leads Banner -->
-    <div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+    <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start justify-between transition-all hover:shadow-xl hover:-translate-y-1">
       <div>
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1">Active Leads</div>
         <h3 class="text-4xl font-black text-slate-900 tracking-tighter">{{ data?.leads.length ?? 0 }}</h3>
@@ -40,7 +40,7 @@
     </div>
     
     <!-- Pipeline Value Banner (Emerald High Contrast) -->
-    <div class="p-6 rounded-xl bg-emerald-900 text-white shadow-xl flex items-start justify-between border border-emerald-800 transition-all hover:bg-emerald-950 hover:-translate-y-1 group">
+    <div class="p-4 rounded-xl bg-emerald-900 text-white shadow-xl flex items-start justify-between border border-emerald-800 transition-all hover:bg-emerald-950 hover:-translate-y-1 group">
       <div>
         <div class="text-[10px] font-black uppercase text-emerald-300 tracking-[0.2em] mb-1 opacity-80">Pipeline Liquidity</div>
         <h3 class="text-3xl font-black text-white tracking-tighter font-mono">{{ fmtRpRp(totalPipeline) }}</h3>
@@ -51,7 +51,7 @@
     </div>
 
     <!-- Active Schedules Banner -->
-    <div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+    <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm flex items-start justify-between transition-all hover:shadow-xl hover:-translate-y-1">
       <div>
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-1">Workload Index</div>
         <h3 class="text-4xl font-black text-amber-500 tracking-tighter">{{ pendingActivities }}</h3>
@@ -62,7 +62,7 @@
     </div>
 
     <!-- Support Integrity Banner (Indigo Themed) -->
-    <div class="p-6 rounded-xl bg-indigo-900 text-white shadow-xl flex items-start justify-between border border-indigo-800 transition-all hover:bg-indigo-950 hover:-translate-y-1 group">
+    <div class="p-4 rounded-xl bg-indigo-900 text-white shadow-xl flex items-start justify-between border border-indigo-800 transition-all hover:bg-indigo-950 hover:-translate-y-1 group">
       <div>
         <div class="text-[10px] font-black uppercase text-indigo-300 tracking-[0.2em] mb-1 opacity-80">Service Integrity</div>
         <h3 class="text-3xl font-black text-white tracking-tighter font-mono">{{ openTickets }} <span class="text-xs uppercase font-sans text-indigo-400">Tickets</span></h3>
@@ -90,7 +90,7 @@
 
         <!-- 1. PENDING ACTIVITIES -->
         <div class="bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col h-[550px] overflow-hidden transition-all hover:shadow-lg">
-          <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/10">
+          <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/10">
             <div class="flex items-center gap-3">
               <div class="p-2 bg-amber-100 text-amber-700 rounded-lg"><i class="pi pi-calendar"></i></div>
               <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Schedule & Activities</h3>
@@ -125,7 +125,7 @@
 
         <!-- 2. MY DEALS (OPPORTUNITIES) -->
         <div class="bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col h-[550px] overflow-hidden transition-all hover:shadow-lg">
-          <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/10">
+          <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/10">
             <div class="flex items-center gap-3">
               <div class="p-2 bg-emerald-100 text-emerald-700 rounded-lg"><i class="pi pi-money-bill"></i></div>
               <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Pipeline & Active Deals</h3>
@@ -163,7 +163,7 @@
 
         <!-- 3. MY LEADS -->
         <div class="bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col h-[450px] overflow-hidden transition-all hover:shadow-lg">
-          <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/10">
+          <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/10">
             <div class="flex items-center gap-3">
               <div class="p-2 bg-rose-100 text-rose-700 rounded-lg"><i class="pi pi-users"></i></div>
               <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Active Leads Pipeline</h3>
@@ -208,7 +208,7 @@
 
         <!-- 4. SUPPORT TICKETS -->
         <div class="bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col h-[450px] overflow-hidden transition-all hover:shadow-lg">
-          <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/10">
+          <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/10">
             <div class="flex items-center gap-3">
               <div class="p-2 bg-blue-100 text-blue-700 rounded-lg"><i class="pi pi-ticket"></i></div>
               <h3 class="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Service & Support Tickets</h3>
@@ -351,7 +351,7 @@ watch(() => filters.due, load);
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 .animate-fade-in-up { 
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
 }

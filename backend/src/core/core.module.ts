@@ -15,6 +15,8 @@ import { RolesController } from './roles/roles.controller';
 import { PermissionsController } from './permissions/permissions.controller';
 import { WorkflowsController } from './workflows/workflows.controller';
 import { AnalyticsController } from './analytics/analytics.controller';
+import { SystemConfigsController } from './system-config/system-configs.controller';
+import { PrintFormatsController } from './print-format/print-formats.controller';
 import { QueryController } from './query.controller';
 
 @Module({
@@ -35,6 +37,8 @@ import { QueryController } from './query.controller';
     PermissionsController,
     WorkflowsController,
     AnalyticsController,
+    SystemConfigsController,
+    PrintFormatsController,
     QueryController,
   ],
 })

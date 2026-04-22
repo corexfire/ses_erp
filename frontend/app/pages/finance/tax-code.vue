@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="rounded-xl border bg-white p-6 shadow-sm border-l-4 border-l-orange-500 relative overflow-hidden">
+    <div class="rounded-xl border bg-white p-4 shadow-sm border-l-4 border-l-orange-500 relative overflow-hidden">
       <div class="absolute right-[-15px] top-[-15px] opacity-5 pointer-events-none">
         <i class="pi pi-percentage text-[140px] text-orange-900"></i>
       </div>
@@ -138,7 +138,7 @@
           <button class="text-slate-400 hover:text-slate-600 bg-slate-100 w-8 h-8 rounded-full font-bold" @click="dialogOpen = false">✕</button>
         </div>
 
-        <div class="p-6 space-y-4 overflow-auto">
+        <div class="p-4 space-y-4 overflow-auto">
           <!-- Quick presets -->
           <div v-if="!editId" class="space-y-2">
             <label class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Quick Preset</label>

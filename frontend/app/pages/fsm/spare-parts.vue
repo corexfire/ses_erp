@@ -152,7 +152,7 @@ const getTotalStock = (p) => {
       <div class="absolute bottom-0 left-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -ml-32 -mb-32"></div>
 
       <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-8">
-        <div class="flex items-center gap-6">
+        <div class="flex items-center gap-4">
           <div class="w-16 h-16 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-2xl shadow-indigo-200 shrink-0">
             <i class="pi pi-cog text-white text-2xl animate-spin-slow"></i>
           </div>
@@ -179,8 +179,8 @@ const getTotalStock = (p) => {
     </div>
 
     <!-- Stats Dashboard -->
-    <div class="px-6 grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center gap-6 group hover:border-indigo-500 transition-all duration-300">
+    <div class="px-6 grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center gap-4 group hover:border-indigo-500 transition-all duration-300">
         <div class="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center transition-all group-hover:bg-indigo-600 group-hover:rotate-6">
           <i class="pi pi-box text-xl text-slate-400 group-hover:text-white"></i>
         </div>
@@ -190,7 +190,7 @@ const getTotalStock = (p) => {
         </div>
       </div>
       
-      <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center gap-6 group hover:border-orange-500 transition-all duration-300">
+      <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center gap-4 group hover:border-orange-500 transition-all duration-300">
         <div class="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center transition-all group-hover:bg-orange-600 group-hover:rotate-6">
           <i class="pi pi-exclamation-circle text-xl text-orange-400 group-hover:text-white"></i>
         </div>
@@ -200,7 +200,7 @@ const getTotalStock = (p) => {
         </div>
       </div>
 
-      <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center gap-6 group hover:border-emerald-500 transition-all duration-300">
+      <div class="p-8 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center gap-4 group hover:border-emerald-500 transition-all duration-300">
         <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center transition-all group-hover:bg-emerald-600 group-hover:rotate-6">
           <i class="pi pi-chart-line text-xl text-emerald-400 group-hover:text-white"></i>
         </div>
@@ -308,7 +308,7 @@ const getTotalStock = (p) => {
       <div class="mt-12">
         <TabView class="p-modern-tabs">
           <TabPanel header="INFORMASI UMUM">
-            <div class="grid grid-cols-2 gap-6 p-4">
+            <div class="grid grid-cols-2 gap-4 p-4">
               <div class="field">
                 <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 block">Kode Part <span class="text-red-500">*</span></label>
                 <InputText v-model="part.code" class="!rounded-xl !bg-slate-50 !border-slate-200 !p-3" :class="{'p-invalid': submitted && !part.code}" />
@@ -337,7 +337,7 @@ const getTotalStock = (p) => {
           </TabPanel>
 
           <TabPanel header="STOK & INVENTORY">
-            <div class="grid grid-cols-3 gap-6 p-4">
+            <div class="grid grid-cols-3 gap-4 p-4">
               <div class="field">
                 <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 block">Base UOM</label>
                 <InputText v-model="part.baseUomCode" class="!rounded-xl !bg-slate-50 !border-slate-200 !p-3" />

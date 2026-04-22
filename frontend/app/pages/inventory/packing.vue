@@ -3,7 +3,7 @@
     <!-- Header (Premium Kargo & Consolidator Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-amber-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-amber-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-amber-100">Kargo & Consolidator Engine</span>
@@ -21,8 +21,8 @@
     </div>
 
     <!-- Dynamic Kargo Telemetry KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-amber-400 tracking-[0.2em] mb-4 opacity-80">Total Antrean Pack</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-white tracking-tighter leading-none">{{ docs.length }}</h3>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-rose-600 tracking-[0.2em] mb-4">Pending Sealing</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-rose-700 tracking-tighter leading-none">{{ docs.filter(x => x.status === 'DRAFT').length }}</h3>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Beban Kargo (KG)</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">1.2<span class="text-xl ml-1 font-black">Ton</span></h3>
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-gradient-to-br from-amber-600 to-orange-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-gradient-to-br from-amber-600 to-orange-700 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-amber-100 tracking-[0.2em] mb-4 opacity-80">Throughput Velocity</div>
         <div class="flex items-end justify-between">
@@ -61,7 +61,7 @@
     <!-- Packing Ledger (Premium Grid Architecture) -->
     <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm overflow-hidden animate-fade-in-up mt-6 pb-20">
       <!-- Controls Bar -->
-      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+      <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
         <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-amber-200/20 rounded-full blur-3xl"></div>
         
         <div class="relative flex items-center gap-4">
@@ -119,7 +119,7 @@
               </td>
               
               <td class="px-6 py-6 align-middle border-l border-slate-50 bg-slate-50/20">
-                <div class="flex items-center gap-6">
+                <div class="flex items-center gap-4">
                    <div class="px-3 py-1.5 bg-white rounded-xl border border-slate-100 shadow-sm grow">
                       <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Volume Fisik</div>
                       <div class="text-[11px] font-black text-slate-700 uppercase">{{ calculateLines(doc) }} Karton Tersegel</div>
@@ -173,7 +173,7 @@
         <!-- Workspace Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-amber-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-amber-600 flex items-center justify-center text-white shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-box text-3xl font-black"></i>
             </div>
@@ -206,7 +206,7 @@
                        </select>
                     </div>
 
-                    <div class="bg-amber-50 p-6 rounded-[1.5rem] border border-amber-100 shadow-inner">
+                    <div class="bg-amber-50 p-4 rounded-[1.5rem] border border-amber-100 shadow-inner">
                        <div class="text-[9px] font-black text-amber-600 uppercase tracking-widest mb-2 flex items-center gap-2">
                           <i class="pi pi-building"></i> Stasiun Kerja Packer
                        </div>
@@ -263,7 +263,7 @@
 
                     <div class="flex-1 overflow-y-auto custom-scrollbar px-10 pt-6">
                        <div class="space-y-4 pb-10">
-                          <div v-for="(line, idx) in form.lines" :key="idx" class="bg-white/5 rounded-[1.5rem] p-6 border border-white/10 transition-all hover:bg-white/10 hover:border-white/20 group/line" :class="line.trackingId ? 'border-emerald-500/30 bg-emerald-500/5' : ''">
+                          <div v-for="(line, idx) in form.lines" :key="idx" class="bg-white/5 rounded-[1.5rem] p-4 border border-white/10 transition-all hover:bg-white/10 hover:border-white/20 group/line" :class="line.trackingId ? 'border-emerald-500/30 bg-emerald-500/5' : ''">
                              <div class="flex justify-between items-start mb-6">
                                 <div class="flex flex-1 gap-4">
                                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 font-mono text-xs">{{ idx + 1 }}</div>

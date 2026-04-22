@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 p-6 space-y-4">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 p-4 space-y-4">
     <!-- Header (Premium Engineering Dashboard Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-indigo-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic text-indigo-100">Manufacturing Engineering Hub</span>
@@ -20,8 +20,8 @@
     </div>
 
     <!-- Manufacturing Telemetry KPIs (High-Contrast Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] mb-4 opacity-80">Total Struktur BOM</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-slate-800 tracking-tighter leading-none">{{ boms.length }}</h3>
@@ -31,7 +31,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
+      <div class="p-4 rounded-2xl bg-slate-950 text-white shadow-xl flex flex-col justify-between border border-slate-900 transition-all hover:bg-black group">
         <div class="text-[10px] font-black uppercase text-amber-500 tracking-[0.2em] mb-4">Main BOM (Primary)</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tighter leading-none">{{ boms.filter(b => b.isMain).length }}</h3>
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1 group">
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Akurasi Struktur</div>
         <div class="flex items-end justify-between">
           <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-indigo-700 tracking-tighter leading-none">99.2%</h3>
@@ -49,7 +49,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
+       <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-xl flex flex-col justify-between relative overflow-hidden group">
         <div class="absolute right-0 top-0 w-32 h-32 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all"></div>
         <div class="text-[10px] font-black uppercase text-indigo-100 tracking-[0.2em] mb-4 opacity-80">Efisiensi Routing</div>
         <div class="flex items-end justify-between">
@@ -63,7 +63,7 @@
     <div class="p-10 bg-white border border-slate-200 rounded-[2.5rem] shadow-sm flex flex-col md:flex-row justify-between items-center gap-8 relative overflow-hidden mt-6 animate-fade-in-up">
        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-50/50 rounded-full blur-3xl"></div>
        
-       <div class="relative flex items-center gap-6">
+       <div class="relative flex items-center gap-4">
           <div class="w-16 h-16 rounded-[1.5rem] bg-indigo-600 flex items-center justify-center text-white shadow-xl shadow-indigo-100 rotate-3 transition-transform hover:rotate-0">
              <i class="pi pi-sitemap text-3xl"></i>
           </div>
@@ -182,7 +182,7 @@
 
     <!-- ============ BOM ENGINEERING HUB (3-PANEL DIALOG) ============ -->
     <transition name="modal">
-      <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-6">
+      <div v-if="dialogOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-xl transition-all duration-700"></div>
         
         <div class="relative z-10 w-full max-w-[1400px] h-[90vh] bg-slate-50 rounded-[3rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col border border-white/20 animate-scale-in border-b-[12px] border-b-indigo-950 shadow-[0_0_60px_rgba(49,46,129,0.3)]">
@@ -231,7 +231,7 @@
                          </div>
                       </div>
 
-                      <div class="grid grid-cols-2 gap-6">
+                      <div class="grid grid-cols-2 gap-4">
                          <div class="space-y-3">
                             <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">ID Struktur <span class="text-rose-500">*</span></label>
                             <InputText v-model="form.code" :disabled="Boolean(editingId)" placeholder="BOM-XXXX" class="w-full h-16 bg-slate-50 border-none rounded-2xl px-6 text-[11px] font-black tracking-[0.2em] text-indigo-700 outline-none focus:ring-4 focus:ring-indigo-100 uppercase" />
@@ -242,7 +242,7 @@
                          </div>
                       </div>
 
-                      <div class="grid grid-cols-3 gap-6">
+                      <div class="grid grid-cols-3 gap-4">
                          <div class="space-y-3">
                             <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 italic">BOM Type</label>
                             <select v-model="form.bomType" class="w-full h-16 bg-slate-50 border-none rounded-2xl px-6 text-[10px] font-black uppercase tracking-widest text-slate-700 outline-none focus:ring-4 focus:ring-indigo-100 transition-all appearance-none cursor-pointer">
@@ -306,9 +306,9 @@
                          <div class="text-[10px] font-black uppercase tracking-[0.3em]">Komponen Dasar Belum Didefinisikan</div>
                       </div>
                       
-                      <div v-for="(it, idx) in form.items" :key="idx" class="p-6 bg-slate-50/50 rounded-2xl border border-slate-100 hover:bg-slate-50 transition-colors group relative overflow-hidden">
+                      <div v-for="(it, idx) in form.items" :key="idx" class="p-4 bg-slate-50/50 rounded-2xl border border-slate-100 hover:bg-slate-50 transition-colors group relative overflow-hidden">
                          <div class="absolute left-0 top-0 w-1 h-full bg-indigo-200 group-hover:bg-indigo-600 transition-colors"></div>
-                         <div class="flex items-center gap-6">
+                         <div class="flex items-center gap-4">
                             <div class="text-[11px] font-black text-slate-300 w-4">#{{ idx + 1 }}</div>
                             <div class="flex-1 space-y-4">
                                <div class="flex items-center gap-4">
@@ -369,7 +369,7 @@
                          <div class="text-[10px] font-black uppercase tracking-[0.3em]">Routing Produksi Belum Diinduksi</div>
                       </div>
 
-                      <div v-for="(op, idx) in form.operations" :key="idx" class="p-6 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors group relative overflow-hidden">
+                      <div v-for="(op, idx) in form.operations" :key="idx" class="p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors group relative overflow-hidden">
                          <div class="flex items-center gap-4 mb-4">
                             <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400 text-[10px] font-black border border-indigo-500/20">
                                {{ op.operationNo || '-' }}

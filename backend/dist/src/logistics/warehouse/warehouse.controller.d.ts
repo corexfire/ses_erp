@@ -13,6 +13,11 @@ export declare class CreateStagingLoadDto {
     tripPlanId?: string;
     warehouseId: string;
 }
+export declare class UpdateStagingLoadDto {
+    waveId?: string;
+    tripPlanId?: string;
+    warehouseId?: string;
+}
 export declare class WarehouseController {
     private readonly prisma;
     private readonly audit;
@@ -117,14 +122,14 @@ export declare class WarehouseController {
                 uomCode: string | null;
                 unitPrice: import("@prisma/client-runtime-utils").Decimal;
                 itemId: string | null;
-                serialNo: string | null;
-                pickedQty: import("@prisma/client-runtime-utils").Decimal;
-                batchNo: string | null;
                 deliveryOrderId: string;
                 orderedQty: import("@prisma/client-runtime-utils").Decimal;
+                pickedQty: import("@prisma/client-runtime-utils").Decimal;
                 packedQty: import("@prisma/client-runtime-utils").Decimal;
                 shippedQty: import("@prisma/client-runtime-utils").Decimal;
                 deliveredQty: import("@prisma/client-runtime-utils").Decimal;
+                batchNo: string | null;
+                serialNo: string | null;
             }[];
         } & {
             id: string;
@@ -135,9 +140,9 @@ export declare class WarehouseController {
             code: string;
             status: import("prisma/generated").$Enums.DeliveryOrderStatus;
             customerId: string;
-            warehouseId: string;
-            salesOrderId: string | null;
             shipmentId: string | null;
+            salesOrderId: string | null;
+            warehouseId: string;
             tripPlanId: string | null;
             plannedShipDate: Date | null;
             actualShipDate: Date | null;
@@ -245,6 +250,37 @@ export declare class WarehouseController {
                 capacityWeight: import("@prisma/client-runtime-utils").Decimal | null;
                 capacityVolume: import("@prisma/client-runtime-utils").Decimal | null;
             };
+            tripPlan: {
+                id: string;
+                tenantId: string;
+                createdAt: Date;
+                updatedAt: Date;
+                code: string;
+                status: import("prisma/generated").$Enums.TripPlanStatus;
+                notes: string | null;
+                routeDate: Date;
+                vehicleId: string | null;
+                driverId: string | null;
+                routeTemplateId: string | null;
+                departureAt: Date | null;
+                returnAt: Date | null;
+                actualDepartureAt: Date | null;
+                actualReturnAt: Date | null;
+            } | null;
+            wavePicking: {
+                id: string;
+                tenantId: string;
+                createdAt: Date;
+                updatedAt: Date;
+                code: string;
+                status: import("prisma/generated").$Enums.WavePickingStatus;
+                assignedTo: string | null;
+                notes: string | null;
+                warehouseId: string;
+                plannedDate: Date;
+                totalDoCount: number;
+                totalItemCount: number;
+            } | null;
         } & {
             id: string;
             tenantId: string;
@@ -290,6 +326,22 @@ export declare class WarehouseController {
             loadedAt: Date | null;
         };
     }>;
+    updateStaging(req: FastifyRequest & {
+        user: AuthUser;
+    }, id: string, body: UpdateStagingLoadDto): Promise<{
+        staging: {
+            id: string;
+            tenantId: string;
+            createdAt: Date;
+            code: string;
+            status: string;
+            notes: string | null;
+            warehouseId: string;
+            tripPlanId: string | null;
+            waveId: string | null;
+            loadedAt: Date | null;
+        };
+    }>;
     getStaging(req: FastifyRequest & {
         user: AuthUser;
     }, id: string): Promise<{
@@ -311,6 +363,37 @@ export declare class WarehouseController {
                 capacityWeight: import("@prisma/client-runtime-utils").Decimal | null;
                 capacityVolume: import("@prisma/client-runtime-utils").Decimal | null;
             };
+            tripPlan: {
+                id: string;
+                tenantId: string;
+                createdAt: Date;
+                updatedAt: Date;
+                code: string;
+                status: import("prisma/generated").$Enums.TripPlanStatus;
+                notes: string | null;
+                routeDate: Date;
+                vehicleId: string | null;
+                driverId: string | null;
+                routeTemplateId: string | null;
+                departureAt: Date | null;
+                returnAt: Date | null;
+                actualDepartureAt: Date | null;
+                actualReturnAt: Date | null;
+            } | null;
+            wavePicking: {
+                id: string;
+                tenantId: string;
+                createdAt: Date;
+                updatedAt: Date;
+                code: string;
+                status: import("prisma/generated").$Enums.WavePickingStatus;
+                assignedTo: string | null;
+                notes: string | null;
+                warehouseId: string;
+                plannedDate: Date;
+                totalDoCount: number;
+                totalItemCount: number;
+            } | null;
         } & {
             id: string;
             tenantId: string;

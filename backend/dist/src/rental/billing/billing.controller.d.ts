@@ -28,8 +28,8 @@ export declare class RentalBillingController {
             dueDate: Date;
             periodStart: Date;
             periodEnd: Date;
-            billingNo: string;
             contractId: string;
+            billingNo: string;
         })[];
         summary: {
             unpaid: number | import("@prisma/client-runtime-utils").Decimal;
@@ -54,8 +54,8 @@ export declare class RentalBillingController {
             dueDate: Date;
             periodStart: Date;
             periodEnd: Date;
-            billingNo: string;
             contractId: string;
+            billingNo: string;
         };
     }>;
     update(req: FastifyRequest, id: string, body: any): Promise<{
@@ -74,8 +74,8 @@ export declare class RentalBillingController {
             dueDate: Date;
             periodStart: Date;
             periodEnd: Date;
-            billingNo: string;
             contractId: string;
+            billingNo: string;
         };
     }>;
     getContracts(req: FastifyRequest): Promise<{

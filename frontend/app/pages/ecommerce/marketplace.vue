@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group">
       <div class="absolute top-0 right-0 w-64 h-64 bg-purple-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-purple-100"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-purple-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">E-Commerce</span>
@@ -71,7 +71,7 @@
 
     <!-- Data List -->
     <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-      <div class="p-6 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 bg-slate-50/10">
+      <div class="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 bg-slate-50/10">
         <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
           <div class="relative w-full md:w-80">
             <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -166,7 +166,7 @@
 
     <!-- Listing Form Modal -->
     <Dialog v-model:visible="formVisible" modal class="w-[700px]" :pt="{ mask: { class: 'backdrop-blur-sm bg-black/20' }, content: { class: 'p-0 rounded-xl overflow-hidden shadow-2xl' }, header: { class: 'hidden' } }">
-      <div class="flex items-center justify-between p-6 border-b border-slate-100 bg-white shadow-sm shrink-0">
+      <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-white shadow-sm shrink-0">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-2xl bg-purple-900 flex items-center justify-center text-white shadow-xl">
             <i class="pi pi-shopping-cart text-xl"></i>
@@ -179,7 +179,7 @@
         <Button icon="pi pi-times" severity="secondary" rounded text @click="formVisible = false" />
       </div>
 
-      <div class="p-6 space-y-5 max-h-[65vh] overflow-y-auto bg-slate-50/30">
+      <div class="p-4 space-y-5 max-h-[65vh] overflow-y-auto bg-slate-50/30">
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-2">
             <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider">Marketplace Channel *</label>
@@ -234,7 +234,7 @@
         </div>
       </div>
 
-      <div class="p-6 border-t border-slate-100 bg-white flex justify-end gap-3 rounded-b-xl shrink-0">
+      <div class="p-4 border-t border-slate-100 bg-white flex justify-end gap-3 rounded-b-xl shrink-0">
         <Button label="Batal" severity="secondary" text @click="formVisible = false" class="font-black text-[10px] uppercase px-6" />
         <Button :label="editingId ? 'Simpan Perubahan' : 'Buat Listing'" icon="pi pi-check" class="p-button-rounded font-black text-[10px] uppercase px-8 h-12 bg-purple-600 border-none text-white shadow-lg shadow-purple-100" @click="saveForm" :loading="saving" />
       </div>
@@ -242,7 +242,7 @@
 
     <!-- Channel Management Modal -->
     <Dialog v-model:visible="channelModalVisible" modal class="w-[600px]" :pt="{ mask: { class: 'backdrop-blur-sm bg-black/20' }, content: { class: 'p-0 rounded-xl overflow-hidden shadow-2xl' }, header: { class: 'hidden' } }">
-      <div class="flex items-center justify-between p-6 border-b border-slate-100 bg-white shadow-sm shrink-0">
+      <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-white shadow-sm shrink-0">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-xl">
             <i class="pi pi-server text-xl"></i>
@@ -255,7 +255,7 @@
         <Button icon="pi pi-times" severity="secondary" rounded text @click="channelModalVisible = false" />
       </div>
 
-      <div class="p-6 max-h-[60vh] overflow-y-auto bg-slate-50/30">
+      <div class="p-4 max-h-[60vh] overflow-y-auto bg-slate-50/30">
         <!-- Add Channel Form -->
         <div class="mb-6 p-5 rounded-xl bg-white border border-slate-200 shadow-sm">
           <h5 class="text-xs font-black text-slate-700 uppercase tracking-wider mb-4">Tambah Channel Baru</h5>
@@ -305,7 +305,7 @@
 
     <!-- Sync Log Modal -->
     <Dialog v-model:visible="syncLogVisible" modal class="w-[900px]" :pt="{ mask: { class: 'backdrop-blur-sm bg-black/20' }, content: { class: 'p-0 rounded-xl overflow-hidden shadow-2xl' }, header: { class: 'hidden' } }">
-      <div class="flex items-center justify-between p-6 border-b border-slate-100 bg-white shadow-sm shrink-0">
+      <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-white shadow-sm shrink-0">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-2xl bg-blue-900 flex items-center justify-center text-white shadow-xl">
             <i class="pi pi-history text-xl"></i>
@@ -318,7 +318,7 @@
         <Button icon="pi pi-times" severity="secondary" rounded text @click="syncLogVisible = false" />
       </div>
 
-      <div class="p-6 max-h-[60vh] overflow-y-auto bg-slate-50/30">
+      <div class="p-4 max-h-[60vh] overflow-y-auto bg-slate-50/30">
         <DataTable :value="syncLogs" dataKey="id" class="p-datatable-sm" :loading="syncLogLoading" stripedRows>
           <template #empty>
             <div class="py-12 text-center text-slate-400">
@@ -367,7 +367,7 @@
         </DataTable>
       </div>
 
-      <div class="p-6 border-t border-slate-100 bg-white flex justify-end gap-3 rounded-b-xl shrink-0">
+      <div class="p-4 border-t border-slate-100 bg-white flex justify-end gap-3 rounded-b-xl shrink-0">
         <Button label="Tutup" severity="secondary" @click="syncLogVisible = false" class="p-button-rounded font-black text-[10px] uppercase px-6" />
       </div>
     </Dialog>

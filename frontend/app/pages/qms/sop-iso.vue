@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section (Premium Document Style) -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -22,7 +22,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
       <!-- Categories / Sidebar -->
       <div class="md:col-span-1 space-y-4">
-        <div class="p-6 rounded-xl bg-indigo-900 text-white shadow-xl shadow-indigo-200 overflow-hidden relative">
+        <div class="p-4 rounded-xl bg-indigo-900 text-white shadow-xl shadow-indigo-200 overflow-hidden relative">
            <div class="absolute -right-4 -bottom-4 opacity-10">
               <i class="pi pi-folder-open text-[100px]"></i>
            </div>
@@ -40,7 +40,7 @@
            </div>
         </div>
 
-        <div class="p-6 rounded-xl bg-white border border-slate-200 shadow-sm">
+        <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
            <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Filter Status</h3>
            <div class="space-y-3">
               <div class="flex items-center gap-2">
@@ -91,11 +91,11 @@
               Tidak Ada Dokumen
            </div>
 
-           <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6 p-8">
+           <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-8">
               <div v-for="doc in docs" :key="doc.id" 
-                    class="group p-6 rounded-3xl border border-slate-100 bg-white hover:border-indigo-200 hover:shadow-xl transition-all duration-300 relative cursor-pointer"
+                    class="group p-4 rounded-3xl border border-slate-100 bg-white hover:border-indigo-200 hover:shadow-xl transition-all duration-300 relative cursor-pointer"
                     @click="openView(doc)">
-                 <div :class="['absolute top-6 right-6 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider border transition-all group-hover:scale-110 shadow-sm', getStatusClass(doc.status)]">
+                 <div :class="['absolute top-4 right-6 px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-wider border transition-all group-hover:scale-110 shadow-sm', getStatusClass(doc.status)]">
                     {{ doc.status.replace('_', ' ') }}
                  </div>
                  
@@ -140,7 +140,7 @@
 
       <div class="p-8 space-y-8 max-h-[70vh] overflow-y-auto bg-slate-50/30">
         <!-- New Registration Form -->
-        <div v-if="isNew" class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
+        <div v-if="isNew" class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-fade-in">
            <div class="col-span-2 space-y-2">
               <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Judul Dokumen Resmi</label>
               <InputText v-model="form.title" class="w-full text-sm font-bold p-4 rounded-2xl border-slate-200 outline-none h-12" placeholder="Nama lengkap SOP / Dokumen..." />
@@ -166,7 +166,7 @@
               <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Versi Awal</label>
               <InputText v-model="form.version" class="w-full text-xs font-bold rounded-xl border-slate-200 h-10" placeholder="1.0" />
            </div>
-           <div class="col-span-2 p-6 rounded-xl border-2 border-dashed border-indigo-200 bg-indigo-50/20 text-center flex flex-col items-center gap-2 group hover:border-indigo-400 transition-colors cursor-pointer">
+           <div class="col-span-2 p-4 rounded-xl border-2 border-dashed border-indigo-200 bg-indigo-50/20 text-center flex flex-col items-center gap-2 group hover:border-indigo-400 transition-colors cursor-pointer">
               <i class="pi pi-file-pdf text-3xl text-indigo-400 group-hover:scale-110 transition-transform"></i>
               <div class="text-[10px] font-black uppercase text-indigo-600">Unggah File Dokumen (PDF)</div>
               <div class="text-[9px] text-slate-400">Seret file ke sini atau klik untuk mencari. Max 10MB.</div>
@@ -187,7 +187,7 @@
           </div>
 
           <div class="grid grid-cols-2 gap-8">
-             <div class="space-y-4 p-6 rounded-3xl bg-white border border-slate-100 shadow-sm">
+             <div class="space-y-4 p-4 rounded-3xl bg-white border border-slate-100 shadow-sm">
                 <div class="flex items-center gap-3">
                    <div class="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-xs"><i class="pi pi-shield text-indigo-500"></i></div>
                    <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Validitas & Reviu</h4>
@@ -203,7 +203,7 @@
                    </div>
                 </div>
              </div>
-             <div class="space-y-4 p-6 rounded-3xl bg-white border border-slate-100 shadow-sm">
+             <div class="space-y-4 p-4 rounded-3xl bg-white border border-slate-100 shadow-sm">
                 <div class="flex items-center gap-3">
                    <div class="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-xs"><i class="pi pi-user text-indigo-500"></i></div>
                    <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Custodian</h4>

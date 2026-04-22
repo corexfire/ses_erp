@@ -22,8 +22,8 @@ export declare class RentalMaintenanceController {
             type: string;
             status: string;
             assetId: string | null;
-            resolutionNotes: string | null;
             contractId: string | null;
+            resolutionNotes: string | null;
             issueDescription: string;
             ticketNo: string;
             scheduledDate: Date;
@@ -49,8 +49,8 @@ export declare class RentalMaintenanceController {
             type: string;
             status: string;
             assetId: string | null;
-            resolutionNotes: string | null;
             contractId: string | null;
+            resolutionNotes: string | null;
             issueDescription: string;
             ticketNo: string;
             scheduledDate: Date;
@@ -70,8 +70,8 @@ export declare class RentalMaintenanceController {
             type: string;
             status: string;
             assetId: string | null;
-            resolutionNotes: string | null;
             contractId: string | null;
+            resolutionNotes: string | null;
             issueDescription: string;
             ticketNo: string;
             scheduledDate: Date;

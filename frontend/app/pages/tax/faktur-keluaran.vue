@@ -1,7 +1,7 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm">
       <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
       <div class="relative">
         <div class="flex items-center gap-3 mb-2">
@@ -25,12 +25,15 @@
     </div>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <div v-for="s in stats" :key="s.label" class="group p-4 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
              <i :class="[s.icon, 'text-6xl']"></i>
           </div>
-          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ s.label }}</p>
+          <div class="flex items-center gap-2 mb-1">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ s.label }}</p>
+            <i class="pi pi-info-circle text-slate-300 hover:text-red-500 cursor-help" v-tooltip.top="s.description"></i>
+          </div>
           <h3 class="text-2xl font-black text-slate-900">{{ s.prefix }} {{ fmtNumber(s.value) }}</h3>
           <div class="flex items-center gap-2 mt-2">
              <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-full', s.color]">{{ s.sub }}</span>
@@ -42,7 +45,10 @@
     <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col">
        <div class="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/10">
           <div>
-             <h2 class="text-[13px] font-black text-slate-900 uppercase tracking-widest">Buku Faktur</h2>
+             <div class="flex items-center gap-2">
+                <h2 class="text-[13px] font-black text-slate-900 uppercase tracking-widest">Buku Faktur</h2>
+                <i class="pi pi-info-circle text-slate-300 hover:text-red-600 cursor-help" v-tooltip.right="'Buku Faktur Pajak Keluaran adalah catatan kronologis seluruh pungutan pajak penjualan. Setiap data di sini harus sinkron dengan Nomor Seri Faktur Pajak (NSFP) yang sah dari Direktorat Jenderal Pajak.'"></i>
+             </div>
              <p class="text-xs text-slate-500 font-medium">Riwayat penerbitan NSFP dan status kepatuhan pajak.</p>
           </div>
           <div class="flex items-center gap-3">
@@ -102,33 +108,37 @@
        </DataTable>
     </div>
 
-    <!-- New/Edit Drawer -->
-    <Drawer v-model:visible="drawerOpen" :header="editingId ? 'Edit Faktur Pajak' : 'Faktur Pajak Baru'" position="right" class="w-[550px]">
-       <div class="space-y-8 pt-4 px-4 overflow-y-auto pb-20">
+    <!-- New/Edit Dialog -->
+    <Dialog v-model:visible="drawerOpen" :header="editingId ? 'Edit Faktur Pajak' : 'Faktur Pajak Baru'" modal class="w-full max-w-2xl overflow-hidden !rounded-xl" :pt="{
+       header: { class: 'p-8 border-b border-slate-100' },
+       content: { class: 'p-8 pb-10 max-h-[70vh] overflow-y-auto' },
+       footer: { class: 'p-8 border-t border-slate-100 bg-slate-50/50' }
+    }">
+       <div class="space-y-8">
           <!-- Section: Document Header -->
           <div class="space-y-4">
              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs">1</div>
+                <div class="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center text-white text-xs font-black">1</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Informasi Dokumen</h4>
              </div>
              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">Tanggal Faktur</label>
-                   <InputText v-model="form.invoiceDate" type="date" class="w-full rounded-xl" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Tanggal Faktur</label>
+                   <InputText v-model="form.invoiceDate" type="date" class="w-full !rounded-2xl !p-3 border-slate-200" />
                 </div>
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">No Invoice Internal</label>
-                   <InputText v-model="form.invoiceNo" class="w-full rounded-xl" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">No Invoice Internal</label>
+                   <InputText v-model="form.invoiceNo" class="w-full !rounded-2xl !p-3 border-slate-200" />
                 </div>
              </div>
              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">Masa Pajak (Bulan)</label>
-                   <InputText v-model="form.taxPeriod" class="w-full rounded-xl" placeholder="04" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Masa Pajak</label>
+                   <InputText v-model="form.taxPeriod" class="w-full !rounded-2xl !p-3 border-slate-200" placeholder="04" />
                 </div>
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">Tahun Pajak (YYYY)</label>
-                   <InputNumber v-model="form.taxYear" class="w-full rounded-xl" :useGrouping="false" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Tahun Pajak</label>
+                   <InputNumber v-model="form.taxYear" class="w-full !rounded-2xl border-slate-200" :useGrouping="false" pt:input:class="!p-3" />
                 </div>
              </div>
           </div>
@@ -136,61 +146,63 @@
           <!-- Section: Customer -->
           <div class="space-y-4">
              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white text-xs">2</div>
+                <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white text-xs font-black">2</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Identitas Pajak (Lawan Transaksi)</h4>
              </div>
              <div class="space-y-1">
-                <label class="text-[10px] font-black text-slate-400 uppercase">Nama Pelanggan</label>
-                <InputText v-model="form.customerName" class="w-full rounded-xl" />
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Nama Pelanggan</label>
+                <InputText v-model="form.customerName" class="w-full !rounded-2xl !p-3 border-slate-200" />
              </div>
              <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">NPWP (15 Digit)</label>
-                   <InputText v-model="form.customerNpwp" class="w-full rounded-xl" placeholder="00.000.000.0-000.000" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">NPWP (15 Digit)</label>
+                   <InputText v-model="form.customerNpwp" class="w-full !rounded-2xl !p-3 border-slate-200" placeholder="00.000.000.0-000.000" />
                 </div>
                 <div class="space-y-1">
-                   <label class="text-[10px] font-black text-slate-400 uppercase">NIK (Jika Tanpa NPWP)</label>
-                   <InputText v-model="form.customerNik" class="w-full rounded-xl" />
+                   <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">NIK (Jika Tanpa NPWP)</label>
+                   <InputText v-model="form.customerNik" class="w-full !rounded-2xl !p-3 border-slate-200" />
                 </div>
              </div>
              <div class="space-y-1">
-                <label class="text-[10px] font-black text-slate-400 uppercase">Alamat Pajak</label>
-                <Textarea v-model="form.customerAddress" rows="3" class="w-full rounded-xl" />
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-2">Alamat Pajak</label>
+                <Textarea v-model="form.customerAddress" rows="3" class="w-full !rounded-2xl !p-3 border-slate-200" />
              </div>
           </div>
 
           <!-- Section: Value -->
-          <div class="space-y-4 p-6 rounded-3xl bg-slate-50 border border-slate-100">
+          <div class="space-y-4 p-4 rounded-[2rem] bg-slate-50 border border-slate-100">
              <div class="flex items-center gap-3 mb-2">
-                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs">3</div>
+                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-black">3</div>
                 <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-900">Nilai Kena Pajak (DPP & PPN)</h4>
              </div>
              <div class="space-y-3">
                 <div class="flex justify-between items-center text-sm">
-                   <span class="font-bold text-slate-500 uppercase text-[10px]">Nilai DPP (Dasar Pengenaan Pajak)</span>
-                   <InputNumber v-model="form.baseAmount" mode="currency" currency="IDR" locale="id-ID" class="p-inputtext-sm text-right" @input="calcVat" />
+                   <span class="font-black text-slate-500 uppercase text-[10px] tracking-widest">Nilai DPP</span>
+                   <InputNumber v-model="form.baseAmount" mode="currency" currency="IDR" locale="id-ID" class="p-inputtext-sm text-right" pt:input:class="!border-none !bg-transparent font-black" @input="calcVat" />
                 </div>
                 <div class="flex justify-between items-center text-sm">
-                   <span class="font-bold text-slate-500 uppercase text-[10px]">Nilai PPN (11%)</span>
-                   <InputNumber v-model="form.taxAmount" mode="currency" currency="IDR" locale="id-ID" class="p-inputtext-sm text-right" />
+                   <span class="font-black text-slate-500 uppercase text-[10px] tracking-widest">Nilai PPN (11%)</span>
+                   <InputNumber v-model="form.taxAmount" mode="currency" currency="IDR" locale="id-ID" class="p-inputtext-sm text-right" pt:input:class="!border-none !bg-transparent font-black" />
                 </div>
                 <div class="flex justify-between items-center text-sm">
-                   <span class="font-bold text-slate-500 uppercase text-[10px]">Bea Meterai</span>
-                   <InputNumber v-model="form.stampDuty" mode="currency" currency="IDR" locale="id-ID" class="p-inputtext-sm text-right" />
+                   <span class="font-black text-slate-500 uppercase text-[10px] tracking-widest">Bea Meterai</span>
+                   <InputNumber v-model="form.stampDuty" mode="currency" currency="IDR" locale="id-ID" class="p-inputtext-sm text-right" pt:input:class="!border-none !bg-transparent font-black" />
                 </div>
-                <div class="pt-3 border-t border-slate-200 flex justify-between items-center">
-                   <span class="font-black text-slate-900 uppercase text-[10px]">Total Nilai Faktur</span>
-                   <span class="text-lg font-black text-slate-900">IDR {{ fmtNumber(Number(form.baseAmount) + Number(form.taxAmount) + Number(form.stampDuty)) }}</span>
+                <div class="pt-4 border-t border-slate-200 flex justify-between items-center">
+                   <span class="font-black text-slate-900 uppercase text-[10px] tracking-widest">Total Nilai Faktur</span>
+                   <span class="text-xl font-black text-slate-900 tracking-tighter">IDR {{ fmtNumber(Number(form.baseAmount) + Number(form.taxAmount) + Number(form.stampDuty)) }}</span>
                 </div>
              </div>
           </div>
-
-          <div class="fixed bottom-0 left-0 w-full bg-white p-6 border-t flex justify-end gap-3 rounded-t-[2rem] shadow-2xl">
-             <Button label="Batalkan" severity="secondary" text @click="drawerOpen = false" class="font-black text-[10px] uppercase" />
-             <Button label="Simpan Draft" icon="pi pi-save" class="p-button-rounded font-black text-[10px] uppercase px-8" @click="save" :loading="saving" />
-          </div>
        </div>
-    </Drawer>
+
+       <template #footer>
+          <div class="flex gap-3 justify-end w-full">
+             <Button label="Batalkan" severity="secondary" text @click="drawerOpen = false" class="text-[10px] font-black uppercase" />
+             <Button label="Simpan Draft" icon="pi pi-save" class="p-button-rounded font-black text-[10px] uppercase shadow-lg px-8" @click="save" :loading="saving" />
+          </div>
+       </template>
+    </Dialog>
 
     <!-- Auto Gen Selector -->
     <Dialog v-model:visible="autoGenOpen" header="Pilih Invoice untuk Sinkronisasi" class="w-full max-w-2xl">
@@ -250,10 +262,42 @@ const stats = computed(() => {
   const totalPpn = invoices.value.reduce((s, i) => s + (Number(i.taxAmount) || 0), 0);
   const totalDpp = invoices.value.reduce((s, i) => s + (Number(i.baseAmount) || 0), 0);
   return [
-    { label: 'Total PPN Keluaran', value: totalPpn, prefix: 'IDR', sub: filterPeriod.value, icon: 'pi pi-chart-line', color: 'bg-emerald-50 text-emerald-600' },
-    { label: 'Total Dasar Pengenaan Pajak', value: totalDpp, prefix: 'IDR', sub: 'Penjualan Kena Pajak', icon: 'pi pi-database', color: 'bg-blue-50 text-blue-600' },
-    { label: 'Menunggu Penerbitan', value: invoices.value.filter(i => i.status === 'DRAFT').length, prefix: '', sub: 'Mode Draft', icon: 'pi pi-clock', color: 'bg-amber-50 text-amber-600' },
-    { label: 'Faktur Terposting', value: invoices.value.filter(i => i.status === 'POSTED').length, prefix: '', sub: 'Faktur Resmi', icon: 'pi pi-check-circle', color: 'bg-indigo-50 text-indigo-600' }
+    { 
+      label: 'Total PPN Keluaran', 
+      value: totalPpn, 
+      prefix: 'IDR', 
+      sub: filterPeriod.value, 
+      icon: 'pi pi-chart-line', 
+      color: 'bg-emerald-50 text-emerald-600',
+      description: 'Total PPN yang dipungut dari penjualan periodik. Nilai ini akan dilaporkan dalam SPT Masa PPN sebagai pajak keluaran.'
+    },
+    { 
+      label: 'Total Dasar Pengenaan Pajak', 
+      value: totalDpp, 
+      prefix: 'IDR', 
+      sub: 'Penjualan Kena Pajak', 
+      icon: 'pi pi-database', 
+      color: 'bg-blue-50 text-blue-600',
+      description: 'Nilai total penjualan (DPP) sebelum dikenakan PPN. Merupakan basis perhitungan pajak resmi perusahaan.'
+    },
+    { 
+      label: 'Menunggu Penerbitan', 
+      value: invoices.value.filter(i => i.status === 'DRAFT').length, 
+      prefix: '', 
+      sub: 'Mode Draft', 
+      icon: 'pi pi-clock', 
+      color: 'bg-amber-50 text-amber-600',
+      description: 'Faktur yang masih dalam status Draft dan belum dialokasikan Nomor Seri Faktur Pajak (NSFP) dari DJP.'
+    },
+    { 
+      label: 'Faktur Terposting', 
+      value: invoices.value.filter(i => i.status === 'POSTED').length, 
+      prefix: '', 
+      sub: 'Faktur Resmi', 
+      icon: 'pi pi-check-circle', 
+      color: 'bg-indigo-50 text-indigo-600',
+      description: 'Faktur pajak yang telah resmi diterbitkan, dialokasikan NSFP, dan siap untuk diunggah ke sistem e-Faktur DJP.'
+    }
   ];
 });
 

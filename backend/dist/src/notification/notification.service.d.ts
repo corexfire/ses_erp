@@ -115,10 +115,10 @@ export declare class NotificationService implements OnModuleInit, OnModuleDestro
             key: string;
             updatedAt: Date;
             status: import("prisma/generated").$Enums.NotificationTemplateStatus;
+            module: string | null;
             subject: string | null;
             channel: import("prisma/generated").$Enums.NotificationChannel;
             eventKey: string | null;
-            module: string | null;
             body: string;
             variables: Prisma.JsonValue | null;
         }[];
@@ -142,10 +142,10 @@ export declare class NotificationService implements OnModuleInit, OnModuleDestro
         key: string;
         updatedAt: Date;
         status: import("prisma/generated").$Enums.NotificationTemplateStatus;
+        module: string | null;
         subject: string | null;
         channel: import("prisma/generated").$Enums.NotificationChannel;
         eventKey: string | null;
-        module: string | null;
         body: string;
         variables: Prisma.JsonValue | null;
     }>;

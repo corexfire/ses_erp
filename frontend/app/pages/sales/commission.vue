@@ -3,7 +3,7 @@
     <!-- Header (Premium Reward Style) -->
     <div class="rounded-xl bg-white border border-slate-200 p-8 shadow-sm relative overflow-hidden group shrink-0">
       <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-500 group-hover:bg-yellow-100/50"></div>
-      <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 relative">
+      <div class="flex flex-col md:flex-row justify-between md:items-end gap-4 relative">
         <div class="space-y-2">
           <div class="flex items-center gap-2 mb-1">
             <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full italic">Reward Hub</span>
@@ -21,14 +21,14 @@
     </div>
 
     <!-- High-Contrast KPI Banners (Premium style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in-up mt-4">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in-up mt-4">
        <!-- Primary engagement banner -->
-      <div class="p-6 rounded-2xl bg-yellow-400 text-slate-900 shadow-xl flex flex-col justify-between border border-yellow-300 transition-all hover:bg-yellow-500 group">
+      <div class="p-4 rounded-2xl bg-yellow-400 text-slate-900 shadow-xl flex flex-col justify-between border border-yellow-300 transition-all hover:bg-yellow-500 group">
         <div class="text-[10px] font-black uppercase text-yellow-800 tracking-[0.2em] mb-4 opacity-80">Total Dana Komisi Cair</div>
         <div class="flex items-end justify-between">
           <div class="flex items-start gap-1">
              <span class="text-xs font-black text-yellow-800 mt-1 uppercase">Rp</span>
-             <h3 class="text-4xl font-black text-slate-900 tracking-tighter leading-none">{{ formatCurrency(docs.reduce((a,c) => a + c.amount, 0)) }}</h3>
+             <h3 class="text-4xl font-black text-slate-900 tracking-tighter leading-none">{{ formatCurrency(totalCommissionAmount) }}</h3>
           </div>
           <div class="p-3 bg-white/20 rounded-xl text-slate-900 shadow-lg group-hover:rotate-12 transition-transform">
             <i class="pi pi-wallet text-lg"></i>
@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-amber-600 tracking-[0.2em] mb-4">Skema Insentif Aktif</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-amber-700 tracking-tighter leading-none">{{ mockSchemes.length }}</h3>
@@ -44,7 +44,7 @@
         </div>
       </div>
       
-      <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+      <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-indigo-600 tracking-[0.2em] mb-4">Menunggu Payroll</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-indigo-700 tracking-tighter leading-none">{{ docs.length }}</h3>
@@ -52,7 +52,7 @@
         </div>
       </div>
 
-       <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
+       <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1">
         <div class="text-[10px] font-black uppercase text-emerald-600 tracking-[0.2em] mb-4">Efektivitas Insentif</div>
         <div class="flex items-end justify-between">
           <h3 class="text-5xl font-black text-emerald-700 tracking-tighter leading-none">94%</h3>
@@ -62,9 +62,9 @@
     </div>
 
     <!-- Data List and Filters -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mt-6 pb-20">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mt-6 pb-20">
        <!-- Tab Kiri: Daftar Skema (Premium Sidebar) -->
-       <div class="md:col-span-4 flex flex-col gap-6">
+       <div class="md:col-span-4 flex flex-col gap-4">
           <div class="rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-sm flex-1 relative overflow-hidden group transition-all hover:shadow-xl">
              <div class="absolute -right-10 -bottom-10 opacity-[0.03] pointer-events-none group-hover:rotate-12 transition-transform duration-1000">
                 <i class="pi pi-percentage text-[200px] text-slate-900 font-black"></i>
@@ -98,10 +98,10 @@
        </div>
 
        <!-- Tab Kanan: Buku Catatan Pencairan (Premium Grid) -->
-       <div class="md:col-span-8 flex flex-col gap-6">
+       <div class="md:col-span-8 flex flex-col gap-4">
           <div class="rounded-[2.5rem] border border-slate-200 bg-white shadow-sm flex-1 overflow-hidden animate-fade-in-up">
               <!-- Controls Bar -->
-              <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-6 relative overflow-hidden">
+              <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
                 <div class="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-64 bg-yellow-200/20 rounded-full blur-3xl"></div>
                 
                 <div class="relative flex items-center gap-4">
@@ -207,7 +207,7 @@
         <!-- Dialog Header -->
         <div class="p-10 border-b border-slate-100 bg-white flex justify-between items-center shrink-0 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-50 rounded-full blur-3xl -mr-32 -mt-32 transition-all duration-700"></div>
-          <div class="relative flex items-center gap-6">
+          <div class="relative flex items-center gap-4">
             <div class="w-16 h-16 rounded-[1.5rem] bg-yellow-400 flex items-center justify-center text-slate-900 shadow-xl rotate-3 transition-transform hover:rotate-0">
                <i class="pi pi-percentage text-3xl font-black"></i>
             </div>
@@ -260,7 +260,7 @@
                  </div>
               </div>
 
-              <div class="bg-slate-900 p-8 rounded-[2rem] text-white flex items-center gap-6 relative overflow-hidden group/audit shadow-2xl">
+              <div class="bg-slate-900 p-8 rounded-[2rem] text-white flex items-center gap-4 relative overflow-hidden group/audit shadow-2xl">
                  <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-yellow-400 shrink-0"><i class="pi pi-shield text-xl"></i></div>
                  <div class="space-y-1">
                     <div class="text-[10px] font-black uppercase tracking-[0.2em] text-yellow-400 leading-none mb-1">Audit Control HRIS</div>
@@ -299,6 +299,10 @@ const form = reactive({
   name: '',
   rateVisual: 2.5, // Used for UI form (2.5%)
   isActive: true,
+});
+
+const totalCommissionAmount = computed(() => {
+  return filteredDocs.value.reduce((acc, curr) => acc + Number(curr.amount || 0), 0);
 });
 
 const filteredDocs = computed(() => {

@@ -1,121 +1,144 @@
 <template>
-  <div class="p-6 space-y-8 bg-slate-50/50 min-h-screen">
+  <div class="p-4 space-y-8 bg-slate-50/50 min-h-screen">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden relative p-8 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-500">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-full blur-3xl -mr-32 -mt-32"></div>
-      <div class="relative">
-        <div class="flex items-center gap-3 mb-2">
-           <span class="px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-full">Accounting Cycles</span>
-           <span class="text-slate-300">/</span>
-           <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest text-blue-600">Tahun Fiskal</span>
+    <DashboardHero
+      title="Fiscal Year"
+      subtitle="Manajemen periode akuntansi, pembukaan dan penutupan buku tahunan serta bulanan."
+      category="Accounting Cycles"
+      category-sub="Tahun Fiskal"
+      color="blue"
+    >
+      <template #actions>
+        <div class="flex items-center gap-3">
+          <Button label="Buat Tahun Fiskal" icon="pi pi-calendar-plus" class="p-button-sm font-black text-xs px-6 bg-white/20 hover:bg-white/30 text-white border-white/20" @click="openNew" />
         </div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tight mb-2 uppercase tracking-tighter">Fiscal <span class="text-blue-600">Year</span></h1>
-        <p class="text-slate-500 text-sm font-medium uppercase italic tracking-tight italic">Manajemen periode akuntansi, pembukaan dan penutupan buku tahunan serta bulanan.</p>
-      </div>
-
-      <div class="flex items-center gap-3 relative">
-        <Button icon="pi pi-refresh" severity="secondary" rounded outlined @click="load" :loading="loading" />
-        <Button label="Buat Tahun Fiskal" icon="pi pi-calendar-plus" class="p-button-rounded font-black text-xs shadow-lg shadow-blue-100 px-6" @click="openNew" />
-      </div>
-    </div>
+      </template>
+    </DashboardHero>
 
     <!-- Stats Section -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-       <div v-for="s in stats" :key="s.label" class="group p-6 rounded-xl bg-white border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
-          <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-             <i :class="[s.icon, 'text-6xl']"></i>
-          </div>
-          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ s.label }}</p>
-          <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ s.value }}</h3>
-          <div class="flex items-center gap-2 mt-2">
-             <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-full', s.color]">{{ s.sub }}</span>
-          </div>
-       </div>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+       <MiniStatsCard
+          v-for="s in stats"
+          :key="s.label"
+          :label="s.label"
+          :value="s.value"
+          :icon="s.icon"
+          :sub="s.sub"
+          :sub-color="s.theme"
+          :icon-color="s.theme"
+       />
     </div>
 
     <!-- Fiscal Years Main Table -->
-    <div class="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:border-blue-300 transition-all duration-500">
-       <div class="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/10">
-          <div>
-             <h2 class="text-[13px] font-black text-slate-900 uppercase tracking-widest">Master Periode Akuntansi</h2>
-             <p class="text-xs text-slate-500 font-medium">Klik icon panah untuk melihat detail periode bulanan.</p>
-          </div>
-       </div>
+    <PanelCard
+      title="Master Periode Akuntansi"
+      subtitle="Dataset siklus pembukuan tahunan dan status periode bulanan."
+      icon="pi pi-calendar"
+      theme="blue"
+      :show-search="false"
+      :show-refresh="false"
+      flat-controls
+    >
+       <template #filters>
+          <SelectButton 
+            v-model="activeTab" 
+            :options="tabOptions" 
+            optionLabel="label" 
+            optionValue="value" 
+            :allowEmpty="false" 
+            :pt="{
+               root: { class: 'bg-slate-100/80 p-1 rounded-2xl border border-slate-200/50 flex gap-1 shadow-inner' },
+               pcbutton: ({ context }: any) => ({
+                 root: {
+                   class: [
+                     '!border-none !rounded-xl transition-all duration-300 px-4 py-2',
+                     context.active ? '!bg-white !text-blue-600 shadow-sm' : '!bg-transparent !text-slate-500 hover:!bg-white/50'
+                   ]
+                 }
+               })
+            }"
+          >
+            <template #option="slotProps">
+               <div class="flex items-center gap-2">
+                  <i :class="[slotProps.option.icon, 'text-[10px]']"></i>
+                  <span class="text-[9px] font-black uppercase tracking-[0.2em]">{{ slotProps.option.label }}</span>
+               </div>
+            </template>
+          </SelectButton>
+       </template>
 
-       <DataTable :value="fiscalYears" v-model:expandedRows="expandedRows" dataKey="id" class="p-datatable-sm w-full" :loading="loading">
-          <Column expander style="width: 3rem" />
-          <Column field="code" header="KODE" class="pl-2">
-             <template #body="{ data }">
-                <span class="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 font-mono italic uppercase">
-                   {{ data.code }}
-                </span>
-             </template>
-          </Column>
-          <Column field="name" header="NAMA TAHUN FISKAL">
-             <template #body="{ data }">
-                <span class="text-[12px] font-black text-slate-800 uppercase tracking-tight">{{ data.name }}</span>
-             </template>
-          </Column>
-          <Column header="RANGE TANGGAL">
-             <template #body="{ data }">
-                <div class="flex items-center gap-2 text-[11px] font-bold text-slate-600">
-                   <span>{{ fmtDate(data.startDate) }}</span>
-                   <i class="pi pi-arrow-right text-[8px] text-slate-300"></i>
-                   <span>{{ fmtDate(data.endDate) }}</span>
-                </div>
-             </template>
-          </Column>
-          <Column header="STATUS">
-             <template #body="{ data }">
-                <div class="flex gap-2">
-                   <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', data.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400']">
-                      {{ data.isActive ? 'Active' : 'Inactive' }}
-                   </span>
-                   <span v-if="data.isClosed" class="px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-rose-100">
-                      Closed Book
-                   </span>
-                </div>
-             </template>
-          </Column>
-          <Column class="text-right pr-8">
-             <template #body="{ data }">
-                <div class="flex gap-2 justify-end">
-                   <Button icon="pi pi-lock" severity="danger" rounded text @click="closeYear(data)" v-if="!data.isClosed" v-tooltip.top="'Tutup Tahun Buku'" />
-                </div>
-             </template>
-          </Column>
+       <template #table>
+          <PanelTable
+            :items="fiscalYears"
+            :columns="fiscalColumns"
+            :loading="loading"
+            expandable
+            v-model:expandedRows="expandedRows"
+            hover-border-color="border-l-blue-400"
+          >
+            <template #col-code="{ item }">
+               <span class="text-[11px] font-black text-slate-900 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 font-mono italic uppercase">
+                  {{ item.code }}
+               </span>
+            </template>
+            <template #col-name="{ item }">
+               <span class="text-[12px] font-black text-slate-800 uppercase tracking-tight">{{ item.name }}</span>
+            </template>
+            <template #col-range="{ item }">
+               <div class="flex items-center gap-2 text-[11px] font-bold text-slate-600">
+                  <span>{{ fmtDate(item.startDate) }}</span>
+                  <i class="pi pi-arrow-right text-[8px] text-slate-300"></i>
+                  <span>{{ fmtDate(item.endDate) }}</span>
+               </div>
+            </template>
+            <template #col-status="{ item }">
+               <div class="flex gap-2">
+                  <span :class="['px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest', item.isActive ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-50 text-slate-400']">
+                     {{ item.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                  <span v-if="item.isClosed" class="px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-rose-100">
+                     Closed Book
+                  </span>
+               </div>
+            </template>
+            <template #col-actions="{ item }">
+               <div class="flex gap-2 justify-end">
+                  <Button icon="pi pi-lock" severity="danger" rounded text @click="closeYear(item)" v-if="!item.isClosed" v-tooltip.top="'Tutup Tahun Buku'" />
+               </div>
+            </template>
 
-          <!-- Expansion: Accounting Periods -->
-          <template #expansion="{ data }">
-             <div class="p-8 bg-slate-50/50 border-y border-slate-100">
-                <div class="flex items-center gap-4 mb-6">
-                   <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center border border-slate-200 shadow-sm text-blue-600">
-                      <i class="pi pi-clock"></i>
-                   </div>
-                   <div>
-                      <h4 class="text-[11px] font-black text-slate-900 uppercase tracking-[0.2em]">Monthly Accounting Periods</h4>
-                      <p class="text-[10px] text-slate-400 font-bold uppercase italic tracking-tight">Status penguncian transaksi per bulan.</p>
-                   </div>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                   <div v-for="p in data.periods" :key="p.id" class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col items-center group hover:border-blue-400 transition-all">
-                      <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Period {{ p.periodNo }}</span>
-                      <span class="text-[11px] font-black text-slate-900 mb-2 uppercase">{{ fmtMonth(p.startDate) }}</span>
-                      <div :class="['w-full py-1 text-center rounded-lg text-[8px] font-black uppercase tracking-widest border', p.isOpen ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100']">
-                         {{ p.isOpen ? 'Open' : 'Closed' }}
-                      </div>
-                   </div>
-                </div>
-             </div>
-          </template>
-       </DataTable>
-    </div>
+            <!-- Expansion View -->
+            <template #expansion="{ item }">
+               <div class="p-8 bg-white/50 border-y border-slate-100">
+                  <div class="flex items-center gap-4 mb-6">
+                     <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center border border-slate-200 shadow-sm text-blue-600">
+                        <i class="pi pi-clock text-sm"></i>
+                     </div>
+                     <div>
+                        <h4 class="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">Monthly Accounting Periods</h4>
+                        <p class="text-[9px] text-slate-400 font-bold uppercase italic tracking-tight">Status penguncian transaksi per bulan.</p>
+                     </div>
+                  </div>
+                  
+                  <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                     <div v-for="p in item.periods" :key="p.id" class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col items-center group hover:border-blue-400 transition-all hover:shadow-lg hover:-translate-y-1">
+                        <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Period {{ p.periodNo }}</span>
+                        <span class="text-[11px] font-black text-slate-900 mb-2 uppercase">{{ fmtMonth(p.startDate) }}</span>
+                        <div :class="['w-full py-1 text-center rounded-lg text-[8px] font-black uppercase tracking-widest border', p.isOpen ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-rose-50 text-rose-600 border-rose-100']">
+                           {{ p.isOpen ? 'Open' : 'Closed' }}
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </template>
+          </PanelTable>
+       </template>
+    </PanelCard>
 
     <!-- Management Dialog (Glass) -->
     <Dialog v-model:visible="dialogOpen" header="Registrasi Tahun Fiskal Baru" :modal="true" :dismissableMask="false" class="w-[600px] border-none shadow-2xl overflow-hidden glass-dialog">
        <div class="space-y-8 pt-4 px-2 pb-12 custom-scrollbar">
-          <div class="p-6 bg-blue-50 border border-blue-100 rounded-3xl flex items-center gap-4">
+          <div class="p-4 bg-blue-50 border border-blue-100 rounded-3xl flex items-center gap-4">
              <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-blue-600 shadow-sm border border-blue-100">
                 <i class="pi pi-calendar text-xl"></i>
              </div>
@@ -180,20 +203,34 @@ const form = ref<any>({
 
 const stats = computed(() => {
   const current = fiscalYears.value.find(y => y.isActive);
-  const openPeriods = fiscalYears.value.reduce((acc, y) => acc + (y.periods?.filter(p => p.isOpen).length || 0), 0);
+  const openPeriods = fiscalYears.value.reduce((acc: number, y: any) => acc + (y.periods?.filter((p: any) => p.isOpen).length || 0), 0);
   return [
-    { label: 'Tahun Fiskal Aktif', value: current?.code || 'None', sub: 'Current Cycle', icon: 'pi pi-calendar', color: 'bg-emerald-50 text-emerald-600' },
-    { label: 'Total Periode Terbuka', value: openPeriods, sub: 'Active Months', icon: 'pi pi-clock', color: 'bg-blue-50 text-blue-600' },
-    { label: 'Siklus Terdaftar', value: fiscalYears.value.length, sub: 'Database Status', icon: 'pi pi-database', color: 'bg-indigo-50 text-indigo-600' },
-    { label: 'Tahun Tertutup', value: fiscalYears.value.filter(y => y.isClosed).length, sub: 'Closed Books', icon: 'pi pi-lock', color: 'bg-rose-50 text-rose-600' }
+    { label: 'Tahun Fiskal Aktif', value: current?.code || 'None', sub: 'Current Cycle', icon: 'pi pi-calendar', theme: 'emerald' as const },
+    { label: 'Total Periode Terbuka', value: openPeriods, sub: 'Active Months', icon: 'pi pi-clock', theme: 'blue' as const },
+    { label: 'Siklus Terdaftar', value: fiscalYears.value.length, sub: 'Database Status', icon: 'pi pi-database', theme: 'indigo' as const },
+    { label: 'Tahun Tertutup', value: fiscalYears.value.filter(y => y.isClosed).length, sub: 'Closed Books', icon: 'pi pi-lock', theme: 'rose' as const }
   ];
 });
+
+const fiscalColumns = [
+  { key: 'code', header: 'KODE', width: 'w-32' },
+  { key: 'name', header: 'NAMA TAHUN FISKAL' },
+  { key: 'range', header: 'RANGE TANGGAL', width: 'w-64', borderLeft: true },
+  { key: 'status', header: 'STATUS', width: 'w-48', borderLeft: true },
+  { key: 'actions', header: 'AKSI', align: 'right' as const, width: 'w-24', borderLeft: true }
+];
+
+const tabOptions = [
+  { label: 'Master Periode', value: 'master', icon: 'pi pi-calendar' }
+];
+
+const activeTab = ref('master');
 
 async function load() {
   loading.value = true;
   try {
     const res = await api.get('/core/fiscal-years');
-    fiscalYears.value = res.fiscalYears || res.data?.fiscalYears || res.data || [];
+    fiscalYears.value = res.data?.fiscalYears || res.data || [];
   } catch (e: any) {
     toast.add({ severity: 'error', summary: 'Load Failed', detail: e.message });
   } finally {
@@ -238,7 +275,7 @@ function fmtMonth(d: string) { return d ? new Date(d).toLocaleDateString('id-ID'
 onMounted(load);
 </script>
 
-<style scoped>
+<style scoped lang="postcss">
 :deep(.p-datatable-thead > tr > th) {
   background: transparent !important;
   font-size: 10px !important;
